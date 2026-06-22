@@ -41,7 +41,8 @@
 .mega__item:hover h4 { color: var(--gf-purple); }
 .mega__item p { font-size: 14px; line-height: 20px; color: var(--gf-ink-500); max-width: 300px; }
 .mega__item b { font-weight: var(--fw-bold); color: var(--gf-ink-700); }
-.mega__badge { background: var(--gf-yellow); color: var(--gf-purple); font-size: 11px; font-weight: var(--fw-bold); padding: 3px 8px; border-radius: var(--r-full); }
+.mega__badge-img { display: inline-flex; align-items: center; margin-left: -2px; height: 22px; }
+.mega__badge-img img { height: 100%; width: auto; }
 .mega__link { color: var(--gf-purple); font-weight: var(--fw-semibold); }
 
 /* ===== 1. Hero ===== */
@@ -49,7 +50,7 @@
 /* Permanent brand-gradient base: the video paints over it, so if the video is
    ever absent or mid-load the hero shows brand purple, never a gray overlay. */
 .hero__media { position: absolute; inset: 0; border-radius: 0; background: radial-gradient(120% 120% at 20% 20%, var(--gf-purple) 0%, var(--gf-purple-900) 55%, var(--gf-purple-ink) 100%); }
-.hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transform-origin: center; }
+.hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transform-origin: center; -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%); mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%); }
 .hero__overlay { position: absolute; inset: 0; background: rgba(14, 14, 14, .3); }
 
 .hero__inner { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-block: 140px 120px; }

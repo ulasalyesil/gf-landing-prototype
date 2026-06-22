@@ -5,7 +5,7 @@
     const el = document.getElementById("heroSub");
     if (!el || !window.HERO_SUBS || window.HERO_SUBS.length < 2) return;
     const subs = window.HERO_SUBS;
-    const render = (s) => s.replace(/,\s*/, ",<br>");
+    const render = (s) => s;
     el.innerHTML = render(subs[0]);
     let i = 0;
     setInterval(() => {

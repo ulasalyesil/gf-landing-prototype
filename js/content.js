@@ -4,9 +4,9 @@
 // The sub-description flips through these three lines instead.
 // Each line breaks after the comma (the renderer turns ", " into a line break).
 window.HERO_SUBS = [
-  "iyi faizle her gün kazan, uygun oranlı kredi kullan.",
-  "iyi kurlarla işlem yap, hafta içi akşamları bile.",
-  "kartın dakikalar içinde gelsin, harcarken geri kazan."
+  "iyi faizle her gün kazan<br>uygun oranlı kredi kullan",
+  "iyi kurlarla işlem yap<br>hafta içi akşamları bile",
+  "kartın dakikalar içinde gelsin<br>harcarken geri kazan"
 ];
 
 // Rates seed (realistic mock). al = buy, sat = sell.
