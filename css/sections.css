@@ -269,16 +269,16 @@
 .transfer__card--right { right: 6%; top: 22%; transform: rotate(4deg); }
 
 /* ===== 11. App split (dark) ===== */
-.app-split { position: relative; overflow: hidden; color: #fff; background: linear-gradient(100deg, #0c0818 0%, #1b0f3a 52%, #2f1d5e 100%); }
-.app-split__inner { position: relative; z-index: 2; padding-block: clamp(64px, 8vw, 120px); }
-.app-split__copy { max-width: 560px; }
+.app-split { position: relative; overflow: hidden; color: #fff; background: linear-gradient(100deg, #0c0818 0%, #1b0f3a 52%, #2f1d5e 100%); padding-bottom: 0; }
+.app-split__inner { display: flex; grid-template-columns: 1fr 1fr; gap: clamp(30px, 6vw, 80px); align-items: center; justify-content: center; }
+.app-split__copy { padding-bottom: clamp(72px, 9vw, 130px); }
 .app-split__title { font-size: clamp(28px, 3.4vw, 40px); font-weight: var(--fw-regular); line-height: 1.2; margin-bottom: 32px; }
 .app-split__list { display: flex; flex-direction: column; gap: 16px; }
 .app-split__list li { display: flex; align-items: center; gap: 12px; font-size: 18px; line-height: 24px; color: #fff; }
 .app-split__check { flex: 0 0 24px; width: 24px; height: 24px; display: inline-flex; }
 .app-split__check svg { width: 100%; height: 100%; }
-.app-split__media { position: absolute; right: 0; top: 0; bottom: 0; width: 48%; z-index: 1; }
-.app-split__media img { width: 75%; height: auto; max-height: 95%; object-fit: contain; object-position: bottom center; position: absolute; bottom: 0; left: 5%; transform: none; }
+.app-split__media { position: relative; display: flex; justify-content: center; }
+.app-split__media img { width: 90%; height: auto; max-height: 700px; object-fit: contain; object-position: bottom center; }
 
 /* ===== 12. AI (full-width lottie) ===== */
 .ai__stage { display: flex; justify-content: center; }

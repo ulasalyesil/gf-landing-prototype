@@ -24,7 +24,8 @@
       .from(".hero__bankinfo", { opacity: 0, duration: .6 }, "-=.3");
 
     // hero subtle parallax + scrim deepen on scroll
-    gsap.to(".hero__video", { yPercent: 14, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+    // (disabled because it causes top-edge gap issues with smooth scrolling / scaling)
+    // gsap.to(".hero__video", { yPercent: 14, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
 
     // ---- Generic reveals ----
     gsap.utils.toArray(".reveal").forEach((el) => {

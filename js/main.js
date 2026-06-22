@@ -132,6 +132,30 @@
     window.initCampaigns && window.initCampaigns();
     window.initAnimations && window.initAnimations();
     tryLottie("aiLottie", "assets/lottie/ai-assistant.json");
+    
+    // Paranaiyibak badge toggle logic
+    const paranaiyibak = document.querySelector(".paranaiyibak");
+    const statsSection = document.getElementById("stats");
+    const heroBadgeStack = document.getElementById("heroBadgeStack");
+    
+    if (paranaiyibak && statsSection && heroBadgeStack) {
+      paranaiyibak.addEventListener("click", (e) => {
+        e.preventDefault();
+        statsSection.hidden = true;
+        heroBadgeStack.hidden = false;
+        
+        const badges = heroBadgeStack.querySelectorAll(".hero__badge");
+        if (badges.length > 1 && !heroBadgeStack.dataset.rotating) {
+          heroBadgeStack.dataset.rotating = "true";
+          let currentBadgeIndex = 0;
+          setInterval(() => {
+            badges[currentBadgeIndex].classList.remove("is-on");
+            currentBadgeIndex = (currentBadgeIndex + 1) % badges.length;
+            badges[currentBadgeIndex].classList.add("is-on");
+          }, 3000);
+        }
+      });
+    }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
