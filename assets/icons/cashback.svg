@@ -1,0 +1,51 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_21281_5465)">
+<path d="M23.9999 48.0009C37.2546 48.0009 47.9997 37.4864 47.9997 24.5161C47.9997 11.5458 37.2546 1.03125 23.9999 1.03125C10.7451 1.03125 0 11.5458 0 24.5161C0 37.4864 10.7451 48.0009 23.9999 48.0009Z" fill="url(#paint0_linear_21281_5465)"/>
+<path d="M23.9999 46.9692C37.2546 46.9692 47.9997 36.4547 47.9997 23.4843C47.9997 10.514 37.2546 -0.000488281 23.9999 -0.000488281C10.7451 -0.000488281 0 10.514 0 23.4843C0 36.4547 10.7451 46.9692 23.9999 46.9692Z" fill="url(#paint1_linear_21281_5465)"/>
+<path d="M24 47.403C37.2548 47.403 48 36.8885 48 23.9181C48 10.9477 37.2548 0.433105 24 0.433105C10.7452 0.433105 0 10.9477 0 23.9181C0 36.8885 10.7452 47.403 24 47.403Z" fill="url(#paint2_linear_21281_5465)"/>
+<path d="M23.9986 45.7043C36.2624 45.7043 46.2042 35.9758 46.2042 23.9752C46.2042 11.9745 36.2624 2.24609 23.9986 2.24609C11.7348 2.24609 1.79297 11.9745 1.79297 23.9752C1.79297 35.9758 11.7348 45.7043 23.9986 45.7043Z" fill="#606A7C" style="fill:#606A7C;fill:color(display-p3 0.3765 0.4157 0.4863);fill-opacity:1;"/>
+<path d="M23.9921 44.7644C35.7109 44.7644 45.2108 35.4487 45.2108 23.9571C45.2108 12.4656 35.7109 3.1499 23.9921 3.1499C12.2734 3.1499 2.77344 12.4656 2.77344 23.9571C2.77344 35.4487 12.2734 44.7644 23.9921 44.7644Z" fill="url(#paint3_linear_21281_5465)"/>
+<path d="M24.1686 12.2602L22.3534 19.1845M22.3534 19.1845L18.0844 35.4683C18.0686 35.5286 29.1925 38.3804 31.8966 28.0657M22.3534 19.1845L17.4386 20.1416M22.3534 19.1845L29.5021 17.7923" stroke="url(#paint4_linear_21281_5465)" stroke-width="5.33162" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_21281_5465" x1="23.9999" y1="47.9211" x2="23.9999" y2="0.951153" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4F5B73" style="stop-color:#4F5B73;stop-color:color(display-p3 0.3098 0.3569 0.4510);stop-opacity:1;"/>
+<stop offset="0.15" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="0.39" stop-color="#8C96A4" style="stop-color:#8C96A4;stop-color:color(display-p3 0.5490 0.5882 0.6431);stop-opacity:1;"/>
+<stop offset="0.7" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+<stop offset="1" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="paint1_linear_21281_5465" x1="23.9999" y1="46.8893" x2="23.9999" y2="-0.0805856" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4F5B73" style="stop-color:#4F5B73;stop-color:color(display-p3 0.3098 0.3569 0.4510);stop-opacity:1;"/>
+<stop offset="0.15" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="0.39" stop-color="#8C96A4" style="stop-color:#8C96A4;stop-color:color(display-p3 0.5490 0.5882 0.6431);stop-opacity:1;"/>
+<stop offset="0.7" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+<stop offset="1" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="paint2_linear_21281_5465" x1="-9.32729e-10" y1="24.7609" x2="48" y2="24.6692" gradientUnits="userSpaceOnUse">
+<stop stop-color="#EDEEF1" style="stop-color:#EDEEF1;stop-color:color(display-p3 0.9294 0.9333 0.9451);stop-opacity:1;"/>
+<stop offset="0.203125" stop-color="#D7DAE0" style="stop-color:#D7DAE0;stop-color:color(display-p3 0.8431 0.8549 0.8784);stop-opacity:1;"/>
+<stop offset="0.494792" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="0.651042" stop-color="#8C96A4" style="stop-color:#8C96A4;stop-color:color(display-p3 0.5490 0.5882 0.6431);stop-opacity:1;"/>
+<stop offset="0.833333" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="1" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="paint3_linear_21281_5465" x1="2.77344" y1="23.0324" x2="45.2108" y2="23.0324" gradientUnits="userSpaceOnUse">
+<stop stop-color="#D7DAE0" style="stop-color:#D7DAE0;stop-color:color(display-p3 0.8431 0.8549 0.8784);stop-opacity:1;"/>
+<stop offset="0.177083" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+<stop offset="0.395833" stop-color="#D7DAE0" style="stop-color:#D7DAE0;stop-color:color(display-p3 0.8431 0.8549 0.8784);stop-opacity:1;"/>
+<stop offset="0.661458" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+<stop offset="0.880208" stop-color="#D7DAE0" style="stop-color:#D7DAE0;stop-color:color(display-p3 0.8431 0.8549 0.8784);stop-opacity:1;"/>
+<stop offset="1" stop-color="#B4BAC5" style="stop-color:#B4BAC5;stop-color:color(display-p3 0.7059 0.7294 0.7725);stop-opacity:1;"/>
+</linearGradient>
+<linearGradient id="paint4_linear_21281_5465" x1="14.6347" y1="21.2474" x2="32.4591" y2="25.9202" gradientUnits="userSpaceOnUse">
+<stop stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="0.228656" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="0.625" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+<stop offset="1" stop-color="#606A7C" style="stop-color:#606A7C;stop-color:color(display-p3 0.3765 0.4157 0.4863);stop-opacity:1;"/>
+</linearGradient>
+<clipPath id="clip0_21281_5465">
+<rect width="48" height="48" fill="white" style="fill:white;fill-opacity:1;"/>
+</clipPath>
+</defs>
+</svg>
