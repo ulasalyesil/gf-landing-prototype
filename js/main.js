@@ -133,6 +133,17 @@
     window.initAnimations && window.initAnimations();
     tryLottie("aiLottie", "assets/lottie/ai-assistant.json");
     
+    const heroVideo = document.querySelector(".hero__video");
+    if (heroVideo) {
+      heroVideo.addEventListener("timeupdate", () => {
+        if (heroVideo.duration && (heroVideo.duration - heroVideo.currentTime) < 0.6) {
+          heroVideo.classList.add("is-fading");
+        } else {
+          heroVideo.classList.remove("is-fading");
+        }
+      });
+    }
+    
     // Paranaiyibak badge toggle logic
     const paranaiyibak = document.querySelector(".paranaiyibak");
     const statsSection = document.getElementById("stats");
@@ -155,6 +166,28 @@
           }, 3000);
         }
       });
+    }
+    
+    // Toggle standalone app section (Light <-> Dark) via Title Click
+    const appSplit = document.getElementById("apps");
+    const appDark = document.getElementById("apps-dark");
+    if (appSplit && appDark) {
+      const splitTitle = appSplit.querySelector(".app-split__title");
+      const darkTitle = appDark.querySelector(".app-dark__title");
+      
+      if (splitTitle && darkTitle) {
+        splitTitle.addEventListener("click", () => {
+          appSplit.classList.add("is-hidden");
+          appDark.classList.add("is-active");
+          // Re-trigger scroll animations so elements fade in properly in the new section
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
+        darkTitle.addEventListener("click", () => {
+          appDark.classList.remove("is-active");
+          appSplit.classList.remove("is-hidden");
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
+      }
     }
   }
 

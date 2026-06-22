@@ -49,8 +49,9 @@
 .hero { position: relative; min-height: 100vh; display: flex; align-items: center; color: #fff; overflow: hidden; }
 /* Permanent brand-gradient base: the video paints over it, so if the video is
    ever absent or mid-load the hero shows brand purple, never a gray overlay. */
-.hero__media { position: absolute; inset: 0; border-radius: 0; background: radial-gradient(120% 120% at 20% 20%, var(--gf-purple) 0%, var(--gf-purple-900) 55%, var(--gf-purple-ink) 100%); }
-.hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transform-origin: center; -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%); mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%); }
+.hero__media { position: absolute; inset: 0; border-radius: 0; background: #000; }
+.hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transform-origin: center; transition: opacity 0.5s ease-in-out; }
+.hero__video.is-fading { opacity: 0; }
 .hero__overlay { position: absolute; inset: 0; background: rgba(14, 14, 14, .3); }
 
 .hero__inner { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-block: 140px 120px; }
@@ -273,13 +274,34 @@
 .app-split { position: relative; overflow: hidden; color: #fff; background: linear-gradient(100deg, #0c0818 0%, #1b0f3a 52%, #2f1d5e 100%); padding-bottom: 0; }
 .app-split__inner { display: flex; grid-template-columns: 1fr 1fr; gap: clamp(30px, 6vw, 80px); align-items: center; justify-content: center; }
 .app-split__copy { padding-bottom: clamp(72px, 9vw, 130px); }
-.app-split__title { font-size: clamp(28px, 3.4vw, 40px); font-weight: var(--fw-regular); line-height: 1.2; margin-bottom: 32px; }
+.app-split__title { font-size: clamp(28px, 3.4vw, 40px); font-weight: var(--fw-regular); line-height: 1.2; margin-bottom: 32px; cursor: pointer; user-select: none; }
 .app-split__list { display: flex; flex-direction: column; gap: 16px; }
 .app-split__list li { display: flex; align-items: center; gap: 12px; font-size: 18px; line-height: 24px; color: #fff; }
 .app-split__check { flex: 0 0 24px; width: 24px; height: 24px; display: inline-flex; }
 .app-split__check svg { width: 100%; height: 100%; }
 .app-split__media { position: relative; display: flex; justify-content: center; }
 .app-split__media img { width: 90%; height: auto; max-height: 700px; object-fit: contain; object-position: bottom center; }
+
+/* ===== 11b. App dark (dark mode alternative) ===== */
+.app-dark { 
+  display: none; 
+  position: relative; 
+  overflow: hidden; 
+  color: #fff; 
+  background: var(--gf-purple-ink); 
+  text-align: center;
+  height: clamp(650px, 80vh, 800px);
+  padding-top: clamp(24px, 4vw, 40px);
+}
+.app-dark__media { position: absolute; inset: 0; }
+.app-dark__media img { width: 100%; height: 100%; object-fit: cover; object-position: bottom center; }
+.app-dark__inner { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+.app-dark__title { font-size: clamp(32px, 4vw, 48px); line-height: 1.1; font-weight: var(--fw-regular); margin-bottom: 24px; cursor: pointer; user-select: none; }
+.app-dark__title .mark { color: #fff; }
+.app-dark__lead { font-size: clamp(18px, 2vw, 24px); line-height: 1.4; color: rgba(255, 255, 255, 0.9); }
+
+.app-split.is-hidden { display: none; }
+.app-dark.is-active { display: block; }
 
 /* ===== 12. AI (full-width lottie) ===== */
 .ai__stage { display: flex; justify-content: center; }
