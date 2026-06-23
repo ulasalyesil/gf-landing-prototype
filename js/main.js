@@ -189,6 +189,26 @@
         });
       }
     }
+
+    // Mobile Menu Toggle Logic
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
+    
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener("click", () => {
+        const isOpen = mobileMenuBtn.classList.contains("is-active");
+        
+        if (isOpen) {
+          mobileMenuBtn.classList.remove("is-active");
+          mobileMenu.classList.remove("is-open");
+          document.body.style.overflow = ""; // restore scrolling
+        } else {
+          mobileMenuBtn.classList.add("is-active");
+          mobileMenu.classList.add("is-open");
+          document.body.style.overflow = "hidden"; // prevent background scroll
+        }
+      });
+    }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
