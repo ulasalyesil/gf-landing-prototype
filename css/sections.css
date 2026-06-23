@@ -317,7 +317,7 @@
 .footer__badges { display: flex; gap: 12px; }
 .store-badge { width: 130px; height: 44px; border-radius: 8px; background: var(--gf-ink); display: grid; place-items: center; overflow: hidden; }
 .store-badge.ph::after { color: rgba(255,255,255,.5); font-size: .7rem; }
-.footer__main { display: grid; grid-template-columns: 1.4fr 1fr 1.4fr 1fr; gap: 30px; padding-block: 30px 50px; }
+.footer__main { display: grid; grid-template-columns: 1.4fr 1fr 1.4fr 1fr; gap: 30px; padding-block: 30px 50px; padding-left: clamp(28px, 4vw, 48px); }
 .footer__social { display: flex; gap: 12px; margin-top: 24px; }
 .footer__social a { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.1); display: grid; place-items: center; transition: background .2s; }
 .footer__social a:hover { background: rgba(255,255,255,.22); }
