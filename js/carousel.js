@@ -1,27 +1,30 @@
 /* Hero title swap, hero badge swap, campaign auto-swipe carousel */
 (function () {
-  // ---- Hero sub-description cross-fade (title stays static) ----
-  window.initHeroSub = function () {
-    const el = document.getElementById("heroSub");
-    if (!el || !window.HERO_SUBS || window.HERO_SUBS.length < 2) return;
-    const subs = window.HERO_SUBS;
-    const render = (s) => s;
-    el.innerHTML = render(subs[0]);
+  // ---- Hero offer flip: title + sub cross-fade together through HERO_OFFERS ----
+  window.initHeroOffers = function () {
+    const titleEl = document.querySelector(".hero__title-swap");
+    const subEl = document.getElementById("heroSub");
+    if (!titleEl || !subEl || !window.HERO_OFFERS || window.HERO_OFFERS.length < 2) return;
+    const offers = window.HERO_OFFERS;
+    const els = [titleEl, subEl];
+    const paint = (o) => { titleEl.textContent = o.title; subEl.innerHTML = o.sub; };
+    paint(offers[0]);
     let i = 0;
     setInterval(() => {
-      i = (i + 1) % subs.length;
-      el.style.transition = "opacity .4s ease, transform .4s ease";
-      el.style.opacity = "0";
-      el.style.transform = "translateY(-10px)";
+      i = (i + 1) % offers.length;
+      els.forEach((el) => {
+        el.style.transition = "opacity .4s ease, transform .4s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(-10px)";
+      });
       setTimeout(() => {
-        el.innerHTML = render(subs[i]);
-        el.style.transform = "translateY(10px)";
+        paint(offers[i]);
+        els.forEach((el) => { el.style.transform = "translateY(10px)"; });
         requestAnimationFrame(() => {
-          el.style.opacity = "1";
-          el.style.transform = "translateY(0)";
+          els.forEach((el) => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; });
         });
       }, 400);
-    }, 3600);
+    }, 4000);
   };
 
   // ---- Campaigns (auto-swipe + indicators) ----

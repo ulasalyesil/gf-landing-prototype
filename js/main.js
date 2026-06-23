@@ -128,7 +128,7 @@
   function start() {
     pruneBrokenVideos();
     window.initRates && window.initRates();
-    window.initHeroSub && window.initHeroSub();
+    window.initHeroOffers && window.initHeroOffers();
     window.initCampaigns && window.initCampaigns();
     window.initAnimations && window.initAnimations();
     tryLottie("aiLottie", "assets/lottie/ai-assistant.json");

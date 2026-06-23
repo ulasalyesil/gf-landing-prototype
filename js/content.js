@@ -1,12 +1,12 @@
 /* Editable content — swap freely */
 
-// Hero headline is static: "ama ne finans!" (set in index.html, no rotation).
-// The sub-description flips through these three lines instead.
-// Each line breaks after the comma (the renderer turns ", " into a line break).
-window.HERO_SUBS = [
-  "iyi faizle her gün kazan<br>uygun oranlı kredi kullan",
-  "iyi kurlarla işlem yap<br>hafta içi akşamları bile",
-  "kartın dakikalar içinde gelsin<br>harcarken geri kazan"
+// Hero cycles through offer pairs: bold title line = the offer, sub = support.
+// Title and sub flip together, in sync (see initHeroOffers).
+window.HERO_OFFERS = [
+  { title: "yıllık %44 faizle",           sub: "paranı bağlamadan her gün iyi kazan" },
+  { title: "uygun oranlı kredi",          sub: "aylık %3,49’dan başlayan faizlerle" },
+  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile dar makasla işlem yap" },
+  { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında, harcarken geri kazan" }
 ];
 
 // Rates seed (realistic mock). al = buy, sat = sell.
