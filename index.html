@@ -17,29 +17,23 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="siteHeader">
   <div class="container site-header__inner">
-        <a class="brand" href="#" aria-label="getirfinans">
-          <img class="brand__logo" src="assets/logos/getirfinans.svg" alt="getirfinans" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'brand__ph',textContent:'getirfinans'}))">
+    <a class="brand" href="#" aria-label="getirfinans">
+      <img class="brand__logo" src="assets/logos/getirfinans.svg" alt="getirfinans" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'brand__ph',textContent:'getirfinans'}))">
+    </a>
+    <div class="site-header__col">
+      <nav class="nav">
+        <button class="nav__item" type="button" data-menu="urunler">ürünler</button>
+        <button class="nav__item" type="button" data-menu="kampanyalar">kampanyalar</button>
+        <button class="nav__item" type="button" data-menu="ucretler">ürün ve hizmet ücretleri</button>
+      </nav>
+      <div class="site-header__actions">
+        <a href="#" class="paranaiyibak" aria-label="#paranaiyibak">
+          <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
         </a>
-        
-        <!-- Mobile Hamburger Toggle -->
-        <button class="menu-toggle" id="mobileMenuBtn" aria-label="Menu" hidden>
-          <span></span><span></span><span></span>
-        </button>
-
-      <div class="site-header__col">
-        <nav class="nav">
-          <button class="nav__item" type="button" data-menu="urunler">ürünler</button>
-          <button class="nav__item" type="button" data-menu="kampanyalar">kampanyalar</button>
-          <button class="nav__item" type="button" data-menu="ucretler">ürün ve hizmet ücretleri</button>
-        </nav>
-        <div class="site-header__actions">
-          <a href="#" class="paranaiyibak" aria-label="#paranaiyibak">
-            <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
-          </a>
-          <a href="#" class="btn header__cta"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
-        </div>
+        <a href="#" class="btn header__cta"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
       </div>
     </div>
+  </div>
   <div class="mega" id="megaMenu" hidden>
     <div class="container">
       <div class="mega__grid">
@@ -53,39 +47,6 @@
         <a class="mega__item" href="#"><h4>döviz işlemleri</h4><p>dar makas ile avantajlı kurlar</p></a>
         <a class="mega__item" href="#"><h4>ücretsiz atm’ler</h4><p>tüm atm’lerden ücretsiz çekebilirsin<br><span class="mega__link">Fibabanka ve Akbank’ta ücretsiz</span></p></a>
         <a class="mega__item" href="#"><h4>ödemeler</h4></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu" id="mobileMenu" hidden>
-    <div class="mobile-menu__inner container">
-      <nav class="mobile-menu__nav">
-        <div class="mobile-menu__group">
-          <h3 class="mobile-menu__heading">ürünler</h3>
-          <ul class="mobile-menu__list">
-            <li><a href="#">hesap</a></li>
-            <li><a href="#">kredi kartı</a></li>
-            <li><a href="#">hesap kartı</a></li>
-            <li><a href="#">kredi</a></li>
-            <li><a href="#">avans limit</a></li>
-            <li><a href="#">getirsonraöde <span class="mega__badge-img"><img src="assets/badges/yeni.svg" alt="yeni"></span></a></li>
-            <li><a href="#">para transferi</a></li>
-            <li><a href="#">döviz işlemleri</a></li>
-            <li><a href="#">ücretsiz atm’ler</a></li>
-            <li><a href="#">ödemeler</a></li>
-          </ul>
-        </div>
-        <div class="mobile-menu__group">
-          <a href="#" class="mobile-menu__heading">kampanyalar</a>
-        </div>
-        <div class="mobile-menu__group">
-          <a href="#" class="mobile-menu__heading">ürün ve hizmet ücretleri</a>
-        </div>
-      </nav>
-      <div class="mobile-menu__footer">
-        <a href="#" class="paranaiyibak"><img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))"></a>
-        <a href="#" class="btn btn--block">getirfinanslı ol</a>
       </div>
     </div>
   </div>

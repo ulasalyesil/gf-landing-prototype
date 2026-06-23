@@ -91,20 +91,3 @@ ul { list-style: none; }
 .center { text-align: center; }
 .stack-sm > * + * { margin-top: 10px; }
 .eyebrow-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 48px; }
-
-/* ===== Mobile Overrides (Global) ===== */
-@media (max-width: 991px) {
-  :root {
-    --gutter: 20px; /* Reduce horizontal padding */
-  }
-  .section {
-    padding-block: clamp(56px, 8vw, 72px); /* Tighter vertical rhythm */
-  }
-  .eyebrow-wrap {
-    margin-bottom: 32px;
-  }
-  .sec-head {
-    margin-bottom: 40px;
-    gap: var(--sp-md);
-  }
-}

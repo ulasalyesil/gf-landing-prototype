@@ -10,33 +10,32 @@ The project is built entirely without a frontend framework to ensure maximum per
 - **CSS Architecture**:
   - `css/tokens.css`: The source of truth for the design system. Contains CSS variables for colors (`--gf-purple`, `--gf-yellow`), typography (`--font-sans` mapped to Open Sans), spacing, and elevation.
   - `css/base.css`: Global resets, typography hierarchy, universal components (like `.btn`), and reusable utility classes (`.reveal` for scroll animations, `.hl`/`.mark` for highlighted headers).
-  - `css/sections.css`: Specific grid/flexbox layouts and massive mobile `@media` queries grouped at the bottom for responsive behavior.
+  - `css/sections.css`: Specific grid/flexbox layouts and mobile `@media` queries grouped chronologically by section.
 - **JavaScript Modules**:
-  - `js/main.js`: Bootstraps the application. Handles global event listeners (like header background/logo toggling on scroll), the interactive Deposit Calculator mock logic, the manual dark-mode section toggle, and the mobile hamburger menu overlay.
+  - `js/main.js`: Bootstraps the application. Handles global event listeners (like header background/logo toggling on scroll) and the interactive Deposit Calculator mock logic.
   - `js/animations.js`: Houses all GSAP (GreenSock) scroll-triggered animations and timeline orchestrations.
-  - `js/carousel.js`: Manages the logic for the "Campaigns" slider.
+  - `js/carousel.js`: Manages the logic for the "Campaigns" slider, which integrates native CSS horizontal `scroll-snap` with a JS listener to sync pagination dots on mobile.
 
 ## Recent Major Refinements
 
-I recently executed several major functionality and responsiveness passes. When modifying the code, **preserve these specific implementations**:
+I recently executed a massive visual refinement pass to align the prototype precisely with the Figma designs. When modifying the code, **preserve these specific implementations**:
 
-1. **Full Mobile Responsiveness (`max-width: 991px`)**: 
-   - A global media query block resides at the bottom of `css/sections.css`. It overrides desktop grids (`grid-template-columns: 1fr 1fr`) to single columns and stacks complex layouts.
-   - The desktop `.nav` is hidden on mobile, replaced by a bespoke animated hamburger menu (`#mobileMenuBtn`) that triggers a full-screen `.mobile-menu` overlay.
-2. **Interactive Dark Mode Toggle (Promotional)**:
-   - We added an alternative to the standalone app section (`.app-dark`). It is *not* tied to the OS `@media (prefers-color-scheme: dark)`. Instead, users can click the `.app-split__title` or `.app-dark__title` to manually toggle between the light and dark layouts via JS class swapping (`is-active` / `is-hidden`) in `js/main.js`.
-3. **Mobile Native Scroll-Snap**:
-   - The `.campaigns__track` and `.rates__cards` utilize pure CSS `scroll-snap-type: x mandatory` for mobile swiping (`sections.css`). Do not attempt to force `display: none` via JS for the cards; let the CSS natively handle the scroll physics.
-4. **Hero Video Fade**:
-   - The hero video fading to black at the end of its loop is controlled dynamically via a `timeupdate` event listener in `js/main.js` that applies an `is-fading` class, ensuring perfect sync regardless of buffering delays.
-5. **Animated Section Headers (`.hl` & `.mark`)**:
-   - The yellow underline highlight is **not** a background gradient. It is an absolutely positioned `::after` pseudo-element built in `base.css` that dynamically animates `width: 0 -> 100%` when `.reveal.is-in` triggers.
-6. **Continuous Background Groupings**:
-   - The *Kredi*, *Faiz*, and *Calculator* sections (`index.html` lines ~190-260) are intentionally wrapped inside a `.bg-lilac-wrap` div for a seamless flowing background.
+1. **Brand Typography Integrity**: 
+   - We strictly use **Open Sans**. I stripped out excessive `800` and `900` font weights globally. Stick to `400` (regular), `600` (semibold), and `700` (bold) to prevent a cluttered "AI slop" aesthetic.
+2. **Animated Section Headers (`.hl` & `.mark`)**:
+   - The yellow underline highlight is **not** a background gradient anymore. It is an absolutely positioned `::after` pseudo-element built in `base.css` that overlaps the text by `-4px` (simulating the `-24px` design spec gap) and dynamically animates `width: 0 -> 100%` when `.reveal.is-in` triggers.
+3. **Continuous Background Groupings**:
+   - The *Kredi*, *Faiz*, and *Calculator* sections (`index.html` lines ~190-260) are intentionally wrapped inside a `.bg-lilac-wrap` div. Do not add individual background colors to these sections, as they rely on this wrapper for a seamless flowing design.
+4. **Button Component (`.btn`)**:
+   - Buttons have exact Figma spacing (`padding: 12px 24px 12px 16px; gap: 8px;`) and *no box-shadows*. They utilize embedded SVG `<img src="assets/icons/arrow-right-circle.svg">` tags instead of inline SVGs.
+5. **Mobile native Scroll-Snap**:
+   - The `.campaigns__track` utilizes pure CSS `scroll-snap-type: x mandatory` for mobile swiping (`sections.css`). Do not attempt to force `display: none` via JS for the cards; let the CSS natively handle the scroll physics.
+6. **GSAP Staggered Animations**:
+   - Complex visuals (like the three overlapping `.faiz-phone-*` images) are absolutely positioned in CSS and orchestrated via precise `gsap.timeline()` stagger reveals in `animations.js`. 
 
 ## Next Steps / How to Contribute
 
 - **Assets:** All `.jpg` placeholders have been completely eradicated. Only reference `.png` and `.svg` files located in `assets/img/`, `assets/logos/`, and `assets/icons/`.
-- **Testing:** The project does not require a build step for CSS/JS. You can simply serve it via any static local HTTP server and test directly in the browser. 
+- **Testing:** The project does not require a build step for CSS/JS. You can simply serve it via any static local HTTP server (e.g., `python3 -m http.server` or `npm run dev` if a package script exists) and test directly in the browser. 
 
-*Claude: When picking up from here, please deeply review the mobile override block at the end of `css/sections.css` and the toggle logic in `js/main.js` before proposing any architectural rewrites to avoid regressions.*
+*Claude: When picking up from here, please review the latest `css/sections.css` media queries and `index.html` structure before proposing layout rewrites to avoid regressions.*
