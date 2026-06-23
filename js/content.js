@@ -11,10 +11,10 @@ window.HERO_OFFERS = [
 
 // Rates seed (realistic mock). al = buy, sat = sell.
 window.RATES_SEED = [
-  { code: "USD", name: "Amerikan Doları", flag: "🇺🇸", price: 43.2343, al: 43.8530, sat: 43.2313, dec: 4 },
-  { code: "XAU", name: "altın",          flag: "🥇", price: 6820.66, al: 6820.66, sat: 6810.66, dec: 2 },
-  { code: "XAG", name: "gümüş",          flag: "🥈", price: 107.4824, al: 107.4824, sat: 107.4500, dec: 4 },
-  { code: "EUR", name: "Euro",           flag: "🇪🇺", price: 52.5478, al: 52.5468, sat: 52.5203, dec: 4 }
+  { code: "USD", name: "Amerikan Doları", flag: "🇺🇸", price: 46.4865, al: 46.7899, sat: 46.1830, dec: 4 },
+  { code: "XAU", name: "altın",          flag: "🥇", price: 6820.66,  al: 6864.99, sat: 6776.33, dec: 2 },
+  { code: "XAG", name: "gümüş",          flag: "🥈", price: 107.4824, al: 108.1810, sat: 106.7837, dec: 4 },
+  { code: "EUR", name: "Euro",           flag: "🇪🇺", price: 52.5478,  al: 52.8893, sat: 52.2063, dec: 4 }
 ];
 
 // Rate refresh cycle (ms). Real site is 3 minutes; shortened slightly so the

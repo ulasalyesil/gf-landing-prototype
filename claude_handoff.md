@@ -35,6 +35,7 @@ I recently executed a massive visual refinement pass to align the prototype prec
 
 ## Next Steps / How to Contribute
 
+- **React Transfer Prototype:** We plan to prototype a money transfer flow (exactly as shown in the UI) using React. This will eventually replace the static `transfer-phone.png` image with an interactive/motion example.
 - **Assets:** All `.jpg` placeholders have been completely eradicated. Only reference `.png` and `.svg` files located in `assets/img/`, `assets/logos/`, and `assets/icons/`.
 - **Testing:** The project does not require a build step for CSS/JS. You can simply serve it via any static local HTTP server (e.g., `python3 -m http.server` or `npm run dev` if a package script exists) and test directly in the browser. 
 

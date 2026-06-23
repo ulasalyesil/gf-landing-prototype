@@ -73,8 +73,8 @@
 .hero__badge-ic { display: inline-flex; width: 24px; height: 24px; }
 
 .hero__title { font-size: clamp(40px, 5.4vw, 72px); line-height: 1; font-weight: var(--fw-regular); letter-spacing: 0; color: #fff; margin-bottom: 16px; }
-.hero__title-swap { display: inline-block; }
-.hero__sub { font-size: clamp(20px, 2.4vw, 32px); line-height: 1.3; font-weight: var(--fw-regular); color: #fff; margin-bottom: 40px; max-width: 726px; }
+.hero__title-swap { display: inline-block; white-space: nowrap; }
+.hero__sub { font-size: clamp(20px, 2.4vw, 32px); line-height: 1.3; min-height: 2.6em; font-weight: var(--fw-regular); color: #fff; margin-bottom: 40px; max-width: 726px; }
 
 .hero__cta {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -113,11 +113,10 @@
 .rates__cards { display: flex; gap: 16px; }
 .rate-card {
   flex: 0 0 288px; width: 288px; background: #fff; border: 1px solid var(--gf-line);
-  border-radius: var(--r-lg); padding: 24px 16px; display: flex; flex-direction: column; gap: 32px;
+  border-radius: var(--r-lg); padding: 24px 16px; display: flex; flex-direction: column; gap: 18px;
   transition: transform .3s var(--ease-out), box-shadow .3s;
 }
 .rate-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-.rate-card__info { display: flex; flex-direction: column; gap: 8px; width: 192px; }
 .rate-card__row { display: flex; align-items: center; gap: 8px; width: 100%; }
 .rate-card__flag { flex: 0 0 32px; width: 32px; height: 32px; border-radius: 50%; background: #f5f5f5; display: grid; place-items: center; overflow: hidden; }
 .rate-card__flag img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
@@ -128,20 +127,17 @@
 .rate-card__trend img { width: 16px; height: 16px; }
 .rate-card__trend.up { color: var(--gf-up); }
 .rate-card__trend.down { color: var(--gf-down); }
-.rate-card__amount { display: flex; align-items: baseline; font-weight: var(--fw-regular); color: var(--gf-ink); transition: color .35s; }
-.rate-card__amount .cur { font-size: 18px; line-height: 24px; }
-.rate-card__amount .int { font-size: 24px; line-height: 32px; }
-.rate-card__amount .dec { font-size: 18px; line-height: 24px; }
-.rate-card__amount.flash { color: var(--gf-purple); }
-.rate-card__legs { display: flex; gap: 16px; width: 100%; }
+.rate-card__legs { display: flex; gap: 12px; width: 100%; }
 .rate-leg {
-  flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px;
-  border: 1px solid var(--gf-purple); border-radius: var(--r-xl); background: #fff;
-  color: var(--gf-purple); font-weight: var(--fw-semibold); font-size: 13px; line-height: 18px;
-  transition: background .2s;
+  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  padding: 6px 4px; border: 0; background: none; cursor: pointer; text-align: left;
+  border-radius: var(--r-md); transition: background .35s;
 }
-.rate-leg:hover { background: var(--gf-lilac); }
-.rate-leg .div { width: 1px; height: 18px; background: var(--gf-lilac); }
+.rate-leg.flash { background: var(--gf-lilac); }
+.rate-leg__lbl { font-size: var(--fs-caption); line-height: 1; color: var(--gf-purple); font-weight: var(--fw-semibold); }
+.rate-leg__val { display: inline-flex; align-items: baseline; color: var(--gf-ink); font-weight: var(--fw-regular); font-variant-numeric: tabular-nums; }
+.rate-leg__val .int { font-size: 24px; line-height: 32px; }
+.rate-leg__val .dec { font-size: 18px; line-height: 24px; }
 .rates__more { flex: 0 0 224px; width: 224px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 3px 24px; color: var(--gf-purple); font-weight: var(--fw-bold); font-size: 14px; line-height: 20px; text-decoration: underline; }
 .rates__more span:first-child { max-width: 120px; }
 .rates__more-ic { flex: 0 0 48px; width: 48px; height: 48px; display: grid; place-items: center; }
@@ -250,8 +246,15 @@
 .debit__media.ph { background: linear-gradient(135deg, var(--gf-dark-surface), var(--gf-dark-bg-2)); }
 .debit__title { font-size: clamp(28px, 3.4vw, 40px); font-weight: var(--fw-regular); line-height: 1.2; margin-bottom: 26px; }
 .debit__title .mark { color: #fff; }
-.debit__moto { display: inline-flex; align-items: center; justify-content: center; width: clamp(36px, 4.5vw, 56px); height: auto; vertical-align: middle; margin-left: 4px; margin-top: -6px; }
-.debit__moto img { width: 100%; height: auto; }
+.debit__title .mark::after { transition-duration: 2.4s; }
+.debit__moto {
+  position: absolute; left: 0; bottom: -2px;
+  width: clamp(36px, 4.5vw, 56px); height: auto;
+  transform: translateX(-50%); opacity: 0;
+  transition: left 2.4s cubic-bezier(.16, 1, .3, 1) .1s, opacity .35s ease .1s;
+  z-index: 1; pointer-events: none;
+}
+.is-in .debit__moto { left: calc(100% + 28px); opacity: 1; }
 .debit__list { display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px; }
 .debit__list li { display: flex; align-items: flex-start; gap: 16px; }
 .debit__ic { flex: 0 0 48px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
@@ -264,11 +267,14 @@
 .transfer__rings { position: absolute; inset: 0; background-image: repeating-radial-gradient(circle at 50% 62%, transparent 0, transparent 78px, rgba(93,62,188,.07) 79px, rgba(93,62,188,.07) 80px); pointer-events: none; }
 .transfer__stage { position: relative; height: clamp(420px, 50vw, 620px); display: flex; align-items: center; justify-content: center; }
 /* images are transparent cutouts — no container bg, radius or shadow behind them */
-.transfer__phone { width: clamp(220px, 22vw, 300px); aspect-ratio: 9/19; z-index: 3; background: none; }
-.transfer__card { position: absolute; width: clamp(200px, 21vw, 290px); aspect-ratio: 4/5; z-index: 2; background: none; }
+.transfer__phone { width: clamp(240px, 24vw, 330px); z-index: 3; background: none; overflow: visible; }
+.transfer__phone > img { position: static; inset: auto; width: 100%; height: auto; object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(37, 26, 73, .12)) drop-shadow(0 22px 44px rgba(37, 26, 73, .22)); }
+.transfer__card { position: absolute; top: 50%; left: 50%; width: clamp(200px, 21vw, 290px); aspect-ratio: 4/5; z-index: 1; background: none; }
+/* static fallback layout (no-JS / reduced motion); GSAP overrides the transform when it runs */
+.transfer__card--left  { transform: translate(-50%, -30%) translateX(-185px) rotate(-11deg); }
+.transfer__card--right { transform: translate(-50%, -30%) translateX(185px) rotate(11deg); }
 .transfer__stage .media-slot > img { object-fit: contain; }
-.transfer__card--left { left: 6%; top: 26%; transform: rotate(-4deg); }
-.transfer__card--right { right: 6%; top: 22%; transform: rotate(4deg); }
 
 /* ===== 11. App split (dark) ===== */
 .app-split { position: relative; overflow: hidden; color: #fff; background: linear-gradient(100deg, #0c0818 0%, #1b0f3a 52%, #2f1d5e 100%); padding-bottom: 0; }
@@ -284,19 +290,19 @@
 
 /* ===== 11b. App dark (dark mode alternative) ===== */
 .app-dark { 
-  display: none; 
+  display: block; 
   position: relative; 
   overflow: hidden; 
   color: #fff; 
   background: var(--gf-purple-ink); 
   text-align: center;
   height: clamp(650px, 80vh, 800px);
-  padding-top: clamp(24px, 4vw, 40px);
+  padding-top: clamp(40px, 5vw, 60px);
 }
 .app-dark__media { position: absolute; inset: 0; }
-.app-dark__media img { width: 100%; height: 100%; object-fit: cover; object-position: bottom center; }
+.app-dark__media img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; transform: translateY(0px); }
 .app-dark__inner { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
-.app-dark__title { font-size: clamp(32px, 4vw, 48px); line-height: 1.1; font-weight: var(--fw-regular); margin-bottom: 24px; cursor: pointer; user-select: none; }
+.app-dark__title { font-size: clamp(32px, 4vw, 48px); line-height: 1.1; font-weight: var(--fw-regular); margin-bottom: 10px; }
 .app-dark__title .mark { color: #fff; }
 .app-dark__lead { font-size: clamp(18px, 2vw, 24px); line-height: 1.4; color: rgba(255, 255, 255, 0.9); }
 

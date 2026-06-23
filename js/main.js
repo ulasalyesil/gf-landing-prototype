@@ -159,27 +159,6 @@
       }
     }
     
-    // Toggle standalone app section (Light <-> Dark) via Title Click
-    const appSplit = document.getElementById("apps");
-    const appDark = document.getElementById("apps-dark");
-    if (appSplit && appDark) {
-      const splitTitle = appSplit.querySelector(".app-split__title");
-      const darkTitle = appDark.querySelector(".app-dark__title");
-      
-      if (splitTitle && darkTitle) {
-        splitTitle.addEventListener("click", () => {
-          appSplit.classList.add("is-hidden");
-          appDark.classList.add("is-active");
-          // Re-trigger scroll animations so elements fade in properly in the new section
-          if (window.ScrollTrigger) ScrollTrigger.refresh();
-        });
-        darkTitle.addEventListener("click", () => {
-          appDark.classList.remove("is-active");
-          appSplit.classList.remove("is-hidden");
-          if (window.ScrollTrigger) ScrollTrigger.refresh();
-        });
-      }
-    }
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);

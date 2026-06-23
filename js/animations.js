@@ -46,6 +46,15 @@
         scrollTrigger: { trigger: el, start: START }, onComplete: () => el.classList.add("is-in") });
     });
 
+    // ---- Debit underline + courier: fire .is-in 0.8s before the copy reveal (1s) completes ----
+    const debitCopy = document.querySelector(".debit__copy");
+    if (debitCopy) {
+      ScrollTrigger.create({
+        trigger: debitCopy, start: START, once: true,
+        onEnter: () => gsap.delayedCall(0.2, () => debitCopy.classList.add("is-in"))
+      });
+    }
+
     // ---- Staggered groups ----
     gsap.utils.toArray("[data-stagger]").forEach((group) => {
       const kids = group.children;
@@ -75,9 +84,21 @@
     const tStage = document.querySelector(".transfer__stage");
     if (tStage) {
       const tl = gsap.timeline({ scrollTrigger: { trigger: tStage, start: "top 72%" } });
-      tl.fromTo(".transfer__phone", { y: 80, opacity: 0, scale: .92 }, { y: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out" })
-        .fromTo(".transfer__card--left", { x: 60, y: 30, opacity: 0, rotate: 4 }, { x: 0, y: 0, opacity: 1, rotate: -4, duration: .9, ease: "back.out(1.4)" }, "-=.6")
-        .fromTo(".transfer__card--right", { x: -60, y: 30, opacity: 0, rotate: -4 }, { x: 0, y: 0, opacity: 1, rotate: 4, duration: .9, ease: "back.out(1.4)" }, "-=.7");
+      tl.fromTo(".transfer__phone", { y: 60, opacity: 0, scale: .94 }, { y: 0, opacity: 1, scale: 1, duration: .9, ease: "power3.out" })
+        .fromTo(".transfer__card--left",  { xPercent: -50, yPercent: -30, x: 0, rotate: 0, opacity: 0 },
+                                          { x: -185, rotate: -11, opacity: 1, duration: .8, ease: "power3.out" }, "-=.45")
+        .fromTo(".transfer__card--right", { xPercent: -50, yPercent: -30, x: 0, rotate: 0, opacity: 0 },
+                                          { x: 185, rotate: 11, opacity: 1, duration: .8, ease: "power3.out" }, "-=.7");
+
+      // Hover interaction to expand and flatten cards
+      tStage.addEventListener("mouseenter", () => {
+        gsap.to(".transfer__card--left", { x: -240, rotate: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
+        gsap.to(".transfer__card--right", { x: 240, rotate: 0, duration: 0.5, ease: "power2.out", overwrite: "auto" });
+      });
+      tStage.addEventListener("mouseleave", () => {
+        gsap.to(".transfer__card--left", { x: -185, rotate: -11, duration: 0.5, ease: "power2.out", overwrite: "auto" });
+        gsap.to(".transfer__card--right", { x: 185, rotate: 11, duration: 0.5, ease: "power2.out", overwrite: "auto" });
+      });
     }
 
     // ---- App split: woman image subtle parallax ----
