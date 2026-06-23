@@ -17,7 +17,7 @@
     // ---- Hero load-in (no scroll trigger) ----
     const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
     heroTl
-      .from(".hero__badge", { y: 24, opacity: 0, duration: .7, delay: .15 })
+      .from(".hero__badge-stack", { y: 24, opacity: 0, duration: .7, delay: .15 })
       .from(".hero__title", { y: 40, opacity: 0, duration: .9 }, "-=.45")
       .from(".hero__sub", { y: 28, opacity: 0, duration: .7 }, "-=.55")
       .from(".hero__cta", { y: 24, opacity: 0, scale: .96, duration: .6 }, "-=.45")
