@@ -113,3 +113,18 @@
   --radius-xl: var(--r-xl);
   --dur: .7s;
 }
+
+@media (max-width: 920px) {
+  :root {
+    --fs-display-1: 56px;
+    --fs-display-2: 44px;
+    --fs-h1: 36px;
+    --fs-h2: 28px;
+    --fs-h3: 24px;
+    --lh-display-1: 64px;
+    --lh-display-2: 52px;
+    --lh-h1: 44px;
+    --lh-h2: 36px;
+    --lh-h3: 32px;
+  }
+}

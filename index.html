@@ -31,6 +31,9 @@
           <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
         </a>
         <a href="#" class="btn header__cta"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
+        <button type="button" class="nav-toggle" id="navToggle" aria-label="Menü">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -144,7 +147,7 @@
         <p class="sec-lead">getirfinans’tan hep kazandıran bankacılık fırsatları</p>
       </header>
       <div class="features__grid" data-stagger>
-        <article class="feat">
+        <article class="feat" style="--index: 0;">
           <div class="feat__img media-slot ph" data-label="neler-1.png"><img src="assets/img/neler-1.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">bizde kredin büyük</h3>
@@ -154,7 +157,7 @@
             <img src="assets/icons/arrow-right-circle-thin.svg" alt="">
           </span>
         </article>
-        <article class="feat">
+        <article class="feat" style="--index: 1;">
           <div class="feat__img media-slot ph" data-label="neler-2.png"><img src="assets/img/neler-2.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">paran boş durmasın</h3>
@@ -164,7 +167,7 @@
             <img src="assets/icons/arrow-right-circle-thin.svg" alt="">
           </span>
         </article>
-        <article class="feat">
+        <article class="feat" style="--index: 2;">
           <div class="feat__img media-slot ph" data-label="neler-3.png"><img src="assets/img/neler-3.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">çarşıyı unutturan kurlar</h3>
@@ -174,7 +177,7 @@
             <img src="assets/icons/arrow-right-circle-thin.svg" alt="">
           </span>
         </article>
-        <article class="feat">
+        <article class="feat" style="--index: 3;">
           <div class="feat__img media-slot ph" data-label="neler-4.png"><img src="assets/img/neler-4.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">geri dönüşü muhteşem kart</h3>
@@ -354,7 +357,7 @@
 
   <!-- ============ 10. TRANSFER ============ -->
   <section class="section transfer" id="transfer">
-    <div class="transfer__rings" aria-hidden="true"></div>
+    <div class="transfer__rings hide-on-mobile" aria-hidden="true"></div>
     <div class="container">
       <div class="eyebrow-wrap">
         <h2 class="h-sec reveal">para transferi tabii ki <span class="mark">ücretsiz!</span></h2>

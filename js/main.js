@@ -16,13 +16,15 @@
   // Mega dropdown (nav). All three triggers open the products panel.
   const mega = document.getElementById("megaMenu");
   const navItems = [...document.querySelectorAll(".nav__item")];
+  const navToggle = document.getElementById("navToggle");
   const megaCloseMs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dropdown-close-dur")) || 150;
   let openItem = null, megaCloseTimer;
   function closeMega() {
-    if (!mega || !openItem) return;
+    if (!mega || !mega.classList.contains("is-open")) return;
     mega.classList.remove("is-open");
     mega.classList.add("is-closing");                 // play the close scale, then reset to rest
     mega.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
     clearTimeout(megaCloseTimer);
     megaCloseTimer = setTimeout(() => mega.classList.remove("is-closing"), megaCloseMs);
     header.classList.remove("is-mega");
@@ -36,8 +38,9 @@
     mega.classList.remove("is-closing");
     mega.classList.add("is-open");
     mega.setAttribute("aria-hidden", "false");
+    if (window.innerWidth <= 920) document.body.style.overflow = "hidden";
     header.classList.add("is-mega");
-    navItems.forEach((n) => n.classList.toggle("is-open", n === item));
+    if (item) navItems.forEach((n) => n.classList.toggle("is-open", n === item));
     if (logo) logo.src = "assets/logos/getirfinans.svg"; // purple over white bar
     openItem = item;
   }
@@ -45,6 +48,12 @@
     e.stopPropagation();
     openItem === item ? closeMega() : openMega(item);
   }));
+  if (navToggle) {
+    navToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      mega.classList.contains("is-open") ? closeMega() : openMega(null);
+    });
+  }
   mega && mega.addEventListener("click", (e) => e.stopPropagation());
   document.addEventListener("click", closeMega);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMega(); });
