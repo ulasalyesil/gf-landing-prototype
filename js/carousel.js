@@ -1,30 +1,44 @@
 /* Hero title swap, hero badge swap, campaign auto-swipe carousel */
 (function () {
-  // ---- Hero offer flip: title + sub cross-fade together through HERO_OFFERS ----
-  window.initHeroOffers = function () {
+  // ---- Hero flip: title + subtitle + badge swap together (transitions.dev text-states-swap) ----
+  // All three share the same .t-text-swap motion and the same tick, so the badge on top
+  // stays in perfect lockstep with the title/subtitle below.
+  window.initHeroFlip = function () {
     const titleEl = document.querySelector(".hero__title-swap");
     const subEl = document.getElementById("heroSub");
+    const badgeEl = document.getElementById("heroBadge");
     if (!titleEl || !subEl || !window.HERO_OFFERS || window.HERO_OFFERS.length < 2) return;
+
     const offers = window.HERO_OFFERS;
-    const els = [titleEl, subEl];
-    const paint = (o) => { titleEl.textContent = o.title; subEl.innerHTML = o.sub; };
-    paint(offers[0]);
+    const badges = window.HERO_BADGES || [];
+    const dur = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--text-swap-dur")
+    ) || 150;
+
+    // Three-phase swap on one element:
+    //   1. .is-exit          — old text exits up + blurs + fades.
+    //   2. after --text-swap-dur, change textContent + .is-enter-start (jump below,
+    //      no transition), force reflow.
+    //   3. remove .is-enter-start — new text settles back to rest.
+    function swap(el, next) {
+      if (!el || next == null) return;
+      el.classList.add("is-exit");
+      setTimeout(() => {
+        el.textContent = next;
+        el.classList.remove("is-exit");
+        el.classList.add("is-enter-start");
+        void el.offsetHeight; // reflow so the enter animates
+        el.classList.remove("is-enter-start");
+      }, dur);
+    }
+
     let i = 0;
     setInterval(() => {
       i = (i + 1) % offers.length;
-      els.forEach((el) => {
-        el.style.transition = "opacity .4s ease, transform .4s ease";
-        el.style.opacity = "0";
-        el.style.transform = "translateY(-10px)";
-      });
-      setTimeout(() => {
-        paint(offers[i]);
-        els.forEach((el) => { el.style.transform = "translateY(10px)"; });
-        requestAnimationFrame(() => {
-          els.forEach((el) => { el.style.opacity = "1"; el.style.transform = "translateY(0)"; });
-        });
-      }, 400);
-    }, 4000);
+      swap(titleEl, offers[i].title);
+      swap(subEl, offers[i].sub);
+      if (badges.length) swap(badgeEl, badges[i % badges.length]);
+    }, window.HERO_FLIP_MS || 4000);
   };
 
   // ---- Campaigns (auto-swipe + indicators) ----

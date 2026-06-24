@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/tokens.css?v=21" />
-  <link rel="stylesheet" href="css/base.css?v=21" />
-  <link rel="stylesheet" href="css/sections.css?v=21" />
+  <link rel="stylesheet" href="css/tokens.css?v=27" />
+  <link rel="stylesheet" href="css/base.css?v=27" />
+  <link rel="stylesheet" href="css/sections.css?v=27" />
 </head>
 <body>
 
@@ -34,7 +34,7 @@
       </div>
     </div>
   </div>
-  <div class="mega" id="megaMenu" hidden>
+  <div class="mega" id="megaMenu" aria-hidden="true">
     <div class="container">
       <div class="mega__grid">
         <a class="mega__item" href="#"><h4>hesap</h4><p>yıllık <b>%43 faizle</b> her gün kazandıran hesap</p></a>
@@ -69,16 +69,12 @@
         <div class="hero__badge-stack" id="heroBadgeStack">
           <div class="hero__badge is-on">
             <span class="hero__badge-ic"><img src="assets/icons/people.svg" alt=""></span>
-            <span>1.000.000+ getirfinanslı</span>
-          </div>
-          <div class="hero__badge">
-            <span class="hero__badge-ic"><img src="assets/icons/people.svg" alt=""></span>
-            <span>her 4 getirfinanslıdan biri arkadaş tavsiyesiyle geliyor</span>
+            <span class="hero__badge-text t-text-swap" id="heroBadge">1.000.000+ getirfinanslı</span>
           </div>
         </div>
-        <h1 class="hero__title"><span class="hero__title-swap">yıllık %44 faizle</span></h1>
+        <h1 class="hero__title"><span class="hero__title-swap t-text-swap">yıllık %44 faizle</span></h1>
 
-        <p class="hero__sub" id="heroSub">paranı bağlamadan her gün iyi kazan</p>
+        <p class="hero__sub"><span class="hero__sub-swap t-text-swap" id="heroSub">paranı bağlamadan her gün iyi kazan</span></p>
 
         <a href="#" class="hero__cta">
           <span class="hero__cta-ic">
@@ -230,14 +226,16 @@
   <!-- ============ 6. LOAN — kredi ============ -->
   <section class="section loan" id="kredi">
     <div class="container loan__inner">
-      <div class="loan__copy reveal-left">
+      <div class="loan__copy">
         <p class="loan__kicker">₺650.000’ye kadar kredi</p>
         <h2 class="loan__title">getirfinans’ta kredin büyük<br><span class="mark">iyi oranlarla geri ödemesi rahat</span></h2>
         <p class="loan__desc">limitini, faiz oranını ve başvuru sonucunu saniyeler içinde öğren. 36 aya kadar esnek vade seçenekleriyle avantajlı faiz oranlarından yararlan</p>
         <a href="#" class="btn"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>hesapla</a>
       </div>
-      <div class="loan__media media-slot ph reveal-right" data-label="kredi-woman.png">
-        <img src="assets/img/kredi-woman.png" alt="" onerror="this.remove()">
+      <div class="loan__media" data-label="kredi-outdoor.png">
+        <div class="loan__snap">
+          <img src="assets/img/kredi-outdoor.png" alt="" onerror="this.closest('.loan__media').classList.add('ph')">
+        </div>
       </div>
     </div>
   </section>
@@ -266,6 +264,7 @@
   <section class="section calc" id="calc">
     <div class="container">
       <div class="calc__tabs reveal">
+        <span class="calc__tabs-underline" aria-hidden="true"></span>
         <button class="calc__tab is-active" data-tab="gunluk"><b>günlük</b><span>her gün kazan</span></button>
         <button class="calc__tab" data-tab="vadeli"><b>vadeli</b><span>iyi faizi vadeyle sabitle</span></button>
       </div>
@@ -273,6 +272,7 @@
         <div class="calc-card">
           <div class="calc-card__top">
             <div class="calc-currency">
+              <span class="calc-currency__pill" aria-hidden="true"></span>
               <button class="calc-currency__btn is-active" data-cur="TRY">TL</button>
               <button class="calc-currency__btn" data-cur="USD">USD</button>
               <button class="calc-currency__btn" data-cur="EUR">EUR</button>
@@ -294,7 +294,10 @@
             </div>
           </div>
 
-          <button class="btn calc-btn" id="calcBtn">hesapla</button>
+          <button class="btn calc-btn" id="calcBtn">
+            <span class="calc-btn__check t-success-check" data-state="out" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M13 24l7 7 15-16" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="calc-btn__label">hesapla</span>
+          </button>
 
           <div class="calc-info">
             <span class="calc-info-ic">i</span>
@@ -304,7 +307,7 @@
 
         <div class="calc-results">
           <div class="calc-res">
-            <span>net kazancın <i class="calc-res__i">i</i></span>
+            <span>net kazancın <span class="t-tt-wrap"><i class="calc-res__i t-tt-trigger" tabindex="0" role="button" aria-describedby="ttNet">i</i><span class="t-tt" id="ttNet" role="tooltip">stopaj (%7,5) kesintisi sonrası elinize geçen net faiz getirisi</span></span></span>
             <b id="resNet">₺ 12.000</b>
           </div>
           <div class="calc-res">
@@ -454,10 +457,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <!-- App -->
-<script src="js/content.js?v=22"></script>
-<script src="js/rates.js?v=22"></script>
-<script src="js/carousel.js?v=22"></script>
-<script src="js/animations.js?v=22"></script>
-<script src="js/main.js?v=22"></script>
+<script src="js/content.js?v=31"></script>
+<script src="js/rates.js?v=31"></script>
+<script src="js/carousel.js?v=31"></script>
+<script src="js/animations.js?v=31"></script>
+<script src="js/main.js?v=31"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@
       || document.documentElement.classList.contains("static-preview");
     if (reduce || !window.gsap) {
       document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach(el => el.classList.add("is-in"));
+      document.querySelector(".loan__copy")?.classList.add("is-in"); // snap timeline is skipped here; still show the underline
       return;
     }
     gsap.registerPlugin(ScrollTrigger);
@@ -29,8 +30,8 @@
 
     // ---- Generic reveals ----
     gsap.utils.toArray(".reveal").forEach((el) => {
-      gsap.fromTo(el, { y: 36, opacity: 0 }, {
-        y: 0, opacity: 1, duration: .9, ease: EASE,
+      gsap.fromTo(el, { y: 24, opacity: 0 }, {
+        y: 0, opacity: 1, duration: .6, ease: EASE,
         scrollTrigger: { trigger: el, start: START, toggleActions: "play none none none" },
         onComplete: () => el.classList.add("is-in")
       });
@@ -38,11 +39,11 @@
 
     // ---- Directional reveals ----
     gsap.utils.toArray(".reveal-left").forEach((el) => {
-      gsap.fromTo(el, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: EASE,
+      gsap.fromTo(el, { x: -40, opacity: 0 }, { x: 0, opacity: 1, duration: .6, ease: EASE,
         scrollTrigger: { trigger: el, start: START }, onComplete: () => el.classList.add("is-in") });
     });
     gsap.utils.toArray(".reveal-right").forEach((el) => {
-      gsap.fromTo(el, { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: EASE,
+      gsap.fromTo(el, { x: 40, opacity: 0 }, { x: 0, opacity: 1, duration: .6, ease: EASE,
         scrollTrigger: { trigger: el, start: START }, onComplete: () => el.classList.add("is-in") });
     });
 
@@ -58,8 +59,9 @@
     // ---- Staggered groups ----
     gsap.utils.toArray("[data-stagger]").forEach((group) => {
       const kids = group.children;
-      gsap.fromTo(kids, { y: 44, opacity: 0, scale: .97 }, {
-        y: 0, opacity: 1, scale: 1, duration: .8, ease: EASE, stagger: .12,
+      if (!kids.length) return; // skip empty groups (e.g. nested [data-*] without children)
+      gsap.fromTo(kids, { y: 24, opacity: 0, scale: .98 }, {
+        y: 0, opacity: 1, scale: 1, duration: .6, ease: EASE, stagger: .06,
         scrollTrigger: { trigger: group, start: START }
       });
     });
@@ -112,12 +114,52 @@
     // ---- Signature: debit card gentle float (continuous) ----
     gsap.to(".debit__media", { y: -12, duration: 2.6, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
-    // ---- Section headline mark wipe ----
-    gsap.utils.toArray(".h-sec .mark").forEach((m) => {
-      gsap.fromTo(m, { backgroundSize: "0% 42%" }, {
-        backgroundSize: "100% 42%", duration: .8, ease: "power2.out",
-        scrollTrigger: { trigger: m, start: "top 85%" }
+    // ---- Moped travels the underline on GPU (transform); distance measured, set as --travel ----
+    const debitMark = document.querySelector(".debit__title .mark");
+    const moto = document.querySelector(".debit__moto");
+    if (debitMark && moto) {
+      const setTravel = () => moto.style.setProperty("--travel", (debitMark.offsetWidth + 28) + "px");
+      setTravel();
+      window.addEventListener("resize", setTravel, { passive: true });
+    }
+
+    // ---- Kredi: image fills the section, then shrinks into the square — tied to scroll ----
+    // GPU-only clip-path, driven directly by scroll progress (no timeline / keyframes).
+    // Expanded band covers the full section (width + height) so no lilac shows top/bottom.
+    const kSnap = document.querySelector(".loan__snap");
+    const kMedia = document.querySelector(".loan__media");
+    const kCopy = document.querySelector(".loan__copy");
+    const kSection = document.getElementById("kredi");
+    if (kSnap && kMedia && kSection) {
+      let ins = { t: 0, r: 0, b: 0, l: 0 }; // square insets relative to the expanded band
+      // Expand the snap symmetrically around the square's centre — equal overhang on every
+      // side — so the focal point (the woman) stays put while the frame closes in on it, and
+      // the band still bleeds past the viewport edges + fills the section (no lilac stripes).
+      const measure = () => {
+        const m = kMedia.getBoundingClientRect();
+        const s = kSection.getBoundingClientRect();
+        const vw = document.documentElement.clientWidth;
+        const eh = Math.max(m.left, vw - m.right);                 // cover the farther horizontal edge
+        const ev = Math.max(m.top - s.top, s.bottom - m.bottom);   // cover the taller section gap
+        gsap.set(kSnap, { left: -eh, top: -ev, width: m.width + 2 * eh, height: m.height + 2 * ev });
+        ins = { t: ev, r: eh, b: ev, l: eh };
+      };
+      // p = 0 → full-section image; p = 1 → cropped into the square. Copy fades in over the back half.
+      const apply = (p) => {
+        kSnap.style.clipPath = `inset(${ins.t * p}px ${ins.r * p}px ${ins.b * p}px ${ins.l * p}px round ${24 * p}px)`;
+        const cp = Math.min(1, Math.max(0, (p - 0.55) / 0.45));
+        kCopy.style.opacity = cp;
+        kCopy.style.transform = `translateX(${-40 * (1 - cp)}px)`;
+        kCopy.classList.toggle("is-in", cp > 0.5); // wipes the title underline
+      };
+      measure(); apply(0);
+      // Collapse finishes by the time the section is centred, so the copy + square
+      // are on screen when the section sits in the middle of the viewport.
+      ScrollTrigger.create({
+        trigger: kSection, start: "top bottom", end: "center center",
+        onRefresh: (self) => { measure(); apply(self.progress); },
+        onUpdate: (self) => apply(self.progress)
       });
-    });
+    }
   };
 })();

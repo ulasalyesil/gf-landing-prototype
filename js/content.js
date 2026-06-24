@@ -9,6 +9,15 @@ window.HERO_OFFERS = [
   { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında, harcarken geri kazan" }
 ];
 
+// Hero stat badge messages — swap in lockstep with the offer above (mod length).
+window.HERO_BADGES = [
+  "1.000.000+ getirfinanslı",
+  "her 4 getirfinanslıdan biri arkadaş tavsiyesiyle geliyor"
+];
+
+// One heartbeat for the whole hero flip (title + sub + badge swap together).
+window.HERO_FLIP_MS = 4000;
+
 // Rates seed (realistic mock). al = buy, sat = sell.
 window.RATES_SEED = [
   { code: "USD", name: "Amerikan Doları", flag: "🇺🇸", price: 46.4865, al: 46.7899, sat: 46.1830, dec: 4 },

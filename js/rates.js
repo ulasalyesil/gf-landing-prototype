@@ -13,16 +13,28 @@
   }
   function full(n, dec) { const p = parts(n, dec); return p.frac ? `${p.int},${p.frac}` : p.int; }
 
-  function legHTML(label, value, dec) {
+  // Wrap each character in a .t-digit so the number can pop in; the last two
+  // characters (decimal digits) ride in 1×/2× the stagger behind the rest.
+  const digitWrap = (s) => s.split("").map((ch) => `<span class="t-digit">${ch}</span>`).join("");
+  const digitWrapEnd = (s) => {
+    const chars = s.split("");
+    return chars.map((ch, i) => {
+      const fromEnd = chars.length - 1 - i;
+      const st = fromEnd === 1 ? ' data-pop="1"' : fromEnd === 0 ? ' data-pop="2"' : ""; // data-pop, not data-stagger (animations.js reserves [data-stagger] for reveal groups)
+      return `<span class="t-digit"${st}>${ch}</span>`;
+    }).join("");
+  };
+
+  function legHTML(label, value, dec, animate) {
     const p = parts(value, dec);
     return `
           <button class="rate-leg" aria-label="${label} ${full(value, dec)}">
             <span class="rate-leg__lbl">${label}</span>
-            <span class="rate-leg__val"><span class="int">${p.int}</span><span class="dec">,${p.frac}</span></span>
+            <span class="rate-leg__val t-digit-group${animate ? " is-animating" : ""}"><span class="int">${digitWrap(p.int)}</span><span class="dec">${digitWrapEnd("," + p.frac)}</span></span>
           </button>`;
   }
 
-  function cardHTML(r) {
+  function cardHTML(r, animate) {
     const up = r.dir >= 0;
     const trendCls = up ? "up" : "down";
     const trendIcon = up ? "trend-up.svg" : "trend-down.svg";
@@ -36,8 +48,8 @@
           <span class="rate-card__trend ${trendCls}"><img src="assets/icons/${trendIcon}" alt=""> %${Math.abs(r.pct).toFixed(2).replace(".", ",")}</span>
         </div>
         <div class="rate-card__legs">
-          ${legHTML("al", r.al, r.dec)}
-          ${legHTML("sat", r.sat, r.dec)}
+          ${legHTML("al", r.al, r.dec, animate)}
+          ${legHTML("sat", r.sat, r.dec, animate)}
         </div>
       </article>`;
   }
@@ -52,27 +64,19 @@
     return r;
   }
 
-  function flash(code) {
-    const els = document.querySelectorAll(`.rate-card[data-code="${code}"] .rate-leg`);
-    els.forEach((el) => {
-      el.classList.add("flash");
-      setTimeout(() => el.classList.remove("flash"), 700);
-    });
-  }
-
   window.initRates = function () {
     const mount = document.getElementById("ratesCards");
     const timeEl = document.querySelector("[data-rates-time]");
     if (!mount) return;
     const data = window.RATES_SEED.map((r) => ({ ...r, dir: 1, pct: 1.86 }));
 
-    const render = () => { mount.innerHTML = data.map(cardHTML).join(""); };
+    // animate=true re-renders with .is-animating so each digit pops in on update.
+    const render = (animate) => { mount.innerHTML = data.map((r) => cardHTML(r, animate)).join(""); };
     const setTime = () => { if (timeEl) timeEl.textContent = fmtTime(new Date()); };
-    render(); setTime();
+    render(false); setTime();
 
     setInterval(() => {
-      data.forEach(jitter); render(); setTime();
-      data.forEach((r) => flash(r.code));
+      data.forEach(jitter); render(true); setTime();
     }, window.RATES_CYCLE_MS || 180000);
   };
 })();

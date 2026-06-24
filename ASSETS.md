@@ -21,7 +21,7 @@ Formats: **`.png` and `.svg` only.** No `.jpg`. Running text is **Open Sans** (G
 **Images** (`assets/img/`)
 - `neler-1.png` … `neler-4.png` — "parana iyi bakmanın yolları" cards
 - `campaign-1.png`, `campaign-2.png`, `campaign-3.png` — campaigns carousel
-- `kredi-woman.png` — loan section
+- `kredi-outdoor.png` — loan section; full-viewport-width band that clip-paths into the square on scroll (`.loan__snap`, `animations.js`). Downscaled to 1920px from `outdoor_kadın.png`. (`kredi-woman.png` is the old static slot, now unused.)
 - `faiz-phone-left.png`, `faiz-phone-middle.png`, `faiz-phone-right.png` — 3-phone cluster (classes `.faiz-phone-1/2/3`, staggered in `animations.js`)
 - `transfer-phone.png`, `transfer-card-left.png`, `transfer-card-right.png` (transparent cutouts, no container bg)
 - `standalone-woman.png` — woman holding phone, app-split (section 11) right side

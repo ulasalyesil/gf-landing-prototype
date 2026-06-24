@@ -16,10 +16,15 @@
   // Mega dropdown (nav). All three triggers open the products panel.
   const mega = document.getElementById("megaMenu");
   const navItems = [...document.querySelectorAll(".nav__item")];
-  let openItem = null;
+  const megaCloseMs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dropdown-close-dur")) || 150;
+  let openItem = null, megaCloseTimer;
   function closeMega() {
     if (!mega || !openItem) return;
-    mega.hidden = true;
+    mega.classList.remove("is-open");
+    mega.classList.add("is-closing");                 // play the close scale, then reset to rest
+    mega.setAttribute("aria-hidden", "true");
+    clearTimeout(megaCloseTimer);
+    megaCloseTimer = setTimeout(() => mega.classList.remove("is-closing"), megaCloseMs);
     header.classList.remove("is-mega");
     navItems.forEach((n) => n.classList.remove("is-open"));
     openItem = null;
@@ -27,7 +32,10 @@
   }
   function openMega(item) {
     if (!mega) return;
-    mega.hidden = false;
+    clearTimeout(megaCloseTimer);
+    mega.classList.remove("is-closing");
+    mega.classList.add("is-open");
+    mega.setAttribute("aria-hidden", "false");
     header.classList.add("is-mega");
     navItems.forEach((n) => n.classList.toggle("is-open", n === item));
     if (logo) logo.src = "assets/logos/getirfinans.svg"; // purple over white bar
@@ -42,20 +50,63 @@
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMega(); });
   window.addEventListener("scroll", closeMega, { passive: true });
 
-  // Calculator tabs (visual)
-  document.querySelectorAll(".calc__tab").forEach((tab) => {
+  // Sliding indicator (transitions.dev tabs-sliding): write the active item's
+  // offsetLeft/offsetWidth onto an absolutely-positioned pill/underline. First
+  // paint + resize snap without a transition; clicks tween.
+  function slideIndicator(ind, target, animate) {
+    if (!ind || !target) return;
+    const write = () => { ind.style.transform = `translateX(${target.offsetLeft}px)`; ind.style.width = `${target.offsetWidth}px`; };
+    if (animate) { write(); return; }
+    const prev = ind.style.transition;
+    ind.style.transition = "none";
+    write();
+    void ind.offsetWidth; // reflow so the snap lands before any later tween
+    ind.style.transition = prev;
+  }
+
+  // Calculator tabs (visual) — sliding underline
+  const calcTabs = [...document.querySelectorAll(".calc__tab")];
+  const calcUnderline = document.querySelector(".calc__tabs-underline");
+  const activeTab = () => calcTabs.find((t) => t.classList.contains("is-active")) || calcTabs[0];
+  calcTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      document.querySelectorAll(".calc__tab").forEach((t) => t.classList.remove("is-active"));
+      calcTabs.forEach((t) => t.classList.remove("is-active"));
       tab.classList.add("is-active");
+      slideIndicator(calcUnderline, tab, true);
       document.dispatchEvent(new CustomEvent("calc:tab", { detail: tab.dataset.tab }));
     });
   });
+
+  // Currency segmented control — sliding pill
+  const curBtns = [...document.querySelectorAll(".calc-currency__btn")];
+  const curPill = document.querySelector(".calc-currency__pill");
+  const activeCur = () => curBtns.find((b) => b.classList.contains("is-active")) || curBtns[0];
+  curBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      curBtns.forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      slideIndicator(curPill, btn, true);
+    });
+  });
+
+  // Position both indicators on first paint + keep them aligned on resize.
+  requestAnimationFrame(() => {
+    slideIndicator(calcUnderline, activeTab(), false);
+    slideIndicator(curPill, activeCur(), false);
+  });
+  window.addEventListener("resize", () => {
+    slideIndicator(calcUnderline, activeTab(), false);
+    slideIndicator(curPill, activeCur(), false);
+  }, { passive: true });
 
   // Calculator logic mock
   const calcBtn = document.getElementById("calcBtn");
   const calcAmount = document.getElementById("calcAmount");
   const calcDays = document.getElementById("calcDays");
   if (calcBtn && calcAmount && calcDays) {
+    const calcLabel = calcBtn.querySelector(".calc-btn__label");
+    const calcCheck = calcBtn.querySelector(".calc-btn__check");
+    let calcResetTimer;
     calcBtn.addEventListener("click", () => {
       const a = parseFloat(calcAmount.value.replace(/\./g, "")) || 0;
       const d = parseInt(calcDays.value, 10) || 0;
@@ -70,21 +121,19 @@
       const date = new Date();
       date.setDate(date.getDate() + d);
       document.getElementById("resDate").textContent = date.toLocaleDateString("tr-TR");
-      
-      calcBtn.textContent = "hesaplandı ✓";
+
+      // Success moment: draw the check, swap the label (keeps the inner spans intact)
+      if (calcLabel) calcLabel.textContent = "hesaplandı";
+      calcBtn.classList.add("is-done");
       calcBtn.style.background = "var(--gf-up)";
-      setTimeout(() => {
-        calcBtn.textContent = "hesapla";
+      if (calcCheck) { calcCheck.setAttribute("data-state", "out"); void calcCheck.offsetWidth; calcCheck.setAttribute("data-state", "in"); }
+      clearTimeout(calcResetTimer);
+      calcResetTimer = setTimeout(() => {
+        if (calcLabel) calcLabel.textContent = "hesapla";
+        calcBtn.classList.remove("is-done");
+        if (calcCheck) calcCheck.setAttribute("data-state", "out");
         calcBtn.style.background = "";
       }, 2000);
-    });
-    
-    // Currency toggle
-    document.querySelectorAll(".calc-currency__btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".calc-currency__btn").forEach(b => b.classList.remove("is-active"));
-        btn.classList.add("is-active");
-      });
     });
   }
 
@@ -128,7 +177,7 @@
   function start() {
     pruneBrokenVideos();
     window.initRates && window.initRates();
-    window.initHeroOffers && window.initHeroOffers();
+    window.initHeroFlip && window.initHeroFlip();
     window.initCampaigns && window.initCampaigns();
     window.initAnimations && window.initAnimations();
     tryLottie("aiLottie", "assets/lottie/ai-assistant.json");
@@ -143,22 +192,7 @@
         }
       });
     }
-    
-    // Hero stat badge — shown alongside the stats section (both bars), cycles on load
-    const heroBadgeStack = document.getElementById("heroBadgeStack");
-    if (heroBadgeStack && !heroBadgeStack.dataset.rotating) {
-      const badges = heroBadgeStack.querySelectorAll(".hero__badge");
-      if (badges.length > 1) {
-        heroBadgeStack.dataset.rotating = "true";
-        let currentBadgeIndex = 0;
-        setInterval(() => {
-          badges[currentBadgeIndex].classList.remove("is-on");
-          currentBadgeIndex = (currentBadgeIndex + 1) % badges.length;
-          badges[currentBadgeIndex].classList.add("is-on");
-        }, 3000);
-      }
-    }
-    
+    // Hero badge text now flips in lockstep with the title/subtitle via initHeroFlip.
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
