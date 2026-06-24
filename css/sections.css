@@ -114,6 +114,7 @@
 }
 .stat { display: flex; flex-direction: column; align-items: center; gap: var(--sp-sm); padding-inline: 24px; text-align: center; }
 .stat__num { font-size: 34px; line-height: 40px; font-weight: var(--fw-regular); color: var(--gf-ink); white-space: nowrap; }
+.stat__num[data-count] { display: inline-block; min-width: 160px; font-variant-numeric: tabular-nums; }
 .stat__label { font-size: var(--fs-h5); line-height: var(--lh-h5); font-weight: var(--fw-regular); color: var(--gf-ink-700); }
 .stat__div { flex: 0 0 1px; width: 1px; height: 64px; background: var(--gf-line); }
 
