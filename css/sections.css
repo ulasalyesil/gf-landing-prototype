@@ -346,10 +346,10 @@
 .ai__lottie svg { display: block; width: 100% !important; height: 100% !important; }
 
 /* ===== 13. Footer ===== */
-.footer { background: var(--gf-purple-900); color: #fff; padding-top: 0; position: relative; }
+.footer { background: var(--gf-purple-900); color: #fff; padding-top: 0; position: relative; border-radius: 40px 40px 0 0; margin-top: 60px; }
 /* AI section sits flush against the footer CTA — zero gap between just these two */
 .ai { padding-bottom: 0; }
-.footer__cta { background: var(--gf-lilac); color: var(--gf-ink); border-radius: var(--radius-xl); padding: clamp(28px, 4vw, 48px); display: flex; justify-content: space-between; align-items: center; gap: 30px; margin-bottom: 0; flex-wrap: wrap; }
+.footer__cta { background: var(--gf-lilac); color: var(--gf-ink); border-radius: var(--radius-xl); padding: clamp(28px, 4vw, 48px); display: flex; justify-content: space-between; align-items: center; gap: 30px; margin-top: -60px; margin-bottom: 20px; flex-wrap: wrap; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
 .footer__cta-title { font-size: clamp(1.3rem, 2.2vw, 1.8rem); font-weight: 500; }
 .footer__cta-sub { color: var(--gf-ink-500); font-weight: 400; margin-top: 6px; }
 .footer__badges { display: flex; gap: 12px; }
