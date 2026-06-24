@@ -342,7 +342,7 @@
 /* ===== 12. AI (full-width lottie) ===== */
 .ai__stage { display: flex; justify-content: center; }
 .ai__lottie { width: 100%; max-width: 1120px; margin-inline: auto; aspect-ratio: 1920 / 822; }
-.ai__lottie.ph { border-radius: var(--radius-lg); background: linear-gradient(135deg, var(--gf-lilac), var(--gf-lilac-200)); }
+.ai__lottie.ph { border-radius: var(--radius-lg); }
 .ai__lottie svg { display: block; width: 100% !important; height: 100% !important; }
 
 /* ===== 13. Footer ===== */
