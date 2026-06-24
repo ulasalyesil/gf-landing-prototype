@@ -3,10 +3,10 @@
 // Hero cycles through offer pairs: bold title line = the offer, sub = support.
 // Title and sub flip together, in sync (see initHeroOffers).
 window.HERO_OFFERS = [
-  { title: "yıllık %44 faizle",           sub: "paranı bağlamadan her gün iyi kazan" },
+  { title: "yıllık %44 faizle",           sub: "paranı bağlamadan<br>her gün iyi kazan" },
   { title: "uygun oranlı kredi",          sub: "aylık %3,49’dan başlayan faizlerle" },
-  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile dar makasla işlem yap" },
-  { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında, harcarken geri kazan" }
+  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
+  { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında<br>harcarken geri kazan" }
 ];
 
 // Hero stat badge messages — swap in lockstep with the offer above (mod length).
