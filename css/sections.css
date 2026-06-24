@@ -357,8 +357,10 @@
 .store-badge.ph::after { color: rgba(255,255,255,.5); font-size: .7rem; }
 .footer__main { display: grid; grid-template-columns: 1.4fr 1fr 1.4fr 1fr; gap: 30px; padding-block: 30px 50px; padding-left: clamp(28px, 4vw, 48px); }
 .footer__social { display: flex; gap: 12px; margin-top: 24px; }
-.footer__social a { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.1); display: grid; place-items: center; transition: background .2s; }
-.footer__social a:hover { background: rgba(255,255,255,.22); }
+.footer__social a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; transition: transform 0.2s var(--ease-out-strong), background .2s; }
+.footer__social a img { width: 20px; height: 20px; object-fit: contain; }
+@media (hover: hover) and (pointer: fine) { .footer__social a:hover { transform: scale(1.05); background: rgba(255,255,255,.3); } }
+.footer__social a:active { transform: scale(0.97); }
 .footer__col h4 { font-size: .95rem; margin-bottom: 16px; }
 .footer__col a { display: block; color: var(--gf-dark-muted); font-size: .88rem; font-weight: 400; margin-bottom: 11px; transition: color .2s; }
 .footer__col a:hover { color: #fff; }
