@@ -24,7 +24,7 @@
       if (!el || next == null) return;
       el.classList.add("is-exit");
       setTimeout(() => {
-        el.textContent = next;
+        el.innerHTML = next;
         el.classList.remove("is-exit");
         el.classList.add("is-enter-start");
         void el.offsetHeight; // reflow so the enter animates
