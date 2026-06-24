@@ -84,7 +84,7 @@
 .hero__badge.is-on { opacity: 1; transform: none; pointer-events: auto; }
 .hero__badge-ic { display: inline-flex; width: 24px; height: 24px; }
 
-.hero__title { font-size: clamp(40px, 5.4vw, 72px); line-height: 1; font-weight: var(--fw-regular); letter-spacing: 0; color: #fff; margin-bottom: 16px; }
+.hero__title { font-size: clamp(40px, 5.4vw, 64px); line-height: 1; font-weight: var(--fw-regular); letter-spacing: 0; color: #fff; margin-bottom: 16px; }
 .hero__title-swap { display: inline-block; white-space: nowrap; }
 .hero__sub { font-size: clamp(20px, 2.4vw, 32px); line-height: 1.3; min-height: 2.6em; font-weight: var(--fw-regular); color: #fff; margin-bottom: 40px; max-width: 726px; }
 
