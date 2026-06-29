@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- dev: don't cache the HTML, so asset ?v= bumps always take effect -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>getirfinans — ama ne finans!</title>
   <meta name="description" content="getirfinans — %44 faizle her gün kazan, uygun oranlı kredi kullan, harcarken geri kazan." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/tokens.css?v=27" />
-  <link rel="stylesheet" href="css/base.css?v=27" />
-  <link rel="stylesheet" href="css/sections.css?v=27" />
+  <link rel="stylesheet" href="css/tokens.css?v=33" />
+  <link rel="stylesheet" href="css/base.css?v=33" />
+  <link rel="stylesheet" href="css/sections.css?v=33" />
+  <link rel="stylesheet" href="css/mobile.css?v=33" />
 </head>
 <body>
 
@@ -50,6 +55,12 @@
         <a class="mega__item" href="#"><h4>döviz işlemleri</h4><p>dar makas ile avantajlı kurlar</p></a>
         <a class="mega__item" href="#"><h4>ücretsiz atm’ler</h4><p>tüm atm’lerden ücretsiz çekebilirsin<br><span class="mega__link">Fibabanka ve Akbank’ta ücretsiz</span></p></a>
         <a class="mega__item" href="#"><h4>ödemeler</h4></a>
+      </div>
+      <div class="mega__actions">
+        <a href="#" class="paranaiyibak" aria-label="#paranaiyibak">
+          <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
+        </a>
+        <a href="#" class="btn"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
       </div>
     </div>
   </div>
@@ -109,7 +120,7 @@
         <span class="stat__div" aria-hidden="true"></span>
         <div class="stat">
           <span class="stat__num">4 getirfinanslı’dan 1’i</span>
-          <span class="stat__label">arkadaş tavsiyesiyle geliyor</span>
+          <span class="stat__label">referans koduyla geliyor</span>
         </div>
         <span class="stat__div" aria-hidden="true"></span>
         <div class="stat">
@@ -467,10 +478,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <!-- App -->
-<script src="js/content.js?v=31"></script>
-<script src="js/rates.js?v=31"></script>
-<script src="js/carousel.js?v=31"></script>
-<script src="js/animations.js?v=31"></script>
-<script src="js/main.js?v=31"></script>
+<script src="js/content.js?v=33"></script>
+<script src="js/rates.js?v=33"></script>
+<script src="js/carousel.js?v=33"></script>
+<script src="js/animations.js?v=33"></script>
+<script src="js/main.js?v=33"></script>
 </body>
 </html>

@@ -1,0 +1,195 @@
+/* ============================================================
+   MOBILE LAYER — fresh direction (≤767px)
+   Replaces the desktop scroll-pinned model with a mobile-native,
+   one-thing-per-screen layout. The desktop GSAP engine is skipped
+   on mobile (see main.js guard); the signature mobile move is the
+   sticky-stacking feature deck below.
+   ============================================================ */
+
+/* badge + CTA live in the header on desktop; on mobile they move into the
+   menu (see .mega__actions in the mobile block). Hidden everywhere by default. */
+.mega__actions { display: none; }
+
+@media (max-width: 767px) {
+
+  /* ---------- Foundations ---------- */
+  :root { --gutter: 20px; }
+  * { -webkit-tap-highlight-color: transparent; }
+  a, button, input, .btn, .hero__cta { touch-action: manipulation; }
+  .section { padding-block: 56px; }
+  .sec-head, .eyebrow-wrap { margin-bottom: 28px; }
+  .sec-lead, .h-lead { font-size: 16px; line-height: 1.45; }
+  .h-sec, .sec-title { font-size: 28px; }
+
+  /* ---------- Header + hamburger ---------- */
+  .site-header { padding-block: 12px; padding-top: max(12px, env(safe-area-inset-top)); }
+  .site-header__inner { gap: 12px; justify-content: space-between; }
+  .site-header__col { flex: 0 0 auto; }
+  .nav { display: none !important; }
+  .site-header__actions .paranaiyibak, .site-header__actions .header__cta { display: none !important; }
+  .site-header__actions { gap: 8px; }
+  .nav-toggle { display: inline-flex; color: #fff; }
+  .is-scrolled .nav-toggle, .is-mega .nav-toggle { color: var(--gf-ink); }
+
+  /* Mega → full-screen mobile menu */
+  .mega {
+    position: fixed; left: 0; right: 0; top: 0; bottom: 0; height: 100dvh;
+    padding: calc(72px + env(safe-area-inset-top)) 0 40px; overflow-y: auto;
+    transform: translateY(-12px); border-radius: 0;
+    box-shadow: none;
+  }
+  /* override the rejected pass's translucent .96 bg — bleeds over the hero */
+  .mega, .mega.is-open { background: #fff !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .mega.is-open { transform: none; }
+  .mega .container { padding-inline: 24px; }
+  .mega__grid { grid-template-columns: 1fr; gap: 26px; }
+  .mega__item p { max-width: none; }
+  /* badge + CTA, relocated from the header into the menu footer */
+  .mega__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin: 36px 0 0; padding-top: 28px; border-top: 1px solid var(--gf-line); }
+  .mega__actions .paranaiyibak__logo { height: 34px; }
+  .mega__actions .btn { width: 100%; padding: 16px 24px; font-size: 17px; }
+
+  /* ---------- 1. Hero ---------- */
+  .hero { min-height: 100svh; }
+  .hero__overlay { background: linear-gradient(to bottom, rgba(14,14,14,.30) 0%, rgba(14,14,14,.12) 42%, rgba(14,14,14,.66) 100%); }
+  .hero__inner { padding-block: calc(92px + env(safe-area-inset-top)) 116px; justify-content: flex-end; }
+  .hero__text { max-width: 100%; }
+  /* long flip badges (e.g. "her 4 getirfinanslıdan…") overrun the nowrap pill — wrap instead */
+  .hero__badge-stack { height: auto; min-height: 52px; margin-bottom: 14px; }
+  .hero__badge { position: relative; height: auto; min-height: 34px; max-width: 100%; white-space: normal; line-height: 1.3; padding: 7px 16px 7px 12px; font-size: 14px; }
+  .hero__title { font-size: 40px; line-height: 1.06; margin-bottom: 14px; }
+  .hero__title-swap { white-space: normal; }
+  .hero__sub { font-size: 20px; line-height: 1.3; min-height: 2.6em; margin-bottom: 26px; max-width: 100%; }
+  .hero__cta { width: 100%; padding: 16px 24px; font-size: 17px; }
+  .hero__bankinfo { position: static; left: auto; bottom: auto; margin-top: 22px; font-size: 13px; }
+
+  /* ---------- 2. Stats ---------- */
+  .stats__card { flex-direction: column; gap: 20px; padding: 28px 24px; min-height: 0; }
+  .stat { padding-inline: 0; }
+  .stat__num, .stat__num[data-count] { font-size: 27px; line-height: 34px; min-width: 0; white-space: normal; }
+  .stat__div { flex: 0 0 1px; width: 56px; height: 1px; }
+
+  /* ---------- 3. Rates — horizontal swipe deck ---------- */
+  .rates__row { flex-direction: column; gap: 16px; align-items: stretch; }
+  .rates__cards {
+    display: flex; flex-direction: row; gap: 12px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    /* bleed past the gutter so the deck scrolls edge-to-edge; content stays inset */
+    margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter);
+    scroll-padding-left: var(--gutter);
+  }
+  .rates__cards::-webkit-scrollbar { display: none; }
+  .rate-card { flex: 0 0 78%; max-width: 320px; width: auto; scroll-snap-align: start; padding: 18px 16px; gap: 14px; }
+  .rates__more { flex: 0 0 auto; width: 100%; justify-content: space-between; margin-top: 4px; }
+  .rates__more span:first-child { max-width: none; }
+
+  /* ---------- 4. Features — sticky stacking deck (signature) ---------- */
+  .features { padding-block: 56px 64px; }
+  .features__grid { display: block; }
+  .feat {
+    position: sticky; flex-direction: column; align-items: stretch; gap: 14px;
+    max-width: none; width: 100%; min-height: 60vh; margin-bottom: 18px;
+    background: #fff; border: 1px solid var(--gf-line); border-radius: 24px; padding: 16px 16px 20px;
+    box-shadow: 0 8px 22px -16px rgba(37,26,73,.18);
+  }
+  .feat:nth-child(1) { top: 84px; }
+  .feat:nth-child(2) { top: 96px; }
+  .feat:nth-child(3) { top: 108px; }
+  .feat:nth-child(4) { top: 120px; margin-bottom: 0; }
+  .feat__img { flex: 1 1 auto; width: 100%; aspect-ratio: auto; min-height: 200px; border-radius: 16px; }
+  .feat__img img { width: 100%; height: 100%; object-fit: cover; }
+  .feat__text { gap: 6px; }
+  .feat__title { font-size: 23px; line-height: 1.18; }
+  .feat__desc { font-size: 15px; line-height: 1.45; }
+  .feat__arrow { width: 40px; height: 40px; align-self: flex-end; margin-top: -6px; opacity: 1; }
+
+  /* ---------- 6. Loan ---------- */
+  .loan__inner { grid-template-columns: 1fr; gap: 22px; }
+  .loan__media { order: -1; aspect-ratio: 4/3; }
+  .loan__copy { opacity: 1 !important; transform: none !important; }
+  .loan__kicker { font-size: 16px; line-height: 1.3; margin-bottom: 8px; }
+  .loan__title { font-size: 26px; }
+  .loan__desc { font-size: 16px; max-width: none; margin-bottom: 20px; }
+
+  /* ---------- 7. Faiz ---------- */
+  /* faiz-phones.png is a wide 1298×521 desktop comp — a fixed height letterboxes it.
+     Let it scale to width (no dead space). Swap for a portrait mobile asset for legibility. */
+  .faiz__phones { height: auto; margin-bottom: 8px; }
+  .faiz__phones img { position: static; transform: none; width: 100%; height: auto; max-height: none; }
+  .faiz__points { grid-template-columns: 1fr; gap: 8px; padding: 20px; }
+  .fpoint { flex-direction: row; align-items: center; gap: 14px; padding: 12px 4px; }
+  .fpoint p { font-size: 16px; }
+
+  /* ---------- 8. Calculator ---------- */
+  .calc__container { padding: 12px; }
+  .calc-card { padding: 20px; }
+  .calc-card__top { gap: 12px; }
+  .calc-field-row { flex-direction: column; }
+  .calc-field--unit { min-width: 0; justify-content: flex-start; }
+  .calc-btn { width: 100%; align-self: stretch; }
+  .calc-results { grid-template-columns: 1fr 1fr; gap: 22px 16px; padding: 24px 16px; }
+  .calc-res:nth-child(odd)::before { display: none; }
+  .calc-res b { font-size: 22px; }
+
+  /* ---------- 9. Debit ---------- */
+  .debit__inner { grid-template-columns: 1fr; gap: 24px; }
+  .debit__media { order: -1; aspect-ratio: 1/1; }
+  .debit__title { font-size: 26px; margin-bottom: 22px; }
+  .debit__moto { display: none; } /* travel animation is desktop-only (JS skipped on mobile) */
+  .debit__list b { font-size: 1.05rem; }
+
+  /* ---------- 10. Transfer ---------- */
+  .transfer__stage { height: auto; padding: 8px 0; }
+  .transfer__card { display: none; }
+  .transfer__phone { width: 220px; }
+
+  /* ---------- 11b. Dark mode ---------- */
+  .app-dark { height: 540px; }
+  .app-dark__title { font-size: 32px; }
+
+  /* ---------- 5. Campaigns — horizontal swipe ----------
+     carousel.js leaves .camp--feature on the middle card even on mobile; base CSS
+     then scales it 1.1765 + dims it, which overflows the snap slot. Neutralise both
+     so every card is equal-size in a clean scroll-snap row. */
+  .campaigns__track {
+    display: flex; flex-direction: row; gap: 14px; justify-content: flex-start;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter);
+    scroll-padding-left: var(--gutter);
+  }
+  .campaigns__track::-webkit-scrollbar { display: none; }
+  .camp, .camp--feature { flex: 0 0 80%; max-width: 360px; width: auto; height: 420px; transform: none; --camp-scale: 1; scroll-snap-align: center; }
+  .camp--feature::before { opacity: 0; }            /* no permanent dim on mobile */
+  .camp__body { left: 18px; right: 18px; bottom: 16px; }
+  .camp__text, .camp--feature .camp__text { opacity: 1; font-size: 20px; line-height: 28px; }
+  .campaigns__dots { margin-top: 18px; }
+
+  /* ---------- Yellow highlight — multi-line safe ----------
+     The desktop ::after bar (width:100% on an inline-block) draws one full-width bar
+     under the last line when a marked phrase wraps (e.g. the kredi title). On mobile,
+     paint the bar as a cloned background so each wrapped line gets its own underline. */
+  .hl, .mark {
+    display: inline;
+    background-image: linear-gradient(var(--gf-yellow), var(--gf-yellow));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 100% 8px;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .hl::after, .mark::after { display: none; }
+
+  /* ---------- 12. AI — mobile frame for the incoming lottie ----------
+     Desktop aspect (1920/822) renders a thin strip on phones. Give the slot a
+     mobile-friendly frame so the placeholder reads as a block and the mobile lottie
+     (to be supplied) has a sensible home. */
+  .ai__lottie { aspect-ratio: 4 / 5; max-width: 340px; }
+
+  /* ---------- 13. Footer ---------- */
+  .footer { margin-top: 72px; }
+  .footer__cta { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px; margin-top: -64px; }
+  .footer__badges { flex-wrap: wrap; }
+  .footer__main { grid-template-columns: 1fr; gap: 26px; padding-left: 0; }
+  .footer__legal { flex-direction: column; gap: 12px; }
+}

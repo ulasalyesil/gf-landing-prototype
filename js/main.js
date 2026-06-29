@@ -183,12 +183,28 @@
     document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach((e) => e.classList.add("is-in"));
   }
 
+  // Mobile skips the desktop scroll engine (pinned clip-paths, off-canvas fly-ins)
+  // and just reveals content; mobile motion lives in mobile.css. Re-checked on resize
+  // (one-time desktop init guard) so testing mobile in a narrow window then widening
+  // doesn't strand the page in mobile mode — no desktop animations — on a desktop screen.
+  let desktopAnimsInit = false;
+  function applyMotionMode() {
+    if (STATIC) return;
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach((e) => e.classList.add("is-in"));
+      document.querySelector(".loan__copy")?.classList.add("is-in");
+    } else if (!desktopAnimsInit) {
+      desktopAnimsInit = true;
+      window.initAnimations && window.initAnimations();
+    }
+  }
+
   function start() {
     pruneBrokenVideos();
     window.initRates && window.initRates();
     window.initHeroFlip && window.initHeroFlip();
     window.initCampaigns && window.initCampaigns();
-    window.initAnimations && window.initAnimations();
+    applyMotionMode();
     tryLottie("aiLottie", "assets/lottie/ai-assistant.json");
     
     const heroVideo = document.querySelector(".hero__video");
@@ -206,4 +222,11 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
+
+  // Re-evaluate desktop/mobile motion mode when the viewport crosses the breakpoint.
+  let resizeT;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(applyMotionMode, 200);
+  });
 })();
