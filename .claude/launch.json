@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "gf-landing",
+      "name": "gf-landing-mobile",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8755", "--bind", "127.0.0.1"],
-      "port": 8755
+      "runtimeArgs": ["-m", "http.server", "8757", "--bind", "127.0.0.1", "--directory", "/Users/ualyesil/Documents/code/gf-landing-mobile"],
+      "port": 8757
     }
   ]
 }

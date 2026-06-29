@@ -31,6 +31,7 @@
 .is-scrolled .header__cta, .is-mega .header__cta { display: inline-flex; }
 /* header turns solid white while a mega panel is open */
 .site-header.is-mega { background: rgba(255,255,255,.98); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: var(--shadow-sm); }
+.nav-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; color: var(--gf-ink); z-index: 101; position: relative; }
 
 /* ===== Mega dropdown ===== */
 /* Mega menu — grows down from the header (transitions.dev menu-dropdown, adapted full-width) */
@@ -390,10 +391,49 @@
 /* ===== Responsive ===== */
 @media (max-width: 920px) {
   .nav { display: none; }
-  .rates__cards { grid-template-columns: repeat(2, 1fr); }
+  .nav-toggle { display: flex; }
+  .header__cta { display: none !important; }
+  .paranaiyibak__logo { height: 26px; }
+  .brand__logo { height: 26px; }
+  .hide-on-mobile { display: none !important; }
+
+  .mega {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh;
+    padding-top: 90px; overflow-y: auto; padding-inline: var(--gutter);
+    background: rgba(255,255,255,0.96) !important;
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    transform: translateY(100%);
+    transition: transform 0.4s var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1)), opacity 0.4s;
+    box-shadow: none;
+  }
+  .mega.is-open { transform: none; }
+  .mega__grid { grid-template-columns: 1fr; gap: 32px; padding-bottom: 80px; }
+  .mega__item p { display: none; }
+  
+  .site-header__inner { gap: 16px; justify-content: space-between; }
+  .hero__inner { padding-block: 110px 60px; min-height: 100vh; }
+  
+  .stats__card { flex-direction: column; gap: 32px; padding: 40px 24px; }
+  .stat__div { width: 64px; height: 1px; }
+
+  .rates__cards { flex-direction: column; width: 100%; }
+  .rate-card { flex: auto; width: 100%; max-width: 100%; }
   .rates__grid { flex-direction: column; }
   .rates__all { align-self: flex-end; }
-  .features__grid { grid-template-columns: repeat(2, 1fr); }
+
+  .features__grid { display: flex; flex-direction: column; gap: 0; position: relative; padding-bottom: 64px; }
+  .feat { 
+    position: sticky; 
+    top: calc(90px + (var(--index) * 16px));
+    background: #fff;
+    padding: 16px 16px 32px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
+    border-top: 1px solid var(--gf-line);
+    transform-origin: top center;
+  }
+  .feat__img { aspect-ratio: 16/9; margin-bottom: 12px; }
+
   .loan__inner, .debit__inner { grid-template-columns: 1fr; }
   .debit__media { order: -1; }
   .faiz__points { grid-template-columns: 1fr; }
@@ -417,10 +457,6 @@
   .calc-results { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
 }
 @media (max-width: 560px) {
-  .stats__row { grid-template-columns: 1fr; }
-  .stat + .stat::before { left: 24px; right: 24px; top: 0; bottom: auto; width: auto; height: 1px; }
-  .rates__cards { grid-template-columns: 1fr; }
-  .features__grid { grid-template-columns: 1fr; }
   .footer__main { grid-template-columns: 1fr; }
   .footer__legal { flex-direction: column; }
   .transfer__card--left { left: -2%; } .transfer__card--right { right: -2%; }

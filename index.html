@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- dev: don't cache the HTML, so asset ?v= bumps always take effect -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>getirfinans — ama ne finans!</title>
   <meta name="description" content="getirfinans — %44 faizle her gün kazan, uygun oranlı kredi kullan, harcarken geri kazan." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/tokens.css?v=27" />
-  <link rel="stylesheet" href="css/base.css?v=27" />
-  <link rel="stylesheet" href="css/sections.css?v=27" />
+  <link rel="stylesheet" href="css/tokens.css?v=33" />
+  <link rel="stylesheet" href="css/base.css?v=33" />
+  <link rel="stylesheet" href="css/sections.css?v=33" />
+  <link rel="stylesheet" href="css/mobile.css?v=33" />
 </head>
 <body>
 
@@ -31,6 +36,9 @@
           <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
         </a>
         <a href="#" class="btn header__cta"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
+        <button type="button" class="nav-toggle" id="navToggle" aria-label="Menü">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -47,6 +55,12 @@
         <a class="mega__item" href="#"><h4>döviz işlemleri</h4><p>dar makas ile avantajlı kurlar</p></a>
         <a class="mega__item" href="#"><h4>ücretsiz atm’ler</h4><p>tüm atm’lerden ücretsiz çekebilirsin<br><span class="mega__link">Fibabanka ve Akbank’ta ücretsiz</span></p></a>
         <a class="mega__item" href="#"><h4>ödemeler</h4></a>
+      </div>
+      <div class="mega__actions">
+        <a href="#" class="paranaiyibak" aria-label="#paranaiyibak">
+          <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
+        </a>
+        <a href="#" class="btn"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
       </div>
     </div>
   </div>
@@ -106,7 +120,7 @@
         <span class="stat__div" aria-hidden="true"></span>
         <div class="stat">
           <span class="stat__num">4 getirfinanslı’dan 1’i</span>
-          <span class="stat__label">arkadaş tavsiyesiyle geliyor</span>
+          <span class="stat__label">referans koduyla geliyor</span>
         </div>
         <span class="stat__div" aria-hidden="true"></span>
         <div class="stat">
@@ -144,7 +158,7 @@
         <p class="sec-lead">getirfinans’tan hep kazandıran bankacılık fırsatları</p>
       </header>
       <div class="features__grid" data-stagger>
-        <article class="feat">
+        <article class="feat" style="--index: 0;">
           <div class="feat__img media-slot ph" data-label="neler-1.png"><img src="assets/img/neler-1.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">bizde kredin büyük</h3>
@@ -154,7 +168,7 @@
             <img src="assets/icons/arrow-right-circle-thin.svg" alt="">
           </span>
         </article>
-        <article class="feat">
+        <article class="feat" style="--index: 1;">
           <div class="feat__img media-slot ph" data-label="neler-2.png"><img src="assets/img/neler-2.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">paran boş durmasın</h3>
@@ -164,7 +178,7 @@
             <img src="assets/icons/arrow-right-circle-thin.svg" alt="">
           </span>
         </article>
-        <article class="feat">
+        <article class="feat" style="--index: 2;">
           <div class="feat__img media-slot ph" data-label="neler-3.png"><img src="assets/img/neler-3.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">çarşıyı unutturan kurlar</h3>
@@ -174,7 +188,7 @@
             <img src="assets/icons/arrow-right-circle-thin.svg" alt="">
           </span>
         </article>
-        <article class="feat">
+        <article class="feat" style="--index: 3;">
           <div class="feat__img media-slot ph" data-label="neler-4.png"><img src="assets/img/neler-4.png" alt="" onerror="this.remove()"></div>
           <div class="feat__text">
             <h3 class="feat__title">geri dönüşü muhteşem kart</h3>
@@ -354,7 +368,7 @@
 
   <!-- ============ 10. TRANSFER ============ -->
   <section class="section transfer" id="transfer">
-    <div class="transfer__rings" aria-hidden="true"></div>
+    <div class="transfer__rings hide-on-mobile" aria-hidden="true"></div>
     <div class="container">
       <div class="eyebrow-wrap">
         <h2 class="h-sec reveal">para transferi tabii ki <span class="mark">ücretsiz!</span></h2>
@@ -464,10 +478,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <!-- App -->
-<script src="js/content.js?v=31"></script>
-<script src="js/rates.js?v=31"></script>
-<script src="js/carousel.js?v=31"></script>
-<script src="js/animations.js?v=31"></script>
-<script src="js/main.js?v=31"></script>
+<script src="js/content.js?v=33"></script>
+<script src="js/rates.js?v=33"></script>
+<script src="js/carousel.js?v=33"></script>
+<script src="js/animations.js?v=33"></script>
+<script src="js/main.js?v=33"></script>
 </body>
 </html>

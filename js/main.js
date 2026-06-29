@@ -16,13 +16,15 @@
   // Mega dropdown (nav). All three triggers open the products panel.
   const mega = document.getElementById("megaMenu");
   const navItems = [...document.querySelectorAll(".nav__item")];
+  const navToggle = document.getElementById("navToggle");
   const megaCloseMs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dropdown-close-dur")) || 150;
   let openItem = null, megaCloseTimer;
   function closeMega() {
-    if (!mega || !openItem) return;
+    if (!mega || !mega.classList.contains("is-open")) return;
     mega.classList.remove("is-open");
     mega.classList.add("is-closing");                 // play the close scale, then reset to rest
     mega.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
     clearTimeout(megaCloseTimer);
     megaCloseTimer = setTimeout(() => mega.classList.remove("is-closing"), megaCloseMs);
     header.classList.remove("is-mega");
@@ -36,8 +38,9 @@
     mega.classList.remove("is-closing");
     mega.classList.add("is-open");
     mega.setAttribute("aria-hidden", "false");
+    if (window.innerWidth <= 920) document.body.style.overflow = "hidden";
     header.classList.add("is-mega");
-    navItems.forEach((n) => n.classList.toggle("is-open", n === item));
+    if (item) navItems.forEach((n) => n.classList.toggle("is-open", n === item));
     if (logo) logo.src = "assets/logos/getirfinans.svg"; // purple over white bar
     openItem = item;
   }
@@ -45,6 +48,12 @@
     e.stopPropagation();
     openItem === item ? closeMega() : openMega(item);
   }));
+  if (navToggle) {
+    navToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      mega.classList.contains("is-open") ? closeMega() : openMega(null);
+    });
+  }
   mega && mega.addEventListener("click", (e) => e.stopPropagation());
   document.addEventListener("click", closeMega);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMega(); });
@@ -174,12 +183,28 @@
     document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach((e) => e.classList.add("is-in"));
   }
 
+  // Mobile skips the desktop scroll engine (pinned clip-paths, off-canvas fly-ins)
+  // and just reveals content; mobile motion lives in mobile.css. Re-checked on resize
+  // (one-time desktop init guard) so testing mobile in a narrow window then widening
+  // doesn't strand the page in mobile mode — no desktop animations — on a desktop screen.
+  let desktopAnimsInit = false;
+  function applyMotionMode() {
+    if (STATIC) return;
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      document.querySelectorAll(".reveal,.reveal-left,.reveal-right").forEach((e) => e.classList.add("is-in"));
+      document.querySelector(".loan__copy")?.classList.add("is-in");
+    } else if (!desktopAnimsInit) {
+      desktopAnimsInit = true;
+      window.initAnimations && window.initAnimations();
+    }
+  }
+
   function start() {
     pruneBrokenVideos();
     window.initRates && window.initRates();
     window.initHeroFlip && window.initHeroFlip();
     window.initCampaigns && window.initCampaigns();
-    window.initAnimations && window.initAnimations();
+    applyMotionMode();
     tryLottie("aiLottie", "assets/lottie/ai-assistant.json");
     
     const heroVideo = document.querySelector(".hero__video");
@@ -197,4 +222,11 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
   else start();
+
+  // Re-evaluate desktop/mobile motion mode when the viewport crosses the breakpoint.
+  let resizeT;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(applyMotionMode, 200);
+  });
 })();
