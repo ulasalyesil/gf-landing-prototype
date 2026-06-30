@@ -12,10 +12,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/tokens.css?v=33" />
-  <link rel="stylesheet" href="css/base.css?v=33" />
-  <link rel="stylesheet" href="css/sections.css?v=33" />
-  <link rel="stylesheet" href="css/mobile.css?v=33" />
+  <link rel="stylesheet" href="css/tokens.css?v=38" />
+  <link rel="stylesheet" href="css/base.css?v=38" />
+  <link rel="stylesheet" href="css/sections.css?v=38" />
+  <link rel="stylesheet" href="css/mobile.css?v=38" />
 </head>
 <body>
 
@@ -264,7 +264,10 @@
         <p class="h-lead reveal">kampanyaları ve avantajları kaçırma!</p>
       </div>
       <div class="faiz__phones reveal" data-label="faiz-phones.png">
-        <img class="faiz-phones-img" src="assets/img/faiz-phones.png" alt="faiz phones" onerror="this.remove()">
+        <picture>
+          <source media="(max-width: 767px)" srcset="assets/img/faiz-phones-mobile.png">
+          <img class="faiz-phones-img" src="assets/img/faiz-phones.png" alt="faiz phones" onerror="this.remove()">
+        </picture>
       </div>
       <div class="faiz__points" data-stagger>
         <div class="fpoint"><span class="fpoint__ic"><img src="assets/icons/faiz.svg" alt="" onerror="this.remove()"></span><p>paranı bağlamadan<br>iyi faiz kazan</p></div>
@@ -478,10 +481,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 <!-- App -->
-<script src="js/content.js?v=33"></script>
-<script src="js/rates.js?v=33"></script>
-<script src="js/carousel.js?v=33"></script>
-<script src="js/animations.js?v=33"></script>
-<script src="js/main.js?v=33"></script>
+<script src="js/content.js?v=38"></script>
+<script src="js/rates.js?v=38"></script>
+<script src="js/carousel.js?v=38"></script>
+<script src="js/animations.js?v=38"></script>
+<script src="js/main.js?v=38"></script>
 </body>
 </html>

@@ -113,13 +113,22 @@
   .loan__desc { font-size: 16px; max-width: none; margin-bottom: 20px; }
 
   /* ---------- 7. Faiz ---------- */
-  /* faiz-phones.png is a wide 1298×521 desktop comp — a fixed height letterboxes it.
-     Let it scale to width (no dead space). Swap for a portrait mobile asset for legibility. */
-  .faiz__phones { height: auto; margin-bottom: 8px; }
-  .faiz__phones img { position: static; transform: none; width: 100%; height: auto; max-height: none; }
-  .faiz__points { grid-template-columns: 1fr; gap: 8px; padding: 20px; }
-  .fpoint { flex-direction: row; align-items: center; gap: 14px; padding: 12px 4px; }
-  .fpoint p { font-size: 16px; }
+  /* Mobile uses faiz-phones-mobile.png (981×612, compact) via <picture>; the wide
+     desktop comp letterboxed here. Scale to width, hug the height (no dead space). */
+  .faiz__phones { height: auto; margin-bottom: 0; }
+  .faiz__phones img { position: static; transform: none; width: 100%; max-width: 420px; height: auto; max-height: none; margin-inline: auto; }
+  /* faiz_points — pixel-matched to Figma node 21344:46572 (mobile)
+     flex column, gap 32, padding 32/16, #f9f7ff, bottom-only radius, upward shadow */
+  .faiz__points {
+    display: flex; flex-direction: column; align-items: stretch; gap: 32px;
+    padding: 32px 16px;
+    background: var(--gf-lilac-50);
+    border-radius: 32px;
+    box-shadow: 0 -24px 60px -12px rgba(14, 14, 14, 0.08);
+  }
+  .fpoint { flex-direction: row; align-items: center; gap: 16px; padding: 0; width: 100%; }
+  .fpoint__ic { flex: 0 0 40px; width: 40px; height: 40px; }
+  .fpoint p { font-size: 16px; line-height: 24px; color: var(--gf-purple); }
 
   /* ---------- 8. Calculator ---------- */
   .calc__container { padding: 12px; }
@@ -166,19 +175,20 @@
   .camp__text, .camp--feature .camp__text { opacity: 1; font-size: 20px; line-height: 28px; }
   .campaigns__dots { margin-top: 18px; }
 
-  /* ---------- Yellow highlight — multi-line safe ----------
-     The desktop ::after bar (width:100% on an inline-block) draws one full-width bar
-     under the last line when a marked phrase wraps (e.g. the kredi title). On mobile,
-     paint the bar as a cloned background so each wrapped line gets its own underline. */
-  .hl, .mark {
+  /* ---------- Yellow highlight — sits IN FRONT of the text ----------
+     The bar is the base ::after, here raised above the text (z-index). Marks are atomic
+     inline-blocks so they reflow onto their own line and the single bar covers them. */
+  .hl, .mark { display: inline-block; background: none; }
+  .hl::after, .mark::after { display: block; z-index: 3; }
+  /* The kredi headline is too long to fit one line as an atomic mark, so it keeps a
+     per-line cloned bar (behind — a per-line bar can't render in front in pure CSS). */
+  .loan__title .mark {
     display: inline;
     background-image: linear-gradient(var(--gf-yellow), var(--gf-yellow));
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: 100% 8px;
+    background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 9px;
     -webkit-box-decoration-break: clone; box-decoration-break: clone;
   }
-  .hl::after, .mark::after { display: none; }
+  .loan__title .mark::after { display: none; }
 
   /* ---------- 12. AI — mobile frame for the incoming lottie ----------
      Desktop aspect (1920/822) renders a thin strip on phones. Give the slot a
