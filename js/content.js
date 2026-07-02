@@ -12,7 +12,7 @@ window.HERO_OFFERS = [
 // Hero stat badge messages — swap in lockstep with the offer above (mod length).
 window.HERO_BADGES = [
   "1.000.000+ getirfinanslı",
-  "her 4 getirfinanslıdan biri arkadaş tavsiyesiyle geliyor"
+  "her 4 getirfinanslıdan biri referans koduyla geliyor"
 ];
 
 // One heartbeat for the whole hero flip (title + sub + badge swap together).
