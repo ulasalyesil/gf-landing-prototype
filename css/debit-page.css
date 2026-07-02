@@ -1,0 +1,165 @@
+/* ============================================================
+   hesap-karti.html — debit card page (GFDES-2174)
+   Layout wireframe. Inherits header/footer/hero grammar from
+   sections.css; everything page-specific is dp-* prefixed.
+   ============================================================ */
+
+/* ===== 1. Hero — drenched purple, landing alignment ===== */
+.dp-hero__bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 85% 20%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(160deg, var(--gf-purple) 0%, var(--gf-purple-700) 100%);
+}
+.dp-hero .hero__badge { position: static; }
+.dp-hero .hero__badge-ic img { filter: brightness(0) invert(1); }
+.dp-hero__cta { background: var(--gf-yellow); color: var(--gf-ink); }
+.dp-hero__cta .hero__cta-ic img { filter: brightness(0); }
+@media (hover: hover) and (pointer: fine) {
+  .dp-hero__cta:hover { background: var(--gf-yellow-600); }
+}
+
+/* card visual — CSS mock until a render is supplied (debit-hero-card.png) */
+.dp-hero__stage {
+  position: absolute; z-index: 1;
+  right: var(--gutter); top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.dp-card {
+  position: relative;
+  width: clamp(320px, 30vw, 460px); aspect-ratio: 8 / 5;
+  border-radius: var(--r-xl);
+  background: linear-gradient(145deg, #3a2a70 0%, var(--gf-card-purple) 45%, var(--gf-purple-900) 100%);
+  box-shadow: var(--shadow-lg);
+  transform: rotate(-10deg);
+}
+.dp-card__brand {
+  position: absolute; top: 24px; left: 28px;
+  color: #fff; font-size: clamp(18px, 1.6vw, 24px); font-weight: var(--fw-bold); letter-spacing: -.02em;
+}
+.dp-card__chip {
+  position: absolute; left: 28px; bottom: 64px;
+  width: 44px; height: 32px; border-radius: 6px;
+  background: linear-gradient(135deg, #e8c96a, #c9a53f);
+}
+.dp-card__scheme { position: absolute; right: 28px; bottom: 24px; display: flex; }
+.dp-card__scheme i { width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, .35); }
+.dp-card__scheme i + i { margin-left: -14px; background: rgba(255, 255, 255, .55); }
+
+/* keep the text column clear of the card as the viewport narrows */
+@media (max-width: 1100px) {
+  .dp-hero__stage { right: calc(var(--gutter) / 2); opacity: .9; }
+}
+@media (max-width: 920px) {
+  .dp-hero__stage { position: static; transform: none; margin-top: 40px; }
+  .dp-card { transform: rotate(-6deg); margin-inline: auto; }
+}
+
+/* ===== chips — shared proof-artifact language ===== */
+.dp-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: var(--r-full);
+  background: #fff; color: var(--gf-ink); font-size: var(--fs-body-sm); font-weight: var(--fw-bold);
+  box-shadow: var(--shadow);
+}
+.dp-chip img { width: 20px; height: 20px; }
+.dp-chip--yellow { background: var(--gf-yellow); box-shadow: none; }
+.dp-chip--float { position: absolute; left: 16px; bottom: 16px; z-index: 2; }
+
+/* ===== 2. Minutes — 3 real steps ===== */
+.dp-steps__row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 4vw, 64px);
+  max-width: 1080px; margin-inline: auto;
+  list-style: none; /* base.css only resets ul */
+}
+.dp-step { position: relative; padding-top: 8px; }
+.dp-step__num {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--gf-lilac); color: var(--gf-purple);
+  font-size: var(--fs-h5); font-weight: var(--fw-bold);
+  margin-bottom: var(--sp-lg);
+}
+.dp-step h3 { font-size: var(--fs-h4); line-height: var(--lh-h4); font-weight: var(--fw-semibold); margin-bottom: var(--sp-sm); }
+.dp-step p { font-size: var(--fs-body-md); line-height: var(--lh-body-md); color: var(--gf-ink-500); max-width: 280px; }
+.dp-steps__proof { display: flex; justify-content: center; margin-top: var(--sp-3xl); }
+
+/* ===== 3. Double earn — asymmetric split ===== */
+.dp-earn__grid {
+  display: grid; grid-template-columns: 3fr 2fr; gap: var(--sp-xl);
+  max-width: 1180px; margin-inline: auto;
+}
+.dp-earn__panel { border-radius: var(--r-xl); overflow: hidden; }
+.dp-earn__panel--getirpara { background: var(--gf-lilac); }
+.dp-earn__panel--iade { background: rgba(255, 211, 0, .16); }
+.dp-earn__media { position: relative; aspect-ratio: 16 / 9; border-radius: 0; }
+/* placeholder needs to read against the tinted panel bg */
+.dp-earn__media.ph { background: linear-gradient(135deg, var(--gf-lilac-200) 0%, var(--gf-lilac-300) 100%); }
+.dp-earn__panel--iade .dp-earn__media { aspect-ratio: 16 / 11; }
+.dp-earn__body { padding: var(--sp-xl) var(--sp-2xl) var(--sp-2xl); }
+.dp-earn__body h3 { font-size: var(--fs-h4); line-height: var(--lh-h4); font-weight: var(--fw-regular); margin-bottom: var(--sp-sm); }
+.dp-earn__body h3 b { font-weight: var(--fw-bold); }
+.dp-earn__body p { font-size: var(--fs-body-md); line-height: var(--lh-body-md); color: var(--gf-ink-700); max-width: 420px; }
+
+/* ===== 4. Recycled — quiet payoff ===== */
+.dp-recycled { background: var(--gf-lilac-50); }
+.dp-recycled__inner {
+  display: grid; grid-template-columns: 2fr 3fr; gap: clamp(32px, 5vw, 80px);
+  align-items: center; max-width: 1080px;
+}
+.dp-recycled__media { aspect-ratio: 4 / 3; border-radius: var(--r-xl); }
+.dp-recycled__title { font-size: var(--fs-h3); line-height: var(--lh-h3); font-weight: var(--fw-regular); margin-bottom: var(--sp-lg); }
+.dp-recycled__desc { font-size: var(--fs-body-lg); line-height: var(--lh-body-lg); color: var(--gf-ink-700); max-width: 480px; }
+.dp-recycled__desc b { font-weight: var(--fw-bold); }
+
+/* ===== 5. Abroad ===== */
+.dp-abroad__inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 80px);
+  align-items: center; max-width: 1180px;
+}
+.dp-abroad__title { font-size: clamp(28px, 3vw, 36px); line-height: 1.2; font-weight: var(--fw-regular); margin-bottom: var(--sp-2xl); }
+.dp-abroad__list { display: flex; flex-direction: column; gap: var(--sp-xl); }
+.dp-abroad__list li { display: flex; align-items: center; gap: var(--sp-lg); font-size: var(--fs-body-lg); color: var(--gf-ink-700); }
+.dp-abroad__ic {
+  flex: none; display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 50%; background: var(--gf-lilac);
+}
+.dp-abroad__ic img { width: 24px; height: 24px; }
+.dp-abroad__media { aspect-ratio: 4 / 5; max-height: 520px; border-radius: var(--r-xl); }
+
+/* ===== 6. Trust band + FAQ ===== */
+.dp-trust__band {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-xl); padding: var(--sp-2xl) clamp(24px, 4vw, 56px);
+  background: #fff; border: 1px solid var(--gf-line); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+}
+.dp-trust__item { display: flex; flex-direction: column; gap: 4px; }
+.dp-trust__item b { font-size: var(--fs-h5); font-weight: var(--fw-bold); color: var(--gf-ink); }
+.dp-trust__item span { font-size: var(--fs-body-sm); color: var(--gf-ink-500); }
+.dp-trust__div { width: 1px; height: 44px; background: var(--gf-line); }
+
+.dp-faq { max-width: 760px; margin: clamp(64px, 8vw, 110px) auto 0; }
+.dp-faq__title { font-size: clamp(28px, 3.4vw, 40px); font-weight: var(--fw-regular); text-align: center; margin-bottom: var(--sp-2xl); }
+.dp-faq__item { border-bottom: 1px solid var(--gf-line); }
+.dp-faq__item summary {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-block: var(--sp-xl); cursor: pointer; list-style: none;
+  font-size: var(--fs-h5); font-weight: var(--fw-semibold);
+}
+.dp-faq__item summary::-webkit-details-marker { display: none; }
+.dp-faq__item summary::after { content: "+"; font-size: 24px; font-weight: var(--fw-regular); color: var(--gf-purple); transition: transform .2s var(--ease-out); }
+.dp-faq__item[open] summary::after { transform: rotate(45deg); }
+.dp-faq__item p { padding: 0 0 var(--sp-xl); font-size: var(--fs-body-md); line-height: var(--lh-body-md); color: var(--gf-ink-700); max-width: 640px; }
+
+/* ===== mobile ===== */
+@media (max-width: 920px) {
+  .dp-steps__row { grid-template-columns: 1fr; gap: var(--sp-2xl); }
+  .dp-earn__grid, .dp-recycled__inner, .dp-abroad__inner { grid-template-columns: 1fr; }
+  .dp-abroad__media { order: -1; aspect-ratio: 4 / 3; }
+  .dp-trust__band { flex-wrap: wrap; }
+  .dp-trust__div { display: none; }
+  .dp-trust__item { flex-basis: calc(50% - var(--sp-xl)); }
+}
