@@ -346,6 +346,7 @@
 .ai__lottie { width: 100%; max-width: 1120px; margin-inline: auto; aspect-ratio: 1920 / 822; }
 .ai__lottie.ph { border-radius: var(--radius-lg); }
 .ai__lottie svg { display: block; width: 100% !important; height: 100% !important; }
+.ai__mobile-img { display: none; }
 
 /* ===== 13. Footer ===== */
 .footer { background: var(--gf-purple-900); color: #fff; padding-top: 0; border-top: 1px solid transparent; position: relative; border-radius: 40px 40px 0 0; margin-top: 100px; }

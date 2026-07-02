@@ -190,11 +190,10 @@
   }
   .loan__title .mark::after { display: none; }
 
-  /* ---------- 12. AI — mobile frame for the incoming lottie ----------
-     Desktop aspect (1920/822) renders a thin strip on phones. Give the slot a
-     mobile-friendly frame so the placeholder reads as a block and the mobile lottie
-     (to be supplied) has a sensible home. */
-  .ai__lottie { aspect-ratio: 4 / 5; max-width: 340px; }
+  /* ---------- 12. AI ---------- */
+  .ai__lottie { display: none !important; }
+  .ai__mobile-img { display: block; width: 100%; max-width: 380px; margin-inline: auto; }
+  .ai__mobile-img img { display: block; width: 100%; height: auto; }
 
   /* ---------- 13. Footer ---------- */
   .footer { margin-top: 72px; }
