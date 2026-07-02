@@ -52,7 +52,7 @@
   /* ---------- 1. Hero ---------- */
   .hero { min-height: 100svh; }
   .hero__overlay { background: linear-gradient(to bottom, rgba(14,14,14,.30) 0%, rgba(14,14,14,.12) 42%, rgba(14,14,14,.66) 100%); }
-  .hero__inner { padding-block: calc(92px + env(safe-area-inset-top)) 116px; justify-content: flex-end; }
+  .hero__inner { padding-block: calc(92px + env(safe-area-inset-top)) 32px; justify-content: flex-end; }
   .hero__text { max-width: 100%; }
   /* long flip badges (e.g. "her 4 getirfinanslıdan…") overrun the nowrap pill — wrap instead */
   .hero__badge-stack { height: auto; min-height: 52px; margin-bottom: 14px; }
@@ -61,7 +61,8 @@
   .hero__title-swap { white-space: normal; }
   .hero__sub { font-size: 20px; line-height: 1.3; min-height: 2.6em; margin-bottom: 26px; max-width: 100%; }
   .hero__cta { width: 100%; padding: 16px 24px; font-size: 17px; }
-  .hero__bankinfo { position: static; left: auto; bottom: auto; margin-top: 22px; font-size: 13px; }
+  .hero__bankinfo { position: static; left: auto; bottom: auto; margin-top: 22px; font-size: clamp(10px, 3.5vw, 13px); flex-wrap: nowrap; white-space: nowrap; }
+  .hero__bankinfo .fiba img { height: 1.2em; width: auto; }
 
   /* ---------- 2. Stats ---------- */
   .stats__card { flex-direction: column; gap: 20px; padding: 28px 24px; min-height: 0; }
