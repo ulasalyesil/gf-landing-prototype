@@ -19,8 +19,8 @@
 .nav__item { color: rgba(255,255,255,.95); font-weight: var(--fw-regular); font-size: var(--fs-h5); line-height: var(--lh-h5);
   padding: 8px 16px; border-radius: var(--r-full); background: none; transition: color .2s, background .2s; }
 .nav__item:hover { background: rgba(255,255,255,.14); }
-.is-scrolled .nav__item, .is-mega .nav__item { color: var(--gf-ink-700); }
-.is-scrolled .nav__item:hover, .is-mega .nav__item:hover,
+.is-scrolled .nav__item, .is-mega .nav__item, .site-header--inner .nav__item { color: var(--gf-ink-700); }
+.is-scrolled .nav__item:hover, .is-mega .nav__item:hover, .site-header--inner .nav__item:hover,
 .nav__item.is-open { color: var(--gf-purple); background: var(--gf-lilac); }
 .site-header__actions { display: flex; align-items: center; gap: 16px; }
 .paranaiyibak__logo { height: 32px; width: auto; }
@@ -28,7 +28,7 @@
 /* primary CTA appears in the header only once the white bar is shown */
 .header__cta { display: none; padding: 10px 20px 10px 14px; font-size: 14px; }
 .header__cta .ic img { width: 20px; height: 20px; }
-.is-scrolled .header__cta, .is-mega .header__cta { display: inline-flex; }
+.is-scrolled .header__cta, .is-mega .header__cta, .site-header--inner .header__cta { display: inline-flex; }
 /* header turns solid white while a mega panel is open */
 .site-header.is-mega { background: rgba(255,255,255,.98); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: var(--shadow-sm); }
 .nav-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; color: var(--gf-ink); z-index: 101; position: relative; }

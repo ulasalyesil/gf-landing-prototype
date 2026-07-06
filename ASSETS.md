@@ -25,6 +25,9 @@ Formats: **`.png` and `.svg` only.** No `.jpg`. Running text is **Open Sans** (G
 - `faiz-phone-left.png`, `faiz-phone-middle.png`, `faiz-phone-right.png` — 3-phone cluster (classes `.faiz-phone-1/2/3`, staggered in `animations.js`)
 - `transfer-phone.png`, `transfer-card-left.png`, `transfer-card-right.png` (transparent cutouts, no container bg)
 - `standalone-woman.png` — woman holding phone, app-split (section 11) right side
+- `debit-earn-photo.png`, `debit-earn-phone.png` — hesap-karti-current earn cards (exported from Figma draft 21607:5164)
+- `debit-phone-tilted.png` — hesap-karti-current delivery section tilted phone
+- `debit-card-render.png`, `debit-abroad-1.png` … `debit-abroad-5.png` — hesap-karti-current abroad collage
 
 **Lottie** (`assets/lottie/`) — `ai-assistant.json` — full-width AI section scene (1920×822), loaded into `#aiLottie`
 
@@ -33,6 +36,8 @@ Formats: **`.png` and `.svg` only.** No `.jpg`. Running text is **Open Sans** (G
 
 ## Missing — rendered as a stand-in
 - Debit title "Motorlu Kurye" moped icon: no asset supplied, currently the 🛵 emoji. Drop an SVG at `assets/icons/moped.svg` and swap it in.
+- hesap-karti-current hero uses `assets/video/debit-white-bg.mp4` (600×600 slot); labeled `.ph` renders if it's missing.
+- hesap-karti-current transfers / ATM / sanal kart section images — placeholders in the Figma draft as well (`.dpc-split__media` slots).
 
 ## Hero
 - Title is static ("ama ne finans!"). The sub-description flips through 3 lines — `js/content.js` (`HERO_SUBS`).

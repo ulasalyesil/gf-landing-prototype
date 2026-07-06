@@ -6,9 +6,10 @@
   const onScroll = () => {
     const isScrolled = window.scrollY > 40;
     header.classList.toggle("is-scrolled", isScrolled);
+    const isInner = header.classList.contains("site-header--inner");
     // Over the hero (top) the header is transparent → white logo; once the white
-    // header bg appears on scroll → purple logo.
-    if (logo) logo.src = isScrolled ? "assets/logos/getirfinans.svg" : "assets/logos/getirfinans-dark.svg";
+    // header bg appears on scroll → purple logo. Inner pages always use purple logo.
+    if (logo) logo.src = (isScrolled || isInner) ? "assets/logos/getirfinans.svg" : "assets/logos/getirfinans-dark.svg";
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });

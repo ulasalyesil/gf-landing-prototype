@@ -4,36 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <title>hesap kartı — geri dönüşü muhteşem kart | getirfinans</title>
-  <meta name="description" content="harcadıkça getirpara ve nakit iade kazandıran hesap kartı — dakikalar içinde kapında." />
+  <title>hesap kartı — current state (Figma draft) | getirfinans</title>
+  <meta name="description" content="Pixel reproduction of the current Figma draft for the hesap kartı page — review artifact, not the redesign direction." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/tokens.css?v=38" />
   <link rel="stylesheet" href="css/base.css?v=38" />
   <link rel="stylesheet" href="css/sections.css?v=38" />
-  <link rel="stylesheet" href="css/mobile.css?v=38" />
-  <link rel="stylesheet" href="css/debit-page.css?v=1" />
+  <link rel="stylesheet" href="css/debit-current.css?v=2" />
 </head>
-<body class="dp">
+<body class="dpc">
 
-<!-- ============ HEADER (shared with landing) ============ -->
-<header class="site-header" id="siteHeader">
+<!-- ============ HEADER ============ -->
+<header class="site-header site-header--inner" id="siteHeader">
   <div class="container site-header__inner">
     <a class="brand" href="index.html" aria-label="getirfinans">
       <img class="brand__logo" src="assets/logos/getirfinans.svg" alt="getirfinans" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'brand__ph',textContent:'getirfinans'}))">
     </a>
     <div class="site-header__col">
       <nav class="nav">
-        <button class="nav__item" type="button">ürünler</button>
-        <button class="nav__item" type="button">kampanyalar</button>
-        <button class="nav__item" type="button">ürün ve hizmet ücretleri</button>
+        <button class="nav__item" type="button" data-menu="urunler">ürünler</button>
+        <button class="nav__item" type="button" data-menu="kampanyalar">kampanyalar</button>
+        <button class="nav__item" type="button" data-menu="ucretler">ürün ve hizmet ücretleri</button>
       </nav>
       <div class="site-header__actions">
         <a href="#" class="paranaiyibak" aria-label="#paranaiyibak">
           <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
         </a>
         <a href="#" class="btn header__cta"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
+        <button type="button" class="nav-toggle" id="navToggle" aria-label="Menü">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mega" id="megaMenu" aria-hidden="true">
+    <div class="container">
+      <div class="mega__grid">
+        <a class="mega__item" href="index.html#"><h4>hesap</h4><p>yıllık <b>%43 faizle</b> her gün kazandıran hesap</p></a>
+        <a class="mega__item" href="index.html#"><h4>kredi kartı</h4><p>taksit yapan, kazandıran, aidatsız kredi kartı</p></a>
+        <a class="mega__item" href="hesap-karti-current.html"><h4>hesap kartı</h4><p>getir’de <b>%3 getirpara</b>, fiziksel harcamalarında <b>%1 nakit iade</b> kazan</p></a>
+        <a class="mega__item" href="index.html#"><h4>kredi</h4><p><b>%3,09</b>’dan başlayan faiz oranları</p></a>
+        <a class="mega__item" href="index.html#"><h4>avans limit</h4><p>acil ihtiyaçların için yanında</p></a>
+        <a class="mega__item" href="index.html#"><h4>getirsonraöde <span class="mega__badge-img"><img src="assets/badges/yeni.svg" alt="yeni"></span></h4><p>getir’deki harcamalarını <b>60 güne kadar</b> <b>%0 faiz</b> ile erteleme imkanı</p></a>
+        <a class="mega__item" href="index.html#"><h4>para transferi</h4><p>7/24 ücretsiz havale, EFT, FAST</p></a>
+        <a class="mega__item" href="index.html#"><h4>döviz işlemleri</h4><p>dar makas ile avantajlı kurlar</p></a>
+        <a class="mega__item" href="index.html#"><h4>ücretsiz atm’ler</h4><p>tüm atm’lerden ücretsiz çekebilirsin<br><span class="mega__link">Fibabanka ve Akbank’ta ücretsiz</span></p></a>
+        <a class="mega__item" href="index.html#"><h4>ödemeler</h4></a>
+      </div>
+      <div class="mega__actions">
+        <a href="index.html#" class="paranaiyibak" aria-label="#paranaiyibak">
+          <img class="paranaiyibak__logo" src="assets/logos/paranaiyibak.svg" alt="#paranaiyibak" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'paranaiyibak__ph',textContent:'#paranaiyibak'}))">
+        </a>
+        <a href="index.html#" class="btn"><span class="ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>getirfinanslı ol</a>
       </div>
     </div>
   </div>
@@ -41,170 +65,134 @@
 
 <main>
 
-  <!-- ============ 1. HERO — drenched purple, landing alignment ============ -->
-  <section class="hero dp-hero" id="hero">
-    <div class="dp-hero__bg" aria-hidden="true"></div>
-
-    <div class="container hero__inner">
-      <div class="hero__text">
-        <div class="hero__badge-stack">
-          <div class="hero__badge is-on">
-            <span class="hero__badge-ic"><img src="assets/icons/courier.svg" alt="" onerror="this.remove()"></span>
-            <span class="hero__badge-text">kartın dakikalar içinde kapında</span>
-          </div>
-        </div>
-        <h1 class="hero__title">geri dönüşü<br>muhteşem kart</h1>
-        <p class="hero__sub">harcadıkça getirpara ve<br>nakit iade kazan</p>
-        <a href="#" class="hero__cta dp-hero__cta">
-          <span class="hero__cta-ic"><img src="assets/icons/arrow-right-circle.svg" alt=""></span>
-          kart al
-        </a>
+  <!-- ============ 1. HERO ============ -->
+  <section class="dpc-hero">
+    <div class="dpc-container" style="height:100%">
+      <div class="dpc-hero__text">
+        <span class="dpc-badge">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M11 2 4.5 11h4L9 18l6.5-9h-4L11 2z" fill="currentColor"/></svg>
+          kartın dakikalar içinde kapında
+        </span>
+        <h1 class="dpc-hero__title">geri dönüşü<br>muhteşem kart</h1>
+        <a href="#" class="dpc-cta dpc-hero__cta">kart al</a>
       </div>
-
-      <!-- card visual owns the field the landing video occupies -->
-      <div class="dp-hero__stage" aria-hidden="true">
-        <div class="dp-card" data-label="debit-hero-card.png">
-          <span class="dp-card__brand">getirfinans</span>
-          <span class="dp-card__chip"></span>
-          <span class="dp-card__scheme"><i></i><i></i></span>
-        </div>
-      </div>
-
-      <div class="hero__bankinfo">
-        bankacılık hizmeti
-        <span class="fiba"><img src="assets/logos/fibabanka-logo.svg" alt="Fibabanka" onerror="this.replaceWith(Object.assign(document.createElement('b'),{textContent:'Fibabanka'}))"></span>
-        tarafından verilmektedir
+      <!-- Hero card visual: debit-white-bg.mp4 card loop -->
+      <div class="dpc-hero__card" aria-hidden="true">
+        <div class="ph dpc-hero__card-ph" data-label="debit-white-bg.mp4"></div>
+        <video class="dpc-hero__video" autoplay muted playsinline>
+          <source src="assets/video/debit-white-bg.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </section>
 
-  <!-- ============ 2. MINUTES — başvur, onaylan, kapında ============ -->
-  <section class="section dp-steps" id="dakikalar">
-    <div class="container">
-      <header class="sec-head reveal">
-        <h2 class="sec-title">dakikalar içinde <span class="hl">kapında</span></h2>
-        <p class="sec-lead">başvurudan teslimata, kart getir hızıyla gelir</p>
+  <!-- ============ 2. EARN ============ -->
+  <section class="dpc-earn">
+    <div class="dpc-container">
+      <header class="dpc-earn__head">
+        <h2 class="dpc-title">harcadıkça getirpara <span class="hl">ve nakit iade kazan</span></h2>
+        <p class="dpc-earn__sub">yemekten markete, akaryakıttan alışverişe nakit iade kazanırken;<br>getirmarket ve bitaksi’de getirpara ile kazancını katla</p>
       </header>
-      <ol class="dp-steps__row">
-        <li class="dp-step reveal">
-          <span class="dp-step__num">1</span>
-          <h3>başvur</h3>
-          <p>getir’den ya da getirfinans uygulamasından, saniyeler içinde</p>
+      <div class="dpc-earn__cards">
+        <article class="dpc-earn__card dpc-earn__card--iade">
+          <img src="assets/img/debit-earn-photo.png" alt="" onerror="this.remove()">
+          <p>fiziksel tüm harcamalarına aylık ₺1250'ye kadar anında nakit iade!</p>
+        </article>
+        <article class="dpc-earn__card dpc-earn__card--getirpara">
+          <img src="assets/img/debit-earn-phone.png" alt="" onerror="this.remove()">
+          <p>getirmarket ve bitaksi'de yapacağın harcamalara <span class="y">%3</span> getirpara</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. DELIVERY ============ -->
+  <section class="dpc-steps">
+    <div class="dpc-container" style="height:100%">
+      <div class="dpc-steps__panel">
+        <h2 class="dpc-title">hızlı kart <span class="hl">teslimatı</span></h2>
+        <p class="dpc-steps__panel-sub">kartın dakikalar içinde kapında</p>
+        <a href="#" class="dpc-cta">kart al</a>
+      </div>
+      <!-- Step copy below is the Figma draft's English placeholder text, reproduced as-is -->
+      <ol class="dpc-steps__list">
+        <li class="dpc-steps__item">
+          <h3>Step 1</h3>
+          <p>Open a free account in minutes</p>
         </li>
-        <li class="dp-step reveal">
-          <span class="dp-step__num">2</span>
-          <h3>onaylan</h3>
-          <p>hesabın ve sanal kartın anında hazır</p>
+        <li class="dpc-steps__item">
+          <h3>Step 2</h3>
+          <p>Order a card for a one-time fee of 7 GBP</p>
         </li>
-        <li class="dp-step reveal">
-          <span class="dp-step__num">3</span>
-          <h3>kapını aç</h3>
-          <p>fiziksel kartın getir hızıyla, kuryeyle kapına gelsin</p>
+        <li class="dpc-steps__item">
+          <h3>Step 3</h3>
+          <p>Start spending with a digital card immediately</p>
         </li>
       </ol>
-      <p class="dp-steps__proof reveal"><span class="dp-chip dp-chip--yellow"><img src="assets/icons/courier.svg" alt="" onerror="this.remove()">evet, süre tuttuk</span></p>
-    </div>
-  </section>
-
-  <!-- ============ 3. DOUBLE EARN — getirpara × nakit iade ============ -->
-  <section class="section dp-earn" id="kazanc">
-    <div class="container">
-      <header class="sec-head reveal">
-        <h2 class="sec-title">harcadıkça <span class="hl">kazan</span></h2>
-        <p class="sec-lead">iki taraflı kazanç: getirpara ve anında nakit iade</p>
-      </header>
-      <div class="dp-earn__grid">
-        <article class="dp-earn__panel dp-earn__panel--getirpara reveal">
-          <div class="dp-earn__media media-slot ph" data-label="earn-getirpara.png">
-            <img src="assets/img/earn-getirpara.png" alt="" onerror="this.remove()">
-            <span class="dp-chip dp-chip--float"><img src="assets/icons/getirpara.svg" alt="" onerror="this.remove()">+₺37 getirpara</span>
-          </div>
-          <div class="dp-earn__body">
-            <h3>getir ve bitaksi’de <b>%3 getirpara</b></h3>
-            <p>hesap kartınla her ay toplam ₺1.250’ye kadar getirpara kazan</p>
-          </div>
-        </article>
-        <article class="dp-earn__panel dp-earn__panel--iade reveal">
-          <div class="dp-earn__media media-slot ph" data-label="earn-iade.png">
-            <img src="assets/img/earn-iade.png" alt="" onerror="this.remove()">
-            <span class="dp-chip dp-chip--float"><img src="assets/icons/cashback.svg" alt="" onerror="this.remove()">+₺12 nakit iade</span>
-          </div>
-          <div class="dp-earn__body">
-            <h3>anında <b>%1 nakit iade</b></h3>
-            <p>tüm fiziksel harcamalarda ₺1.250’ye kadar anında %1 nakit iade kazan</p>
-          </div>
-        </article>
+      <div class="dpc-steps__phone">
+        <img src="assets/img/debit-phone-tilted.png" alt="" onerror="this.parentElement.classList.add('ph');this.parentElement.dataset.label='debit-phone-tilted.png';this.remove()">
       </div>
     </div>
   </section>
 
-  <!-- ============ 4. RECYCLED — the pun pays off ============ -->
-  <section class="section dp-recycled" id="geridonusum">
-    <div class="container dp-recycled__inner">
-      <div class="dp-recycled__media media-slot ph reveal-left" data-label="recycled-macro.png">
-        <img src="assets/img/recycled-macro.png" alt="" onerror="this.remove()">
-      </div>
-      <div class="dp-recycled__copy reveal-right">
-        <h2 class="dp-recycled__title">adı nereden mi geliyor?</h2>
-        <p class="dp-recycled__desc">kartın geri dönüştürülmüş malzemeden üretiliyor. harcadıkça kazandırdığı için de <b>geri dönüşü muhteşem</b>.</p>
+  <!-- ============ 4. TRANSFERS ============ -->
+  <section class="dpc-split">
+    <div class="dpc-container" style="height:100%">
+      <div class="dpc-split__media dpc-split__media--left" aria-hidden="true"></div>
+      <div class="dpc-split__copy dpc-split__copy--right" style="top:216px">
+        <h2 class="dpc-title">ücretsiz <span class="hl">para transferi</span></h2>
+        <p class="dpc-split__sub">7/24 ücretsiz havale, EFT, FAST</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ 5. ABROAD ============ -->
-  <section class="section dp-abroad" id="yurtdisi">
-    <div class="container dp-abroad__inner">
-      <div class="dp-abroad__copy reveal-left">
-        <h2 class="dp-abroad__title">hesap kartınla yurtdışında<br><span class="mark">yapılacaklar listesi</span></h2>
-        <ul class="dp-abroad__list">
-          <li><span class="dp-abroad__ic"><img src="assets/icons/flag-usd.svg" alt="" onerror="this.remove()"></span>avantajlı kurlarla harcama yap</li>
-          <li><span class="dp-abroad__ic"><img src="assets/icons/cashback.svg" alt="" onerror="this.remove()"></span>yurt dışı harcamalarında da %1 nakit iade kazan</li>
-          <li><span class="dp-abroad__ic"><img src="assets/icons/coin-gold.svg" alt="" onerror="this.remove()"></span>atm’den para çekerken komisyonunu avantajlı kurla öde</li>
+  <!-- ============ 5. ATM ============ -->
+  <section class="dpc-split">
+    <div class="dpc-container" style="height:100%">
+      <div class="dpc-split__copy dpc-split__copy--left" style="top:200px">
+        <h2 class="dpc-title">anlaşmalı <span class="hl">5.355 ATM</span></h2>
+        <p class="dpc-split__sub">Fibabanka ve Akbank ATM'lerinden<br>ücretsiz para çek / yatır</p>
+      </div>
+      <div class="dpc-split__media dpc-split__media--right" aria-hidden="true">placeholder image</div>
+    </div>
+  </section>
+
+  <!-- ============ 6. SANAL HESAP KARTI (new — not in Figma draft yet) ============ -->
+  <section class="dpc-split">
+    <div class="dpc-container" style="height:100%">
+      <div class="dpc-split__media dpc-split__media--left" aria-hidden="true">sanal kart görseli</div>
+      <div class="dpc-split__copy dpc-split__copy--right" style="top:104px">
+        <h2 class="dpc-title">sanal <span class="hl">hesap kartı</span></h2>
+        <ul class="dpc-features">
+          <li>harcamaların için ayrı kartlar oluştur, rahatça takip et</li>
+          <li>internet alışverişlerini güvenle yap</li>
+          <li>her kartın için limitini belirle, bütçeni kontrol et</li>
         </ul>
       </div>
-      <div class="dp-abroad__media media-slot ph reveal-right" data-label="abroad-photo.png">
-        <img src="assets/img/abroad-photo.png" alt="" onerror="this.remove()">
+    </div>
+  </section>
+
+  <!-- ============ 7. ABROAD ============ -->
+  <section class="dpc-abroad">
+    <div class="dpc-container">
+      <h2 class="dpc-title dpc-abroad__title">hesap kartınla yurtdışında<br><span class="hl">yapılacaklar listesi</span></h2>
+      <ul class="dpc-abroad__captions">
+        <li>avantajlı kurlarla harcama yap</li>
+        <li>yurt dışında harcarken de %1 nakit iade kazan</li>
+        <li>ATM'den para çekerken komisyonu avantajlı kurla öde</li>
+      </ul>
+      <div class="dpc-abroad__collage">
+        <img class="dpc-abroad__img-1" src="assets/img/debit-abroad-1.png" alt="" onerror="this.remove()">
+        <img class="dpc-abroad__img-2" src="assets/img/debit-abroad-2.png" alt="" onerror="this.remove()">
+        <img class="dpc-abroad__img-3" src="assets/img/debit-abroad-3.png" alt="" onerror="this.remove()">
+        <img class="dpc-abroad__img-4" src="assets/img/debit-abroad-4.png" alt="" onerror="this.remove()">
+        <img class="dpc-abroad__img-5" src="assets/img/debit-abroad-5.png" alt="" onerror="this.remove()">
+        <img class="dpc-abroad__img-card" src="assets/img/debit-card-render.png" alt="" onerror="this.remove()">
       </div>
     </div>
   </section>
 
-  <!-- ============ 6. TRUST + FAQ ============ -->
-  <section class="section dp-trust" id="guven">
-    <div class="container">
-      <div class="dp-trust__band reveal">
-        <div class="dp-trust__item"><b>Fibabanka</b><span>bankacılık hizmeti güvencesi</span></div>
-        <span class="dp-trust__div" aria-hidden="true"></span>
-        <div class="dp-trust__item"><b>TMSF</b><span>mevduatın güvence altında</span></div>
-        <span class="dp-trust__div" aria-hidden="true"></span>
-        <div class="dp-trust__item"><b>5.355+ atm</b><span>Fibabanka ve Akbank’ta ücretsiz</span></div>
-        <span class="dp-trust__div" aria-hidden="true"></span>
-        <div class="dp-trust__item"><b>7/24 ücretsiz</b><span>havale, EFT ve FAST</span></div>
-      </div>
-
-      <!-- FAQ answers: placeholder copy — confirm with product before handoff -->
-      <div class="dp-faq reveal">
-        <h2 class="dp-faq__title">merak edilenler</h2>
-        <details class="dp-faq__item">
-          <summary>hesap kartının ücreti var mı?</summary>
-          <p>hesap kartı aidatsızdır; kart ücreti alınmaz.</p>
-        </details>
-        <details class="dp-faq__item">
-          <summary>karta nasıl başvururum?</summary>
-          <p>getir uygulamasından ya da getirfinans uygulamasından dakikalar içinde başvurabilirsin.</p>
-        </details>
-        <details class="dp-faq__item">
-          <summary>kartım ne zaman elime ulaşır?</summary>
-          <p>fiziksel kartın getir kuryesiyle dakikalar içinde kapına gelir; sanal kartın anında hazır.</p>
-        </details>
-        <details class="dp-faq__item">
-          <summary>getirpara ve nakit iade birlikte kazanılır mı?</summary>
-          <p>getir ve bitaksi harcamalarında getirpara, fiziksel harcamalarda nakit iade kazanırsın.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 7. FOOTER (shared with landing, includes app band) ============ -->
+  <!-- ============ 8. FOOTER (shared with landing, includes app band) ============ -->
   <footer class="footer" id="footer">
     <div class="container">
       <div class="footer__cta">
@@ -250,28 +238,8 @@
 
 </main>
 
-<!-- Layout wireframe: minimal JS only. Landing JS (swaps, calculator, GSAP) intentionally
-     not loaded — micro-interactions are phase 2. -->
-<script>
-(function () {
-  var header = document.getElementById("siteHeader");
-  function onScroll() { header.classList.toggle("is-scrolled", window.scrollY > 8); }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
+<!-- App Scripts to support mega menu -->
+<script src="js/main.js"></script>
 
-  var els = document.querySelectorAll(".reveal,.reveal-left,.reveal-right");
-  if (new URLSearchParams(location.search).has("static") || !("IntersectionObserver" in window)) {
-    document.documentElement.classList.add("static-preview");
-    els.forEach(function (e) { e.classList.add("is-in"); });
-    return;
-  }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (en) {
-      if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); }
-    });
-  }, { rootMargin: "0px 0px -12% 0px" });
-  els.forEach(function (e) { io.observe(e); });
-})();
-</script>
 </body>
 </html>
