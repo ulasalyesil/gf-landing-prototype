@@ -416,6 +416,13 @@
 .footer__logo { height: 26px; width: auto; margin-bottom: 4px; }
 .footer__fiba .fiba img { height: 16px; width: auto; }
 
+/* ===== Highlight bar color ===== */
+/* brand purple on light sections; dark sections (.debit, .app-dark, .app-split)
+   keep the yellow default from base.css, as does /hesap-karti */
+.stats .hl::after, .rates .hl::after, .features .hl::after,
+.campaigns .mark::after, .loan .mark::after, .faiz .mark::after,
+.transfer .mark::after, .ai .mark::after { background: var(--gf-purple); }
+
 /* ===== Directional reveals (set by animations.js) ===== */
 .reveal-left, .reveal-right { opacity: 0; }
 .reveal-left { transform: translateX(-40px); }

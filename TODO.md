@@ -6,7 +6,7 @@
 
 - [ ] **Mega menu — subtext fix** for *mini kredi* and *kasada kredi* items
 - [x] **Motion integration** — landing page ported to Motion on the `motion-integration` branch (shared `Reveal` component replaces the GSAP reveals; ideation + build order in `docs/motion-ideation.md`). Remaining: `Loan` clip-path scroll-scrub still GSAP (port when touched)
-- [ ] **Yellow highlight — purple borders on light sections** — highlight borders should be purple when the section background is light
+- [x] **Yellow highlight — purple borders on light sections** — done on `motion-integration`: brand purple on all light sections, yellow kept on dark (.debit, .app-dark) and /hesap-karti
 - [ ] **Debit card page — finalize design** (`/hesap-karti`, GFDES-2174; layout locked "Dakikalar, drenched" → layout iteration → micro-interactions, built with Motion)
 
 ## Blocker
