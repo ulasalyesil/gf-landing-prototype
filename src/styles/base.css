@@ -67,9 +67,10 @@ ul { list-style: none; }
 }
 @media (hover: hover) and (pointer: fine) {
   .btn:hover { transform: translateY(-2px); background: var(--gf-purple-700); box-shadow: 0 4px 12px rgba(90, 40, 160, 0.25); }
+  .btn:hover .ic { transform: translateX(3px); }
 }
 .btn:active { transform: scale(.97); transition: transform .12s var(--ease-out-strong); }
-.btn .ic { display: flex; align-items: center; justify-content: center; }
+.btn .ic { display: flex; align-items: center; justify-content: center; transition: transform .25s var(--ease-out-strong); }
 .btn .ic img { width: 24px; height: 24px; }
 .btn--ghost { background: rgba(255,255,255,.14); color: #fff; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.25); }
 @media (hover: hover) and (pointer: fine) {

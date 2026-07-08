@@ -1,146 +1,125 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef, useState } from "react";
+import { motion, useInView } from "motion/react";
+import type { Variants } from "motion/react";
+import Reveal, { useMotionOff } from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+/* Phone rises, cards fan out with a visible spring landing (the one place a
+   bounce fits). Hovering the stage spreads the cards flat; springs retarget
+   from current velocity, so entrance and hover interrupt each other cleanly. */
+
+const FAN_SPRING = { type: "spring", duration: 0.7, bounce: 0.2 } as const;
+const SPREAD_SPRING = { type: "spring", duration: 0.5, bounce: 0 } as const;
+
+const phoneVariants: Variants = {
+  hidden: { y: 60, opacity: 0, scale: 0.94 },
+  shown: {
+    y: 0,
+    opacity: 1,
+    scale: 1,
+    transition: { type: "spring", duration: 0.8, bounce: 0 },
+  },
+};
+
+const cardVariants = (side: 1 | -1): Variants => ({
+  hidden: { x: 0, rotate: 0, opacity: 0 },
+  shown: {
+    x: 185 * side,
+    rotate: 11 * side,
+    opacity: 1,
+    transition: { ...FAN_SPRING, delay: 0.15 },
+  },
+  spread: {
+    x: 240 * side,
+    rotate: 0,
+    opacity: 1,
+    transition: SPREAD_SPRING,
+  },
+});
 
 export default function Transfer() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const off = useMotionOff();
+  const inView = useInView(stageRef, { once: true, margin: "0px 0px -28% 0px" });
+  const [isSpread, setIsSpread] = useState(false);
 
-  useGSAP(() => {
-    if (!containerRef.current || !stageRef.current) return;
-
-    // Head reveal
-    gsap.fromTo(
-      ".reveal",
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-        onComplete: function(this: any) {
-          const targets = this.targets();
-          targets.forEach((t: HTMLElement) => t.classList.add("is-in"));
-        }
-      }
-    );
-
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobile) return;
-
-    // Fly in animation trigger
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: stageRef.current,
-        start: "top 72%",
-      },
-    });
-
-    tl.fromTo(
-      ".transfer__phone",
-      { y: 60, opacity: 0, scale: 0.94 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }
-    )
-      .fromTo(
-        ".transfer__card--left",
-        { xPercent: -50, yPercent: -30, x: 0, rotate: 0, opacity: 0 },
-        { x: -185, rotate: -11, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=.45"
-      )
-      .fromTo(
-        ".transfer__card--right",
-        { xPercent: -50, yPercent: -30, x: 0, rotate: 0, opacity: 0 },
-        { x: 185, rotate: 11, opacity: 1, duration: 0.8, ease: "power3.out" },
-        "-=.7"
-      );
-
-    // Hover listeners
-    const handleMouseEnter = () => {
-      gsap.to(".transfer__card--left", {
-        x: -240,
-        rotate: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-      gsap.to(".transfer__card--right", {
-        x: 240,
-        rotate: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-    };
-
-    const handleMouseLeave = () => {
-      gsap.to(".transfer__card--left", {
-        x: -185,
-        rotate: -11,
-        duration: 0.5,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-      gsap.to(".transfer__card--right", {
-        x: 185,
-        rotate: 11,
-        duration: 0.5,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
-    };
-
-    const stageEl = stageRef.current;
-    stageEl.addEventListener("mouseenter", handleMouseEnter);
-    stageEl.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      stageEl.removeEventListener("mouseenter", handleMouseEnter);
-      stageEl.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, { scope: containerRef });
+  const cardState = !inView ? "hidden" : isSpread ? "spread" : "shown";
 
   return (
-    <section className="section transfer" id="transfer" ref={containerRef}>
+    <section className="section transfer" id="transfer">
       <div className="transfer__rings hide-on-mobile" aria-hidden="true"></div>
       <div className="container">
-        <div className="eyebrow-wrap">
-          <h2 className="h-sec reveal">
+        <Reveal className="eyebrow-wrap">
+          <h2 className="h-sec">
             para transferi tabii ki{" "}
             <AnimatedHighlight type="mark">ücretsiz!</AnimatedHighlight>
           </h2>
-          <p className="h-lead reveal">
+          <p className="h-lead">
             para gönderirken ücret düşünme. 7/24 ücretsiz EFT, FAST ve havale
             yap.
             <br />
             getirfinanslılar arasında döviz ve değerli maden transferleri de
             ücretsiz
           </p>
-        </div>
+        </Reveal>
 
-        <div className="transfer__stage" ref={stageRef}>
-          <div className="transfer__card transfer__card--left media-slot">
-            <img src="/assets/img/transfer-card-left.png" alt="" />
-          </div>
-          <div className="transfer__phone media-slot">
-            <img src="/assets/img/transfer-phone.png" alt="" />
-          </div>
-          <div className="transfer__card transfer__card--right media-slot">
-            <img src="/assets/img/transfer-card-right.png" alt="" />
-          </div>
+        <div
+          className="transfer__stage"
+          ref={stageRef}
+          onMouseEnter={() => setIsSpread(true)}
+          onMouseLeave={() => setIsSpread(false)}
+        >
+          {off ? (
+            /* Reduced motion / mobile: CSS static fallback transforms apply */
+            <>
+              <div className="transfer__card transfer__card--left">
+                <div className="transfer__card-inner media-slot">
+                  <img src="/assets/img/transfer-card-left.png" alt="" />
+                </div>
+              </div>
+              <div className="transfer__phone media-slot">
+                <img src="/assets/img/transfer-phone.png" alt="" />
+              </div>
+              <div className="transfer__card transfer__card--right">
+                <div className="transfer__card-inner media-slot">
+                  <img src="/assets/img/transfer-card-right.png" alt="" />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="transfer__card transfer__card--left">
+                <motion.div
+                  className="transfer__card-inner media-slot"
+                  variants={cardVariants(-1)}
+                  initial="hidden"
+                  animate={cardState}
+                >
+                  <img src="/assets/img/transfer-card-left.png" alt="" />
+                </motion.div>
+              </div>
+              <motion.div
+                className="transfer__phone media-slot"
+                variants={phoneVariants}
+                initial="hidden"
+                animate={inView ? "shown" : "hidden"}
+              >
+                <img src="/assets/img/transfer-phone.png" alt="" />
+              </motion.div>
+              <div className="transfer__card transfer__card--right">
+                <motion.div
+                  className="transfer__card-inner media-slot"
+                  variants={cardVariants(1)}
+                  initial="hidden"
+                  animate={cardState}
+                >
+                  <img src="/assets/img/transfer-card-right.png" alt="" />
+                </motion.div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>

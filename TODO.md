@@ -5,7 +5,7 @@
 ## Next up
 
 - [ ] **Mega menu — subtext fix** for *mini kredi* and *kasada kredi* items
-- [ ] **Motion integration** — wire motion.dev into the landing page: page animations, appear/entrance animations (replaces the GSAP reveals)
+- [x] **Motion integration** — landing page ported to Motion on the `motion-integration` branch (shared `Reveal` component replaces the GSAP reveals; ideation + build order in `docs/motion-ideation.md`). Remaining: `Loan` clip-path scroll-scrub still GSAP (port when touched)
 - [ ] **Yellow highlight — purple borders on light sections** — highlight borders should be purple when the section background is light
 - [ ] **Debit card page — finalize design** (`/hesap-karti`, GFDES-2174; layout locked "Dakikalar, drenched" → layout iteration → micro-interactions, built with Motion)
 
@@ -15,8 +15,8 @@
 
 ## Bugs
 
-- [ ] `CampaignsCarousel` hydration mismatch — `camp-pos-*` class computed in an effect, not during render
-- [ ] `Rates` GSAP "target not found" — query runs before `.rates` mounts; fix via the Motion port
+- [x] `CampaignsCarousel` hydration mismatch — fixed on `motion-integration`: pos classes derive from state in render, no `window` reads
+- [x] `Rates` GSAP "target not found" — gone with the Motion port (`motion-integration`); GSAP removed from Rates entirely
 
 ## Backlog
 

@@ -1,54 +1,44 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+  useMotionValueEvent,
+} from "motion/react";
+import Reveal, { useMotionOff } from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
 export default function AppFeatures() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const darkRef = useRef<HTMLElement>(null);
+  const off = useMotionOff();
+  const [lightsOut, setLightsOut] = useState(false);
 
-  useGSAP(() => {
-    if (!containerRef.current) return;
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobile) {
-      const reveals = containerRef.current.querySelectorAll(".reveal");
-      reveals.forEach((r) => r.classList.add("is-in"));
-      return;
-    }
+  /* "ışıkları kapattık!" — the lights actually go out: as the section scrolls
+     toward viewport center the backdrop dims from lifted to full dark, the
+     copy reveals only after the dim lands, and the mark underline draws last
+     (via is-in on the inner container). Reduced motion / mobile: plain fade. */
+  const { scrollYProgress } = useScroll({
+    target: darkRef,
+    offset: ["start end", "center center"],
+  });
+  const brightness = useTransform(scrollYProgress, [0, 1], [1.75, 1]);
+  const mediaFilter = useMotionTemplate`brightness(${brightness})`;
+  const copyOpacity = useTransform(scrollYProgress, [0.6, 0.95], [0, 1]);
+  const copyY = useTransform(scrollYProgress, [0.6, 0.95], [24, 0]);
 
-    gsap.fromTo(
-      ".reveal",
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-        onComplete: function(this: any) {
-          const targets = this.targets();
-          targets.forEach((t: HTMLElement) => t.classList.add("is-in"));
-        }
-      }
-    );
-  }, { scope: containerRef });
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (v > 0.92) setLightsOut(true);
+  });
 
   return (
-    <div ref={containerRef}>
+    <div>
       {/* 11. APP SPLIT (Hidden by default in prototype) */}
       <section className="section app-split" id="apps" style={{ display: "none" }}>
         <div className="container app-split__inner">
-          <div className="app-split__copy reveal-left">
+          <Reveal direction="left" className="app-split__copy">
             <h2 className="app-split__title">
               ister getir’den gir
               <br />
@@ -80,30 +70,56 @@ export default function AppFeatures() {
                 yüz tanıma ve parmak izi ile giriş
               </li>
             </ul>
-          </div>
-          <div className="app-split__media reveal-right">
+          </Reveal>
+          <Reveal direction="right" className="app-split__media">
             <img src="/assets/img/standalone-woman.png" alt="" />
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* 11b. APP DARK MODE (Alternative - Active in prototype) */}
-      <section className="section app-dark" id="apps-dark">
+      <section className="section app-dark" id="apps-dark" ref={darkRef}>
         <div className="app-dark__media">
-          <img src="/assets/img/dark-mode-bg.png" alt="" />
+          {off ? (
+            <img src="/assets/img/dark-mode-bg.png" alt="" />
+          ) : (
+            <motion.img
+              src="/assets/img/dark-mode-bg.png"
+              alt=""
+              style={{ filter: mediaFilter, willChange: "filter" }}
+            />
+          )}
         </div>
-        <div className="container app-dark__inner reveal">
-          <div className="app-dark__copy">
-            <h2 className="app-dark__title">
-              ışıkları <AnimatedHighlight type="mark">kapattık!</AnimatedHighlight>
-            </h2>
-            <p className="app-dark__lead">
-              gece insanıysan getirfinans'ı
-              <br />
-              koyu mod'da kullanabilirsin
-            </p>
-          </div>
-        </div>
+        {off ? (
+          <Reveal className="container app-dark__inner">
+            <div className="app-dark__copy">
+              <h2 className="app-dark__title">
+                ışıkları <AnimatedHighlight type="mark">kapattık!</AnimatedHighlight>
+              </h2>
+              <p className="app-dark__lead">
+                gece insanıysan getirfinans'ı
+                <br />
+                koyu mod'da kullanabilirsin
+              </p>
+            </div>
+          </Reveal>
+        ) : (
+          <motion.div
+            className={`container app-dark__inner ${lightsOut ? "is-in" : ""}`}
+            style={{ opacity: copyOpacity, y: copyY }}
+          >
+            <div className="app-dark__copy">
+              <h2 className="app-dark__title">
+                ışıkları <AnimatedHighlight type="mark">kapattık!</AnimatedHighlight>
+              </h2>
+              <p className="app-dark__lead">
+                gece insanıysan getirfinans'ı
+                <br />
+                koyu mod'da kullanabilirsin
+              </p>
+            </div>
+          </motion.div>
+        )}
       </section>
     </div>
   );

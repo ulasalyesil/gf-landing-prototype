@@ -1,15 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useState, useEffect } from "react";
 import { RATES_SEED, RATES_CYCLE_MS, RateItem } from "@/data/content";
+import Reveal, { RevealItem } from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const FLAG_IMG: Record<string, string> = {
   USD: "flag-usd.svg",
@@ -19,11 +13,11 @@ const FLAG_IMG: Record<string, string> = {
 };
 
 export default function Rates() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [rates, setRates] = useState<RateItem[]>([]);
   const [updateTime, setUpdateTime] = useState("--:--");
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashCard, setFlashCard] = useState<string | null>(null);
+  const [timeTick, setTimeTick] = useState(false);
 
   // Initialize data and cycle
   useEffect(() => {
@@ -52,69 +46,23 @@ export default function Rates() {
           };
         })
       );
-      
+
       // Flash legs and play animation
       setFlashCard("all");
       setIsAnimating(true);
       setUpdateTime(fmtTime(new Date()));
+      setTimeTick(true);
 
       // Reset animation states
       setTimeout(() => {
         setIsAnimating(false);
         setFlashCard(null);
+        setTimeTick(false);
       }, 1000);
     }, RATES_CYCLE_MS);
 
     return () => clearInterval(interval);
   }, []);
-
-  useGSAP(() => {
-    if (!containerRef.current) return;
-
-    // Head reveal
-    gsap.fromTo(
-      ".reveal",
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: ".rates",
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-        onComplete: function(this: any) {
-          // Add is-in class to completed reveals
-          const targets = this.targets();
-          targets.forEach((t: HTMLElement) => t.classList.add("is-in"));
-        }
-      }
-    );
-
-    // Stagger cards reveal inside rates cards wrapper
-    const cardsWrapper = containerRef.current.querySelector("[data-stagger]");
-    if (cardsWrapper) {
-      gsap.fromTo(
-        cardsWrapper.children,
-        { y: 24, opacity: 0, scale: 0.98 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.6,
-          ease: "power3.out",
-          stagger: 0.06,
-          scrollTrigger: {
-            trigger: cardsWrapper,
-            start: "top 82%",
-          },
-        }
-      );
-    }
-  }, { scope: containerRef });
 
   // Formatting helpers
   const splitParts = (n: number, dec: number) => {
@@ -151,29 +99,35 @@ export default function Rates() {
   };
 
   return (
-    <section className="section rates" id="rates" ref={containerRef}>
+    <section className="section rates" id="rates">
       <div className="container">
-        <header className="sec-head reveal">
+        <Reveal as="header" className="sec-head">
           <h2 className="sec-title">
             güncel <AnimatedHighlight type="hl">kurlar</AnimatedHighlight>
           </h2>
           <p className="rates__updated sec-lead">
-            son güncelleme saati <b>{updateTime}</b>
+            son güncelleme saati{" "}
+            <b className={timeTick ? "is-ticking" : ""}>{updateTime}</b>
           </p>
-        </header>
+        </Reveal>
 
-        <div className="rates__row reveal">
-          <div className="rates__cards" id="ratesCards" data-stagger>
+        <Reveal className="rates__row" stagger={0.06}>
+          <div className="rates__cards" id="ratesCards">
             {rates.map((r) => {
               const up = (r.dir ?? 1) >= 0;
               const trendIcon = up ? "trend-up.svg" : "trend-down.svg";
               const isFlashing = flashCard === "all" || flashCard === r.code;
+              const flashClass = isFlashing ? `flash ${up ? "up" : "down"}` : "";
 
               const buyParts = splitParts(r.al, r.dec);
               const sellParts = splitParts(r.sat, r.dec);
 
+              // Ticker semantics: rising rates pop upward (digits enter from
+              // below), falling rates pop downward.
+              const digitDir = { "--digit-dir-y": up ? 1 : -1 } as React.CSSProperties;
+
               return (
-                <article key={r.code} className="rate-card" data-code={r.code}>
+                <RevealItem key={r.code} as="article" className="rate-card">
                   <div className="rate-card__row">
                     <span className="rate-card__flag">
                       <img
@@ -197,9 +151,9 @@ export default function Rates() {
                     </span>
                   </div>
 
-                  <div className="rate-card__legs">
+                  <div className="rate-card__legs" style={digitDir}>
                     <button
-                      className={`rate-leg ${isFlashing ? "flash" : ""}`}
+                      className={`rate-leg ${flashClass}`}
                       aria-label={`al ${fullFmt(r.al, r.dec)}`}
                     >
                       <span className="rate-leg__lbl">al</span>
@@ -218,7 +172,7 @@ export default function Rates() {
                     </button>
 
                     <button
-                      className={`rate-leg ${isFlashing ? "flash" : ""}`}
+                      className={`rate-leg ${flashClass}`}
                       aria-label={`sat ${fullFmt(r.sat, r.dec)}`}
                     >
                       <span className="rate-leg__lbl">sat</span>
@@ -236,7 +190,7 @@ export default function Rates() {
                       </span>
                     </button>
                   </div>
-                </article>
+                </RevealItem>
               );
             })}
           </div>
@@ -247,7 +201,7 @@ export default function Rates() {
               <img src="/assets/icons/chevron-right.svg" alt="" />
             </span>
           </a>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

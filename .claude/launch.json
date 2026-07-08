@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8757", "--bind", "127.0.0.1", "--directory", "/Users/ualyesil/Documents/code/gf-landing-mobile"],
       "port": 8757
+    },
+    {
+      "name": "gf-landing-motion",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3971"],
+      "port": 3971
     }
   ]
 }

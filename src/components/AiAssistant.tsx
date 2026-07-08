@@ -1,26 +1,22 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useInView } from "motion/react";
 import lottie from "lottie-web";
+import type { AnimationItem } from "lottie-web";
+import Reveal from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
 export default function AiAssistant() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const lottieRef = useRef<HTMLDivElement>(null);
+  const animRef = useRef<AnimationItem | null>(null);
   const [lottieLoaded, setLottieLoaded] = useState(false);
+  const inView = useInView(lottieRef, { once: true, margin: "0px 0px -20% 0px" });
 
   useEffect(() => {
     if (!lottieRef.current) return;
 
-    // Load Lottie
-    let anim: any;
+    let anim: AnimationItem | undefined;
     try {
       anim = lottie.loadAnimation({
         container: lottieRef.current,
@@ -29,79 +25,54 @@ export default function AiAssistant() {
         autoplay: false,
         path: "/assets/lottie/ai-assistant.json",
       });
+      animRef.current = anim;
 
       anim.addEventListener("DOMLoaded", () => {
         setLottieLoaded(true);
-      });
-
-      ScrollTrigger.create({
-        trigger: lottieRef.current,
-        start: "top 80%",
-        once: true,
-        onEnter: () => anim.play(),
       });
     } catch (e) {
       console.warn("Lottie failed to load:", e);
     }
 
     return () => {
+      animRef.current = null;
       if (anim) anim.destroy();
     };
   }, []);
 
-  useGSAP(() => {
-    if (!containerRef.current) return;
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobile) {
-      const reveals = containerRef.current.querySelectorAll(".reveal");
-      reveals.forEach((r) => r.classList.add("is-in"));
-      return;
-    }
+  // Play once when scrolled into view
+  useEffect(() => {
+    if (inView && lottieLoaded) animRef.current?.play();
+  }, [inView, lottieLoaded]);
 
-    gsap.fromTo(
-      ".reveal",
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-        onComplete: function(this: any) {
-          const targets = this.targets();
-          targets.forEach((t: HTMLElement) => t.classList.add("is-in"));
-        }
-      }
-    );
-  }, { scope: containerRef });
+  // Rare, user-initiated: click the stage to replay
+  const handleReplay = () => {
+    animRef.current?.goToAndPlay(0);
+  };
 
   return (
-    <section className="section ai" id="ai" ref={containerRef}>
+    <section className="section ai" id="ai">
       <div className="container">
-        <div className="eyebrow-wrap">
-          <h2 className="h-sec reveal">
+        <Reveal className="eyebrow-wrap">
+          <h2 className="h-sec">
             akıllı asistana sor,{" "}
             <AnimatedHighlight type="mark">
               hesabını daha kolay yönet!
             </AnimatedHighlight>
           </h2>
-          <p className="h-lead reveal">
+          <p className="h-lead">
             faizinden transferlerine kadar hesabınla ilgili sorularına saniyeler
             içinde cevap al
           </p>
-        </div>
+        </Reveal>
 
-        <div className="ai__stage reveal">
+        <Reveal className="ai__stage">
           {/* Lottie container (hidden on mobile via global CSS) */}
           <div
             ref={lottieRef}
             className={`ai__lottie ${!lottieLoaded ? "ph" : ""}`}
             data-label="ai-assistant.json"
+            onClick={handleReplay}
           >
             {!lottieLoaded && (
               <img
@@ -115,7 +86,7 @@ export default function AiAssistant() {
           <div className="ai__mobile-img">
             <img src="/assets/img/ai-assistant-mobile.png" alt="AI Assistant" />
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

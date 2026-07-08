@@ -1,14 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Reveal from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const CAMPAIGNS = [
   {
@@ -28,8 +22,9 @@ const CAMPAIGNS = [
   },
 ];
 
+const CYCLE_MS = 4000;
+
 export default function CampaignsCarousel() {
-  const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(1); // default featured middle card
   const [isHovered, setIsHovered] = useState(false);
@@ -50,36 +45,10 @@ export default function CampaignsCarousel() {
         }
         return next;
       });
-    }, 4000);
+    }, CYCLE_MS);
 
     return () => clearInterval(interval);
   }, [isHovered]);
-
-  // Entrance reveals
-  useGSAP(() => {
-    if (!containerRef.current) return;
-
-    gsap.fromTo(
-      ".reveal",
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-        onComplete: function(this: any) {
-          const targets = this.targets();
-          targets.forEach((t: HTMLElement) => t.classList.add("is-in"));
-        }
-      }
-    );
-  }, { scope: containerRef });
 
   // Sync dots on mobile swipe
   const handleScroll = () => {
@@ -115,13 +84,10 @@ export default function CampaignsCarousel() {
     }
   };
 
-  // Helper to map card positional layout on desktop
+  // Positions derive from state only (no window reads in render — SSR-safe,
+  // fixes the hydration mismatch). The pos classes only apply ≥921px via CSS;
+  // the featured card follows `active` on every viewport.
   const getCardClasses = (idx: number) => {
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 920;
-    if (isMobile) {
-      return idx === 1 ? "camp camp--feature" : "camp";
-    }
-
     const rel = (idx - active + CAMPAIGNS.length) % CAMPAIGNS.length;
     if (rel === 0) return "camp camp-pos-center camp--feature";
     if (rel === 1) return "camp camp-pos-right";
@@ -132,47 +98,63 @@ export default function CampaignsCarousel() {
     <section
       className="section campaigns"
       id="avantajlar"
-      ref={containerRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="container">
-        <div className="eyebrow-wrap">
-          <h2 className="h-sec reveal">
+        <Reveal className="eyebrow-wrap">
+          <h2 className="h-sec">
             güncel getirfinans <AnimatedHighlight type="mark">fırsatları</AnimatedHighlight>
           </h2>
-          <p className="h-lead reveal">kampanyaları ve avantajları kaçırma!</p>
-        </div>
+          <p className="h-lead">kampanyaları ve avantajları kaçırma!</p>
+        </Reveal>
+
+        <Reveal direction="none">
+          <div
+            className="campaigns__track"
+            id="campaignTrack"
+            ref={trackRef}
+            onScroll={handleScroll}
+          >
+            {CAMPAIGNS.map((c) => (
+              <article key={c.id} className={getCardClasses(c.id)}>
+                <div className="camp__img">
+                  <img src={c.img} alt="" />
+                </div>
+                <div className="camp__body">
+                  <span className="camp__arrow">
+                    <img src="/assets/icons/arrow-right-circle.svg" alt="" />
+                  </span>
+                  <p className="camp__text">{c.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </Reveal>
 
         <div
-          className="campaigns__track reveal"
-          id="campaignTrack"
-          ref={trackRef}
-          onScroll={handleScroll}
+          className={`campaigns__dots ${isHovered ? "is-paused" : ""}`}
+          id="campaignDots"
         >
-          {CAMPAIGNS.map((c) => (
-            <article key={c.id} className={getCardClasses(c.id)}>
-              <div className="camp__img">
-                <img src={c.img} alt="" />
-              </div>
-              <div className="camp__body">
-                <span className="camp__arrow">
-                  <img src="/assets/icons/arrow-right-circle.svg" alt="" />
-                </span>
-                <p className="camp__text">{c.text}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="campaigns__dots" id="campaignDots" aria-hidden="true">
           {CAMPAIGNS.map((c) => (
             <button
               key={c.id}
               type="button"
               className={c.id === active ? "is-active" : ""}
+              aria-label={`kampanya ${c.id + 1}`}
               onClick={() => handleDotClick(c.id)}
-            />
+            >
+              {/* progress fill — restarts whenever the active card or the
+                  hover-pause state changes, so it stays in sync with the
+                  auto-advance interval */}
+              {c.id === active && (
+                <span
+                  key={`${active}:${isHovered}`}
+                  className="campaigns__dot-fill"
+                  aria-hidden="true"
+                />
+              )}
+            </button>
           ))}
         </div>
       </div>

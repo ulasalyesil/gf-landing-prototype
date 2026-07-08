@@ -1,14 +1,7 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Ensure ScrollTrigger is registered
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import React, { useEffect, useRef, useState } from "react";
+import { animate, useInView, useReducedMotion } from "motion/react";
 
 interface AnimatedNumberProps {
   value: number;
@@ -22,31 +15,28 @@ export default function AnimatedNumber({
   className,
 }: AnimatedNumberProps) {
   const elementRef = useRef<HTMLSpanElement>(null);
+  const reduced = useReducedMotion();
+  const inView = useInView(elementRef, { once: true, margin: "0px 0px -12% 0px" });
   const [displayValue, setDisplayValue] = useState("0" + suffix);
 
-  useGSAP(() => {
-    if (!elementRef.current) return;
-    const obj = { v: 0 };
-    
-    ScrollTrigger.create({
-      trigger: elementRef.current,
-      start: "top 88%",
-      once: true,
-      onEnter: () => {
-        gsap.to(obj, {
-          v: value,
-          duration: 1.8,
-          ease: "power2.out",
-          onUpdate: () => {
-            setDisplayValue(Math.floor(obj.v).toLocaleString("tr-TR") + suffix);
-          },
-        });
+  useEffect(() => {
+    if (!inView) return;
+    if (reduced) {
+      setDisplayValue(value.toLocaleString("tr-TR") + suffix);
+      return;
+    }
+    const controls = animate(0, value, {
+      duration: 1.8,
+      ease: "easeOut",
+      onUpdate: (v) => {
+        setDisplayValue(Math.floor(v).toLocaleString("tr-TR") + suffix);
       },
     });
-  }, { scope: elementRef });
+    return () => controls.stop();
+  }, [inView, reduced, value, suffix]);
 
   return (
-    <span ref={elementRef} className={className}>
+    <span ref={elementRef} data-count="" className={className}>
       {displayValue}
     </span>
   );

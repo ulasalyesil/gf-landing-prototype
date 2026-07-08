@@ -1,95 +1,64 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, AnimatePresence, animate, useReducedMotion } from "motion/react";
 import clsx from "clsx";
+import Reveal from "./Reveal";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+const INDICATOR_SPRING = { type: "spring", duration: 0.4, bounce: 0.15 } as const;
+
+/* Result value that tweens from its previous value to the new one on
+   recalculation — the answer counts to its new state instead of snapping. */
+function TweenValue({ value, format }: { value: number; format: (v: number) => string }) {
+  const reduced = useReducedMotion();
+  const [display, setDisplay] = useState(() => format(value));
+  const prevRef = useRef(value);
+  const formatRef = useRef(format);
+  formatRef.current = format;
+
+  useEffect(() => {
+    const from = prevRef.current;
+    prevRef.current = value;
+    if (reduced || from === value) {
+      setDisplay(formatRef.current(value));
+      return;
+    }
+    const controls = animate(from, value, {
+      duration: 0.3,
+      ease: "easeOut",
+      onUpdate: (v) => setDisplay(formatRef.current(v)),
+    });
+    return () => controls.stop();
+  }, [value, reduced]);
+
+  // Re-format on currency change without tweening
+  useEffect(() => {
+    setDisplay(formatRef.current(value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [format]);
+
+  return <>{display}</>;
 }
 
 export default function Calculator() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
   // States
   const [activeTab, setActiveTab] = useState<"gunluk" | "vadeli">("gunluk");
   const [currency, setCurrency] = useState<"TRY" | "USD" | "EUR">("TRY");
   const [amount, setAmount] = useState("160.000");
   const [days, setDays] = useState("32");
-  
+
   const [netGain, setNetGain] = useState(12000);
   const [totalBalance, setTotalBalance] = useState(172000);
   const [principal, setPrincipal] = useState(160000);
   const [dueDate, setDueDate] = useState("11.07.2025");
-  
+
   const [calcState, setCalcState] = useState<"idle" | "done" | "drawing">("idle");
-
-  // Indicator sliding measurements
-  const [tabStyle, setTabStyle] = useState<React.CSSProperties>({});
-  const [pillStyle, setPillStyle] = useState<React.CSSProperties>({});
-
-  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const curRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  // Slide indicators on tab/currency changes
-  useEffect(() => {
-    const activeTabEl = tabRefs.current[activeTab];
-    if (activeTabEl) {
-      setTabStyle({
-        transform: `translateX(${activeTabEl.offsetLeft}px)`,
-        width: `${activeTabEl.offsetWidth}px`,
-      });
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
-    const activeCurEl = curRefs.current[currency];
-    if (activeCurEl) {
-      setPillStyle({
-        transform: `translateX(${activeCurEl.offsetLeft}px)`,
-        width: `${activeCurEl.offsetWidth}px`,
-      });
-    }
-  }, [currency]);
 
   // Recalculate default date on mount
   useEffect(() => {
     calculateResults(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Entrance reveals
-  useGSAP(() => {
-    if (!containerRef.current) return;
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobile) {
-      const reveals = containerRef.current.querySelectorAll(".reveal");
-      reveals.forEach((r) => r.classList.add("is-in"));
-      return;
-    }
-
-    gsap.fromTo(
-      ".reveal",
-      { y: 24, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 82%",
-          toggleActions: "play none none none",
-        },
-        onComplete: function(this: any) {
-          const targets = this.targets();
-          targets.forEach((t: HTMLElement) => t.classList.add("is-in"));
-        }
-      }
-    );
-  }, { scope: containerRef });
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, "");
@@ -108,7 +77,7 @@ export default function Calculator() {
   const calculateResults = (triggerAnim = true) => {
     const a = parseFloat(amount.replace(/\./g, "")) || 0;
     const d = parseInt(days, 10) || 0;
-    
+
     // Custom calculation formulas from prototype
     const gross = (a * 44) / 100 * (d / 365);
     const net = gross * 0.925; // 7.5% stopaj kesintisi mock
@@ -139,51 +108,48 @@ export default function Calculator() {
     return `${sign} ${Math.floor(val).toLocaleString("tr-TR")}`;
   };
 
+  const btnLabel = calcState !== "idle" ? "hesaplandı" : "hesapla";
+
   return (
-    <section className="section calc" id="calc" ref={containerRef}>
+    <section className="section calc" id="calc">
       <div className="container">
         {/* Tabs Control */}
-        <div className="calc__tabs reveal">
-          <span
-            className="calc__tabs-underline"
-            style={tabStyle}
-            aria-hidden="true"
-          />
-          <button
-            ref={(el) => { tabRefs.current["gunluk"] = el; }}
-            className={clsx("calc__tab", activeTab === "gunluk" && "is-active")}
-            type="button"
-            onClick={() => setActiveTab("gunluk")}
-          >
-            <b>günlük</b>
-            <span>her gün kazan</span>
-          </button>
-          <button
-            ref={(el) => { tabRefs.current["vadeli"] = el; }}
-            className={clsx("calc__tab", activeTab === "vadeli" && "is-active")}
-            type="button"
-            onClick={() => setActiveTab("vadeli")}
-          >
-            <b>vadeli</b>
-            <span>iyi faizi vadeyle sabitle</span>
-          </button>
-        </div>
+        <Reveal className="calc__tabs">
+          {(
+            [
+              { key: "gunluk", title: "günlük", sub: "her gün kazan" },
+              { key: "vadeli", title: "vadeli", sub: "iyi faizi vadeyle sabitle" },
+            ] as const
+          ).map((tab) => (
+            <button
+              key={tab.key}
+              className={clsx("calc__tab", activeTab === tab.key && "is-active")}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+            >
+              <b>{tab.title}</b>
+              <span>{tab.sub}</span>
+              {activeTab === tab.key && (
+                <motion.span
+                  className="calc__tabs-underline"
+                  layoutId="calcTabsUnderline"
+                  transition={INDICATOR_SPRING}
+                  aria-hidden="true"
+                />
+              )}
+            </button>
+          ))}
+        </Reveal>
 
         {/* Container box */}
-        <div className="calc__container reveal">
+        <Reveal className="calc__container">
           <div className="calc-card">
             <div className="calc-card__top">
               {/* Currency Control */}
               <div className="calc-currency">
-                <span
-                  className="calc-currency__pill"
-                  style={pillStyle}
-                  aria-hidden="true"
-                />
                 {(["TRY", "USD", "EUR"] as const).map((cur) => (
                   <button
                     key={cur}
-                    ref={(el) => { curRefs.current[cur] = el; }}
                     className={clsx(
                       "calc-currency__btn",
                       currency === cur && "is-active"
@@ -191,7 +157,15 @@ export default function Calculator() {
                     type="button"
                     onClick={() => setCurrency(cur)}
                   >
-                    {cur === "TRY" ? "TL" : cur}
+                    {currency === cur && (
+                      <motion.span
+                        className="calc-currency__pill"
+                        layoutId="calcCurrencyPill"
+                        transition={INDICATOR_SPRING}
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span>{cur === "TRY" ? "TL" : cur}</span>
                   </button>
                 ))}
               </div>
@@ -250,9 +224,18 @@ export default function Calculator() {
                   />
                 </svg>
               </span>
-              <span className="calc-btn__label">
-                {calcState !== "idle" ? "hesaplandı" : "hesapla"}
-              </span>
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.span
+                  key={btnLabel}
+                  className="calc-btn__label"
+                  initial={{ opacity: 0, y: 4, filter: "blur(2px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -4, filter: "blur(2px)" }}
+                  transition={{ duration: 0.15, ease: "easeInOut" }}
+                >
+                  {btnLabel}
+                </motion.span>
+              </AnimatePresence>
             </button>
 
             <div className="calc-info">
@@ -286,11 +269,15 @@ export default function Calculator() {
                   </span>
                 </span>
               </span>
-              <b id="resNet">{tlFormat(netGain)}</b>
+              <b id="resNet">
+                <TweenValue value={netGain} format={tlFormat} />
+              </b>
             </div>
             <div className="calc-res">
               <span>vade sonu bakiyen</span>
-              <b id="resTotal">{tlFormat(totalBalance)}</b>
+              <b id="resTotal">
+                <TweenValue value={totalBalance} format={tlFormat} />
+              </b>
             </div>
             <div className="calc-res">
               <span>alt limit tutarı</span>
@@ -298,7 +285,9 @@ export default function Calculator() {
             </div>
             <div className="calc-res">
               <span>faiz işletilen tutar</span>
-              <b id="resPrincipal">{tlFormat(principal)}</b>
+              <b id="resPrincipal">
+                <TweenValue value={principal} format={tlFormat} />
+              </b>
             </div>
           </div>
 
@@ -308,7 +297,7 @@ export default function Calculator() {
               <img src="/assets/icons/chevron-right.svg" alt="" />
             </span>
           </button>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

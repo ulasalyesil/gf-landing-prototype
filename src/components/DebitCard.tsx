@@ -2,21 +2,13 @@
 
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import AnimatedHighlight from "./AnimatedHighlight";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { motion } from "motion/react";
+import Reveal, { RevealItem, iconPopVariants, useMotionOff } from "./Reveal";
 
 export default function DebitCard() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
   const markRef = useRef<HTMLSpanElement>(null);
   const motoRef = useRef<HTMLImageElement>(null);
-  const mediaRef = useRef<HTMLDivElement>(null);
+  const off = useMotionOff();
 
   // ResizeObserver to measure moped travel distance
   useEffect(() => {
@@ -37,47 +29,26 @@ export default function DebitCard() {
     return () => observer.disconnect();
   }, []);
 
-  useGSAP(() => {
-    if (!containerRef.current || !copyRef.current || !mediaRef.current) return;
-
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (isMobile) {
-      copyRef.current.classList.add("is-in");
-      return;
-    }
-
-    // Scroll trigger for adding is-in class
-    ScrollTrigger.create({
-      trigger: copyRef.current,
-      start: "top 82%",
-      once: true,
-      onEnter: () => {
-        gsap.delayedCall(0.2, () => {
-          if (copyRef.current) copyRef.current.classList.add("is-in");
-        });
-      },
-    });
-
-    // Float loop for debit card media
-    gsap.to(mediaRef.current, {
-      y: -12,
-      duration: 2.6,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-    });
-  }, { scope: containerRef });
-
   return (
-    <section className="section debit" id="debit" ref={containerRef}>
+    <section className="section debit" id="debit">
       <div className="container debit__inner">
-        <div className="debit__media media-slot reveal-left" ref={mediaRef}>
-          <video autoPlay muted loop playsInline>
-            <source src="/assets/video/debit-card.mp4" type="video/mp4" />
-          </video>
-        </div>
+        <Reveal direction="left" className="debit__media-wrap">
+          <motion.div
+            className="debit__media media-slot"
+            animate={off ? undefined : { y: [0, -12, 0] }}
+            transition={
+              off
+                ? undefined
+                : { duration: 5.2, repeat: Infinity, ease: "easeInOut" }
+            }
+          >
+            <video autoPlay muted loop playsInline>
+              <source src="/assets/video/debit-card.mp4" type="video/mp4" />
+            </video>
+          </motion.div>
+        </Reveal>
 
-        <div className="debit__copy reveal-right" ref={copyRef}>
+        <Reveal direction="right" className="debit__copy" stagger={0.08} delay={0.2}>
           <h2 className="debit__title">
             geri dönüşü muhteşem kart
             <br />
@@ -93,21 +64,21 @@ export default function DebitCard() {
           </h2>
 
           <ul className="debit__list">
-            <li>
-              <span className="debit__ic">
+            <RevealItem as="li">
+              <motion.span className="debit__ic" variants={iconPopVariants}>
                 <img src="/assets/icons/getirpara.svg" alt="" />
-              </span>
+              </motion.span>
               <div>
                 <b>getir ve bitaksi’de %3 getirpara</b>
                 <p>
                   hesap kartınla her ay toplam ₺1.250’ye kadar getirpara kazan
                 </p>
               </div>
-            </li>
-            <li>
-              <span className="debit__ic">
+            </RevealItem>
+            <RevealItem as="li">
+              <motion.span className="debit__ic" variants={iconPopVariants}>
                 <img src="/assets/icons/cashback.svg" alt="" />
-              </span>
+              </motion.span>
               <div>
                 <b>anında %1 nakit iade</b>
                 <p>
@@ -115,7 +86,7 @@ export default function DebitCard() {
                   kazan
                 </p>
               </div>
-            </li>
+            </RevealItem>
           </ul>
 
           <Link href="/hesap-karti" className="btn">
@@ -124,7 +95,7 @@ export default function DebitCard() {
             </span>
             keşfet
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
