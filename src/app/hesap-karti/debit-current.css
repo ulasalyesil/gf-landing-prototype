@@ -1,7 +1,11 @@
 /* ============================================================
-   debit-current.css — pixel reproduction of the Figma draft
-   "New Debit" (branch oQBanFVh7xrVxnYHokRLt7, node 21607:5164)
-   Desktop comp is 1440w / content 1312. Static page, no motion.
+   debit-current.css — /hesap-karti layout iteration (GFDES-2174)
+   Started as a pixel reproduction of the Figma draft "New Debit"
+   (branch oQBanFVh7xrVxnYHokRLt7, node 21607:5164, 1440w/1312).
+   Sections 2-7 are now the iterated layout: fluid grid instead of
+   the absolute-position comp, lilac "dakikalar" field, capability
+   bento with a dark sanal panel, %-based abroad collage.
+   Hero variant styles live in debit-hero-variants.css.
    ============================================================ */
 
 .dpc { background: #fff; }
@@ -10,27 +14,16 @@
 .dpc-container { width: 100%; max-width: 1312px; margin-inline: auto; position: relative; }
 @media (max-width: 1360px) { .dpc-container { padding-inline: 24px; } }
 
-/* underline highlights render settled (static comp) */
-.dpc .hl::after, .dpc .mark::after { transform: scaleX(1); }
+/* underline highlights draw on scroll via Reveal's is-in (landing behavior) */
 
-/* shared section title: 40/40 regular, second clause underlined */
-.dpc-title { font-size: 40px; line-height: 40px; font-weight: var(--fw-regular); color: var(--gf-ink); }
+/* shared section title (40/40 at comp width, fluid below) */
+.dpc-title { font-size: clamp(32px, 3vw, 40px); line-height: 1.1; font-weight: var(--fw-regular); color: var(--gf-ink); }
 
-/* ============ HEADER (draft: logo + 3 nav + paranaiyibak, no CTA) ============ */
-.dpc-header { position: absolute; top: 24px; left: 0; right: 0; z-index: 10; }
-.dpc-header__inner { display: flex; align-items: center; gap: 87px; height: 56px; }
-.dpc-header__logo { height: 30px; width: auto; display: block; }
-.dpc-header__col { flex: 1; display: flex; align-items: center; justify-content: space-between; }
-.dpc-header__nav { display: flex; gap: 16px; }
-.dpc-header__item {
-  background: none; border: 0; cursor: pointer; font: inherit;
-  font-size: var(--fs-body-md); font-weight: var(--fw-semibold); color: var(--gf-ink);
-  padding: 16px 12px; border-radius: var(--r-full);
-}
-.dpc-header__item:hover { color: var(--gf-purple); }
-.dpc-header__paranaiyibak img { height: 32px; width: auto; display: block; }
+/* keyboard focus — page-wide (UA default was the only affordance) */
+.dpc :is(a, button):focus-visible { outline: 2px solid var(--gf-purple); outline-offset: 2px; }
+.dpc-hero--drenched :is(a, button):focus-visible { outline-color: #fff; }
 
-/* ============ 1. HERO — white, 840h ============ */
+/* ============ 1. HERO — wireframe baseline (variant A) ============ */
 .dpc-hero { position: relative; height: 840px; overflow: hidden; }
 .dpc-hero__text { position: absolute; top: 152px; left: 0; z-index: 1; }
 @media (max-width: 1360px) { .dpc-hero__text { left: 24px; } }
@@ -42,7 +35,6 @@
 }
 .dpc-badge svg { width: 20px; height: 20px; flex: none; }
 .dpc-hero__title { margin: 0; font-size: 48px; line-height: 100%; font-weight: var(--fw-regular); color: var(--gf-ink); }
-.dpc-hero__sub { margin: 0; font-size: 24px; line-height: 36px; color: var(--gf-ink-400); }
 .dpc-cta {
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--gf-purple); color: #fff; border-radius: var(--r-full);
@@ -51,60 +43,74 @@
 }
 .dpc-cta:hover { background: var(--gf-purple-700); }
 .dpc-hero__cta { margin-top: 32px; width: 160px; height: 48px; }
-/* card visual — video when supplied, labeled placeholder until then */
 .dpc-hero__card { position: absolute; top: 254px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; border-radius: var(--r-xl); overflow: hidden; }
-.dpc-hero__card-ph { position: absolute; inset: 0; border-radius: inherit; }
 .dpc-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-/* ============ 2. EARN — 840h, centered header + 2 cards ============ */
-.dpc-earn { height: 840px; padding-top: 80px; }
+/* ============ 2. EARN — centered head + 2 cards ============ */
+.dpc-earn { padding-block: 120px 100px; }
 .dpc-earn__head { text-align: center; }
-.dpc-earn__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
-.dpc-earn__cards { display: flex; justify-content: center; gap: 36px; margin-top: 40px; }
+.dpc-earn__sub { margin: 16px auto 0; max-width: 720px; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); text-wrap: pretty; }
+.dpc-earn__cards { display: flex; justify-content: center; gap: 36px; margin-top: 48px; }
 .dpc-earn__card { position: relative; width: 380px; height: 520px; border-radius: var(--r-xl); overflow: hidden; flex: none; }
 .dpc-earn__card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .dpc-earn__card--iade { background: linear-gradient(180deg, #7cc7f2, #4a9fd8); }
+/* scrim keeps white copy legible over the photo's light sky */
+.dpc-earn__card--iade::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 200px;
+  background: linear-gradient(180deg, rgba(14, 14, 14, .45), rgba(14, 14, 14, 0));
+}
 .dpc-earn__card--getirpara { background: var(--gf-purple); }
-.dpc-earn__card p { position: absolute; top: 32px; left: 32px; width: 316px; margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: #fff; }
+.dpc-earn__card p { position: absolute; top: 32px; left: 32px; width: 316px; margin: 0; z-index: 1; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: #fff; }
 .dpc-earn__card p .y { color: var(--gf-yellow); }
 
-/* ============ 3. DELIVERY — 652h, lilac panel + tilted phone + steps ============ */
-.dpc-steps { position: relative; height: 652px; }
-.dpc-steps__panel {
-  position: absolute; left: 64px; top: 206px; width: 592px; height: 240px;
-  background: var(--gf-lilac); border-radius: var(--r-xl); padding: 40px 32px;
-}
-.dpc-steps__panel .dpc-title { white-space: nowrap; }
-.dpc-steps__panel-sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
-.dpc-steps__panel .dpc-cta { margin-top: 16px; width: 114px; height: 56px; }
+/* ============ 3. DELIVERY — "dakikalar" lilac field ============ */
+.dpc-steps { background: var(--gf-lilac-50); padding-block: 100px; }
+.dpc-steps__top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
+.dpc-steps__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
+.dpc-steps__cta { margin-top: 24px; width: 114px; height: 56px; }
+.dpc-steps__phone { width: 285px; }
+.dpc-steps__phone img { width: 100%; height: auto; display: block; }
 .dpc-steps__list {
-  position: absolute; left: 656px; top: 160px; width: 592px; height: 332px;
-  background: var(--gf-bg-soft); border-radius: var(--r-xl);
-  margin: 0; padding: 16px 16px 16px 160px; list-style: none; box-sizing: border-box;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
+  margin: 72px 0 0; padding: 0; list-style: none;
 }
-.dpc-steps__item { width: 416px; padding-top: 16px; }
-.dpc-steps__item:first-child { padding-top: 0; }
-.dpc-steps__item h3 { margin: 0; font-size: 18px; line-height: 28px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
-.dpc-steps__item p { margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--gf-ink-700); }
-.dpc-steps__phone { position: absolute; left: 587px; top: 91px; width: 285px; height: 470px; z-index: 1; }
-.dpc-steps__phone img { width: 100%; height: 100%; display: block; }
+.dpc-steps__num { display: block; font-size: 80px; line-height: 1; font-weight: var(--fw-regular); color: var(--gf-lilac-300); }
+.dpc-steps__item h3 { margin: 16px 0 0; font-size: 18px; line-height: 28px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
+.dpc-steps__item p { margin: 8px 0 0; font-size: 16px; line-height: 24px; color: var(--gf-ink-700); }
 
-/* ============ 4-6. SPLIT SECTIONS (transfers / atm / sanal) — 520h ============ */
-.dpc-split { position: relative; height: 520px; }
-.dpc-split__media {
-  position: absolute; top: 40px; width: 512px; height: 440px;
-  background: var(--gf-bg-soft); border-radius: var(--r-xl);
-  display: grid; place-items: center;
+/* ============ 4. CAPABILITIES — bento (transfers / ATM / sanal) ============ */
+.dpc-caps { padding-block: 120px 100px; }
+.dpc-caps__head { text-align: center; margin-bottom: 48px; }
+.dpc-caps__row { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
+.dpc-cap {
+  display: flex; flex-direction: column; gap: 32px;
+  background: var(--gf-bg-soft); border-radius: var(--r-xl); padding: 40px;
+}
+.dpc-cap__copy h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
+.dpc-cap__copy p { margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--gf-ink-700); }
+.dpc-cap__stat {
+  display: block; margin-bottom: 8px;
+  font-size: 72px; line-height: 1; font-variant-numeric: tabular-nums;
+  color: var(--gf-purple);
+}
+/* labeled wireframe placeholder — dashed border signals "asset lands here" */
+.dpc-cap__media {
+  flex: 1; min-height: 240px; display: grid; place-items: center;
+  background: #fff; border: 1px dashed var(--gf-lilac-300); border-radius: var(--r-lg);
   font-size: var(--fs-body-md); color: var(--gf-ink-400);
 }
-.dpc-split__media--left { left: 96px; }
-.dpc-split__media--right { left: 640px; }
-.dpc-split__copy { position: absolute; width: 544px; }
-.dpc-split__copy--left { left: 96px; }
-.dpc-split__copy--right { left: 672px; }
-.dpc-split__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
+/* dark drenched panel — the page's mid-scroll color moment (landing .debit rhyme) */
+.dpc-cap--sanal {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+  margin-top: 24px; background: var(--gf-card-purple); padding: 48px;
+}
+.dpc-cap--sanal .dpc-cap__copy h3 { color: #fff; }
+.dpc-cap--sanal .dpc-cap__media {
+  background: var(--gf-dark-surface); border-color: rgba(255, 255, 255, .25);
+  color: var(--gf-dark-muted); min-height: 280px;
+}
 
-/* sanal kart feature list (draft grammar: purple bar + caption) */
+/* feature list (purple-bar grammar; yellow on dark) */
 .dpc-features { margin: 32px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 24px; }
 .dpc-features li {
   position: relative; min-height: 48px; padding-left: 32px;
@@ -115,53 +121,67 @@
   content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
   width: 8px; height: 48px; border-radius: var(--r-full); background: var(--gf-purple);
 }
+.dpc-cap--sanal .dpc-features li { color: var(--gf-dark-text); }
+.dpc-cap--sanal .dpc-features li::before { background: var(--gf-yellow); }
 
-/* ============ 7. ABROAD — 984h, centered header + captions + collage ============ */
-.dpc-abroad { height: 984px; padding-top: 60px; }
+/* ============ 5. ABROAD — centered head + captions + collage ============ */
+.dpc-abroad { padding-block: 120px; }
 .dpc-abroad__title { text-align: center; }
 .dpc-abroad__title .hl { display: inline-block; margin-top: 8px; }
-.dpc-abroad__captions { display: flex; gap: 8px; padding: 24px 0 24px 64px; margin: 40px 0 0; list-style: none; }
+.dpc-abroad__captions { display: flex; justify-content: center; gap: 24px; margin: 48px 0 0; padding: 0; list-style: none; }
 .dpc-abroad__captions li {
-  position: relative; width: 389px; flex: none; padding-left: 32px;
-  font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-500);
+  position: relative; flex: 1; max-width: 389px; padding-left: 32px;
+  font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700);
 }
 .dpc-abroad__captions li::before {
   content: ""; position: absolute; left: 0; top: 0;
-  width: 8px; height: 48px; border-radius: var(--r-full); background: var(--gf-lilac-200);
+  width: 8px; height: 48px; border-radius: var(--r-full); background: var(--gf-purple);
 }
-.dpc-abroad__captions li:last-child { color: var(--gf-purple); }
-.dpc-abroad__captions li:last-child::before { background: var(--gf-purple); }
-.dpc-abroad__collage { position: relative; height: 600px; }
-.dpc-abroad__collage img { position: absolute; border-radius: var(--r-md); }
-.dpc-abroad__img-card { left: 548px; top: 30px; width: 216px; height: 328px; border-radius: var(--r-lg); }
-.dpc-abroad__img-1 { left: 358px; top: 60px; width: 170px; height: 256px; }
-.dpc-abroad__img-2 { left: 288px; top: 340px; width: 240px; height: 174px; }
-.dpc-abroad__img-3 { left: 784px; top: 73px; width: 240px; height: 174px; }
-.dpc-abroad__img-4 { left: 552px; top: 378px; width: 256px; height: 170px; }
-.dpc-abroad__img-5 { left: 832px; top: 268px; width: 190px; height: 256px; }
+/* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly */
+.dpc-abroad__collage { position: relative; margin-top: 48px; aspect-ratio: 1312 / 600; }
+.dpc-abroad__collage img { position: absolute; height: auto; border-radius: var(--r-md); }
+.dpc-abroad__img-card { left: 41.77%; top: 5%;     width: 16.46%; border-radius: var(--r-lg); }
+.dpc-abroad__img-1    { left: 27.29%; top: 10%;    width: 12.96%; }
+.dpc-abroad__img-2    { left: 21.95%; top: 56.67%; width: 18.29%; }
+.dpc-abroad__img-3    { left: 59.76%; top: 12.17%; width: 18.29%; }
+.dpc-abroad__img-4    { left: 42.07%; top: 63%;    width: 19.51%; }
+.dpc-abroad__img-5    { left: 63.41%; top: 44.67%; width: 14.48%; }
 
-/* Responsive adjustments for subpage */
+/* ============ Responsive (page-scoped 920 layer) ============ */
 @media (max-width: 920px) {
   .dpc-hero { height: auto; padding-block: 100px 40px; }
   .dpc-hero__text { position: static; transform: none; }
-  .dpc-hero__card { position: relative; left: auto; transform: none; width: 100%; height: auto; aspect-ratio: 1/1; margin-top: 32px; max-width: 450px; margin-inline: auto; }
-  
-  .dpc-earn { height: auto; padding-block: 40px; }
+  .dpc-hero__card { position: relative; top: auto; left: auto; transform: none; width: 100%; height: auto; aspect-ratio: 1/1; margin-top: 32px; max-width: 450px; margin-inline: auto; }
+
+  .dpc-earn { padding-block: 64px; }
+  .dpc-earn__sub { font-size: 18px; line-height: 28px; }
   .dpc-earn__cards { flex-direction: column; align-items: center; }
   .dpc-earn__card { width: 100%; max-width: 380px; }
 
-  .dpc-steps { height: auto; padding-block: 40px; display: flex; flex-direction: column; gap: 32px; }
-  .dpc-steps__panel { position: static; width: 100%; height: auto; padding: 24px; }
-  .dpc-steps__list { position: static; width: 100%; height: auto; padding: 24px; }
-  .dpc-steps__item { width: 100%; }
-  .dpc-steps__phone { position: static; margin-inline: auto; margin-top: 24px; }
+  .dpc-steps { padding-block: 64px; }
+  .dpc-steps__top { grid-template-columns: 1fr; }
+  .dpc-steps__phone { margin-inline: auto; }
+  .dpc-steps__list { grid-template-columns: 1fr; gap: 32px; margin-top: 48px; }
+  .dpc-steps__num { font-size: 56px; }
 
-  .dpc-split { height: auto; padding-block: 40px; display: flex; flex-direction: column; gap: 24px; }
-  .dpc-split__media { position: relative; top: auto; left: auto; width: 100%; height: 300px; order: -1; }
-  .dpc-split__copy { position: relative; top: auto; left: auto; width: 100%; }
+  .dpc-caps { padding-block: 64px; }
+  .dpc-caps__row { grid-template-columns: 1fr; }
+  .dpc-cap { padding: 24px; }
+  .dpc-cap--sanal { grid-template-columns: 1fr; gap: 32px; padding: 24px; }
+  .dpc-cap__stat { font-size: 56px; }
 
-  .dpc-abroad { height: auto; padding-block: 40px; }
-  .dpc-abroad__captions { flex-direction: column; padding-left: 0; }
-  .dpc-abroad__captions li { width: 100%; }
-  .dpc-abroad__collage { height: auto; aspect-ratio: 1.2/1; margin-top: 32px; }
+  .dpc-abroad { padding-block: 64px; }
+  .dpc-abroad__title br { display: none; }
+  .dpc-abroad__captions { flex-direction: column; gap: 16px; }
+  .dpc-abroad__captions li { max-width: none; }
+  /* collage becomes a scroll-snap strip */
+  .dpc-abroad__collage {
+    aspect-ratio: auto; display: flex; gap: 8px; margin-top: 32px;
+    overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  .dpc-abroad__collage img {
+    position: static; width: auto; height: 256px; flex: none; scroll-snap-align: start;
+  }
+  .dpc-abroad__img-card { order: -1; }
 }

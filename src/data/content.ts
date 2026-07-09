@@ -37,3 +37,59 @@ export const RATES_SEED: RateItem[] = [
 ];
 
 export const RATES_CYCLE_MS = 180000;
+
+/* ===== /hesap-karti (GFDES-2174) ===== */
+/* Steps copy is a Turkish draft replacing the English template text —
+   needs owner + legal review before lock (esp. anything fee-related). */
+
+export const DEBIT_EARN = {
+  title: "harcadıkça getirpara",
+  titleHl: "ve nakit iade kazan",
+  sub: "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
+  iade: "fiziksel tüm harcamalarına aylık ₺1.250'ye kadar anında nakit iade!",
+  getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" }
+};
+
+export interface DebitStep {
+  title: string;
+  desc: string;
+}
+
+export const DEBIT_STEPS_SECTION = {
+  title: "hızlı kart",
+  titleHl: "teslimatı",
+  sub: "kartın dakikalar içinde kapında",
+  cta: "kart al"
+};
+
+export const DEBIT_STEPS: DebitStep[] = [
+  { title: "hesabını aç",      desc: "ücretsiz hesabını uygulamadan dakikalar içinde aç" },
+  { title: "kartını iste",     desc: "hesap kartını uygulamadan tek dokunuşla iste" },
+  { title: "harcamaya başla",  desc: "dijital kartın anında hazır, fiziksel kartın dakikalar içinde kapında" }
+];
+
+export const DEBIT_CAPS = {
+  title: "hesap kartında",
+  titleHl: "daha neler var?",
+  transfer: { title: "ücretsiz para transferi", sub: "7/24 ücretsiz havale, EFT ve FAST", media: "para transferi görseli" },
+  atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "ATM görseli" },
+  sanal: {
+    title: "sanal hesap kartı",
+    features: [
+      "harcamaların için ayrı kartlar oluştur, rahatça takip et",
+      "internet alışverişlerini güvenle yap",
+      "her kartın için limitini belirle, bütçeni kontrol et"
+    ],
+    media: "sanal kart görseli"
+  }
+};
+
+export const DEBIT_ABROAD = {
+  title: "hesap kartınla yurtdışında",
+  titleHl: "yapılacaklar listesi",
+  captions: [
+    "avantajlı kurlarla harcama yap",
+    "yurt dışında harcarken de %1 nakit iade kazan",
+    "ATM'den para çekerken komisyonu avantajlı kurla öde"
+  ]
+};

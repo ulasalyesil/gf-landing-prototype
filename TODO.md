@@ -8,6 +8,9 @@
 - [x] **Motion integration** — landing page ported to Motion on the `motion-integration` branch (shared `Reveal` component replaces the GSAP reveals; ideation + build order in `docs/motion-ideation.md`). Remaining: `Loan` clip-path scroll-scrub still GSAP (port when touched)
 - [x] **Yellow highlight — purple borders on light sections** — done on `motion-integration`: brand purple on all light sections, yellow kept on dark (.debit, .app-dark) and /hesap-karti
 - [ ] **Debit card page — finalize design** (`/hesap-karti`, GFDES-2174; layout locked "Dakikalar, drenched" → layout iteration → micro-interactions, built with Motion)
+  - Hero variant lab in place (`?hero=` + bottom picker): shortlist is **C kart xl** (title now matches landing hero scale) or **D lilac**; A wireframe + B drenched kept for comparison. Pick, delete lab scaffolding, then micro-interactions.
+  - Sections 2–7 layout iterated (fluid grid replaces the absolute comp): earn polished (scrim, ₺1.250), steps → "dakikalar" lilac field with ghost numerals + **Turkish draft copy (needs owner/legal review — replaced English template text)**, transfers/ATM/sanal consolidated into a capability bento with dark sanal panel, abroad collage now %-based (scroll strip ≤920). Copy moved to `content.ts` (`DEBIT_*`). Entrances via shared `Reveal`; `.hl` underlines draw on scroll like landing.
+  - Header needs a proper light-hero variant prop — white logo/nav were invisible over the white hero; currently patched via scoped CSS in `debit-hero-variants.css`.
 
 ## Blocker
 
