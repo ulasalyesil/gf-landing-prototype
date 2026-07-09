@@ -310,7 +310,11 @@ export default function DeliverySteps() {
                   {i + 1}
                 </span>
                 <h3>{step.title}</h3>
-                <p>{step.desc}</p>
+                <p>
+                  {step.desc[0]}
+                  <br />
+                  {step.desc[1]}
+                </p>
                 <div className="dpc-steps__bar" ref={i === 1 ? barTrackRef : undefined}>
                   <motion.div
                     className="dpc-steps__bar-fill"

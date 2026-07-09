@@ -99,7 +99,8 @@
 }
 .dpc-steps__num { display: block; font-size: 80px; line-height: 1; font-weight: var(--fw-regular); color: var(--gf-lilac-300); }
 .dpc-steps__item h3 { margin: 16px 0 0; font-size: 18px; line-height: 28px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
-.dpc-steps__item p { margin: 8px 0 0; font-size: 16px; line-height: 24px; color: var(--gf-ink-700); }
+/* min-height = 2 lines: guards bar alignment if copy is ever edited to 1 line */
+.dpc-steps__item p { margin: 8px 0 0; min-height: 48px; font-size: 16px; line-height: 24px; color: var(--gf-ink-700); }
 
 /* progress bar — fill is scaleX-driven (compositor only); default = full
    so the "off" mode renders the settled state with no JS */

@@ -52,7 +52,9 @@ export const DEBIT_EARN = {
 
 export interface DebitStep {
   title: string;
-  desc: string;
+  /** Two explicit lines. Equal-height copy keeps the three progress bars
+      on one baseline — a 1-line step would lift its bar out of alignment. */
+  desc: [string, string];
 }
 
 export const DEBIT_STEPS_SECTION = {
@@ -63,9 +65,9 @@ export const DEBIT_STEPS_SECTION = {
 };
 
 export const DEBIT_STEPS: DebitStep[] = [
-  { title: "hesabını aç",      desc: "ücretsiz hesabını uygulamadan dakikalar içinde aç" },
-  { title: "kartını iste",     desc: "hesap kartını uygulamadan tek dokunuşla iste" },
-  { title: "harcamaya başla",  desc: "dijital kartın anında hazır, fiziksel kartın dakikalar içinde kapında" }
+  { title: "hesabını aç",      desc: ["ücretsiz hesabını uygulamadan", "dakikalar içinde aç"] },
+  { title: "kartını iste",     desc: ["hesap kartını uygulamadan", "tek dokunuşla iste"] },
+  { title: "harcamaya başla",  desc: ["dijital kartın anında hazır,", "fiziksel kartın dakikalar içinde kapında"] }
 ];
 
 export const DEBIT_CAPS = {
