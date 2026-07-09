@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
+import { DialRoot } from "dialkit";
+import "dialkit/styles.css";
 import "./globals.css";
 
 const openSans = Open_Sans({
@@ -22,6 +24,8 @@ export default function RootLayout({
     <html lang="tr" className={`${openSans.variable} antialiased`}>
       <body className="font-sans text-gf-ink bg-gf-bg min-h-screen">
         {children}
+        {/* dev-only tuning panel (auto-hidden in production builds) */}
+        <DialRoot position="bottom-right" defaultOpen={false} />
       </body>
     </html>
   );
