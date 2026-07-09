@@ -8,7 +8,7 @@ import Reveal, { RevealItem } from "@/components/Reveal";
 import DebitHeroLab from "./HeroVariants";
 import DeliverySteps from "./DeliverySteps";
 import AbroadCollage from "./AbroadCollage";
-import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
+import { DEBIT_EARN, DEBIT_CAPS, DEBIT_SANAL, DEBIT_ABROAD } from "@/data/content";
 import "./debit-current.css";
 
 export default function HesapKartiDetail() {
@@ -100,23 +100,32 @@ export default function HesapKartiDetail() {
                 </div>
               </RevealItem>
             </Reveal>
-            <Reveal as="article" className="dpc-cap dpc-cap--sanal">
-              <div className="dpc-cap__copy">
-                <h3>{DEBIT_CAPS.sanal.title}</h3>
-                <ul className="dpc-features">
-                  {DEBIT_CAPS.sanal.features.map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="dpc-cap__media" aria-hidden="true">
-                {DEBIT_CAPS.sanal.media}
+          </div>
+        </section>
+
+        {/* ============ 5. SANAL KART — own dark section (distinct product) ============ */}
+        <section className="dpc-sanal" id={DEBIT_SANAL.id}>
+          <div className="dpc-container dpc-sanal__inner">
+            <Reveal direction="left" className="dpc-sanal__copy">
+              <h2 className="dpc-title">
+                {DEBIT_SANAL.title}{" "}
+                <AnimatedHighlight type="hl">{DEBIT_SANAL.titleHl}</AnimatedHighlight>
+              </h2>
+              <ul className="dpc-features">
+                {DEBIT_SANAL.features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal direction="right">
+              <div className="dpc-sanal__media" aria-hidden="true">
+                {DEBIT_SANAL.media}
               </div>
             </Reveal>
           </div>
         </section>
 
-        {/* ============ 5. ABROAD ============ */}
+        {/* ============ 6. ABROAD ============ */}
         <section className="dpc-abroad">
           <div className="dpc-container">
             <Reveal as="header">

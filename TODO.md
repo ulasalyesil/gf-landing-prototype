@@ -13,7 +13,8 @@
   - Header needs a proper light-hero variant prop — white logo/nav were invisible over the white hero; currently patched via scoped CSS in `debit-hero-variants.css`.
   - **DialKit installed** (`DialRoot` mounted in layout, dev-only) — application plan in `docs/dialkit-plan.md`: hero-lab geometry dials first, then shared motion dials (`src/dials/`) for the micro-interactions pass; tuned values get baked in and dials removed.
   - **Teslimatı scroll sequence built** (`DeliverySteps.tsx`): sticky-pinned scrub ≥921 / timed in-view run 768–920 / settled ≤767+reduced-motion. **Waiting on 2 lottie files (step 1 + step 3)** — wire via `STEP1_LOTTIE`/`STEP3_LOTTIE`, then retune `SEG` holds to the lottie durations. Courier ported from landing `.debit__moto` (same curve/bob/travel pattern). Scrub feel needs a real-browser QA pass (headless can't scroll) — good first DialKit candidate.
-  - **Abroad collage stagger** (`AbroadCollage.tsx`): card entrance completes → Lisbon → Berlin → rest shuffled once per load, 80ms stagger, never re-triggers.
+  - **Abroad collage stagger** (`AbroadCollage.tsx`): card entrance completes → Lisbon → Berlin → rest shuffled once per load, 80ms stagger, never re-triggers. DOM order is fixed and the randomness lives in the delays — shuffling in render caused an SSR/client hydration mismatch (same trap as `CampaignsCarousel`).
+  - **Sanal kart is now its own section** (`.dpc-sanal`, `#sanal-kart`, full-bleed dark like landing `.debit`) — it's a distinct product, not an attribute of the physical card. Heading `sanal hesap kartıyla / güvenle harca` is a **draft, needs owner review**. Section is anchor/deep-link ready if it ever gets its own page.
 
 ## Blocker
 

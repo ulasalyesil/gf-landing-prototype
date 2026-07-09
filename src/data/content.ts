@@ -70,20 +70,27 @@ export const DEBIT_STEPS: DebitStep[] = [
   { title: "harcamaya başla",  desc: ["dijital kartın anında hazır,", "fiziksel kartın dakikalar içinde kapında"] }
 ];
 
+/* "neler var?" answers what the PHYSICAL card does — attributes of the card
+   you just ordered. Sanal kart is a distinct product, so it owns a section. */
 export const DEBIT_CAPS = {
   title: "hesap kartında",
   titleHl: "daha neler var?",
   transfer: { stat: "7/24", title: "ücretsiz para transferi", sub: "havale, EFT ve FAST", media: "para transferi görseli" },
-  atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "ATM görseli" },
-  sanal: {
-    title: "sanal hesap kartı",
-    features: [
-      "harcamaların için ayrı kartlar oluştur, rahatça takip et",
-      "internet alışverişlerini güvenle yap",
-      "her kartın için limitini belirle, bütçeni kontrol et"
-    ],
-    media: "sanal kart görseli"
-  }
+  atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "ATM görseli" }
+};
+
+/* Own section — dark, full-bleed (landing `.debit` grammar). Heading is a
+   benefit-led draft; needs owner review. "özel" avoided per GF wording rules. */
+export const DEBIT_SANAL = {
+  id: "sanal-kart",
+  title: "sanal hesap kartıyla",
+  titleHl: "güvenle harca",
+  features: [
+    "harcamaların için ayrı kartlar oluştur, rahatça takip et",
+    "internet alışverişlerini güvenle yap",
+    "her kartın için limitini belirle, bütçeni kontrol et"
+  ],
+  media: "sanal kart görseli"
 };
 
 export const DEBIT_ABROAD = {

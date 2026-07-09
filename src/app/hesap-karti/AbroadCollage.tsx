@@ -9,11 +9,17 @@ import { REVEAL_SPRING, useMotionOff } from "@/components/Reveal";
    - When the card's entrance COMPLETES (onAnimationComplete — not section
      in-view), the city photos pop in one by one.
    - Lisbon (img-3) then Berlin (img-5) are fixed anchors, in that order;
-     the remaining photos (1, 2, 4) follow in an order randomized ONCE per
-     page load (state initializer) — re-entering the viewport never
-     re-triggers or re-shuffles.
+     the remaining photos (1, 2, 4) follow in a random order, decided ONCE
+     per page load. Re-entering the viewport never re-triggers or re-shuffles.
    - Pop = fade + scale .92→1 (never from 0), constant 80ms stagger.
-   - Mobile ≤767 / reduced motion: everything shown instantly (project split). */
+   - Mobile ≤767 / reduced motion: everything shown instantly (project split).
+
+   HYDRATION: DOM order is FIXED (anchors then declaration order) so the
+   server and client render identical markup — this page is prerendered, and
+   shuffling during render produced a different order per request. The
+   randomness lives in the stagger DELAYS, assigned in the card's
+   onAnimationComplete callback (an event, post-hydration), never in render
+   or an effect. Same trap as the CampaignsCarousel mismatch. */
 
 interface CollageImg {
   cls: string;
@@ -34,23 +40,32 @@ const REST: CollageImg[] = [
 const STAGGER = 0.08;
 const POP = { type: "spring", duration: 0.5, bounce: 0.25 } as const;
 
-function shuffled<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
+/* Fixed DOM order. Anchors first, then the shuffled group in declaration
+   order — only their DELAYS get shuffled. */
+const PHOTOS: CollageImg[] = [LISBON, BERLIN, ...REST];
+const ANCHORS = 2;
+
+/** Delay slots: anchors keep slots 0 and 1; the rest get the remaining slots
+    in random order. Called once, from an event handler. */
+function makeDelays(): number[] {
+  const slots = PHOTOS.map((_, i) => i * STAGGER);
+  const rest = slots.slice(ANCHORS);
+  for (let i = rest.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+    [rest[i], rest[j]] = [rest[j], rest[i]];
   }
-  return a;
+  return [...slots.slice(0, ANCHORS), ...rest];
 }
 
 export default function AbroadCollage() {
   const off = useMotionOff();
-  const [photos] = useState<CollageImg[]>(() => [LISBON, BERLIN, ...shuffled(REST)]);
-  const [started, setStarted] = useState(false);
+  // null until the card's entrance completes; set once, in an event callback
+  const [delays, setDelays] = useState<number[] | null>(null);
+  const started = delays !== null;
 
   return (
     <div className="dpc-abroad__collage">
-      {photos.map((img, i) => (
+      {PHOTOS.map((img, i) => (
         <motion.img
           key={img.cls}
           className={img.cls}
@@ -61,7 +76,7 @@ export default function AbroadCollage() {
           loading="lazy"
           initial={off ? false : { opacity: 0, scale: 0.92 }}
           animate={off || started ? { opacity: 1, scale: 1 } : undefined}
-          transition={{ ...POP, delay: i * STAGGER }}
+          transition={{ ...POP, delay: delays ? delays[i] : 0 }}
         />
       ))}
       <motion.img
@@ -75,7 +90,7 @@ export default function AbroadCollage() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "0px 0px -18% 0px" }}
         transition={REVEAL_SPRING}
-        onAnimationComplete={() => setStarted(true)}
+        onAnimationComplete={() => setDelays((prev) => prev ?? makeDelays())}
       />
     </div>
   );

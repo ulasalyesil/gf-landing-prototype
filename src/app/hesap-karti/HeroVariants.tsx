@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import clsx from "clsx";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import "./debit-hero-variants.css";
@@ -129,16 +129,21 @@ function HeroLilac() {
   );
 }
 
-export default function DebitHeroLab() {
-  const [variant, setVariant] = useState<HeroVariant>("current");
+const isVariant = (v: string | null): v is HeroVariant =>
+  !!v && VARIANTS.some((o) => o.id === v);
 
-  // ?hero= makes a variant linkable; read once on mount
-  useEffect(() => {
-    const param = new URLSearchParams(window.location.search).get("hero");
-    if (param && VARIANTS.some((v) => v.id === param)) {
-      setVariant(param as HeroVariant);
-    }
-  }, []);
+/* ?hero= makes a variant linkable. Read through useSyncExternalStore rather
+   than a setState-in-effect: the server snapshot is null, the client snapshot
+   is the real param, and React reconciles that after hydration without a
+   mismatch. No subscription — the picker rewrites history itself. */
+const subscribeNoop = () => () => {};
+const getUrlVariant = () => new URLSearchParams(window.location.search).get("hero");
+const getServerVariant = () => null;
+
+export default function DebitHeroLab() {
+  const urlVariant = useSyncExternalStore(subscribeNoop, getUrlVariant, getServerVariant);
+  const [picked, setPicked] = useState<HeroVariant | null>(null);
+  const variant: HeroVariant = picked ?? (isVariant(urlVariant) ? urlVariant : "current");
 
   // header legibility CSS keys off this (light variants get ink nav/logo)
   useEffect(() => {
@@ -149,7 +154,7 @@ export default function DebitHeroLab() {
   }, [variant]);
 
   const pick = (v: HeroVariant) => {
-    setVariant(v);
+    setPicked(v);
     const url = new URL(window.location.href);
     url.searchParams.set("hero", v);
     window.history.replaceState(null, "", url);

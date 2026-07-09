@@ -148,16 +148,20 @@
   background: #fff; border: 1px dashed var(--gf-lilac-300); border-radius: var(--r-lg);
   font-size: var(--fs-body-md); color: var(--gf-ink-400);
 }
-/* dark drenched panel — the page's mid-scroll color moment (landing .debit rhyme) */
-.dpc-cap--sanal {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
-  margin-top: 24px; background: var(--gf-card-purple); padding: 48px;
+/* ============ 5. SANAL KART — own dark section ============ */
+/* Full-bleed dark, same grammar as the landing `.debit` product moment.
+   It is the page's mid-scroll color break between the white caps bento
+   and the white abroad collage. */
+.dpc-sanal { background: var(--gf-card-purple); color: var(--gf-dark-text); padding-block: 120px; }
+.dpc-sanal__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.dpc-sanal .dpc-title { color: #fff; }
+.dpc-sanal__media {
+  min-height: 380px; display: grid; place-items: center;
+  background: var(--gf-dark-surface); border: 1px dashed rgba(255, 255, 255, .25);
+  border-radius: var(--r-lg); font-size: var(--fs-body-md); color: var(--gf-dark-muted);
 }
-.dpc-cap--sanal .dpc-cap__copy h3 { color: #fff; }
-.dpc-cap--sanal .dpc-cap__media {
-  background: var(--gf-dark-surface); border-color: rgba(255, 255, 255, .25);
-  color: var(--gf-dark-muted); min-height: 280px;
-}
+/* fixed header clears the anchor target */
+#sanal-kart { scroll-margin-top: 96px; }
 
 /* feature list (purple-bar grammar; yellow on dark) */
 .dpc-features { margin: 32px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 24px; }
@@ -170,8 +174,8 @@
   content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
   width: 8px; height: 48px; border-radius: var(--r-full); background: var(--gf-purple);
 }
-.dpc-cap--sanal .dpc-features li { color: var(--gf-dark-text); }
-.dpc-cap--sanal .dpc-features li::before { background: var(--gf-yellow); }
+.dpc-sanal .dpc-features li { color: var(--gf-dark-text); }
+.dpc-sanal .dpc-features li::before { background: var(--gf-yellow); }
 
 /* ============ 5. ABROAD — centered head + captions + collage ============ */
 .dpc-abroad { padding-block: 120px; }
@@ -216,8 +220,11 @@
   .dpc-caps { padding-block: 64px; }
   .dpc-caps__row { grid-template-columns: 1fr; }
   .dpc-cap { padding: 24px; }
-  .dpc-cap--sanal { grid-template-columns: 1fr; gap: 32px; padding: 24px; }
   .dpc-cap__stat { font-size: 56px; }
+
+  .dpc-sanal { padding-block: 64px; }
+  .dpc-sanal__inner { grid-template-columns: 1fr; gap: 32px; }
+  .dpc-sanal__media { min-height: 280px; }
 
   .dpc-abroad { padding-block: 64px; }
   .dpc-abroad__title br { display: none; }
