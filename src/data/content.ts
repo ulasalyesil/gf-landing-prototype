@@ -71,7 +71,7 @@ export const DEBIT_STEPS: DebitStep[] = [
 export const DEBIT_CAPS = {
   title: "hesap kartında",
   titleHl: "daha neler var?",
-  transfer: { title: "ücretsiz para transferi", sub: "7/24 ücretsiz havale, EFT ve FAST", media: "para transferi görseli" },
+  transfer: { stat: "7/24", title: "ücretsiz para transferi", sub: "havale, EFT ve FAST", media: "para transferi görseli" },
   atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "ATM görseli" },
   sanal: {
     title: "sanal hesap kartı",

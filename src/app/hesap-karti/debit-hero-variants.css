@@ -51,10 +51,30 @@ body.dpc:not([data-hero="drenched"]) .site-header:not(.is-scrolled):not(.is-mega
 .dpc-hero--drenched .dpc-cta { background: #fff; color: var(--gf-purple); }
 .dpc-hero--drenched .dpc-cta:hover { background: var(--gf-lilac); }
 
+/* Variant heroes (B/C/D) flex-center the text block vertically; the card
+   visual stays absolutely positioned. A wireframe keeps its comp top value.
+   Desktop-scoped: ≤920 uses the static stacked layout from debit-current.css. */
 @media (min-width: 921px) {
-  .dpc-hero--drenched .dpc-hero__text { top: 280px; }
+  .dpc-hero--drenched .dpc-container,
+  .dpc-hero--kart .dpc-container,
+  .dpc-hero--lilac .dpc-container {
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .dpc-hero--drenched .dpc-hero__text,
+  .dpc-hero--kart .dpc-hero__text,
+  .dpc-hero--lilac .dpc-hero__text {
+    position: static;
+  }
+  /* shared title scale across variants = landing hero desktop size */
+  .dpc-hero--drenched .dpc-hero__title,
+  .dpc-hero--kart .dpc-hero__title,
+  .dpc-hero--lilac .dpc-hero__title {
+    font-size: 64px; line-height: 1.02;
+  }
+}
+
+@media (min-width: 921px) {
   .dpc-hero--drenched .dpc-badge { margin-bottom: 20px; }
-  .dpc-hero--drenched .dpc-hero__title { font-size: 64px; line-height: 1.02; }
   .dpc-hero--drenched .dpc-hero__title .hl::after { height: 10px; bottom: -2px; }
   .dpc-hero--drenched .dpc-hero__cta { margin-top: 40px; }
   .dpc-hero--drenched .dpc-hero__card {
@@ -65,10 +85,7 @@ body.dpc:not([data-hero="drenched"]) .site-header:not(.is-scrolled):not(.is-mega
 
 /* ============ C — KART XL (white, product at display scale) ============ */
 @media (min-width: 921px) {
-  .dpc-hero--kart .dpc-hero__text { top: 224px; }
   .dpc-hero--kart .dpc-badge { margin-bottom: 20px; }
-  /* matches the landing hero title scale */
-  .dpc-hero--kart .dpc-hero__title { font-size: clamp(40px, 5.4vw, 64px); line-height: 1; }
   .dpc-hero--kart .dpc-hero__title .hl::after { height: 10px; bottom: -2px; }
   .dpc-hero--kart .dpc-hero__cta { margin-top: 40px; }
   .dpc-hero--kart .dpc-hero__card {
@@ -83,9 +100,7 @@ body.dpc:not([data-hero="drenched"]) .site-header:not(.is-scrolled):not(.is-mega
 .dpc-hero--lilac .dpc-hero__card { background: #fff; }
 
 @media (min-width: 921px) {
-  .dpc-hero--lilac .dpc-hero__text { top: 290px; }
   .dpc-hero--lilac .dpc-badge { margin-bottom: 20px; }
-  .dpc-hero--lilac .dpc-hero__title { font-size: 56px; line-height: 1.05; }
   .dpc-hero--lilac .dpc-hero__title .hl::after { height: 10px; bottom: -2px; }
   .dpc-hero--lilac .dpc-hero__cta { margin-top: 40px; }
   .dpc-hero--lilac .dpc-hero__card {

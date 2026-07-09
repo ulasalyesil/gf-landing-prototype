@@ -63,8 +63,31 @@
 .dpc-earn__card p { position: absolute; top: 32px; left: 32px; width: 316px; margin: 0; z-index: 1; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: #fff; }
 .dpc-earn__card p .y { color: var(--gf-yellow); }
 
-/* ============ 3. DELIVERY — "dakikalar" lilac field ============ */
+/* ============ 3. DELIVERY — "dakikalar" scroll sequence ============ */
+/* Track/pin pattern: the section is the scroll track; the pin stays stuck
+   (position: sticky) while scroll drives the 3-step sequence. Modes are
+   set by DeliverySteps.tsx via data-mode (scrub / timed / off). */
 .dpc-steps { background: var(--gf-lilac-50); padding-block: 100px; }
+@media (min-width: 921px) {
+  /* track = pin height (measured into --dpc-pin-h) + the scrub distance,
+     so sticky travel === --dpc-scrub at any viewport height */
+  .dpc-steps[data-mode="scrub"] {
+    height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
+    padding-block: 0; background: none;
+  }
+  .dpc-steps[data-mode="scrub"] .dpc-steps__pin {
+    position: sticky; top: 0; min-height: 100vh;
+    display: grid; place-items: center; padding-block: 48px;
+    background: var(--gf-lilac-50);
+  }
+  /* keep the pinned composition inside short viewports (laptop 800-900px) */
+  @media (max-height: 940px) {
+    .dpc-steps[data-mode="scrub"] .dpc-steps__phone img { max-height: 46vh; width: auto; }
+    .dpc-steps[data-mode="scrub"] .dpc-steps__phone { width: auto; }
+    .dpc-steps[data-mode="scrub"] .dpc-steps__list { margin-top: 48px; }
+    .dpc-steps[data-mode="scrub"] .dpc-steps__num { font-size: 64px; }
+  }
+}
 .dpc-steps__top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
 .dpc-steps__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
 .dpc-steps__cta { margin-top: 24px; width: 114px; height: 56px; }
@@ -78,6 +101,30 @@
 .dpc-steps__item h3 { margin: 16px 0 0; font-size: 18px; line-height: 28px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
 .dpc-steps__item p { margin: 8px 0 0; font-size: 16px; line-height: 24px; color: var(--gf-ink-700); }
 
+/* progress bar — fill is scaleX-driven (compositor only); default = full
+   so the "off" mode renders the settled state with no JS */
+.dpc-steps__bar { position: relative; margin-top: 20px; height: 8px; border-radius: var(--r-full); background: var(--gf-lilac-200); }
+.dpc-steps__bar-fill { position: absolute; inset: 0; border-radius: inherit; background: var(--gf-purple); transform-origin: left center; }
+
+/* courier — ported from landing .debit__moto: same composition
+   (translateX(calc(-50% + travel))), same bob keyframes on the separate
+   `translate` property so bobbing never fights the travel transform */
+.dpc-steps__courier {
+  position: absolute; left: 0; bottom: 2px;
+  width: clamp(36px, 4vw, 48px); height: auto;
+  transform: translateX(-50%); will-change: transform;
+  z-index: 1; pointer-events: none;
+}
+.dpc-steps__courier.is-riding { animation: moto-bob .4s ease-in-out infinite alternate; }
+.dpc-steps[data-mode="off"] .dpc-steps__courier { display: none; } /* mirrors landing mobile */
+
+/* completion row: lottie/stub badge + reward icons */
+.dpc-steps__done { display: flex; align-items: center; gap: 12px; margin-top: 16px; min-height: 40px; }
+.dpc-steps__badge { width: 40px; height: 40px; display: grid; place-items: center; }
+.dpc-steps__badge img { width: 100%; height: 100%; object-fit: contain; }
+.dpc-steps__rewards { display: inline-flex; gap: 8px; }
+.dpc-steps__rewards img { width: 32px; height: 32px; }
+
 /* ============ 4. CAPABILITIES — bento (transfers / ATM / sanal) ============ */
 .dpc-caps { padding-block: 120px 100px; }
 .dpc-caps__head { text-align: center; margin-bottom: 48px; }
@@ -86,8 +133,9 @@
   display: flex; flex-direction: column; gap: 32px;
   background: var(--gf-bg-soft); border-radius: var(--r-xl); padding: 40px;
 }
+/* card type ramp = page reference scale (earn/steps): 24/32 semibold heads, 16/24 body */
 .dpc-cap__copy h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
-.dpc-cap__copy p { margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--gf-ink-700); }
+.dpc-cap__copy p { margin: 8px 0 0; font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700); }
 .dpc-cap__stat {
   display: block; margin-bottom: 8px;
   font-size: 72px; line-height: 1; font-variant-numeric: tabular-nums;
