@@ -46,8 +46,27 @@
 .dpc-hero__card { position: absolute; top: 254px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; border-radius: var(--r-xl); overflow: hidden; }
 .dpc-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Reveal wrapper fills the card box so Motion transforms never fight
-   the box's own positioning */
-.dpc-hero__media-fill { position: absolute; inset: 0; }
+   the box's own positioning. multiply knocks out the video's white bg
+   so the stage shows through — the cards sit on the page, not in a box.
+   (Blend lives on the wrapper, not the <video>: it composites with the
+   Reveal opacity in one group, and Safari blends divs more reliably.) */
+.dpc-hero__media-fill { position: absolute; inset: 0; mix-blend-mode: multiply; }
+
+/* stage — blurred lilac blob behind the cards, soft-gradient feel.
+   Shows through the video's knocked-out white. Desktop-only; mobile
+   keeps the clean white hero. */
+.dpc-hero__stage { display: none; }
+@media (min-width: 921px) {
+  .dpc-hero__stage { display: block; position: absolute; inset: 0; pointer-events: none; }
+  .dpc-hero__blob {
+    position: absolute;
+    top: var(--hero-blob-top, 80px); right: var(--hero-blob-right, -40px);
+    width: var(--hero-blob-size, 680px); height: var(--hero-blob-size, 680px);
+    border-radius: 50%;
+    background: var(--gf-lilac);
+    filter: blur(var(--hero-blob-blur, 90px));
+  }
+}
 /* Desktop: text block flex-centered vertically, card at display scale.
    ≤920 keeps the static stacked layout further down this file. */
 @media (min-width: 921px) {
@@ -58,9 +77,11 @@
   .dpc-badge { margin-bottom: 20px; }
   .dpc-hero__title .hl::after { height: 10px; bottom: -2px; }
   .dpc-hero__cta { margin-top: 40px; }
+  /* geometry vars set inline by Hero.tsx (dial-tunable during the 10/10
+     pass); fallbacks mirror the dial defaults */
   .dpc-hero__card {
-    top: -30px; left: auto; right: -140px; transform: none;
-    width: 900px; height: 900px; border-radius: 0;
+    top: var(--hero-card-top, 50px); left: auto; right: var(--hero-card-right, -60px); transform: none;
+    width: var(--hero-card-size, 740px); height: var(--hero-card-size, 740px); border-radius: 0;
   }
 }
 
@@ -106,6 +127,65 @@
     .dpc-steps[data-mode="scrub"] .dpc-steps__num { font-size: 64px; }
   }
 }
+/* ---- compact layout variant (?steps=compact, Figma 21619:8182) ----
+   Two rounded panels — lilac-50 intro left, bg-soft steps right — with
+   the phone overlapping both on the seam. Panel radius 32 is a comp
+   value (above the --r-* scale). Same pin/track mechanics as .dpc-steps. */
+.dpc-stepsc { padding-block: 100px; }
+@media (min-width: 921px) {
+  .dpc-stepsc[data-mode="scrub"] {
+    height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
+    padding-block: 0;
+  }
+  .dpc-stepsc[data-mode="scrub"] .dpc-stepsc__pin {
+    position: sticky; top: 0; min-height: 100vh;
+    display: grid; place-items: center; padding-block: 48px;
+    background: #fff;
+  }
+}
+.dpc-stepsc__grid {
+  position: relative;
+  display: flex; align-items: stretch; justify-content: space-between; gap: 24px;
+}
+.dpc-stepsc__intro,
+.dpc-stepsc__list { flex: 1 1 0; min-width: 0; border-radius: 32px; }
+.dpc-stepsc__intro {
+  background: var(--gf-lilac-50);
+  padding: 40px 32px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+}
+.dpc-stepsc__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
+.dpc-stepsc__cta { margin-top: 24px; width: 114px; height: 56px; }
+.dpc-stepsc__list {
+  background: var(--gf-bg-soft);
+  margin: 0; padding: 40px 32px; list-style: none;
+  display: flex; flex-direction: column; justify-content: center; gap: 24px;
+}
+.dpc-stepsc__item h3 { margin: 0; font-size: 20px; line-height: 28px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
+.dpc-stepsc__item p { margin: 8px 0 0; font-size: 18px; line-height: 28px; color: var(--gf-ink-700); }
+/* width clamp = landing .transfer__phone (sections.css) — one phone scale
+   across the site */
+.dpc-stepsc__phone { width: clamp(240px, 24vw, 330px); flex: none; align-self: center; }
+.dpc-stepsc__phone-fill { width: 100%; }
+.dpc-stepsc__phone img { width: 100%; height: auto; display: block; }
+.dpc-stepsc__phone-lottie { width: 100%; aspect-ratio: 450 / 920; }
+@media (min-width: 921px) {
+  /* phone rides the seam: absolute center, panels pad away from it */
+  .dpc-stepsc__phone {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  /* comp: intro keeps plain padding (phone bleeds over its right edge);
+     only the list pads away so step copy clears the phone */
+  .dpc-stepsc__list { padding-left: 160px; padding-right: 16px; }
+}
+@media (max-width: 920px) {
+  .dpc-stepsc__grid { flex-direction: column; align-items: stretch; }
+  .dpc-stepsc__phone { order: 2; margin-inline: auto; }
+  .dpc-stepsc__intro { order: 1; }
+  .dpc-stepsc__list { order: 3; }
+}
+
 .dpc-steps__top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
 .dpc-steps__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
 .dpc-steps__cta { margin-top: 24px; width: 114px; height: 56px; }

@@ -15,7 +15,7 @@ import {
 import type { AnimationItem } from "lottie-web";
 import clsx from "clsx";
 import AnimatedHighlight from "@/components/AnimatedHighlight";
-import Reveal, { RevealItem } from "@/components/Reveal";
+import Reveal from "@/components/Reveal";
 import { DEBIT_STEPS, DEBIT_STEPS_SECTION } from "@/data/content";
 
 /* "Hızlı kart teslimatı" scroll sequence (GFDES-2174 §2)
@@ -43,6 +43,10 @@ import { DEBIT_STEPS, DEBIT_STEPS_SECTION } from "@/data/content";
      bar 2  0.32–0.58   → courier rides the bar, hold until 0.66
      bar 3  0.66–0.90   → lottie #3 fires at 0.90; getirpara + cashback
                           icons bounce; 0.90–1.00 hold, then unpin
+   Step copy is driver-bound too: each item fades/rises in over an APPEAR
+   window that completes exactly as its bar segment begins (step 1 right at
+   pin-in, steps 2/3 during the preceding hold), so the points build with
+   the scroll and retract on reverse. Settled mode renders them static.
    Holds are sized for ≤1s lottie files — retune SEG when the real files
    arrive so completions land in sync with scroll pacing.
 
@@ -73,13 +77,16 @@ import { DEBIT_STEPS, DEBIT_STEPS_SECTION } from "@/data/content";
 const STEP1_LOTTIE: string | null = null; // TODO user file → /assets/lottie/steps-1.json
 const STEP3_LOTTIE: string | null = null; // TODO user file → /assets/lottie/steps-3.json
 
+/* SEG / APPEAR / TIMED_* / SCRUB_PX and useStepsMode are exported for the
+   compact layout variant (DeliveryCompact.tsx, ?steps=compact) so both
+   layouts share one timing model and one mode policy. */
 const SEG_DONE1 = 0.24;
 const SEG_BAR2_IN = 0.32;
 const SEG_BAR2_OUT = 0.58;
 const SEG_BAR3_IN = 0.66;
 const SEG_DONE3 = 0.9;
 
-const SEG = {
+export const SEG = {
   bar1: [0, SEG_DONE1] as [number, number],
   done1: SEG_DONE1,
   bar2: [SEG_BAR2_IN, SEG_BAR2_OUT] as [number, number],
@@ -87,7 +94,9 @@ const SEG = {
   done3: SEG_DONE3,
 };
 const HYST = 0.03;
-const TIMED_DURATION = 5;
+/* width of each step-copy fade window on the driver */
+export const APPEAR = 0.06;
+export const TIMED_DURATION = 5;
 /* Landing .debit__moto travel curve (sections.css: transform 2.4s
    cubic-bezier(.16,1,.3,1)). It governs the courier's TRAVEL leg only —
    driving the whole 3-step timeline with it collapses the sequence
@@ -95,16 +104,16 @@ const TIMED_DURATION = 5;
 const COURIER_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 /* Driver keyframes for the timed fallback: fill 1 → hold → courier rides →
    hold → fill 3 → hold. Segment boundaries mirror SEG exactly. */
-const TIMED_KEYS = [0, SEG_DONE1, SEG_BAR2_IN, SEG_BAR2_OUT, SEG_BAR3_IN, SEG_DONE3, 1];
-const TIMED_TIMES = [0, 0.16, 0.22, 0.55, 0.62, 0.9, 1];
-const TIMED_EASE = ["linear", "linear", COURIER_EASE, "linear", "linear", "linear"] as const;
+export const TIMED_KEYS = [0, SEG_DONE1, SEG_BAR2_IN, SEG_BAR2_OUT, SEG_BAR3_IN, SEG_DONE3, 1];
+export const TIMED_TIMES = [0, 0.16, 0.22, 0.55, 0.62, 0.9, 1];
+export const TIMED_EASE = ["linear", "linear", COURIER_EASE, "linear", "linear", "linear"] as const;
 /* Sticky travel. Single source of truth: fed to CSS as --dpc-scrub and to
    useScroll as the progress end edge, so the two can never disagree. */
-const SCRUB_PX = 1600;
+export const SCRUB_PX = 1600;
 
-type Mode = "scrub" | "timed" | "off";
+export type Mode = "scrub" | "timed" | "off";
 
-function useStepsMode(): Mode {
+export function useStepsMode(): Mode {
   const reduced = useReducedMotion();
   // null until mount: SSR/first paint renders the settled "off" layout,
   // avoiding a hydration mismatch; the section is below the fold so the
@@ -243,6 +252,16 @@ export default function DeliverySteps() {
   const bar3 = useTransform(driver, SEG.bar3, [0, 1]);
   const bars = [bar1, bar2, bar3];
 
+  // step copy: fade+rise windows ending exactly where each bar segment starts
+  const item1In = useTransform(driver, [0, APPEAR], [0, 1]);
+  const item2In = useTransform(driver, [SEG.bar2[0] - APPEAR, SEG.bar2[0]], [0, 1]);
+  const item3In = useTransform(driver, [SEG.bar3[0] - APPEAR, SEG.bar3[0]], [0, 1]);
+  const item1Rise = useTransform(item1In, [0, 1], [16, 0]);
+  const item2Rise = useTransform(item2In, [0, 1], [16, 0]);
+  const item3Rise = useTransform(item3In, [0, 1], [16, 0]);
+  const itemIn = [item1In, item2In, item3In];
+  const itemRise = [item1Rise, item2Rise, item3Rise];
+
   // courier travel: measured once + on resize (DebitCard.tsx pattern) into a
   // motion value, then composed reactively as a pure x-transform
   // (full transform string = hardware-accelerated)
@@ -303,9 +322,16 @@ export default function DeliverySteps() {
               />
             </Reveal>
           </div>
-          <Reveal as="ol" className="dpc-steps__list" stagger={0.08}>
+          {/* driver-bound, not Reveal: appearance follows the scrub, not the
+              viewport. Settled mode renders static (SSR paints this). */}
+          <ol className="dpc-steps__list">
             {DEBIT_STEPS.map((step, i) => (
-              <RevealItem as="li" key={step.title} className="dpc-steps__item">
+              <motion.li
+                key={step.title}
+                className="dpc-steps__item"
+                initial={false}
+                style={settled ? undefined : { opacity: itemIn[i], y: itemRise[i] }}
+              >
                 <span className="dpc-steps__num" aria-hidden="true">
                   {i + 1}
                 </span>
@@ -365,9 +391,9 @@ export default function DeliverySteps() {
                     </span>
                   </div>
                 )}
-              </RevealItem>
+              </motion.li>
             ))}
-          </Reveal>
+          </ol>
         </div>
       </div>
     </section>

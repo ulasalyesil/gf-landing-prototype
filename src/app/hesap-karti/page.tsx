@@ -1,17 +1,27 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useSyncExternalStore } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedHighlight from "@/components/AnimatedHighlight";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import DebitHero from "./Hero";
 import DeliverySteps from "./DeliverySteps";
+import DeliveryCompact from "./DeliveryCompact";
 import AbroadCollage from "./AbroadCollage";
 import { DEBIT_EARN, DEBIT_CAPS, DEBIT_SANAL, DEBIT_ABROAD } from "@/data/content";
 import "./debit-current.css";
 
+/* ?steps=compact swaps the teslimatı section to the compact layout
+   (Figma 21619:8182) for team comparison — no picker UI, link-only.
+   Read via useSyncExternalStore (server snapshot null → default layout,
+   reconciled after hydration without a mismatch — HeroVariants pattern). */
+const subscribeNoop = () => () => {};
+const getStepsParam = () => new URLSearchParams(window.location.search).get("steps");
+const getServerStepsParam = () => null;
+
 export default function HesapKartiDetail() {
+  const stepsParam = useSyncExternalStore(subscribeNoop, getStepsParam, getServerStepsParam);
   // Add body class on mount, cleanup on unmount
   useEffect(() => {
     document.body.classList.add("dpc");
@@ -67,7 +77,7 @@ export default function HesapKartiDetail() {
         </section>
 
         {/* ============ 3. DELIVERY — scroll-driven "dakikalar" sequence ============ */}
-        <DeliverySteps />
+        {stepsParam === "compact" ? <DeliveryCompact /> : <DeliverySteps />}
 
         {/* ============ 4. CAPABILITIES — transfers / ATM / sanal ============ */}
         <section className="dpc-caps">

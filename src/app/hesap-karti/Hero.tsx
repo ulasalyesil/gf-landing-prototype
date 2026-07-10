@@ -1,12 +1,20 @@
 "use client";
 
 import React from "react";
+import { useDialKit } from "dialkit";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import { DEBIT_HERO } from "@/data/content";
 
 /* GFDES-2174 hero — "kart xl" (variant C, picked from the round-1 lab):
    white field, the product carries the section at display scale, title
-   matches the landing hero scale. Entrance: badge → title → CTA stagger. */
+   matches the landing hero scale. Entrance: badge → title → CTA stagger.
+   Video plays once and holds its final frame — a perpetual loop next to
+   static text pulls the eye forever; one pass presents the card, done.
+
+   Card geometry is dial-tunable (dev only) while the 10/10 pass runs:
+   values flow through CSS vars that only the ≥921 rules read, so the
+   mobile layout never sees them. Bake into debit-current.css + delete
+   the hook once settled (dial defaults == the CSS fallbacks). */
 
 function Bolt() {
   return (
@@ -17,8 +25,40 @@ function Bolt() {
 }
 
 export default function DebitHero() {
+  const dials = useDialKit("Hero · kart xl", {
+    card: {
+      size: [740, 520, 1000, 10],
+      top: [50, -200, 300, 5],
+      right: [-60, -300, 100, 5],
+    },
+    blob: {
+      size: [680, 300, 1100, 10],
+      top: [80, -300, 500, 10],
+      right: [-40, -400, 400, 10],
+      blur: [90, 0, 200, 5],
+    },
+  });
+
   return (
-    <section className="dpc-hero">
+    <section
+      className="dpc-hero"
+      style={
+        {
+          "--hero-card-size": `${dials.card.size}px`,
+          "--hero-card-top": `${dials.card.top}px`,
+          "--hero-card-right": `${dials.card.right}px`,
+          "--hero-blob-size": `${dials.blob.size}px`,
+          "--hero-blob-top": `${dials.blob.top}px`,
+          "--hero-blob-right": `${dials.blob.right}px`,
+          "--hero-blob-blur": `${dials.blob.blur}px`,
+        } as React.CSSProperties
+      }
+    >
+      {/* stage — blurred lilac blob behind the cards; shows through the
+          video's knocked-out white (multiply). Desktop-only via CSS. */}
+      <div className="dpc-hero__stage" aria-hidden="true">
+        <div className="dpc-hero__blob" />
+      </div>
       <div className="dpc-container h-full relative">
         <Reveal className="dpc-hero__text" stagger={0.08}>
           <RevealItem as="span" className="dpc-badge">
@@ -40,7 +80,7 @@ export default function DebitHero() {
         </Reveal>
         <div className="dpc-hero__card" aria-hidden="true">
           <Reveal direction="none" delay={0.2} className="dpc-hero__media-fill">
-            <video className="dpc-hero__video" autoPlay muted loop playsInline>
+            <video className="dpc-hero__video" autoPlay muted playsInline>
               <source src="/assets/video/debit-white-bg.mp4" type="video/mp4" />
             </video>
           </Reveal>
