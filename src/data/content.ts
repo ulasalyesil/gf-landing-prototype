@@ -42,6 +42,13 @@ export const RATES_CYCLE_MS = 180000;
 /* Steps copy is a Turkish draft replacing the English template text —
    needs owner + legal review before lock (esp. anything fee-related). */
 
+export const DEBIT_HERO = {
+  badge: "kartın dakikalar içinde kapında",
+  title: "geri dönüşü",
+  titleHl: "muhteşem kart",
+  cta: "kart al"
+};
+
 export const DEBIT_EARN = {
   title: "harcadıkça getirpara",
   titleHl: "ve nakit iade kazan",

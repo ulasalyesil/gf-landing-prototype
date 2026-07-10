@@ -18,21 +18,12 @@ Exception: lab pages (like the hero variant lab) may keep dials while the lab li
 
 ## Where to apply it (ordered by roadmap)
 
-### 1. Hero lab `/hesap-karti` — now
+### 1. ~~Hero lab `/hesap-karti`~~ — done differently
 
-The C/D finalists have hand-tuned geometry in `debit-hero-variants.css`
-(C: card 900px / right -140 / top -30; D: tile 620px / shadow / field color).
-Give each active variant a panel:
-
-```tsx
-const c = useDialKit("Hero C · kart xl", {
-  card: { size: [900, 600, 1100, 10], right: [-140, -300, 0], top: [-30, -200, 100] },
-  text: { top: [224, 120, 320] },
-});
-```
-
-Drive the values via inline `style` on the variant while tuning, bake the winner
-back into the CSS, then strip the dials together with the lab scaffolding.
+C ("kart xl") won and the lab was deleted before a geometry-dial pass happened;
+the hand-tuned C geometry is baked into `debit-current.css` (card 900px /
+right -140 / top -30). If the hero geometry needs a retune, wrap those values
+in a `useDialKit` panel ad hoc.
 
 ### 2. Micro-interactions pass (GFDES-2174 next phase) — the main event
 

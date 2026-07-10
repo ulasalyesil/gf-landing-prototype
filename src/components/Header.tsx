@@ -5,7 +5,14 @@ import Link from "next/link";
 import clsx from "clsx";
 import Button from "./Button";
 
-export default function Header() {
+interface HeaderProps {
+  /** "home": white nav over the dark landing hero, flips on scroll.
+      "inner": ink nav + purple logo from the start, for light-hero pages
+      (uses the .site-header--inner styles ported from the vanilla build). */
+  variant?: "home" | "inner";
+}
+
+export default function Header({ variant = "home" }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMegaOpen, setIsMegaOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -100,8 +107,9 @@ export default function Header() {
   };
 
   // Determine logo source
-  // Scrolled OR Mega Open → purple logo, else white logo over transparent header
-  const showPurpleLogo = isScrolled || isMegaOpen;
+  // Inner pages, scrolled, or mega open → purple logo, else white logo
+  // over the transparent header
+  const showPurpleLogo = variant === "inner" || isScrolled || isMegaOpen;
   const logoSrc = showPurpleLogo
     ? "/assets/logos/getirfinans.svg"
     : "/assets/logos/getirfinans-dark.svg";
@@ -110,6 +118,7 @@ export default function Header() {
     <header
       className={clsx(
         "site-header",
+        variant === "inner" && "site-header--inner",
         isScrolled && "is-scrolled",
         isMegaOpen && "is-mega",
         isClosing && "is-closing"

@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedHighlight from "@/components/AnimatedHighlight";
 import Reveal, { RevealItem } from "@/components/Reveal";
-import DebitHeroLab from "./HeroVariants";
+import DebitHero from "./Hero";
 import DeliverySteps from "./DeliverySteps";
 import AbroadCollage from "./AbroadCollage";
 import { DEBIT_EARN, DEBIT_CAPS, DEBIT_SANAL, DEBIT_ABROAD } from "@/data/content";
@@ -22,10 +22,10 @@ export default function HesapKartiDetail() {
 
   return (
     <>
-      <Header />
+      <Header variant="inner" />
       <main className="dpc">
-        {/* ============ 1. HERO — GFDES-2174 variant lab ============ */}
-        <DebitHeroLab />
+        {/* ============ 1. HERO — "kart xl" ============ */}
+        <DebitHero />
 
         {/* ============ 2. EARN ============ */}
         <section className="dpc-earn">
