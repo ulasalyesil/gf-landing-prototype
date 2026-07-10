@@ -18,12 +18,16 @@
 
 ## Blocker
 
-- [ ] **Vercel 404** (project setting, not code) — Framework Preset is still "Other", so Vercel ignores `.next`. Dashboard: Settings → Build & Development → Framework Preset = **Next.js** (clear Output Directory override) → Redeploy. Also turn off Deployment Protection (Vercel Authentication) — it redirects every working URL to vercel.com/login.
+- [x] **Vercel 404** — resolved (Framework Preset set to Next.js, Deployment Protection off). Live and serving `main`: https://gf-landing-prototype.vercel.app/hesap-karti
+
+> **Note — the hero variant picker ships to production.** `DebitHeroLab` renders the A/B/C/D switcher unconditionally, so it is visible on the live URL. Intentional for this review round; remove it with the rest of the lab scaffolding once C vs D is decided.
 
 ## Bugs
 
 - [x] `CampaignsCarousel` hydration mismatch — fixed on `motion-integration`: pos classes derive from state in render, no `window` reads
 - [x] `Rates` GSAP "target not found" — gone with the Motion port (`motion-integration`); GSAP removed from Rates entirely
+- [x] `AbroadCollage` hydration mismatch — shuffling during render made the prerendered order differ from the client (and vary per request); DOM order is now fixed and the randomness lives in the stagger delays, set in an event callback
+- [x] `HeroVariants` `setState`-in-effect lint error reading `?hero=` — replaced with `useSyncExternalStore`
 
 ## Backlog
 
