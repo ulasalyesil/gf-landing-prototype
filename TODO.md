@@ -8,9 +8,9 @@
 - [x] **Motion integration** — landing page ported to Motion on the `motion-integration` branch (shared `Reveal` component replaces the GSAP reveals; ideation + build order in `docs/motion-ideation.md`). Remaining: `Loan` clip-path scroll-scrub still GSAP (port when touched)
 - [x] **Yellow highlight — purple borders on light sections** — done on `motion-integration`: brand purple on all light sections, yellow kept on dark (.debit, .app-dark) and /hesap-karti
 - [ ] **Debit card page — finalize design** (`/hesap-karti`, GFDES-2174; layout locked "Dakikalar, drenched" → layout iteration → micro-interactions, built with Motion)
-  - Hero variant lab in place (`?hero=` + bottom picker): shortlist is **C kart xl** (title now matches landing hero scale) or **D lilac**; A wireframe + B drenched kept for comparison. Pick, delete lab scaffolding, then micro-interactions.
+  - **Hero decided: C kart xl** (2026-07-10). Lab deleted (`HeroVariants.tsx`, `debit-hero-variants.css`, picker, `?hero=`); C lives as `Hero.tsx` with its geometry baked into `debit-current.css`, copy in `content.ts` (`DEBIT_HERO`). Next: micro-interactions pass.
   - Sections 2–7 layout iterated (fluid grid replaces the absolute comp): earn polished (scrim, ₺1.250), steps → "dakikalar" lilac field with ghost numerals + **Turkish draft copy (needs owner/legal review — replaced English template text)**, transfers/ATM/sanal consolidated into a capability bento with dark sanal panel, abroad collage now %-based (scroll strip ≤920). Copy moved to `content.ts` (`DEBIT_*`). Entrances via shared `Reveal`; `.hl` underlines draw on scroll like landing.
-  - Header needs a proper light-hero variant prop — white logo/nav were invisible over the white hero; currently patched via scoped CSS in `debit-hero-variants.css`.
+  - Header light-hero variant done properly: `<Header variant="inner" />` applies the vanilla build's `.site-header--inner` styles (ink nav, purple logo, CTA visible at top) — the `body[data-hero]` CSS patch is gone. Note: `--inner` also shows the header CTA before scroll, which the old patch didn't; intended per the vanilla design.
   - **DialKit installed** (`DialRoot` mounted in layout, dev-only) — application plan in `docs/dialkit-plan.md`: hero-lab geometry dials first, then shared motion dials (`src/dials/`) for the micro-interactions pass; tuned values get baked in and dials removed.
   - **Teslimatı scroll sequence built** (`DeliverySteps.tsx`): sticky-pinned scrub ≥921 / timed in-view run 768–920 / settled ≤767+reduced-motion. **Waiting on 2 lottie files (step 1 + step 3)** — wire via `STEP1_LOTTIE`/`STEP3_LOTTIE`, then retune `SEG` holds to the lottie durations. Courier ported from landing `.debit__moto` (same curve/bob/travel pattern). Scrub feel needs a real-browser QA pass (headless can't scroll) — good first DialKit candidate.
   - **Abroad collage stagger** (`AbroadCollage.tsx`): card entrance completes → Lisbon → Berlin → rest shuffled once per load, 80ms stagger, never re-triggers. DOM order is fixed and the randomness lives in the delays — shuffling in render caused an SSR/client hydration mismatch (same trap as `CampaignsCarousel`).
@@ -19,8 +19,6 @@
 ## Blocker
 
 - [x] **Vercel 404** — resolved (Framework Preset set to Next.js, Deployment Protection off). Live and serving `main`: https://gf-landing-prototype.vercel.app/hesap-karti
-
-> **Note — the hero variant picker ships to production.** `DebitHeroLab` renders the A/B/C/D switcher unconditionally, so it is visible on the live URL. Intentional for this review round; remove it with the rest of the lab scaffolding once C vs D is decided.
 
 ## Bugs
 
