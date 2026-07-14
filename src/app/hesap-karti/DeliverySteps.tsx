@@ -297,13 +297,21 @@ export default function DeliverySteps() {
   const screen3T = useTransform(driver, w3, ["translateX(100%)", "translateX(0%)"]);
   const screenT = [screen1T, screen2T, screen3T];
 
-  /* Phone lift — the hero mock is taller than the clip STAGE (the container)
+  /* Phone lift — the hero mock is taller than the clip STAGE (the band)
      and rests bottom-cropped (step 1). Steps 2 and 3 carry their payoff in the
      screen's bottom drawer (kurye tracking / kazanç), so the phone rises over
-     the step-2 window until its bottom edge clears the stage (40px inset) and
-     holds there. Lift distance is measured against the stage (offset chain +
-     ResizeObserver), not the pin — the pin fills the viewport, the stage is
-     the fixed window — so any viewport height works. */
+     the step-2 window until its VISIBLE bezel clears the band, and holds
+     there. frame.png carries transparent margins (source 800×1355: 80px above
+     the bezel, 205px shadow buffer below — measured off the PNG alpha), so
+     the math targets the bezel edges, not the image box: the lifted bezel's
+     bottom gap mirrors the idle bezel's top gap (owner request 2026-07-14 —
+     the box-bottom target left a ~236px hole under the phone). Lift distance
+     is measured against the stage (offset chain + ResizeObserver), not the
+     pin — the pin fills the viewport, the stage is the fixed window — so any
+     viewport height works. */
+  const FRAME_H = 1355; // frame.png natural height
+  const FRAME_TOP = 80; // transparent rows above the bezel
+  const FRAME_BOTTOM = 205; // transparent shadow buffer below the bezel
   const mockRef = useRef<HTMLDivElement>(null);
   const lift = useMotionValue(0);
   useEffect(() => {
@@ -322,7 +330,11 @@ export default function DeliverySteps() {
         top += el.offsetTop;
         el = el.offsetParent as HTMLElement | null;
       }
-      lift.set(Math.max(0, top + mock.offsetHeight + 40 - stage.clientHeight));
+      const scale = mock.offsetHeight / FRAME_H;
+      // idle: bezel top → band top; the lifted bezel bottom mirrors it
+      const bezelGap = top + FRAME_TOP * scale;
+      const targetBoxBottom = stage.clientHeight - bezelGap + FRAME_BOTTOM * scale;
+      lift.set(Math.max(0, top + mock.offsetHeight - targetBoxBottom));
     };
     measure();
     const observer = new ResizeObserver(measure);
@@ -373,6 +385,9 @@ export default function DeliverySteps() {
       style={{ "--dpc-scrub": `${SCRUB_PX}px` } as React.CSSProperties}
     >
       <div className="dpc-steps__pin" ref={pinRef}>
+        {/* band = the visible lilac card; the pin itself is a transparent
+            100vh window that centers it (scrub mode) */}
+        <div className="dpc-steps__band">
         <div className="dpc-container">
           {/* stage = the phone-driven clip window; the container pads around
               it (80px) and is the full section height — the pin wraps this. */}
@@ -506,6 +521,7 @@ export default function DeliverySteps() {
             ))}
           </ol>
           </div>
+        </div>
         </div>
       </div>
     </section>

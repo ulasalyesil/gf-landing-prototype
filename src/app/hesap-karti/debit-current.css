@@ -115,30 +115,46 @@
        derives from it, so the phone's visible slice stays constant per screen */
     --dpc-phone-w: min(768px, 53vw);
     height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
-    padding-block: 0; background: var(--gf-lilac-50);
+    /* the track itself is transparent: the lilac field lives on the pin card
+       only, so the phone's crop line and the field's bottom edge are the SAME
+       line — no floating cut mid-lilac (owner request 2026-07-14) */
+    padding-block: 0; background: none;
   }
-  /* pin WRAPS its container (no 100vh fill). Sticky card that's exactly as
-     tall as the padded container; background carries the whole scrub track
-     (set below) so there's no bare gap below a short card on tall screens. */
+  /* pin = a transparent full-viewport sticky window; the lilac BAND centers
+     inside it, so leftover viewport height splits evenly above and below the
+     band while pinned (owner request 2026-07-14 — was top-stuck with all the
+     whitespace below). Sticky top stays 0, so pin-in still equals progress 0. */
   .dpc-steps[data-mode="scrub"] .dpc-steps__pin {
-    position: sticky; top: 0;
-    display: grid; place-items: center;
+    position: sticky; top: 0; min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    background: none;
+  }
+  /* the band is the visible lilac card: full-bleed width, exactly as tall as
+     the padded container — its bottom edge is the phone's crop line */
+  .dpc-steps[data-mode="scrub"] .dpc-steps__band {
     background: var(--gf-lilac-50);
   }
-  /* container = the full section height, 80px vertical breathing room around
-     the stage. */
+  /* the stage IS the band: its padding box runs edge to edge of the lilac
+     field, so both the phone's crop line and the text spacing are measured
+     against the band itself. All vertical breathing room lives on the stage. */
   .dpc-steps[data-mode="scrub"] .dpc-steps__pin > .dpc-container {
-    padding-block: 80px;
+    padding-block: 0;
   }
   /* stage window FOLLOWS the phone: ~60% of the phone's height (frame aspect
      1355/800 → ×0.60 ≈ ×1.016 of its width). A consistent ~60% of the phone
      always shows and the lift always has travel — fixes the tall-screen case
-     where the whole phone fit and the lift collapsed to 0. Capped so the
-     stage + 160px padding never exceeds the viewport. */
+     where the whole phone fit and the lift collapsed to 0. Capped to stay
+     inside the viewport with slack. min-height (not height): if the step
+     copy outgrows the window the band grows instead of the text spilling
+     past the band's top edge. SYMMETRIC 64px padding + centering keep the
+     intro's top gap equal to step 3's bottom gap (owner request 2026-07-14);
+     overflow clips at the padding edge, so the phone still runs to the very
+     bottom of the band. */
   .dpc-steps[data-mode="scrub"] .dpc-steps__stage {
     position: relative;
-    height: clamp(560px, min(calc(var(--dpc-phone-w) * 1.016), calc(100vh - 200px)), 780px);
+    min-height: clamp(560px, min(calc(var(--dpc-phone-w) * 1.016), calc(100vh - 120px)), 780px);
     overflow: clip;
+    padding-block: 64px;
     display: flex; flex-direction: column; justify-content: center;
   }
   /* keep the pinned composition inside short viewports (laptop 800-900px) */
@@ -237,7 +253,10 @@
    left so the composition reads text-left / product-right. */
 @media (min-width: 921px) {
   .dpc-steps__phone {
-    position: absolute; top: -24px; right: 0; margin: 0; z-index: 1;
+    /* 56px = the old 80px container padding + the -24px comp offset; the
+       stage padding box now starts at the band's top edge, so the offset
+       is expressed directly against the band */
+    position: absolute; top: 56px; right: 0; margin: 0; z-index: 1;
     width: var(--dpc-phone-w, min(768px, 53vw));
   }
   .dpc-steps__intro { max-width: 520px; }
