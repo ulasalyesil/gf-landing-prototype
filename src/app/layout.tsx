@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { DialRoot } from "dialkit";
+import { Agentation } from "agentation";
 import "dialkit/styles.css";
 import "./globals.css";
 
@@ -24,8 +25,12 @@ export default function RootLayout({
     <html lang="tr" className={`${openSans.variable} antialiased`}>
       <body className="font-sans text-gf-ink bg-gf-bg min-h-screen">
         {children}
-        {/* dev-only tuning panel (auto-hidden in production builds) */}
-        <DialRoot position="bottom-right" defaultOpen={false} />
+        {/* dev-only tuning panel (auto-hidden in production builds).
+            bottom-left so it clears Agentation's bottom-right toolbar. */}
+        <DialRoot position="bottom-left" defaultOpen={false} />
+        {/* dev-only visual-feedback overlay: click elements → annotate → copy
+            structured markdown for the agent. Gated so it never ships. */}
+        {process.env.NODE_ENV !== "production" && <Agentation />}
       </body>
     </html>
   );

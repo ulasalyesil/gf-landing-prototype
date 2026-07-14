@@ -71,10 +71,11 @@ export const DEBIT_STEPS_SECTION = {
   cta: "kart al"
 };
 
+/* step titles: owner (2026-07-13); desc lines are DRAFT — need owner review */
 export const DEBIT_STEPS: DebitStep[] = [
-  { title: "hesabını aç",      desc: ["ücretsiz hesabını uygulamadan", "dakikalar içinde aç"] },
-  { title: "kartını iste",     desc: ["hesap kartını uygulamadan", "tek dokunuşla iste"] },
-  { title: "harcamaya başla",  desc: ["dijital kartın anında hazır,", "fiziksel kartın dakikalar içinde kapında"] }
+  { title: "kartını iste",                desc: ["hesap kartını uygulamadan", "tek dokunuşla iste"] },
+  { title: "ücretsiz kurye teslim etsin", desc: ["kurye kartını dakikalar içinde", "adresine teslim etsin"] },
+  { title: "kazanmaya başla",             desc: ["harcadıkça nakit iade", "ve getirpara kazan"] }
 ];
 
 /* "neler var?" answers what the PHYSICAL card does — attributes of the card
@@ -82,8 +83,8 @@ export const DEBIT_STEPS: DebitStep[] = [
 export const DEBIT_CAPS = {
   title: "hesap kartında",
   titleHl: "daha neler var?",
-  transfer: { stat: "7/24", title: "ücretsiz para transferi", sub: "havale, EFT ve FAST", media: "para transferi görseli" },
-  atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "ATM görseli" }
+  transfer: { stat: "7/24", title: "ücretsiz para transferi", sub: "havale, EFT ve FAST", media: "/assets/img/debit-cap-transfer.svg" },
+  atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "/assets/img/debit-cap-atm.svg" }
 };
 
 /* Own section — dark, full-bleed (landing `.debit` grammar). Heading is a
@@ -97,7 +98,7 @@ export const DEBIT_SANAL = {
     "internet alışverişlerini güvenle yap",
     "her kartın için limitini belirle, bütçeni kontrol et"
   ],
-  media: "sanal kart görseli"
+  media: "/assets/img/debit-sanal-card.png"
 };
 
 export const DEBIT_ABROAD = {

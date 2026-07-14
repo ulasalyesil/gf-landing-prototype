@@ -111,18 +111,38 @@
   /* track = pin height (measured into --dpc-pin-h) + the scrub distance,
      so sticky travel === --dpc-scrub at any viewport height */
   .dpc-steps[data-mode="scrub"] {
+    /* single source of truth for the phone size — the pinned window height
+       derives from it, so the phone's visible slice stays constant per screen */
+    --dpc-phone-w: min(768px, 53vw);
     height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
-    padding-block: 0; background: none;
+    padding-block: 0; background: var(--gf-lilac-50);
   }
+  /* pin WRAPS its container (no 100vh fill). Sticky card that's exactly as
+     tall as the padded container; background carries the whole scrub track
+     (set below) so there's no bare gap below a short card on tall screens. */
   .dpc-steps[data-mode="scrub"] .dpc-steps__pin {
-    position: sticky; top: 0; min-height: 100vh;
-    display: grid; place-items: center; padding-block: 48px;
+    position: sticky; top: 0;
+    display: grid; place-items: center;
     background: var(--gf-lilac-50);
+  }
+  /* container = the full section height, 80px vertical breathing room around
+     the stage. */
+  .dpc-steps[data-mode="scrub"] .dpc-steps__pin > .dpc-container {
+    padding-block: 80px;
+  }
+  /* stage window FOLLOWS the phone: ~60% of the phone's height (frame aspect
+     1355/800 → ×0.60 ≈ ×1.016 of its width). A consistent ~60% of the phone
+     always shows and the lift always has travel — fixes the tall-screen case
+     where the whole phone fit and the lift collapsed to 0. Capped so the
+     stage + 160px padding never exceeds the viewport. */
+  .dpc-steps[data-mode="scrub"] .dpc-steps__stage {
+    position: relative;
+    height: clamp(560px, min(calc(var(--dpc-phone-w) * 1.016), calc(100vh - 200px)), 780px);
+    overflow: clip;
+    display: flex; flex-direction: column; justify-content: center;
   }
   /* keep the pinned composition inside short viewports (laptop 800-900px) */
   @media (max-height: 940px) {
-    .dpc-steps[data-mode="scrub"] .dpc-steps__phone img { max-height: 46vh; width: auto; }
-    .dpc-steps[data-mode="scrub"] .dpc-steps__phone { width: auto; }
     .dpc-steps[data-mode="scrub"] .dpc-steps__list { margin-top: 48px; }
     .dpc-steps[data-mode="scrub"] .dpc-steps__num { font-size: 64px; }
   }
@@ -186,17 +206,51 @@
   .dpc-stepsc__list { order: 3; }
 }
 
-.dpc-steps__top { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 48px; }
+.dpc-steps__top { display: grid; grid-template-columns: 1fr; align-items: center; gap: 48px; }
 .dpc-steps__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
 .dpc-steps__cta { margin-top: 24px; width: 114px; height: 56px; }
-.dpc-steps__phone { width: 285px; }
-.dpc-steps__phone img { width: 100%; height: auto; display: block; }
+/* flow placement (timed 768–920 + settled mobile): centered between intro
+   and list. Desktop hero placement is in the ≥921 block below. */
+.dpc-steps__phone { width: 256px; margin: 40px auto 0; }
+/* frame PNG has a transparent screen hole; screens stack behind it and slide
+   in from the right. Hole geometry measured off the source PNG (2031×3441):
+   x 413 y 252, 1206×2622 — expressed as % so any render width works. Corner
+   radius = 195px of the 1206-wide screen (16.2% / 7.44% elliptical-safe). */
+.dpc-steps__mock { position: relative; width: 100%; }
+.dpc-steps__mock-frame { position: relative; z-index: 2; width: 100%; height: auto; display: block; pointer-events: none; }
+.dpc-steps__mock-screen {
+  position: absolute; z-index: 1; overflow: hidden;
+  left: 20.33%; top: 7.32%; width: 59.33%; height: 76.2%;
+  border-radius: 16.2% / 7.44%;
+  background: #fff;
+}
+.dpc-steps__mock-screen img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+  will-change: transform; /* the three screens move during the pin — pre-promote */
+}
 .dpc-steps__list {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
   margin: 72px 0 0; padding: 0; list-style: none;
 }
+/* ≥921: the phone is the hero of the view — 3× scale, right-anchored,
+   bleeding past the pin bottom (pin clips). Steps stack vertically on the
+   left so the composition reads text-left / product-right. */
+@media (min-width: 921px) {
+  .dpc-steps__phone {
+    position: absolute; top: -24px; right: 0; margin: 0; z-index: 1;
+    width: var(--dpc-phone-w, min(768px, 53vw));
+  }
+  .dpc-steps__intro { max-width: 520px; }
+  .dpc-steps__list { grid-template-columns: 1fr; max-width: 480px; gap: 28px; margin-top: 48px; }
+  .dpc-steps__item { display: grid; grid-template-columns: 60px 1fr; column-gap: 20px; align-items: start; }
+  .dpc-steps__item > :not(.dpc-steps__num) { grid-column: 2; }
+  .dpc-steps__num { grid-column: 1; grid-row: 1 / span 3; font-size: 48px; line-height: 1.1; }
+  .dpc-steps__title-row { margin-top: 0; }
+}
 .dpc-steps__num { display: block; font-size: 80px; line-height: 1; font-weight: var(--fw-regular); color: var(--gf-lilac-300); }
-.dpc-steps__item h3 { margin: 16px 0 0; font-size: 18px; line-height: 28px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
+/* completion marks sit inline with the title (check lottie / reward icons) */
+.dpc-steps__title-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; min-height: 32px; }
+.dpc-steps__item h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
 /* min-height = 2 lines: guards bar alignment if copy is ever edited to 1 line */
 .dpc-steps__item p { margin: 8px 0 0; min-height: 48px; font-size: 16px; line-height: 24px; color: var(--gf-ink-700); }
 
@@ -218,11 +272,10 @@
 .dpc-steps[data-mode="off"] .dpc-steps__courier { display: none; } /* mirrors landing mobile */
 
 /* completion row: lottie/stub badge + reward icons */
-.dpc-steps__done { display: flex; align-items: center; gap: 12px; margin-top: 16px; min-height: 40px; }
-.dpc-steps__badge { width: 40px; height: 40px; display: grid; place-items: center; }
-.dpc-steps__badge img { width: 100%; height: 100%; object-fit: contain; }
-.dpc-steps__rewards { display: inline-flex; gap: 8px; }
-.dpc-steps__rewards img { width: 32px; height: 32px; }
+.dpc-steps__badge { width: 32px; height: 32px; display: grid; place-items: center; }
+.dpc-steps__badge img, .dpc-steps__badge svg { width: 100%; height: 100%; object-fit: contain; }
+.dpc-steps__rewards { display: inline-flex; align-items: center; gap: 8px; }
+.dpc-steps__rewards img { width: 28px; height: 28px; }
 
 /* ============ 4. CAPABILITIES — bento (transfers / ATM / sanal) ============ */
 .dpc-caps { padding-block: 120px 100px; }
@@ -230,7 +283,7 @@
 .dpc-caps__row { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
 .dpc-cap {
   display: flex; flex-direction: column; gap: 32px;
-  background: var(--gf-bg-soft); border-radius: var(--r-xl); padding: 40px;
+  border-radius: var(--r-xl); padding: 40px;
 }
 /* card type ramp = page reference scale (earn/steps): 24/32 semibold heads, 16/24 body */
 .dpc-cap__copy h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
@@ -240,12 +293,15 @@
   font-size: 72px; line-height: 1; font-variant-numeric: tabular-nums;
   color: var(--gf-purple);
 }
-/* labeled wireframe placeholder — dashed border signals "asset lands here" */
 .dpc-cap__media {
-  flex: 1; min-height: 240px; display: grid; place-items: center;
-  background: #fff; border: 1px dashed var(--gf-lilac-300); border-radius: var(--r-lg);
-  font-size: var(--fs-body-md); color: var(--gf-ink-400);
+  flex: 1; min-height: 240px;
+  background: #fff; border-radius: var(--r-lg); overflow: hidden;
 }
+/* both illustrations (SVG, 600×440) ship their own white bg + edge fade; the
+   transfer one keeps native aspect so the plane/trail composition isn't
+   crop-severed, the ATM map tolerates side-cropping to fill the slimmer card */
+.dpc-cap__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dpc-cap--transfer .dpc-cap__media { flex: 0 0 auto; min-height: 0; aspect-ratio: 600 / 440; }
 /* ============ 5. SANAL KART — own dark section ============ */
 /* Full-bleed dark, same grammar as the landing `.debit` product moment.
    It is the page's mid-scroll color break between the white caps bento
@@ -255,9 +311,10 @@
 .dpc-sanal .dpc-title { color: #fff; }
 .dpc-sanal__media {
   min-height: 380px; display: grid; place-items: center;
-  background: var(--gf-dark-surface); border: 1px dashed rgba(255, 255, 255, .25);
-  border-radius: var(--r-lg); font-size: var(--fs-body-md); color: var(--gf-dark-muted);
+  background: var(--gf-dark-surface); border-radius: var(--r-lg);
 }
+/* DS "Sanal Hesap Kartı v2" cutout (transparent, generous padding baked in) */
+.dpc-sanal__media img { width: min(420px, 85%); height: auto; }
 /* fixed header clears the anchor target */
 #sanal-kart { scroll-margin-top: 96px; }
 
@@ -266,7 +323,7 @@
 .dpc-features li {
   position: relative; min-height: 48px; padding-left: 32px;
   display: flex; align-items: center;
-  font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700);
+  font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
 }
 .dpc-features li::before {
   content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
@@ -282,7 +339,7 @@
 .dpc-abroad__captions { display: flex; justify-content: center; gap: 24px; margin: 48px 0 0; padding: 0; list-style: none; }
 .dpc-abroad__captions li {
   position: relative; flex: 1; max-width: 389px; padding-left: 32px;
-  font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700);
+  font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
 }
 .dpc-abroad__captions li::before {
   content: ""; position: absolute; left: 0; top: 0;

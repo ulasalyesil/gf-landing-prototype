@@ -96,7 +96,7 @@ export default function HesapKartiDetail() {
                   <p>{DEBIT_CAPS.transfer.sub}</p>
                 </div>
                 <div className="dpc-cap__media" aria-hidden="true">
-                  {DEBIT_CAPS.transfer.media}
+                  <img src={DEBIT_CAPS.transfer.media} alt="" width={600} height={440} loading="lazy" />
                 </div>
               </RevealItem>
               <RevealItem as="article" className="dpc-cap dpc-cap--atm">
@@ -106,7 +106,7 @@ export default function HesapKartiDetail() {
                   <p>{DEBIT_CAPS.atm.sub}</p>
                 </div>
                 <div className="dpc-cap__media" aria-hidden="true">
-                  {DEBIT_CAPS.atm.media}
+                  <img src={DEBIT_CAPS.atm.media} alt="" width={600} height={440} loading="lazy" />
                 </div>
               </RevealItem>
             </Reveal>
@@ -129,7 +129,7 @@ export default function HesapKartiDetail() {
             </Reveal>
             <Reveal direction="right">
               <div className="dpc-sanal__media" aria-hidden="true">
-                {DEBIT_SANAL.media}
+                <img src={DEBIT_SANAL.media} alt="" width={336} height={336} loading="lazy" />
               </div>
             </Reveal>
           </div>

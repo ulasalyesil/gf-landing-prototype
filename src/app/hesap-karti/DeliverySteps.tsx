@@ -39,10 +39,10 @@ import { DEBIT_STEPS, DEBIT_STEPS_SECTION } from "@/data/content";
    it, and threshold events fire on every crossing, so completion states
    always render (fast-scroll edge case). Segment map (track progress):
 
-     bar 1  0.00–0.24   → lottie #1 fires at 0.24, hold until 0.32
+     bar 1  0.00–0.24   → check lottie fires at 75% of the bar (0.18)
      bar 2  0.32–0.58   → courier rides the bar, hold until 0.66
-     bar 3  0.66–0.90   → lottie #3 fires at 0.90; getirpara + cashback
-                          icons bounce; 0.90–1.00 hold, then unpin
+     bar 3  0.66–0.90   → getirpara + cashback icons pop + bounce at 75%
+                          of the bar (0.84); 0.90–1.00 hold, then unpin
    Step copy is driver-bound too: each item fades/rises in over an APPEAR
    window that completes exactly as its bar segment begins (step 1 right at
    pin-in, steps 2/3 during the preceding hold), so the points build with
@@ -50,12 +50,12 @@ import { DEBIT_STEPS, DEBIT_STEPS_SECTION } from "@/data/content";
    Holds are sized for ≤1s lottie files — retune SEG when the real files
    arrive so completions land in sync with scroll pacing.
 
-   LOTTIES — step 1 and step 3 files are USER-SUPPLIED and not yet delivered.
-   STEP1_LOTTIE / STEP3_LOTTIE stay null until then; the badge stubs to a
-   static icon with the project's icon-pop recipe. Do not source placeholder
-   lottie files. Scroll-up policy: lottie RESETS to first frame (goToAndStop 0)
-   below the threshold (hysteresis 0.03) — the sequence never skips to
-   unpinned on reverse.
+   COMPLETION MARKS — inline with each step title (owner decision 2026-07-13):
+   step 1 plays the supplied check lottie (green circle pop) when its bar
+   fills; step 3 bounces the getirpara + cashback icons — no lottie, no badge.
+   Scroll-up policy: lottie RESETS to first frame (goToAndStop 0) below the
+   threshold (hysteresis 0.03) — the sequence never skips to unpinned on
+   reverse.
 
    MODES (explicit touch decision — no silent broken scroll-jack):
      ≥921px             "scrub"  scroll-linked pinned sequence
@@ -74,8 +74,17 @@ import { DEBIT_STEPS, DEBIT_STEPS_SECTION } from "@/data/content";
    separate `translate` property. Travel is x-transform only (compositor)
    per fixing-motion-performance — no CSS-var/left animation. */
 
-const STEP1_LOTTIE: string | null = null; // TODO user file → /assets/lottie/steps-1.json
-const STEP3_LOTTIE: string | null = null; // TODO user file → /assets/lottie/steps-3.json
+const STEP1_LOTTIE: string | null = "/assets/lottie/check.json";
+
+/* Phone mock: frame PNG with a transparent screen hole (Dynamic Island baked
+   into the frame overlay); app screens stack behind it and each one slides in
+   from the right as its step begins. Screen i maps to step i:
+   kart seç → kurye takip → harcarken kazandıkların. */
+const MOCK_SCREENS = [
+  "/assets/img/steps/screen-1.png",
+  "/assets/img/steps/screen-2.png",
+  "/assets/img/steps/screen-3.png",
+];
 
 /* SEG / APPEAR / TIMED_* / SCRUB_PX and useStepsMode are exported for the
    compact layout variant (DeliveryCompact.tsx, ?steps=compact) so both
@@ -93,6 +102,10 @@ export const SEG = {
   bar3: [SEG_BAR3_IN, SEG_DONE3] as [number, number],
   done3: SEG_DONE3,
 };
+/* completion marks fire at 75% of their bar — the check/coins land while the
+   fill is still moving, so the payoff isn't gated on pixel-perfect bar-end */
+const MARK1 = SEG_DONE1 * 0.75;
+const MARK3 = SEG_BAR3_IN + (SEG_DONE3 - SEG_BAR3_IN) * 0.75;
 const HYST = 0.03;
 /* width of each step-copy fade window on the driver */
 export const APPEAR = 0.06;
@@ -166,6 +179,8 @@ function StepBadge({
         autoplay: false,
         path: lottieSrc,
       });
+      // 1.4×: the check lands in sync with its bar instead of trailing it
+      anim.setSpeed(1.4);
       animRef.current = anim;
     });
     return () => {
@@ -252,15 +267,73 @@ export default function DeliverySteps() {
   const bar3 = useTransform(driver, SEG.bar3, [0, 1]);
   const bars = [bar1, bar2, bar3];
 
-  // step copy: fade+rise windows ending exactly where each bar segment starts
+  // step copy: fade+rise windows ending exactly where each bar segment starts.
+  // Full transform strings (not the y shorthand) — scroll-linked motion runs
+  // while the main thread is busy scrolling, so it must stay composited.
   const item1In = useTransform(driver, [0, APPEAR], [0, 1]);
   const item2In = useTransform(driver, [SEG.bar2[0] - APPEAR, SEG.bar2[0]], [0, 1]);
   const item3In = useTransform(driver, [SEG.bar3[0] - APPEAR, SEG.bar3[0]], [0, 1]);
-  const item1Rise = useTransform(item1In, [0, 1], [16, 0]);
-  const item2Rise = useTransform(item2In, [0, 1], [16, 0]);
-  const item3Rise = useTransform(item3In, [0, 1], [16, 0]);
+  const item1T = useTransform(() => `translateY(${((1 - item1In.get()) * 16).toFixed(2)}px)`);
+  const item2T = useTransform(() => `translateY(${((1 - item2In.get()) * 16).toFixed(2)}px)`);
+  const item3T = useTransform(() => `translateY(${((1 - item3In.get()) * 16).toFixed(2)}px)`);
   const itemIn = [item1In, item2In, item3In];
-  const itemRise = [item1Rise, item2Rise, item3Rise];
+  const itemT = [item1T, item2T, item3T];
+
+  /* Phone screens — iOS-push grammar, driver-bound (fully reversible):
+     the incoming screen slides in from the right over SCREEN_WIN while the
+     outgoing one recedes -22% behind it (depth: two surfaces exchanging
+     place, not a sticker landing on top). Wider than APPEAR on purpose —
+     the swap is the hero moment of the pinned view. Screen 1 is part of
+     the mock from the start. */
+  const SCREEN_WIN = 0.09;
+  const w2 = [SEG.bar2[0] - SCREEN_WIN, SEG.bar2[0]] as [number, number];
+  const w3 = [SEG.bar3[0] - SCREEN_WIN, SEG.bar3[0]] as [number, number];
+  const screen1T = useTransform(driver, w2, ["translateX(0%)", "translateX(-22%)"]);
+  const screen2T = useTransform(
+    driver,
+    [w2[0], w2[1], w3[0], w3[1]],
+    ["translateX(100%)", "translateX(0%)", "translateX(0%)", "translateX(-22%)"]
+  );
+  const screen3T = useTransform(driver, w3, ["translateX(100%)", "translateX(0%)"]);
+  const screenT = [screen1T, screen2T, screen3T];
+
+  /* Phone lift — the hero mock is taller than the clip STAGE (the container)
+     and rests bottom-cropped (step 1). Steps 2 and 3 carry their payoff in the
+     screen's bottom drawer (kurye tracking / kazanç), so the phone rises over
+     the step-2 window until its bottom edge clears the stage (40px inset) and
+     holds there. Lift distance is measured against the stage (offset chain +
+     ResizeObserver), not the pin — the pin fills the viewport, the stage is
+     the fixed window — so any viewport height works. */
+  const mockRef = useRef<HTMLDivElement>(null);
+  const lift = useMotionValue(0);
+  useEffect(() => {
+    if (mode !== "scrub") {
+      lift.set(0);
+      return;
+    }
+    const pin = pinRef.current;
+    const mock = mockRef.current;
+    const stage = pin?.querySelector<HTMLElement>(".dpc-steps__stage");
+    if (!pin || !mock || !stage) return;
+    const measure = () => {
+      let top = 0;
+      let el: HTMLElement | null = mock;
+      while (el && el !== stage) {
+        top += el.offsetTop;
+        el = el.offsetParent as HTMLElement | null;
+      }
+      lift.set(Math.max(0, top + mock.offsetHeight + 40 - stage.clientHeight));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(stage);
+    observer.observe(mock);
+    return () => observer.disconnect();
+  }, [mode, lift]);
+  const liftProgress = useTransform(driver, w2, [0, 1]);
+  const mockT = useTransform(
+    () => `translateY(${(-(lift.get() * liftProgress.get())).toFixed(1)}px)`
+  );
 
   // courier travel: measured once + on resize (DebitCard.tsx pattern) into a
   // motion value, then composed reactively as a pure x-transform
@@ -285,8 +358,8 @@ export default function DeliverySteps() {
   const [done3, setDone3] = useState(false);
   const [riding, setRiding] = useState(false);
   useMotionValueEvent(driver, "change", (v) => {
-    setDone1((prev) => (prev ? v > SEG.done1 - HYST : v >= SEG.done1));
-    setDone3((prev) => (prev ? v > SEG.done3 - HYST : v >= SEG.done3));
+    setDone1((prev) => (prev ? v > MARK1 - HYST : v >= MARK1));
+    setDone3((prev) => (prev ? v > MARK3 - HYST : v >= MARK3));
     setRiding(v > SEG.bar2[0] && v < SEG.bar2[1]);
   });
 
@@ -301,6 +374,9 @@ export default function DeliverySteps() {
     >
       <div className="dpc-steps__pin" ref={pinRef}>
         <div className="dpc-container">
+          {/* stage = the phone-driven clip window; the container pads around
+              it (80px) and is the full section height — the pin wraps this. */}
+          <div className="dpc-steps__stage">
           <div className="dpc-steps__top">
             <Reveal className="dpc-steps__intro">
               <h2 className="dpc-title">
@@ -312,16 +388,40 @@ export default function DeliverySteps() {
                 {DEBIT_STEPS_SECTION.cta}
               </a>
             </Reveal>
-            <Reveal direction="none" className="dpc-steps__phone">
+          </div>
+          {/* hero mock — desktop: absolute right, 3× scale, bleeding past the
+              pin bottom (pin clips it, so track height is unaffected) */}
+          <Reveal direction="none" className="dpc-steps__phone">
+            <motion.div
+              className="dpc-steps__mock"
+              aria-hidden="true"
+              ref={mockRef}
+              style={mode === "scrub" ? { transform: mockT } : undefined}
+            >
+              <div className="dpc-steps__mock-screen">
+                {MOCK_SCREENS.map((src, i) => (
+                  <motion.img
+                    key={src}
+                    src={src}
+                    alt=""
+                    width={480}
+                    height={1043}
+                    loading="lazy"
+                    initial={false}
+                    style={settled ? undefined : { transform: screenT[i] }}
+                  />
+                ))}
+              </div>
               <img
-                src="/assets/img/debit-phone-tilted.png"
+                className="dpc-steps__mock-frame"
+                src="/assets/img/steps/frame.png"
                 alt=""
-                width={285}
-                height={470}
+                width={800}
+                height={1355}
                 loading="lazy"
               />
-            </Reveal>
-          </div>
+            </motion.div>
+          </Reveal>
           {/* driver-bound, not Reveal: appearance follows the scrub, not the
               viewport. Settled mode renders static (SSR paints this). */}
           <ol className="dpc-steps__list">
@@ -330,12 +430,59 @@ export default function DeliverySteps() {
                 key={step.title}
                 className="dpc-steps__item"
                 initial={false}
-                style={settled ? undefined : { opacity: itemIn[i], y: itemRise[i] }}
+                style={settled ? undefined : { opacity: itemIn[i], transform: itemT[i] }}
               >
                 <span className="dpc-steps__num" aria-hidden="true">
                   {i + 1}
                 </span>
-                <h3>{step.title}</h3>
+                <div className="dpc-steps__title-row">
+                  <h3>{step.title}</h3>
+                  {i === 0 && (
+                    <StepBadge
+                      lottieSrc={STEP1_LOTTIE}
+                      fallbackIcon="/assets/icons/ek-hesap.svg"
+                      done={settled || done1}
+                    />
+                  )}
+                  {i === 2 && (
+                    <span className="dpc-steps__rewards" aria-hidden="true">
+                      {["/assets/icons/getirpara.svg", "/assets/icons/cashback.svg"].map(
+                        (src, j) => (
+                          <motion.img
+                            key={src}
+                            src={src}
+                            alt=""
+                            initial={false}
+                            animate={
+                              settled
+                                ? { opacity: 1, scale: 1, y: 0 }
+                                : done3
+                                  ? { opacity: 1, scale: 1, y: [0, -10, 0] }
+                                  : { opacity: 0, scale: 0.25, y: 0 }
+                            }
+                            transition={
+                              !settled && done3
+                                ? {
+                                    /* celebratory payoff — the one earned moment of
+                                       playful overshoot in the sequence */
+                                    opacity: { type: "spring", duration: 0.3, bounce: 0 },
+                                    scale: { type: "spring", duration: 0.45, bounce: 0.35 },
+                                    y: {
+                                      duration: 0.55,
+                                      ease: "easeInOut",
+                                      times: [0, 0.4, 1],
+                                      delay: 0.15 + j * 0.08,
+                                      repeat: 1,
+                                    },
+                                  }
+                                : { type: "spring", duration: 0.3, bounce: 0 }
+                            }
+                          />
+                        )
+                      )}
+                    </span>
+                  )}
+                </div>
                 <p>
                   {step.desc[0]}
                   <br />
@@ -355,45 +502,10 @@ export default function DeliverySteps() {
                     />
                   )}
                 </div>
-                {i === 0 && (
-                  <div className="dpc-steps__done">
-                    <StepBadge
-                      lottieSrc={STEP1_LOTTIE}
-                      fallbackIcon="/assets/icons/ek-hesap.svg"
-                      done={settled || done1}
-                    />
-                  </div>
-                )}
-                {i === 2 && (
-                  <div className="dpc-steps__done">
-                    <StepBadge
-                      lottieSrc={STEP3_LOTTIE}
-                      fallbackIcon="/assets/icons/coin-gold.svg"
-                      done={settled || done3}
-                    />
-                    <span className="dpc-steps__rewards" aria-hidden="true">
-                      {["/assets/icons/getirpara.svg", "/assets/icons/cashback.svg"].map(
-                        (src, j) => (
-                          <motion.img
-                            key={src}
-                            src={src}
-                            alt=""
-                            initial={false}
-                            animate={!settled && done3 ? { y: [0, -12, 0] } : { y: 0 }}
-                            transition={
-                              !settled && done3
-                                ? { duration: 0.55, ease: "easeInOut", times: [0, 0.4, 1], delay: j * 0.08, repeat: 1 }
-                                : { duration: 0.2 }
-                            }
-                          />
-                        )
-                      )}
-                    </span>
-                  </div>
-                )}
               </motion.li>
             ))}
           </ol>
+          </div>
         </div>
       </div>
     </section>

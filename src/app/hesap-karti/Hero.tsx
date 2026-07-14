@@ -66,10 +66,11 @@ export default function DebitHero() {
             {DEBIT_HERO.badge}
           </RevealItem>
           <RevealItem>
+            {/* no highlight in the hero — the yellow bar is a sub-section device */}
             <h1 className="dpc-hero__title">
               {DEBIT_HERO.title}
               <br />
-              <span className="hl">{DEBIT_HERO.titleHl}</span>
+              {DEBIT_HERO.titleHl}
             </h1>
           </RevealItem>
           <RevealItem>
