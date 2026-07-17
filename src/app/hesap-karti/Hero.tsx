@@ -31,10 +31,10 @@ export default function DebitHero() {
       top: [50, -200, 300, 5],
       right: [-60, -300, 100, 5],
     },
+    /* blob rides inside the card box, always centered behind the video —
+       only size and blur are tunable; position follows the card */
     blob: {
       size: [680, 300, 1100, 10],
-      top: [80, -300, 500, 10],
-      right: [-40, -400, 400, 10],
       blur: [90, 0, 200, 5],
     },
   });
@@ -48,17 +48,10 @@ export default function DebitHero() {
           "--hero-card-top": `${dials.card.top}px`,
           "--hero-card-right": `${dials.card.right}px`,
           "--hero-blob-size": `${dials.blob.size}px`,
-          "--hero-blob-top": `${dials.blob.top}px`,
-          "--hero-blob-right": `${dials.blob.right}px`,
           "--hero-blob-blur": `${dials.blob.blur}px`,
         } as React.CSSProperties
       }
     >
-      {/* stage — blurred lilac blob behind the cards; shows through the
-          video's knocked-out white (multiply). Desktop-only via CSS. */}
-      <div className="dpc-hero__stage" aria-hidden="true">
-        <div className="dpc-hero__blob" />
-      </div>
       <div className="dpc-container h-full relative">
         <Reveal className="dpc-hero__text" stagger={0.08}>
           <RevealItem as="span" className="dpc-badge">
@@ -80,6 +73,9 @@ export default function DebitHero() {
           </RevealItem>
         </Reveal>
         <div className="dpc-hero__card" aria-hidden="true">
+          {/* blurred lilac blob — centered behind the video, shows through
+              its knocked-out white (multiply). Desktop-only via CSS. */}
+          <div className="dpc-hero__blob" />
           <Reveal direction="none" delay={0.2} className="dpc-hero__media-fill">
             <video className="dpc-hero__video" autoPlay muted playsInline>
               <source src="/assets/video/debit-white-bg.mp4" type="video/mp4" />

@@ -93,12 +93,13 @@ export const DEBIT_SANAL = {
   id: "sanal-kart",
   title: "sanal hesap kartıyla",
   titleHl: "güvenle harca",
+  cta: "kart al",
   features: [
     "harcamaların için ayrı kartlar oluştur, rahatça takip et",
     "internet alışverişlerini güvenle yap",
     "her kartın için limitini belirle, bütçeni kontrol et"
   ],
-  media: "/assets/img/debit-sanal-card.png"
+  media: "/assets/img/virtual-card.png"
 };
 
 export const DEBIT_ABROAD = {

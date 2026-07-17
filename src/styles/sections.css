@@ -54,6 +54,7 @@
 .mega__item:hover h4 { color: var(--gf-purple); }
 .mega__item p { font-size: var(--fs-body-md); line-height: var(--lh-body-md); color: var(--gf-ink-700); max-width: 300px; }
 .mega__item b { font-weight: var(--fw-semibold); color: var(--gf-ink-700); }
+.mega__item .mega__note { color: var(--gf-purple); margin-top: 4px; }
 .mega__badge-img { display: inline-flex; align-items: center; margin-left: -2px; height: 22px; }
 .mega__badge-img img { height: 100%; width: auto; }
 .mega__link { color: var(--gf-purple); font-weight: var(--fw-semibold); }
@@ -217,6 +218,10 @@
   animation: camp-dot-fill 4s linear forwards;
 }
 .campaigns__dots.is-paused .campaigns__dot-fill { animation-play-state: paused; }
+.campaigns__more-wrap { text-align: center; margin-top: 32px; }
+.campaigns__more { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-body-md); font-weight: var(--fw-semibold); color: var(--gf-purple); }
+.campaigns__more img { width: 20px; height: 20px; transition: transform .2s var(--ease-out-strong); }
+@media (hover: hover) and (pointer: fine) { .campaigns__more:hover img { transform: translateX(3px); } }
 @keyframes camp-dot-fill { to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) { .campaigns__dot-fill { animation: none; transform: scaleX(1); } }
 
@@ -415,13 +420,6 @@
 .footer__fiba .fiba { display: inline-flex; align-items: center; }
 .footer__logo { height: 26px; width: auto; margin-bottom: 4px; }
 .footer__fiba .fiba img { height: 16px; width: auto; }
-
-/* ===== Highlight bar color ===== */
-/* brand purple on light sections; dark sections (.debit, .app-dark, .app-split)
-   keep the yellow default from base.css, as does /hesap-karti */
-.stats .hl::after, .rates .hl::after, .features .hl::after,
-.campaigns .mark::after, .loan .mark::after, .faiz .mark::after,
-.transfer .mark::after, .ai .mark::after { background: var(--gf-purple); }
 
 /* ===== Directional reveals (set by animations.js) ===== */
 .reveal-left, .reveal-right { opacity: 0; }

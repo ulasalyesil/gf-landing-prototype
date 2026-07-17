@@ -41,7 +41,7 @@
   transition: background .2s var(--ease-out), transform .16s var(--ease-out-strong);
 }
 .dpc-cta:hover { background: var(--gf-purple-700); }
-.dpc-cta:active { transform: scale(.97); }
+.dpc-cta:active { transform: scale(.96); }
 .dpc-hero__cta { margin-top: 32px; width: 160px; height: 48px; }
 .dpc-hero__card { position: absolute; top: 254px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; border-radius: var(--r-xl); overflow: hidden; }
 .dpc-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -52,19 +52,21 @@
    Reveal opacity in one group, and Safari blends divs more reliably.) */
 .dpc-hero__media-fill { position: absolute; inset: 0; mix-blend-mode: multiply; }
 
-/* stage — blurred lilac blob behind the cards, soft-gradient feel.
-   Shows through the video's knocked-out white. Desktop-only; mobile
-   keeps the clean white hero. */
-.dpc-hero__stage { display: none; }
+/* blurred lilac blob — lives INSIDE the card box, dead-centered behind the
+   video, so the two can never drift apart (owner request 2026-07-17; was a
+   section-level stage with independent coords). Shows through the video's
+   knocked-out white. Desktop-only; mobile keeps the clean white hero. */
+.dpc-hero__blob { display: none; }
 @media (min-width: 921px) {
-  .dpc-hero__stage { display: block; position: absolute; inset: 0; pointer-events: none; }
+  .dpc-hero__card { overflow: visible; } /* the glow spills past the card box */
   .dpc-hero__blob {
-    position: absolute;
-    top: var(--hero-blob-top, 80px); right: var(--hero-blob-right, -40px);
+    display: block; position: absolute;
+    top: 50%; left: 50%; translate: -50% -50%;
     width: var(--hero-blob-size, 680px); height: var(--hero-blob-size, 680px);
     border-radius: 50%;
     background: var(--gf-lilac);
     filter: blur(var(--hero-blob-blur, 90px));
+    pointer-events: none;
   }
 }
 /* Desktop: text block flex-centered vertically, card at display scale.
@@ -86,11 +88,16 @@
 }
 
 /* ============ 2. EARN — centered head + 2 cards ============ */
-.dpc-earn { padding-block: 120px 100px; }
+.dpc-earn { padding-block: 24px; }
 .dpc-earn__head { text-align: center; }
 .dpc-earn__sub { margin: 16px auto 0; max-width: 720px; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); text-wrap: pretty; }
 .dpc-earn__cards { display: flex; justify-content: center; gap: 36px; margin-top: 48px; }
-.dpc-earn__card { position: relative; width: 380px; height: 520px; border-radius: var(--r-xl); overflow: hidden; flex: none; }
+.dpc-earn__card {
+  position: relative; width: 380px; height: 520px; border-radius: var(--r-xl); overflow: hidden; flex: none;
+  /* hairline ring keeps the photo's light edges off the white page (neutral
+     black/10, never a tinted near-black — image-outline rule) */
+  outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px;
+}
 .dpc-earn__card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .dpc-earn__card--iade { background: linear-gradient(180deg, #7cc7f2, #4a9fd8); }
 /* scrim keeps white copy legible over the photo's light sky */
@@ -122,8 +129,9 @@
   }
   /* pin = a transparent full-viewport sticky window; the lilac BAND centers
      inside it, so leftover viewport height splits evenly above and below the
-     band while pinned (owner request 2026-07-14 — was top-stuck with all the
-     whitespace below). Sticky top stays 0, so pin-in still equals progress 0. */
+     band while pinned (owner request 2026-07-14; a 07-17 bottom-anchor
+     experiment was reverted same day). Sticky top stays 0, so pin-in still
+     equals progress 0. */
   .dpc-steps[data-mode="scrub"] .dpc-steps__pin {
     position: sticky; top: 0; min-height: 100vh;
     display: flex; flex-direction: column; justify-content: center;
@@ -297,7 +305,7 @@
 .dpc-steps__rewards img { width: 28px; height: 28px; }
 
 /* ============ 4. CAPABILITIES — bento (transfers / ATM / sanal) ============ */
-.dpc-caps { padding-block: 120px 100px; }
+.dpc-caps { padding-block: 0 100px; }
 .dpc-caps__head { text-align: center; margin-bottom: 48px; }
 .dpc-caps__row { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
 .dpc-cap {
@@ -324,32 +332,72 @@
 /* ============ 5. SANAL KART — own dark section ============ */
 /* Full-bleed dark, same grammar as the landing `.debit` product moment.
    It is the page's mid-scroll color break between the white caps bento
-   and the white abroad collage. */
-.dpc-sanal { background: var(--gf-card-purple); color: var(--gf-dark-text); padding-block: 120px; }
-.dpc-sanal__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+   and the white abroad collage. Centered stack per Figma 21830:9026
+   ("Final Virtual Card"): heading → CTA → card → glass feature row. */
+.dpc-sanal { position: relative; overflow: hidden; background: var(--gf-card-purple); color: var(--gf-dark-text); padding-block: 120px; text-align: center; }
+/* Remove stacking context from inner so children layer individually around the traveler (z=60) */
+.dpc-sanal__inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 40px; }
 .dpc-sanal .dpc-title { color: #fff; }
-.dpc-sanal__media {
-  min-height: 380px; display: grid; place-items: center;
-  background: var(--gf-dark-surface); border-radius: var(--r-lg);
+/* 18px box gap renders a 16px VISUAL gap: the title's hl bar overhangs the
+   text box by 4px and the CTA sits 2px high in its wrapper (measured) */
+.dpc-sanal__head { display: flex; flex-direction: column; align-items: center; gap: 18px; position: relative; z-index: 61; }
+.dpc-sanal__cta { width: auto; padding-inline: 32px; height: 48px; }
+/* concentric ring field behind the card, same grammar as landing `.transfer__rings` */
+.dpc-sanal__rings {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-radial-gradient(circle at 50% 46%, transparent 0, transparent 78px, rgba(255,255,255,.06) 79px, rgba(255,255,255,.06) 80px);
+  animation: rings-pulse 6s ease-in-out infinite;
 }
-/* DS "Sanal Hesap Kartı v2" cutout (transparent, generous padding baked in) */
-.dpc-sanal__media img { width: min(420px, 85%); height: auto; }
+/* bottom vignette — page's color break settles into the abroad section below */
+.dpc-sanal::after {
+  content: ""; position: absolute; inset: auto 0 0 0; height: 141px;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,.18));
+  pointer-events: none;
+}
+/* Card stage. The -20° tilt lives on the stack so a CSS transform pivoting
+   on its own center keeps it dead-center regardless of source art. The stack
+   is also the handoff SOURCE (data-handoff-source): CardHandoff measures its
+   rect at detach and hides it (visibility) while the traveler flies. */
+.dpc-sanal__media { position: relative; display: flex; align-items: center; justify-content: center; }
+.dpc-sanal__media::before {
+  content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(93,62,188,.45) 0%, rgba(93,62,188,0) 70%);
+  filter: blur(40px);
+}
+.dpc-sanal__stack {
+  /* aspect = the shared 648×984 card canvas (virtual-card.png / debit-card.png) */
+  position: relative; width: min(290px, 70vw); aspect-ratio: 648 / 984;
+  transform: rotate(-20deg);
+}
+.dpc-sanal__stack img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; display: block;
+}
+
+/* Sanal → abroad traveler (CardHandoff.tsx): a fixed overlay carrying both
+   card assets between the sections. z 60 — above all section content, below
+   the fixed header (z 100). Box = collage slot size; position/rotation/scale
+   ride in one composited transform string. */
+.dpc-handoff { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+.dpc-handoff__stack { position: absolute; left: 0; top: 0; will-change: transform; }
+.dpc-handoff__stack img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; display: block; border-radius: var(--r-lg);
+  will-change: opacity;
+}
 /* fixed header clears the anchor target */
 #sanal-kart { scroll-margin-top: 96px; }
 
-/* feature list (purple-bar grammar; yellow on dark) */
-.dpc-features { margin: 32px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 24px; }
-.dpc-features li {
-  position: relative; min-height: 48px; padding-left: 32px;
-  display: flex; align-items: center;
-  font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
+/* glass feature cards (Figma: transparent-white-10 bg, transparent-white-20 border, blur 12) */
+/* feature cards at z=61 to frost the flying traveler (z=60) via backdrop blur */
+.dpc-sanal__row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 40px; position: relative; z-index: 61; }
+.dpc-sanal__card {
+  width: 320px; padding: 16px; border-radius: var(--r-lg);
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  text-align: left;
 }
-.dpc-features li::before {
-  content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-  width: 8px; height: 48px; border-radius: var(--r-full); background: var(--gf-purple);
-}
-.dpc-sanal .dpc-features li { color: var(--gf-dark-text); }
-.dpc-sanal .dpc-features li::before { background: var(--gf-yellow); }
+.dpc-sanal__card p { margin: 0; font-size: 24px; line-height: 32px; color: #fff; }
 
 /* ============ 5. ABROAD — centered head + captions + collage ============ */
 .dpc-abroad { padding-block: 120px; }
@@ -357,16 +405,18 @@
 .dpc-abroad__title .hl { display: inline-block; margin-top: 8px; }
 .dpc-abroad__captions { display: flex; justify-content: center; gap: 24px; margin: 48px 0 0; padding: 0; list-style: none; }
 .dpc-abroad__captions li {
-  position: relative; flex: 1; max-width: 389px; padding-left: 32px;
+  position: relative; flex: 1; max-width: 389px; padding: 16px;
+  background: var(--gf-bg-soft); border-radius: var(--r-md);
   font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
-}
-.dpc-abroad__captions li::before {
-  content: ""; position: absolute; left: 0; top: 0;
-  width: 8px; height: 48px; border-radius: var(--r-full); background: var(--gf-purple);
 }
 /* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly */
 .dpc-abroad__collage { position: relative; margin-top: 48px; aspect-ratio: 1312 / 600; }
 .dpc-abroad__collage img { position: absolute; height: auto; border-radius: var(--r-md); }
+/* photos get the neutral hairline ring; the card render is excluded — its
+   PNG carries its own edge treatment and the handoff traveler must match */
+.dpc-abroad__collage img:not(.dpc-abroad__img-card) {
+  outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px;
+}
 .dpc-abroad__img-card { left: 41.77%; top: 5%;     width: 16.46%; border-radius: var(--r-lg); }
 .dpc-abroad__img-1    { left: 27.29%; top: 10%;    width: 12.96%; }
 .dpc-abroad__img-2    { left: 21.95%; top: 56.67%; width: 18.29%; }
@@ -397,8 +447,9 @@
   .dpc-cap__stat { font-size: 56px; }
 
   .dpc-sanal { padding-block: 64px; }
-  .dpc-sanal__inner { grid-template-columns: 1fr; gap: 32px; }
-  .dpc-sanal__media { min-height: 280px; }
+  .dpc-sanal__inner { gap: 32px; }
+  .dpc-sanal__row { flex-direction: column; align-items: stretch; margin-top: 32px; }
+  .dpc-sanal__card { width: 100%; max-width: 380px; }
 
   .dpc-abroad { padding-block: 64px; }
   .dpc-abroad__title br { display: none; }

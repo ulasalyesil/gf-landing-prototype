@@ -204,15 +204,13 @@ export default function Header({ variant = "home" }: HeaderProps) {
           <div className="mega__grid">
             <a className="mega__item" href="#" onClick={closeMega}>
               <h4>hesap</h4>
-              <p>
-                yıllık <b>%43 faizle</b> her gün kazandıran hesap
-              </p>
+              <p>paranı bağlamadan her gün faiz kazan</p>
             </a>
             <Link className="mega__item" href="/hesap-karti" onClick={closeMega}>
               <h4>hesap kartı</h4>
               <p>
-                getir’de <b>%3 getirpara</b>, fiziksel harcamalarında{" "}
-                <b>%1 nakit iade</b> kazan
+                kartınla harcadıkça <b>%1 nakit iade</b> ve <b>getirpara</b>{" "}
+                kazan!
               </p>
             </Link>
             <a className="mega__item" href="#" onClick={closeMega}>
@@ -221,21 +219,15 @@ export default function Header({ variant = "home" }: HeaderProps) {
             </a>
             <a className="mega__item" href="#" onClick={closeMega}>
               <h4>ihtiyaç kredisi</h4>
-              <p>
-                <b>%3,09</b>’dan başlayan faiz oranları
-              </p>
+              <p>hızlı başvuru, uygun faiz ve esnek vade seçenekleri</p>
             </a>
             <a className="mega__item" href="#" onClick={closeMega}>
               <h4>mini kredi</h4>
-              <p>
-                <b>%3,09</b>’dan başlayan faiz oranları
-              </p>
+              <p>kolay al, kolay öde</p>
             </a>
             <a className="mega__item" href="#" onClick={closeMega}>
               <h4>kasada kredi</h4>
-              <p>
-                <b>%3,09</b>’dan başlayan faiz oranları
-              </p>
+              <p>kasada al, taksitle öde</p>
             </a>
             <a className="mega__item" href="#" onClick={closeMega}>
               <h4>avans limit</h4>
@@ -259,6 +251,15 @@ export default function Header({ variant = "home" }: HeaderProps) {
             </a>
             <a className="mega__item" href="#" onClick={closeMega}>
               <h4>ödemeler</h4>
+            </a>
+            <a className="mega__item" href="#" onClick={closeMega}>
+              <h4>para transferi</h4>
+              <p>7/24 ücretsiz havale, EFT, FAST</p>
+            </a>
+            <a className="mega__item" href="#" onClick={closeMega}>
+              <h4>ücretsiz atm’ler</h4>
+              <p>tüm atm’lerden ücretsiz çekebilirsin</p>
+              <p className="mega__note">Fibabanka ve Akbank’ta ücretsiz</p>
             </a>
           </div>
 

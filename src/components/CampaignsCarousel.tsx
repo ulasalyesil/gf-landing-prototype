@@ -157,6 +157,13 @@ export default function CampaignsCarousel() {
             </button>
           ))}
         </div>
+
+        <div className="campaigns__more-wrap">
+          <a className="campaigns__more" href="#">
+            daha fazlasını gör
+            <img src="/assets/icons/chevron-right.svg" alt="" />
+          </a>
+        </div>
       </div>
     </section>
   );

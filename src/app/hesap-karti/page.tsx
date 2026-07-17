@@ -9,7 +9,9 @@ import DebitHero from "./Hero";
 import DeliverySteps from "./DeliverySteps";
 import DeliveryCompact from "./DeliveryCompact";
 import AbroadCollage from "./AbroadCollage";
-import { DEBIT_EARN, DEBIT_CAPS, DEBIT_SANAL, DEBIT_ABROAD } from "@/data/content";
+import SanalCard from "./SanalCard";
+import CardHandoff from "./CardHandoff";
+import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
 import "./debit-current.css";
 
 /* ?steps=compact swaps the teslimatı section to the compact layout
@@ -114,26 +116,7 @@ export default function HesapKartiDetail() {
         </section>
 
         {/* ============ 5. SANAL KART — own dark section (distinct product) ============ */}
-        <section className="dpc-sanal" id={DEBIT_SANAL.id}>
-          <div className="dpc-container dpc-sanal__inner">
-            <Reveal direction="left" className="dpc-sanal__copy">
-              <h2 className="dpc-title">
-                {DEBIT_SANAL.title}{" "}
-                <AnimatedHighlight type="hl">{DEBIT_SANAL.titleHl}</AnimatedHighlight>
-              </h2>
-              <ul className="dpc-features">
-                {DEBIT_SANAL.features.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
-            </Reveal>
-            <Reveal direction="right">
-              <div className="dpc-sanal__media" aria-hidden="true">
-                <img src={DEBIT_SANAL.media} alt="" width={336} height={336} loading="lazy" />
-              </div>
-            </Reveal>
-          </div>
-        </section>
+        <SanalCard />
 
         {/* ============ 6. ABROAD ============ */}
         <section className="dpc-abroad">
@@ -155,6 +138,9 @@ export default function HesapKartiDetail() {
             <AbroadCollage />
           </div>
         </section>
+
+        {/* sanal→abroad card traveler (fixed overlay, desktop scrub only) */}
+        <CardHandoff />
       </main>
       <Footer />
     </>

@@ -56,11 +56,18 @@ export default function Footer() {
                 <img src="/assets/icons/instagram.svg" alt="Instagram" />
               </a>
               <a
+                href="https://www.youtube.com/@getirfinans"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src="/assets/icons/youtube.svg" alt="YouTube" />
+              </a>
+              <a
                 href="https://www.linkedin.com/company/getirfinans/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <img src="/assets/icons/facebook.svg" alt="LinkedIn" />
+                <img src="/assets/icons/linkedin.svg" alt="LinkedIn" />
               </a>
             </div>
           </div>
