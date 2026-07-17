@@ -111,3 +111,23 @@ export const DEBIT_ABROAD = {
     "ATM'den para çekerken komisyonu avantajlı kurla öde"
   ]
 };
+
+/* ===== Newsletter (gazete, landing) ===== */
+export interface NewsletterPage {
+  src: string;
+  alt: string;
+}
+
+export const NEWSLETTER = {
+  title: "paranın gündemi",
+  titleHl: "getirfinans gazetesi'nde",
+  lead: "kampanyalar, ipuçları ve finans gündemi — sayfaları çevirmek için kaydır",
+  issue: { no: "sayı 01", date: "temmuz 2026" },
+  pageAspect: "1191 / 1684",
+  pages: [
+    { src: "/assets/newsletter/sayfa-01@2x.webp", alt: "getirfinans gazetesi, sayfa 1: kapak" },
+    { src: "/assets/newsletter/sayfa-02@2x.webp", alt: "getirfinans gazetesi, sayfa 2" },
+    { src: "/assets/newsletter/sayfa-03@2x.webp", alt: "getirfinans gazetesi, sayfa 3" },
+    { src: "/assets/newsletter/sayfa-04@2x.webp", alt: "getirfinans gazetesi, sayfa 4: arka kapak" },
+  ] as NewsletterPage[],
+};

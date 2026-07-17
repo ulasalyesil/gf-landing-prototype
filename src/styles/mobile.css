@@ -196,6 +196,11 @@
   .ai__mobile-img { display: block; width: 100%; max-width: 380px; margin-inline: auto; }
   .ai__mobile-img img { display: block; width: 100%; height: auto; }
 
+  /* ---------- 12b. Newsletter ---------- */
+  .newsletter[data-mode="strip"] .newsletter__page { flex-basis: 86%; }
+  .newsletter__head { margin-bottom: 20px; }
+  .newsletter__counter { font-size: var(--fs-caption); }
+
   /* ---------- 13. Footer ---------- */
   .footer { margin-top: 72px; }
   .footer__cta { flex-direction: column; align-items: flex-start; gap: 20px; padding: 28px; margin-top: -64px; }

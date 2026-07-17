@@ -12,6 +12,7 @@ import DebitCard from "@/components/DebitCard";
 import Transfer from "@/components/Transfer";
 import AppFeatures from "@/components/AppFeatures";
 import AiAssistant from "@/components/AiAssistant";
+import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -36,6 +37,7 @@ export default function Home() {
         <Transfer />
         <AppFeatures />
         <AiAssistant />
+        <Newsletter />
       </main>
       <Footer />
     </>

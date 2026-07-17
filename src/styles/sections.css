@@ -389,10 +389,41 @@
 .ai__lottie svg { display: block; width: 100% !important; height: 100% !important; }
 .ai__mobile-img { display: none; }
 
+/* ===== 12b. Newsletter (gazete peel) ===== */
+/* Two modes set by Newsletter.tsx: data-mode="scrub" (pinned page-peel,
+   ≥768px) and data-mode="strip" (scroll-snap strip — mobile AND desktop
+   reduced-motion, hence attribute-keyed rather than a media query alone). */
+.newsletter { background: var(--gf-lilac-50); }
+.newsletter__head { margin-bottom: 24px; }
+.newsletter__stack { position: relative; height: min(74svh, 900px); aspect-ratio: var(--nl-page-ar, 707 / 1000); max-width: min(92vw, 720px); margin-inline: auto; }
+.newsletter__page { position: absolute; inset: 0; transform-origin: 50% 100%; }
+.newsletter__page-lift { position: absolute; inset: 0; border-radius: var(--r-md); box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; }
+.newsletter__paper { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: var(--r-md); background: #fff; border: 1px solid var(--gf-line); box-shadow: var(--shadow-sm); }
+.newsletter__paper.ph { background: #fff; }
+/* pre-asset placeholder: labeled blank paper until the PDF render lands */
+.newsletter__paper.ph::before { content: attr(data-label); position: absolute; inset: 0; display: grid; place-items: center; color: var(--gf-lilac-300); font-size: var(--fs-body-sm); }
+.newsletter__paper img { position: relative; width: 100%; height: 100%; object-fit: contain; }
+.newsletter__curl { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 45%, rgba(14, 14, 14, .08) 72%, rgba(255, 255, 255, .4) 100%); opacity: 0; pointer-events: none; }
+.newsletter__counter { margin-top: 16px; text-align: center; font-size: var(--fs-body-sm); color: var(--gf-ink-500); }
+
+@media (min-width: 768px) {
+  .newsletter[data-mode="scrub"] { height: calc(var(--nl-pin-h, 100vh) + var(--nl-scrub, 2400px)); padding-block: 0; }
+  .newsletter[data-mode="scrub"] .newsletter__pin { position: sticky; top: 0; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 32px; }
+  .newsletter[data-mode="scrub"] .newsletter__page { will-change: transform; }
+}
+/* short-viewport escape hatch: keep heading + a full page inside the pin */
+@media (min-width: 768px) and (max-height: 760px) {
+  .newsletter[data-mode="scrub"] .newsletter__head { margin-bottom: 12px; }
+  .newsletter[data-mode="scrub"] .newsletter__head .h-lead { display: none; }
+  .newsletter[data-mode="scrub"] .newsletter__stack { height: 68svh; }
+}
+
+.newsletter[data-mode="strip"] .newsletter__stack { height: auto; aspect-ratio: auto; max-width: none; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scroll-padding-left: var(--gutter); }
+.newsletter[data-mode="strip"] .newsletter__stack::-webkit-scrollbar { display: none; }
+.newsletter[data-mode="strip"] .newsletter__page { position: relative; inset: auto; flex: 0 0 82%; max-width: 420px; aspect-ratio: var(--nl-page-ar, 707 / 1000); scroll-snap-align: center; }
+
 /* ===== 13. Footer ===== */
 .footer { background: var(--gf-purple-900); color: #fff; padding-top: 0; border-top: 1px solid transparent; position: relative; border-radius: 40px 40px 0 0; margin-top: 100px; }
-/* AI section sits flush against the footer CTA — zero gap between just these two */
-.ai { padding-bottom: 0; }
 .footer__cta { background: var(--gf-lilac); color: var(--gf-ink); border-radius: var(--radius-xl); padding: clamp(28px, 4vw, 48px); display: flex; justify-content: space-between; align-items: center; gap: 30px; margin-top: -90px; margin-bottom: 40px; flex-wrap: wrap; }
 .footer__cta-title { font-size: clamp(1.3rem, 2.2vw, 1.8rem); font-weight: 500; }
 .footer__cta-sub { color: var(--gf-ink-500); font-weight: 400; margin-top: 6px; }
