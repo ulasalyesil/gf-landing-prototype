@@ -10,7 +10,7 @@
 
   /* Surfaces */
   --gf-bg: #ffffff;
-  --gf-bg-soft: #fafafa;
+  --gf-bg-soft: #fafafa;        /* bg/surface/subtle */
   --gf-lilac-50: #f9f7ff;       /* bg/surface/subtle-brand-tint */
   --gf-lilac: #f3f0fe;
   --gf-lilac-200: #e6e1f5;
