@@ -1,18 +1,21 @@
 export interface HeroOffer {
+  /** May carry inline HTML (rendered via dangerouslySetInnerHTML, same as sub). */
   title: string;
   sub: string;
 }
 
 export const HERO_OFFERS: HeroOffer[] = [
-  { title: "yıllık %44 faizle",           sub: "paranı bağlamadan<br>her gün iyi kazan" },
-  { title: "uygun oranlı kredi",          sub: "aylık %3,49’dan başlayan faizlerle" },
+  /* "yıllık" de-emphasized as a small cap above the % — revizyon feedback:
+     the annual rate was overpowering the daily-earn message */
+  { title: "<small class='hero__title-yr'>yıllık</small>%44 faizle", sub: "paranı bağlamadan<br>her gün iyi kazan" },
+  { title: "iyi faizli kredi",            sub: "aylık %3,49’dan başlayan faizlerle" },
   { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
   { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında<br>harcarken geri kazan" }
 ];
 
 export const HERO_BADGES: string[] = [
   "1.000.000+ getirfinanslı",
-  "her 4 getirfinanslıdan biri referans koduyla geliyor"
+  "her 4 getirfinanslı’dan 1’i referans koduyla geliyor"
 ];
 
 export const HERO_FLIP_MS = 4000;

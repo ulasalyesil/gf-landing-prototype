@@ -4,6 +4,14 @@
 
 ## Next up
 
+- [x] **Web sitesi revizyon round 1** (owner doc, 2026-07-21) — landed on the landing page:
+  - copy: "şart yok" dropped (Faiz), footer download sub → "çok iyi faizli çok masrafsız…", stats → "türkiye'de ilk" + "her 4 getirfinanslı'dan 1'i" (hero badge unified to same wording), hero kredi slide → "iyi faizli kredi"
+  - courier bigger (48→76px clamp) + slower (2.4s → 4s, underline draw re-synced)
+  - yellow underline audit — rule: mark only under benefit statements. Removed: "kapattık!", "fırsatları", newsletter title. Kept: "her gün kazan!", "ücretsiz!", loan, debit, AI
+  - stats legal footnote added (asterisk on 1'i + muted caption under the card)
+  - hero slide 1 rebalanced: small "yıllık" cap above %44 (title now supports inline HTML)
+  - rates "6091,23" typo in the feedback screenshot does **not** reproduce — current code renders thousands separators; stale Vercel deploy, fixed by deploying
+- [ ] **Revizyon round 1 — parked: day→night transition** on "ışıkları kapattık" (feedback asks normal→dark mode switch as you scroll; current build only dims a dark photo 1.75→1). Blocked on a light-mode render of the same scene (`dark-mode-bg.png` has no light counterpart). Fallback if asset never lands: push the brightness/desaturate trick harder.
 - [x] **Mega menu — subtext fix** — new copy landed (2026-07-17) for hesap, hesap kartı, ihtiyaç kredisi, mini kredi, kasada kredi; added *para transferi* and *ücretsiz atm'ler* items (4th row)
 - [x] **Motion integration** — landing page ported to Motion on the `motion-integration` branch (shared `Reveal` component replaces the GSAP reveals; ideation + build order in `docs/motion-ideation.md`). Remaining: `Loan` clip-path scroll-scrub still GSAP (port when touched)
 - [x] **Yellow highlight — purple borders on light sections** — REVERTED (owner, 2026-07-17): highlight bar is yellow on all sections again; purple override removed from sections.css

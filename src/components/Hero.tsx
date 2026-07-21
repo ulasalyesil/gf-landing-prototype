@@ -128,9 +128,8 @@ export default function Hero() {
                 phase === "exit" && "is-exit",
                 phase === "enter-start" && "is-enter-start"
               )}
-            >
-              {currentOffer.title}
-            </span>
+              dangerouslySetInnerHTML={{ __html: currentOffer.title }}
+            />
           </motion.h1>
 
           <motion.p variants={loadItem} className="hero__sub">

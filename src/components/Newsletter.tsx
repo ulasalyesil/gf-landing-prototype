@@ -12,7 +12,6 @@ import {
 } from "motion/react";
 import type { MotionValue } from "motion/react";
 import Reveal from "./Reveal";
-import AnimatedHighlight from "./AnimatedHighlight";
 import { NEWSLETTER } from "@/data/content";
 import type { NewsletterPage } from "@/data/content";
 
@@ -209,8 +208,7 @@ export default function Newsletter() {
         <div className="container">
           <Reveal className="eyebrow-wrap newsletter__head">
             <h2 className="h-sec">
-              {NEWSLETTER.title}{" "}
-              <AnimatedHighlight type="mark">{NEWSLETTER.titleHl}</AnimatedHighlight>
+              {NEWSLETTER.title} {NEWSLETTER.titleHl}
             </h2>
             <p className="h-lead">{NEWSLETTER.lead}</p>
           </Reveal>

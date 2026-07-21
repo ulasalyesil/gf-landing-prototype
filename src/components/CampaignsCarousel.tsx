@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Reveal from "./Reveal";
-import AnimatedHighlight from "./AnimatedHighlight";
 
 const CAMPAIGNS = [
   {
@@ -104,7 +103,7 @@ export default function CampaignsCarousel() {
       <div className="container">
         <Reveal className="eyebrow-wrap">
           <h2 className="h-sec">
-            güncel getirfinans <AnimatedHighlight type="mark">fırsatları</AnimatedHighlight>
+            güncel getirfinans fırsatları
           </h2>
           <p className="h-lead">kampanyaları ve avantajları kaçırma!</p>
         </Reveal>

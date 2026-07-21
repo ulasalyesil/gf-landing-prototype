@@ -20,7 +20,7 @@ const FAIZ_POINTS = [
     icon: "sart-yok.svg",
     text: (
       <>
-        şart yok, kampanya yok,
+        kampanya yok,
         <br />
         hoş geldin yok
       </>

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useMotionTemplate,
-  useMotionValueEvent,
 } from "motion/react";
 import Reveal, { useMotionOff } from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
@@ -14,12 +13,10 @@ import AnimatedHighlight from "./AnimatedHighlight";
 export default function AppFeatures() {
   const darkRef = useRef<HTMLElement>(null);
   const off = useMotionOff();
-  const [lightsOut, setLightsOut] = useState(false);
 
   /* "ışıkları kapattık!" — the lights actually go out: as the section scrolls
-     toward viewport center the backdrop dims from lifted to full dark, the
-     copy reveals only after the dim lands, and the mark underline draws last
-     (via is-in on the inner container). Reduced motion / mobile: plain fade. */
+     toward viewport center the backdrop dims from lifted to full dark and the
+     copy reveals only after the dim lands. Reduced motion / mobile: plain fade. */
   const { scrollYProgress } = useScroll({
     target: darkRef,
     offset: ["start end", "center center"],
@@ -28,10 +25,6 @@ export default function AppFeatures() {
   const mediaFilter = useMotionTemplate`brightness(${brightness})`;
   const copyOpacity = useTransform(scrollYProgress, [0.6, 0.95], [0, 1]);
   const copyY = useTransform(scrollYProgress, [0.6, 0.95], [24, 0]);
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v > 0.92) setLightsOut(true);
-  });
 
   return (
     <div>
@@ -93,9 +86,7 @@ export default function AppFeatures() {
         {off ? (
           <Reveal className="container app-dark__inner">
             <div className="app-dark__copy">
-              <h2 className="app-dark__title">
-                ışıkları <AnimatedHighlight type="mark">kapattık!</AnimatedHighlight>
-              </h2>
+              <h2 className="app-dark__title">ışıkları kapattık!</h2>
               <p className="app-dark__lead">
                 gece insanıysan getirfinans'ı
                 <br />
@@ -105,13 +96,11 @@ export default function AppFeatures() {
           </Reveal>
         ) : (
           <motion.div
-            className={`container app-dark__inner ${lightsOut ? "is-in" : ""}`}
+            className="container app-dark__inner"
             style={{ opacity: copyOpacity, y: copyY }}
           >
             <div className="app-dark__copy">
-              <h2 className="app-dark__title">
-                ışıkları <AnimatedHighlight type="mark">kapattık!</AnimatedHighlight>
-              </h2>
+              <h2 className="app-dark__title">ışıkları kapattık!</h2>
               <p className="app-dark__lead">
                 gece insanıysan getirfinans'ı
                 <br />

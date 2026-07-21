@@ -28,16 +28,25 @@ export default function Stats() {
           <span className="stat__div" aria-hidden="true"></span>
 
           <RevealItem className="stat">
-            <span className="stat__num">4 getirfinanslı’dan 1’i</span>
+            <span className="stat__num">
+              her 4 getirfinanslı’dan 1’i
+              <sup className="stat__ref" aria-hidden="true">*</sup>
+            </span>
             <span className="stat__label">referans koduyla geliyor</span>
           </RevealItem>
 
           <span className="stat__div" aria-hidden="true"></span>
 
           <RevealItem className="stat">
-            <span className="stat__num">türkiye’nin ilk</span>
+            <span className="stat__num">türkiye’de ilk</span>
             <span className="stat__label">servis bankacılığı deneyimi</span>
           </RevealItem>
+        </Reveal>
+
+        <Reveal as="p" className="stats__legal" delay={0.2}>
+          * 2026 yılı itibarıyla “arkadaşını getir” kampanyaları üzerinden
+          referans kodu ile getirfinans müşterisi olan kişiler hesaplamaya
+          dahil edilmiştir.
         </Reveal>
       </div>
     </section>

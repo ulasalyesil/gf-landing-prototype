@@ -17,7 +17,7 @@ export default function DebitCard() {
     const measureTravel = () => {
       if (markRef.current && motoRef.current) {
         const markWidth = markRef.current.offsetWidth;
-        motoRef.current.style.setProperty("--travel", `${markWidth + 28}px`);
+        motoRef.current.style.setProperty("--travel", `${markWidth + 34}px`);
       }
     };
 

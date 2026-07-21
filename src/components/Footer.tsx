@@ -10,8 +10,8 @@ export default function Footer() {
             <div>
               <h2 className="footer__cta-title">getirfinans’ı indir</h2>
               <p className="footer__cta-sub">
-                getirfinans’ın bankacılık hizmetlerinden hemen yararlanmaya
-                başla
+                çok iyi faizli çok masrafsız bankacılık hizmetlerinden hemen
+                yararlanmaya başla
               </p>
             </div>
             <div className="footer__badges">
