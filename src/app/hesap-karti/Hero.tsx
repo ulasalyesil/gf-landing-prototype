@@ -67,6 +67,9 @@ export default function DebitHero() {
             </h1>
           </RevealItem>
           <RevealItem>
+            <p className="dpc-hero__sub">{DEBIT_HERO.sub}</p>
+          </RevealItem>
+          <RevealItem>
             <a href="#" className="dpc-cta dpc-hero__cta">
               {DEBIT_HERO.cta}
             </a>

@@ -34,6 +34,7 @@
 }
 .dpc-badge svg { width: 20px; height: 20px; flex: none; }
 .dpc-hero__title { margin: 0; font-size: 48px; line-height: 100%; font-weight: var(--fw-regular); color: var(--gf-ink); }
+.dpc-hero__sub { margin: 16px 0 0; max-width: 460px; font-size: 20px; line-height: 28px; color: var(--gf-ink-700); text-wrap: pretty; }
 .dpc-cta {
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--gf-purple); color: #fff; border-radius: var(--r-full);
@@ -366,7 +367,7 @@
 }
 .dpc-sanal__stack {
   /* aspect = the shared 648×984 card canvas (virtual-card.png / debit-card.png) */
-  position: relative; width: min(290px, 70vw); aspect-ratio: 648 / 984;
+  position: relative; width: min(240px, 60vw); aspect-ratio: 648 / 984;
   transform: rotate(-20deg);
 }
 .dpc-sanal__stack img {
@@ -388,25 +389,22 @@
 /* fixed header clears the anchor target */
 #sanal-kart { scroll-margin-top: 96px; }
 
-/* glass feature cards (Figma: transparent-white-10 bg, transparent-white-20 border, blur 12) */
-/* feature cards at z=61 to frost the flying traveler (z=60) via backdrop blur */
+/* feature row — backgroundless (owner feedback 2026-07-20: was glass cards,
+   dropped for a clear field); text sits directly on the dark section */
 .dpc-sanal__row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 40px; position: relative; z-index: 61; }
-.dpc-sanal__card {
-  width: 320px; padding: 16px; border-radius: var(--r-lg);
-  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
-  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  text-align: left;
-}
+.dpc-sanal__card { width: 320px; padding: 16px; text-align: left; }
 .dpc-sanal__card p { margin: 0; font-size: 24px; line-height: 32px; color: #fff; }
 
 /* ============ 5. ABROAD — centered head + captions + collage ============ */
 .dpc-abroad { padding-block: 120px; }
 .dpc-abroad__title { text-align: center; }
 .dpc-abroad__title .hl { display: inline-block; margin-top: 8px; }
-.dpc-abroad__captions { display: flex; justify-content: center; gap: 24px; margin: 48px 0 0; padding: 0; list-style: none; }
+.dpc-abroad__captions { display: flex; justify-content: center; gap: 16px; margin: 48px 0 0; padding: 0; list-style: none; }
+/* backgroundless (owner feedback 2026-07-20: was bg-soft pills); item box
+   mirrors the sanal feature cards (320px + 16px padding) so the two lists
+   read as the same device */
 .dpc-abroad__captions li {
-  position: relative; flex: 1; max-width: 389px; padding: 16px;
-  background: var(--gf-bg-soft); border-radius: var(--r-md);
+  position: relative; width: 320px; padding: 16px; white-space: pre-line;
   font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
 }
 /* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly */
@@ -454,7 +452,7 @@
   .dpc-abroad { padding-block: 64px; }
   .dpc-abroad__title br { display: none; }
   .dpc-abroad__captions { flex-direction: column; gap: 16px; }
-  .dpc-abroad__captions li { max-width: none; }
+  .dpc-abroad__captions li { width: auto; }
   /* collage becomes a scroll-snap strip */
   .dpc-abroad__collage {
     aspect-ratio: auto; display: flex; gap: 8px; margin-top: 32px;

@@ -49,13 +49,14 @@ export const DEBIT_HERO = {
   badge: "kartın dakikalar içinde kapında",
   title: "geri dönüşü",
   titleHl: "muhteşem kart",
+  sub: "ücretsiz hesap kartınla fiziksel harcamalarında %1 nakit iade kazan",
   cta: "kart al"
 };
 
 export const DEBIT_EARN = {
   title: "harcadıkça getirpara",
   titleHl: "ve nakit iade kazan",
-  sub: "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
+  sub: "su siparişinden markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
   iade: "fiziksel tüm harcamalarına aylık ₺1.250'ye kadar anında nakit iade!",
   getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" }
 };
@@ -87,7 +88,8 @@ export const DEBIT_CAPS = {
   title: "hesap kartında",
   titleHl: "daha neler var?",
   transfer: { stat: "7/24", title: "ücretsiz para transferi", sub: "havale, EFT ve FAST", media: "/assets/img/debit-cap-transfer.svg" },
-  atm: { stat: "5.355", title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "/assets/img/debit-cap-atm.svg" }
+  /* numeric: rendered via AnimatedNumber (counts up on appear, tr-TR "5.355") */
+  atm: { stat: 5355, title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "/assets/img/debit-cap-atm.svg" }
 };
 
 /* Own section — dark, full-bleed (landing `.debit` grammar). Heading is a
@@ -108,8 +110,9 @@ export const DEBIT_SANAL = {
 export const DEBIT_ABROAD = {
   title: "hesap kartınla yurtdışında",
   titleHl: "yapılacaklar listesi",
+  /* \n = hard line break (li renders white-space: pre-line) */
   captions: [
-    "avantajlı kurlarla harcama yap",
+    "avantajlı kurlarla\nharcama yap",
     "yurt dışında harcarken de %1 nakit iade kazan",
     "ATM'den para çekerken komisyonu avantajlı kurla öde"
   ]

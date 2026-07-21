@@ -4,6 +4,7 @@ import React, { useEffect, useSyncExternalStore } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedHighlight from "@/components/AnimatedHighlight";
+import AnimatedNumber from "@/components/AnimatedNumber";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import DebitHero from "./Hero";
 import DeliverySteps from "./DeliverySteps";
@@ -103,7 +104,7 @@ export default function HesapKartiDetail() {
               </RevealItem>
               <RevealItem as="article" className="dpc-cap dpc-cap--atm">
                 <div className="dpc-cap__copy">
-                  <span className="dpc-cap__stat">{DEBIT_CAPS.atm.stat}</span>
+                  <AnimatedNumber className="dpc-cap__stat" value={DEBIT_CAPS.atm.stat} />
                   <h3>{DEBIT_CAPS.atm.title}</h3>
                   <p>{DEBIT_CAPS.atm.sub}</p>
                 </div>
