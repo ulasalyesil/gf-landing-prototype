@@ -126,7 +126,7 @@ export interface NewsletterPage {
 
 export const NEWSLETTER = {
   title: "paranın gündemi",
-  titleHl: "getirfinans gazetesi'nde",
+  titleHl: "getirfinans ekspres'te",
   lead: "kampanyalar, ipuçları ve finans gündemi her ay gazetende",
   cta: "gazeteyi oku",
   /* CTA target: real newsletter URL pending — placeholder like the other page CTAs */
