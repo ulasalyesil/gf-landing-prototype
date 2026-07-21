@@ -397,69 +397,32 @@
 .ai__mobile-img { display: none; }
 
 /* ===== 12b. Newsletter (gazete peel) ===== */
-/* Two modes set by Newsletter.tsx: data-mode="scrub" (pinned page-peel,
-   ≥768px) and data-mode="strip" (scroll-snap strip — mobile AND desktop
-   reduced-motion, hence attribute-keyed rather than a media query alone). */
+/* Gazete promo — static fanned stack (cover on top, two pages peeking) that
+   links out to the newsletter. The pinned page-peel scrub was removed per
+   owner feedback (2026-07-21). */
 .newsletter { background: var(--gf-bg-soft); }
-.newsletter__head { margin-bottom: 24px; }
-.newsletter__stack { position: relative; height: min(74svh, 900px); aspect-ratio: var(--nl-page-ar, 707 / 1000); max-width: min(92vw, 720px); margin-inline: auto; }
-.newsletter__page { position: absolute; inset: 0; transform-origin: 50% 100%; }
-.newsletter__page-lift { position: absolute; inset: 0; border-radius: var(--r-md); box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; }
-.newsletter__paper { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: var(--r-md); background: #fff; border: 1px solid var(--gf-line); box-shadow: var(--shadow-sm); }
-.newsletter__paper.ph { background: #fff; }
-/* pre-asset placeholder: labeled blank paper until the PDF render lands */
-.newsletter__paper.ph::before { content: attr(data-label); position: absolute; inset: 0; display: grid; place-items: center; color: var(--gf-lilac-300); font-size: var(--fs-body-sm); }
-.newsletter__paper img { position: relative; width: 100%; height: 100%; object-fit: contain; }
-/* Corner fold (page-curl): --nl-fold = fold distance along the bottom and
-   right edges from the corner, set per page by Newsletter.tsx. The paper
-   clips that corner away (revealing the next page beneath) and __fold-face
-   is the paper's back folded over the 45° line. The drop-shadow filter sits
-   on the wrapper, not the face: clip-path would clip away the face's own
-   shadow. */
-.newsletter__page { --nl-fold: 0%; }
-.newsletter__fold { position: absolute; inset: 0; pointer-events: none; filter: drop-shadow(-14px -10px 18px rgba(26, 19, 64, .28)); }
-.newsletter__fold-face {
-  position: absolute; inset: 0;
-  clip-path: polygon(
-    calc(100% - var(--nl-fold)) 100%,
-    100% calc(100% - var(--nl-fold)),
-    calc(100% - var(--nl-fold)) calc(100% - var(--nl-fold))
-  );
-  background: linear-gradient(315deg, #ffffff 0%, #f8f6fb 10%, #eae6f1 30%, #d8d2e2 48%, #d8d2e2 100%);
+.newsletter__head { margin-bottom: 40px; }
+.newsletter__stage { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.newsletter__link { display: block; }
+.newsletter__stack { position: relative; display: block; width: min(64vw, 300px); aspect-ratio: var(--nl-page-ar, 707 / 1000); }
+.newsletter__page {
+  position: absolute; inset: 0; overflow: hidden;
+  border-radius: var(--r-md); background: #fff;
+  border: 1px solid var(--gf-line); box-shadow: var(--shadow-sm);
+  transform-origin: 50% 100%;
+  transition: transform .25s var(--ease-out-strong);
 }
-.newsletter__counter { margin-top: 16px; text-align: center; font-size: var(--fs-body-sm); color: var(--gf-ink-500); }
-
-@media (min-width: 768px) {
-  .newsletter[data-mode="scrub"] { height: calc(var(--nl-pin-h, 100vh) + var(--nl-scrub, 2400px)); padding-block: 0; }
-  /* top padding clears the fixed .site-header (~72px scrolled) so the pinned
-     title never sits under it */
-  .newsletter[data-mode="scrub"] .newsletter__pin { position: sticky; top: 0; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding-block: 96px 32px; }
-  /* stack sized from leftover pin space (padding + head + counter ≈ 280px)
-     instead of raw svh, so head/counter always fit inside the pin */
-  .newsletter[data-mode="scrub"] .newsletter__stack { height: min(900px, calc(100svh - 280px)); }
-  .newsletter[data-mode="scrub"] .newsletter__page { will-change: transform; }
-  /* fold clip only in scrub mode: full-box polygon when --nl-fold is 0, so
-     rounded corners are unaffected until a fold actually starts */
-  .newsletter[data-mode="scrub"] .newsletter__paper {
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% calc(100% - var(--nl-fold)),
-      calc(100% - var(--nl-fold)) 100%,
-      0 100%
-    );
-  }
+.newsletter__page img { width: 100%; height: 100%; object-fit: contain; }
+/* the fan: DOM order is back-to-front, cover last (flat, on top) */
+.newsletter__page:nth-child(1) { transform: rotate(-5deg) translateX(-7%); }
+.newsletter__page:nth-child(2) { transform: rotate(4deg) translateX(7%); }
+@media (hover: hover) and (pointer: fine) {
+  /* hovering the stack fans the pile out a touch — decorative, hover-gated */
+  .newsletter__link:hover .newsletter__page:nth-child(1) { transform: rotate(-7deg) translateX(-10%) translateY(-1.5%); }
+  .newsletter__link:hover .newsletter__page:nth-child(2) { transform: rotate(5.5deg) translateX(10%) translateY(-1.5%); }
+  .newsletter__link:hover .newsletter__page:nth-child(3) { transform: translateY(-1%); }
 }
-/* short-viewport escape hatch: keep heading + a full page inside the pin */
-@media (min-width: 768px) and (max-height: 760px) {
-  .newsletter[data-mode="scrub"] .newsletter__head { margin-bottom: 12px; }
-  .newsletter[data-mode="scrub"] .newsletter__head .h-lead { display: none; }
-  .newsletter[data-mode="scrub"] .newsletter__stack { height: min(900px, calc(100svh - 230px)); }
-}
-
-.newsletter[data-mode="strip"] .newsletter__stack { height: auto; aspect-ratio: auto; max-width: none; display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); scroll-padding-left: var(--gutter); }
-.newsletter[data-mode="strip"] .newsletter__stack::-webkit-scrollbar { display: none; }
-.newsletter[data-mode="strip"] .newsletter__page { position: relative; inset: auto; flex: 0 0 82%; max-width: 420px; aspect-ratio: var(--nl-page-ar, 707 / 1000); scroll-snap-align: center; }
+.newsletter__issue { font-size: var(--fs-body-sm); color: var(--gf-ink-500); }
 
 /* ===== 13. Footer ===== */
 /* .footer is the subtle backdrop the dark panel sits on (shows through the

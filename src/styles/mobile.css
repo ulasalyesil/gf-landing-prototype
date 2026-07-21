@@ -197,9 +197,7 @@
   .ai__mobile-img img { display: block; width: 100%; height: auto; }
 
   /* ---------- 12b. Newsletter ---------- */
-  .newsletter[data-mode="strip"] .newsletter__page { flex-basis: 86%; }
   .newsletter__head { margin-bottom: 20px; }
-  .newsletter__counter { font-size: var(--fs-caption); }
 
   /* ---------- 13. Footer ---------- */
   .footer { padding-top: 72px; }

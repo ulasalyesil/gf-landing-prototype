@@ -127,7 +127,10 @@ export interface NewsletterPage {
 export const NEWSLETTER = {
   title: "paranın gündemi",
   titleHl: "getirfinans gazetesi'nde",
-  lead: "kampanyalar, ipuçları ve finans gündemi — sayfaları çevirmek için kaydır",
+  lead: "kampanyalar, ipuçları ve finans gündemi her ay gazetende",
+  cta: "gazeteyi oku",
+  /* CTA target: real newsletter URL pending — placeholder like the other page CTAs */
+  href: "#",
   issue: { no: "sayı 01", date: "temmuz 2026" },
   pageAspect: "1191 / 1684",
   pages: [
