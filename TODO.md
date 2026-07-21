@@ -41,6 +41,8 @@
 
 ## Backlog
 
+- [ ] **Newsletter CTA URL** — the section is now a static fanned-stack promo (page-peel scrub removed, owner feedback 2026-07-21); the "gazeteyi oku" CTA and the stack link point at `#` until the real newsletter destination exists (`NEWSLETTER.href` in content.ts)
+- [ ] **Faiz phones — mobile asset** — desktop got the new %44,00 visual (2x, top-cropped); `faiz-phones-mobile.png` (≤767px) still shows the old design, needs a matching export
 - [ ] Wire AI assistant mobile lottie (`ai-assistant-mobile.json`, slot framed 4:5) once exported
 - [ ] GFDES-2135 revisions (source: Figma comments on the dev branch): hero flips title **and** subtitle through 4 offer pairs; FX cards drop average rate, push al/sat forward (needs design exploration); stats section gets a title, keep the 1.000.000+ badge; moped animates along the yellow underline; remove bottom "kendi uygulamasında" CTA
 - [ ] 10/10 review pass — critique the page with design skills (animations, web design guidelines), produce findings, close them
