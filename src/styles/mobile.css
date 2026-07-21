@@ -197,7 +197,8 @@
   .ai__mobile-img img { display: block; width: 100%; height: auto; }
 
   /* ---------- 12b. Newsletter ---------- */
-  .newsletter__head { margin-bottom: 20px; }
+  .newsletter__inner { flex-direction: column; align-items: flex-start; gap: 32px; }
+  .newsletter__media { width: 100%; }
 
   /* ---------- 13. Footer ---------- */
   .footer { padding-top: 72px; }

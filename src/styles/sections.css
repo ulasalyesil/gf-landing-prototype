@@ -397,14 +397,18 @@
 .ai__mobile-img { display: none; }
 
 /* ===== 12b. Newsletter (gazete peel) ===== */
-/* Gazete promo — static fanned stack (cover on top, two pages peeking) that
-   links out to the newsletter. The pinned page-peel scrub was removed per
-   owner feedback (2026-07-21). */
+/* Gazete promo — copy + CTA left, fanned stack (cover on top, two pages
+   peeking) linking out on the right. Side-by-side per owner feedback
+   (2026-07-21); the pinned page-peel scrub was removed the same day. */
 .newsletter { background: var(--gf-bg-soft); }
-.newsletter__head { margin-bottom: 40px; }
-.newsletter__stage { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.newsletter__inner { display: flex; align-items: center; gap: clamp(40px, 6vw, 96px); }
+.newsletter__copy { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.newsletter__title { margin: 0; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; font-weight: var(--fw-regular); color: var(--gf-ink); }
+.newsletter__lead { font-size: var(--fs-h5); line-height: var(--lh-h5); color: var(--gf-ink-700); max-width: 440px; }
+.newsletter__copy .btn { margin-top: 8px; }
+.newsletter__media { flex: 1; display: flex; justify-content: center; }
 .newsletter__link { display: block; }
-.newsletter__stack { position: relative; display: block; width: min(64vw, 300px); aspect-ratio: var(--nl-page-ar, 707 / 1000); }
+.newsletter__stack { position: relative; display: block; width: min(64vw, 280px); aspect-ratio: var(--nl-page-ar, 707 / 1000); }
 .newsletter__page {
   position: absolute; inset: 0; overflow: hidden;
   border-radius: var(--r-md); background: #fff;
