@@ -67,6 +67,10 @@
 .hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.05); transform-origin: center; transition: opacity 0.5s ease-in-out; }
 .hero__video.is-fading { opacity: 0; }
 .hero__overlay { position: absolute; inset: 0; background: rgba(14, 14, 14, .3); }
+/* Bottom scrim — keeps the Fibabanka line + rate-claim footnote legible over
+   any video frame without darkening the whole hero. Paints above the video,
+   below .hero__inner (z-index 2). */
+.hero__media::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(14, 14, 14, .6) 0%, rgba(14, 14, 14, 0) 26%); }
 
 .hero__inner { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-block: 140px 120px; }
 .hero__text { max-width: 726px; }
@@ -107,7 +111,13 @@
 @media (hover: hover) and (pointer: fine) { .hero__cta:hover .hero__cta-ic { transform: translateX(3px); } }
 .hero__cta-ic img { width: 100%; height: 100%; object-fit: contain; }
 
-.hero__bankinfo { position: absolute; left: var(--gutter); bottom: 40px; z-index: 2; font-size: var(--fs-body-md); color: rgba(255, 255, 255, .9); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hero__disclosure { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 40px; z-index: 2; max-width: 640px; }
+.hero__bankinfo { font-size: var(--fs-body-md); color: rgba(255, 255, 255, .9); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* Rate-claim footnote — dimmed against the scrim. min-height reserves the
+   space of the tallest legal so swapping offers (long legal ↔ none) never
+   nudges the bank line above it. */
+.hero__legal { margin-top: 8px; min-height: 3.4em; font-size: var(--fs-caption); line-height: 1.5; color: rgba(255, 255, 255, .72); }
+.hero__legal-swap { display: block; }
 .hero .fiba { display: inline-flex; align-items: center; }
 .hero .fiba img { height: 20px; width: auto; }
 .hero .fiba b { font-weight: var(--fw-bold); }
@@ -336,8 +346,10 @@
 .debit__list li { display: flex; align-items: flex-start; gap: 16px; }
 .debit__ic { flex: 0 0 48px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
 .debit__ic img { width: 100%; height: 100%; object-fit: contain; }
-.debit__list b { font-size: 1.15rem; line-height: 1.3; display: block; font-weight: 700; } 
+.debit__list b { font-size: 1.15rem; line-height: 1.3; display: block; font-weight: 700; }
 .debit__list p { color: var(--gf-dark-muted); font-size: 1rem; line-height: 1.5; margin-top: 4px; }
+/* delivery-time footnote — muted fine print under the CTA */
+.debit__legal { margin-top: 20px; max-width: 460px; font-size: var(--fs-caption); line-height: 1.5; color: var(--gf-dark-muted); }
 
 /* ===== 10. Transfer ===== */
 .transfer { overflow: hidden; }
@@ -412,25 +424,14 @@
 .newsletter__lead { font-size: var(--fs-h5); line-height: var(--lh-h5); color: var(--gf-ink-700); max-width: 440px; }
 .newsletter__copy .btn { margin-top: 8px; }
 /* same footprint as .debit__media; the fanned stack floats inside it */
-.newsletter__media { aspect-ratio: 584 / 576; display: flex; align-items: center; justify-content: center; }
-.newsletter__link { display: block; height: 90%; }
-.newsletter__stack { position: relative; display: block; height: 100%; aspect-ratio: var(--nl-page-ar, 707 / 1000); }
-.newsletter__page {
-  position: absolute; inset: 0; overflow: hidden;
-  border-radius: var(--r-md); background: #fff;
-  border: 1px solid var(--gf-line); box-shadow: var(--shadow-sm);
-  transform-origin: 50% 100%;
-  transition: transform .25s var(--ease-out-strong);
-}
-.newsletter__page img { width: 100%; height: 100%; object-fit: contain; }
-/* the fan: DOM order is back-to-front, cover last (flat, on top) */
-.newsletter__page:nth-child(1) { transform: rotate(-5deg) translateX(-7%); }
-.newsletter__page:nth-child(2) { transform: rotate(4deg) translateX(7%); }
+.newsletter__media { display: flex; align-items: center; justify-content: center; }
+/* marketing render carries its own drop shadow + paper edges — no card frame.
+   aspect-ratio reserves the box so the lazy image doesn't shift layout in. */
+.newsletter__link { display: block; width: 100%; aspect-ratio: var(--nl-image-ar, 1122 / 1036); transition: transform .3s var(--ease-out-strong); }
+.newsletter__link img { display: block; width: 100%; height: 100%; object-fit: contain; }
 @media (hover: hover) and (pointer: fine) {
-  /* hovering the stack fans the pile out a touch — decorative, hover-gated */
-  .newsletter__link:hover .newsletter__page:nth-child(1) { transform: rotate(-7deg) translateX(-10%) translateY(-1.5%); }
-  .newsletter__link:hover .newsletter__page:nth-child(2) { transform: rotate(5.5deg) translateX(10%) translateY(-1.5%); }
-  .newsletter__link:hover .newsletter__page:nth-child(3) { transform: translateY(-1%); }
+  /* subtle lift on hover — hover-gated, matches the other media links */
+  .newsletter__link:hover { transform: translateY(-4px); }
 }
 .newsletter__issue { font-size: var(--fs-body-sm); color: var(--gf-ink-500); }
 

@@ -95,6 +95,12 @@ export default function DebitCard() {
             </span>
             keşfet
           </Link>
+
+          {/* delivery-time disclaimer for the "dakikalar içinde kapında" claim */}
+          <RevealItem as="p" className="debit__legal">
+            teslimat süresi lokasyona ve operasyonel koşullara göre değişiklik
+            gösterebilir
+          </RevealItem>
         </Reveal>
       </div>
     </section>

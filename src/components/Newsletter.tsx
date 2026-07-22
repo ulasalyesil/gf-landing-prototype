@@ -4,22 +4,16 @@ import React from "react";
 import Reveal, { RevealItem } from "./Reveal";
 import { NEWSLETTER } from "@/data/content";
 
-/* Gazete promo — copy + CTA on the left, fanned page stack linking out on the
-   right (side-by-side per owner feedback 2026-07-21; the pinned page-peel
-   scrub was removed the same day). */
-
-/* cover renders LAST in DOM (naturally on top, no z-index); the two pages
-   behind it peek out as the fan */
-const STACK_COUNT = 3;
+/* Gazete promo — copy + CTA on the left, marketing's flat newspaper render
+   linking out on the right (side-by-side per owner feedback 2026-07-21; the
+   fanned page stack was replaced by the marketing static image 2026-07-22). */
 
 export default function Newsletter() {
-  const stack = NEWSLETTER.pages.slice(0, STACK_COUNT).reverse();
-
   return (
     <section
       className="section newsletter"
       id="newsletter"
-      style={{ "--nl-page-ar": NEWSLETTER.pageAspect } as React.CSSProperties}
+      style={{ "--nl-image-ar": NEWSLETTER.imageAspect } as React.CSSProperties}
     >
       <div className="container newsletter__inner">
         <Reveal direction="left" className="newsletter__copy" stagger={0.08}>
@@ -50,20 +44,14 @@ export default function Newsletter() {
             href={NEWSLETTER.href}
             aria-label="getirfinans gazetesi'ni oku"
           >
-            <span className="newsletter__stack">
-              {stack.map((page) => (
-                <span key={page.src} className="newsletter__page">
-                  <img
-                    src={page.src}
-                    alt={page.alt}
-                    width={1191}
-                    height={1684}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </span>
-              ))}
-            </span>
+            <img
+              src={NEWSLETTER.image.src}
+              alt={NEWSLETTER.image.alt}
+              width={1122}
+              height={1036}
+              loading="lazy"
+              decoding="async"
+            />
           </a>
         </Reveal>
       </div>

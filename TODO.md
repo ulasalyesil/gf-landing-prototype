@@ -4,6 +4,10 @@
 
 ## Next up
 
+- [x] **Hero + debit legal footnotes** (Aycan, Slack 2026-07-22) — added the Fibabanka rate legals to the hero and the delivery-time legal to the landing debit section:
+  - hero: two rate legals under the Fibabanka line, **synced to the active offer** (`HeroOffer.legal` in content.ts) — deposit-rate legal on the %44 slide, kredi YMÖ example on the "iyi faizli kredi" slide, blank on kurlar/hesap kartı. New `.hero__disclosure` wraps the bank line + `.hero__legal`; bottom scrim on `.hero__media::after` for legibility; fixed min-height reserves the tallest legal so the bank line never jumps on swap
+  - debit: `.debit__legal` muted footnote under the "keşfet" CTA
+  - **copy normalization flagged for legal review**: lowercased "Örnek"→"örnek" to match brand voice, en-dash in the "2.500 TL – 4.500.000 TL" range, curly apostrophes — revert to Slack-verbatim if legal requires exact casing/punctuation
 - [x] **Web sitesi revizyon round 1** (owner doc, 2026-07-21) — landed on the landing page:
   - copy: "şart yok" dropped (Faiz), footer download sub → "çok iyi faizli çok masrafsız…", stats → "türkiye'de ilk" + "her 4 getirfinanslı'dan 1'i" (hero badge unified to same wording), hero kredi slide → "iyi faizli kredi"
   - courier bigger (48→76px clamp) + slower (2.4s → 4s, underline draw re-synced)
@@ -41,7 +45,8 @@
 
 ## Backlog
 
-- [ ] **Newsletter CTA URL** — the section is now a static fanned-stack promo (page-peel scrub removed, owner feedback 2026-07-21); the "gazeteyi oku" CTA and the stack link point at `#` until the real newsletter destination exists (`NEWSLETTER.href` in content.ts)
+- [ ] **Newsletter CTA URL** — the section is now a static promo with marketing's flat newspaper render (`ekspres-sayi-004.png`, replaced the fanned page stack 2026-07-22; page-peel scrub removed 2026-07-21). The "gazeteyi oku" CTA and the image link point at `#` until the real newsletter destination exists (`NEWSLETTER.href` in content.ts). Old fanned-stack assets (`sayfa-0N@2x.webp`) are now unused; the marketing PNG is 1.5 MB (transparent, no webp tooling locally) — ask marketing for a lighter/webp export
+- [ ] **Newsletter issue line vs asset** — copy shows "sayı 01 · temmuz 2026" but the new masthead render says "sayı 004"; confirm whether the `issue` line in content.ts should update to match
 - [ ] **Faiz phones — mobile asset** — desktop got the new %44,00 visual (2x, top-cropped); `faiz-phones-mobile.png` (≤767px) still shows the old design, needs a matching export
 - [ ] Wire AI assistant mobile lottie (`ai-assistant-mobile.json`, slot framed 4:5) once exported
 - [ ] GFDES-2135 revisions (source: Figma comments on the dev branch): hero flips title **and** subtitle through 4 offer pairs; FX cards drop average rate, push al/sat forward (needs design exploration); stats section gets a title, keep the 1.000.000+ badge; moped animates along the yellow underline; remove bottom "kendi uygulamasında" CTA

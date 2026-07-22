@@ -155,16 +155,32 @@ export default function Hero() {
         </motion.div>
 
         <motion.div
-          className="hero__bankinfo"
+          className="hero__disclosure"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.45, ease: "easeOut" }}
         >
-          bankacılık hizmeti
-          <span className="fiba">
-            <img src="/assets/logos/fibabanka-logo.svg" alt="Fibabanka" />
-          </span>
-          tarafından verilmektedir
+          <div className="hero__bankinfo">
+            bankacılık hizmeti
+            <span className="fiba">
+              <img src="/assets/logos/fibabanka-logo.svg" alt="Fibabanka" />
+            </span>
+            tarafından verilmektedir
+          </div>
+          {/* Rate-claim footnote, synced to the active offer via the same swap
+              phase as the title/sub; empty on slides without a rate claim.
+              Fixed min-height reserves the space so the bank line never jumps. */}
+          <p className="hero__legal">
+            <span
+              className={clsx(
+                "hero__legal-swap t-text-swap",
+                phase === "exit" && "is-exit",
+                phase === "enter-start" && "is-enter-start"
+              )}
+            >
+              {currentOffer.legal ?? ""}
+            </span>
+          </p>
         </motion.div>
       </div>
     </section>

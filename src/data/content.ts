@@ -2,13 +2,19 @@ export interface HeroOffer {
   /** May carry inline HTML (rendered via dangerouslySetInnerHTML, same as sub). */
   title: string;
   sub: string;
+  /* Legal disclaimer for the rate claim on this slide (Fibabanka legal
+     footnote). Shown under the bank line, synced to the active offer; slides
+     without a rate claim leave it undefined and the line stays blank. */
+  legal?: string;
 }
 
 export const HERO_OFFERS: HeroOffer[] = [
   /* "yıllık" de-emphasized as a small cap above the % — revizyon feedback:
      the annual rate was overpowering the daily-earn message */
-  { title: "<small class='hero__title-yr'>yıllık</small>%44 faizle", sub: "paranı bağlamadan<br>her gün iyi kazan" },
-  { title: "iyi faizli kredi",            sub: "aylık %3,49’dan başlayan faizlerle" },
+  { title: "<small class='hero__title-yr'>yıllık</small>%44 faizle", sub: "paranı bağlamadan<br>her gün iyi kazan",
+    legal: "belirtilen faiz oranı yıllıktır ve günlük hesap faiz oranı brüttür ve 2.500 TL – 4.500.000 TL bakiyeli hesaplarda alt limitin üstünde kalan tutarlar için geçerlidir" },
+  { title: "iyi faizli kredi",            sub: "aylık %3,49’dan başlayan faizlerle",
+    legal: "örnek hesaplama: 100.000 TL için aylık %3,49 faiz oranlı 12 ay vadeli hayat sigortalı kredinin YMO’su %72,2963’tür" },
   { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
   { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında<br>harcarken geri kazan" }
 ];
@@ -119,11 +125,6 @@ export const DEBIT_ABROAD = {
 };
 
 /* ===== Newsletter (gazete, landing) ===== */
-export interface NewsletterPage {
-  src: string;
-  alt: string;
-}
-
 export const NEWSLETTER = {
   title: "paranın gündemi",
   titleHl: "getirfinans ekspres'te",
@@ -132,11 +133,12 @@ export const NEWSLETTER = {
   /* CTA target: real newsletter URL pending — placeholder like the other page CTAs */
   href: "#",
   issue: { no: "sayı 01", date: "temmuz 2026" },
-  pageAspect: "1191 / 1684",
-  pages: [
-    { src: "/assets/newsletter/sayfa-01@2x.webp", alt: "getirfinans gazetesi, sayfa 1: kapak" },
-    { src: "/assets/newsletter/sayfa-02@2x.webp", alt: "getirfinans gazetesi, sayfa 2" },
-    { src: "/assets/newsletter/sayfa-03@2x.webp", alt: "getirfinans gazetesi, sayfa 3" },
-    { src: "/assets/newsletter/sayfa-04@2x.webp", alt: "getirfinans gazetesi, sayfa 4: arka kapak" },
-  ] as NewsletterPage[],
+  /* Marketing-supplied flat newspaper render — transparent PNG with the drop
+     shadow baked in, so it needs no card frame behind it. Replaced the fanned
+     page stack (old sayfa-0N@2x.webp assets now unused). */
+  image: {
+    src: "/assets/newsletter/ekspres-sayi-004.png",
+    alt: "getirfinans ekspres gazetesi, sayı 004: kredide indirim",
+  },
+  imageAspect: "1122 / 1036",
 };
