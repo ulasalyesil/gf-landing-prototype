@@ -5,6 +5,8 @@ import { motion } from "motion/react";
 import { REVEAL_SPRING, useMotionOff } from "@/components/Reveal";
 import { useStepsMode } from "./DeliverySteps";
 import { subscribeHandoffPhase, useHandoffPhase } from "./CardHandoff";
+import type { HandoffPhase } from "./CardHandoff";
+import { useTilt } from "./Tilt";
 
 /* Abroad collage entrance (GFDES-2174 §4)
    - The debit card render is the LANDING PAD of the sanal→abroad handoff
@@ -65,6 +67,98 @@ function makeDelays(): number[] {
   return [...slots.slice(0, ANCHORS), ...rest];
 }
 
+/* One decorative collage photo: the outer .dpc-abroad__photo wrapper carries
+   position/size (its own slot class, e.g. img-3) and the Motion pop entrance;
+   the inner .t-tilt-card is what actually tilts toward the pointer. Split out
+   as its own component because useTilt is a hook and can't be called from
+   inside the parent's .map() callback (Rules of Hooks). */
+function CollagePhoto({
+  img,
+  delay,
+  off,
+  started,
+}: {
+  img: CollageImg;
+  delay: number;
+  off: boolean;
+  started: boolean;
+}) {
+  const { wrapRef, cardRef, onPointerMove, onPointerLeave } = useTilt();
+  return (
+    <motion.div
+      ref={wrapRef}
+      className={`${img.cls} dpc-abroad__photo t-tilt`}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      initial={off ? false : { opacity: 0, scale: 0.92 }}
+      animate={off || started ? { opacity: 1, scale: 1 } : undefined}
+      transition={{ ...POP, delay }}
+    >
+      <div ref={cardRef} className="t-tilt-card">
+        <img src={img.src} alt="" width={img.w} height={img.h} loading="lazy" />
+        <div className="t-tilt-glare" aria-hidden="true" />
+      </div>
+    </motion.div>
+  );
+}
+
+/* The card slot — same .dpc-abroad__photo/.t-tilt wrapping as CollagePhoto,
+   but its box is also the LANDING PAD CardHandoff measures
+   (querySelector(".dpc-abroad__img-card")). The wrapper's position/size stay
+   exactly as before; only the nested .t-tilt-card tilts, so the handoff
+   geometry is never touched by hover. Two render paths, same as the original
+   inline ternary: a plain div toggling visibility (handoff mode) or a
+   Motion entrance (mobile / reduced motion, no handoff). */
+function CardSlot({
+  handoff,
+  phase,
+  off,
+  onLanded,
+}: {
+  handoff: boolean;
+  phase: HandoffPhase;
+  off: boolean;
+  onLanded: () => void;
+}) {
+  const { wrapRef, cardRef, onPointerMove, onPointerLeave } = useTilt();
+  const inner = (
+    <div ref={cardRef} className="t-tilt-card">
+      <img src={CARD.src} alt="" width={CARD.w} height={CARD.h} loading="lazy" />
+      <div className="t-tilt-glare" aria-hidden="true" />
+    </div>
+  );
+
+  if (handoff) {
+    return (
+      <div
+        ref={wrapRef}
+        className={`${CARD.cls} dpc-abroad__photo t-tilt`}
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        style={phase === "landed" ? undefined : { visibility: "hidden" }}
+      >
+        {inner}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      ref={wrapRef}
+      className={`${CARD.cls} dpc-abroad__photo t-tilt`}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      initial={off ? false : { opacity: 0, scale: 0.92 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "0px 0px -18% 0px" }}
+      transition={REVEAL_SPRING}
+      onAnimationComplete={onLanded}
+    >
+      {inner}
+    </motion.div>
+  );
+}
+
 export default function AbroadCollage() {
   const off = useMotionOff();
   const handoff = useStepsMode() === "scrub";
@@ -88,45 +182,14 @@ export default function AbroadCollage() {
   return (
     <div className="dpc-abroad__collage">
       {PHOTOS.map((img, i) => (
-        <motion.img
-          key={img.cls}
-          className={img.cls}
-          src={img.src}
-          alt=""
-          width={img.w}
-          height={img.h}
-          loading="lazy"
-          initial={off ? false : { opacity: 0, scale: 0.92 }}
-          animate={off || started ? { opacity: 1, scale: 1 } : undefined}
-          transition={{ ...POP, delay: delays ? delays[i] : 0 }}
-        />
+        <CollagePhoto key={img.cls} img={img} delay={delays ? delays[i] : 0} off={off} started={started} />
       ))}
-      {handoff ? (
-        /* landing pad: static, revealed the instant the traveler lands on it */
-        <img
-          className={CARD.cls}
-          src={CARD.src}
-          alt=""
-          width={CARD.w}
-          height={CARD.h}
-          loading="lazy"
-          style={phase === "landed" ? undefined : { visibility: "hidden" }}
-        />
-      ) : (
-        <motion.img
-          className={CARD.cls}
-          src={CARD.src}
-          alt=""
-          width={CARD.w}
-          height={CARD.h}
-          loading="lazy"
-          initial={off ? false : { opacity: 0, scale: 0.92 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "0px 0px -18% 0px" }}
-          transition={REVEAL_SPRING}
-          onAnimationComplete={() => setDelays((prev) => prev ?? makeDelays())}
-        />
-      )}
+      <CardSlot
+        handoff={handoff}
+        phase={phase}
+        off={off}
+        onLanded={() => setDelays((prev) => prev ?? makeDelays())}
+      />
     </div>
   );
 }

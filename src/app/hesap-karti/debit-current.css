@@ -22,6 +22,51 @@
 /* keyboard focus — page-wide (UA default was the only affordance) */
 .dpc :is(a, button):focus-visible { outline: 2px solid var(--gf-purple); outline-offset: 2px; }
 
+/* ============ Shared: card hover tilt (transitions.dev, adapted) ============
+   Used by the sanal kart render and every abroad collage photo (Tilt.tsx).
+   Mouse-only — gated per-event in JS (pointerType), no CSS media query
+   needed. border-radius: inherit so the glare clips to whatever radius the
+   specific card/photo slot sets. */
+:root {
+  --tilt-perspective: 700px;
+  --tilt-return: 1000ms;
+  --tilt-return-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tilt-follow: 400ms;
+  --tilt-follow-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tilt-glare-opacity: 0.32;
+  --tilt-glare-fade: 300ms;
+  --tilt-glare-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+.t-tilt-card {
+  position: relative;
+  border-radius: inherit;
+  overflow: hidden;
+  transform:
+    perspective(var(--tilt-perspective))
+    rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform var(--tilt-return) var(--tilt-return-ease);
+  will-change: transform;
+}
+.t-tilt-card.is-tilting { transition: transform var(--tilt-follow) var(--tilt-follow-ease); }
+.t-tilt-glare {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle 95px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgba(255,255,255,.48), rgba(255,255,255,.06) 52%, rgba(255,255,255,0) 84%),
+    radial-gradient(circle 200px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgba(255,255,255,.22), rgba(255,255,255,.04) 58%, rgba(255,255,255,0) 78%),
+    radial-gradient(circle 360px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgba(255,255,255,.10), rgba(255,255,255,0) 88%);
+  transition: opacity var(--tilt-glare-fade) var(--tilt-glare-ease);
+}
+.t-tilt.is-hover .t-tilt-glare { opacity: var(--tilt-glare-opacity); }
+@media (prefers-reduced-motion: reduce) {
+  .t-tilt-card { transform: none !important; transition: none !important; }
+}
+
 /* ============ 1. HERO — "kart xl" ============ */
 .dpc-hero { position: relative; height: 840px; overflow: hidden; }
 .dpc-hero__text { position: absolute; top: 152px; left: 0; z-index: 1; }
@@ -358,7 +403,10 @@
 /* Card stage. The -20° tilt lives on the stack so a CSS transform pivoting
    on its own center keeps it dead-center regardless of source art. The stack
    is also the handoff SOURCE (data-handoff-source): CardHandoff measures its
-   rect at detach and hides it (visibility) while the traveler flies. */
+   rect at detach and hides it (visibility) while the traveler flies — its
+   box/rotation stay untouched by the hover tilt; only the nested .t-tilt-card
+   receives the pointer-driven 3D tilt, so CardHandoff's measurement is
+   unaffected. */
 .dpc-sanal__media { position: relative; display: flex; align-items: center; justify-content: center; }
 .dpc-sanal__media::before {
   content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%;
@@ -370,7 +418,8 @@
   position: relative; width: min(240px, 60vw); aspect-ratio: 648 / 984;
   transform: rotate(-20deg);
 }
-.dpc-sanal__stack img {
+.dpc-sanal__stack .t-tilt-card { position: absolute; inset: 0; }
+.dpc-sanal__stack .t-tilt-card img {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: contain; display: block;
 }
@@ -407,12 +456,17 @@
   position: relative; width: 320px; padding: 16px; white-space: pre-line;
   font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
 }
-/* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly */
+/* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly.
+   Each slot is a wrapper div (position/size lives here, on .dpc-abroad__photo)
+   around the tilting .t-tilt-card + img, so the hover-tilt transform never
+   touches the box CardHandoff measures for .dpc-abroad__img-card. */
 .dpc-abroad__collage { position: relative; margin-top: 48px; aspect-ratio: 1312 / 600; }
-.dpc-abroad__collage img { position: absolute; height: auto; border-radius: var(--r-md); }
+.dpc-abroad__photo { position: absolute; border-radius: var(--r-md); }
+.dpc-abroad__photo .t-tilt-card { width: 100%; }
+.dpc-abroad__photo img { display: block; width: 100%; height: auto; border-radius: inherit; }
 /* photos get the neutral hairline ring; the card render is excluded — its
    PNG carries its own edge treatment and the handoff traveler must match */
-.dpc-abroad__collage img:not(.dpc-abroad__img-card) {
+.dpc-abroad__photo:not(.dpc-abroad__img-card) {
   outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px;
 }
 .dpc-abroad__img-card { left: 41.77%; top: 5%;     width: 16.46%; border-radius: var(--r-lg); }
@@ -459,8 +513,10 @@
     overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
     padding-bottom: 8px;
   }
-  .dpc-abroad__collage img {
+  .dpc-abroad__photo {
     position: static; width: auto; height: 256px; flex: none; scroll-snap-align: start;
   }
+  .dpc-abroad__photo .t-tilt-card { width: auto; height: 100%; }
+  .dpc-abroad__photo img { width: auto; height: 100%; }
   .dpc-abroad__img-card { order: -1; }
 }

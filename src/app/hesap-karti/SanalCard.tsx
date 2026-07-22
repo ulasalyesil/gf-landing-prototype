@@ -5,6 +5,7 @@ import AnimatedHighlight from "@/components/AnimatedHighlight";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import { DEBIT_SANAL } from "@/data/content";
 import { useHandoffPhase } from "./CardHandoff";
+import { useTilt } from "./Tilt";
 
 /* Sanal kart section (GFDES-2174 §5) — static layout per Figma 21830:9026:
    centered stack (heading → CTA → card → glass feature row), ring field and
@@ -19,6 +20,7 @@ import { useHandoffPhase } from "./CardHandoff";
 
 export default function SanalCard() {
   const phase = useHandoffPhase();
+  const { wrapRef: tiltWrapRef, cardRef: tiltCardRef, onPointerMove, onPointerLeave } = useTilt();
 
   return (
     <section className="dpc-sanal" id={DEBIT_SANAL.id}>
@@ -40,11 +42,19 @@ export default function SanalCard() {
         <Reveal direction="none" delay={0.15}>
           <div className="dpc-sanal__media" aria-hidden="true">
             <div
-              className="dpc-sanal__stack"
+              ref={tiltWrapRef}
+              className="dpc-sanal__stack t-tilt"
               data-handoff-source=""
               style={phase === "idle" ? undefined : { visibility: "hidden" }}
+              onPointerMove={onPointerMove}
+              onPointerLeave={onPointerLeave}
             >
-              <img src={DEBIT_SANAL.media} alt="" width={648} height={984} loading="lazy" />
+              {/* tilt lives one level in from data-handoff-source, so the
+                  hover effect never perturbs the rect CardHandoff measures */}
+              <div ref={tiltCardRef} className="t-tilt-card">
+                <img src={DEBIT_SANAL.media} alt="" width={648} height={984} loading="lazy" />
+                <div className="t-tilt-glare" aria-hidden="true" />
+              </div>
             </div>
           </div>
         </Reveal>
