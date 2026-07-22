@@ -267,6 +267,7 @@
 .fpoint { background: transparent; display: flex; flex-direction: column; gap: 16px; padding: 16px 8px; }
 .fpoint__ic { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .fpoint__ic img { width: 100%; height: 100%; object-fit: contain; }
+.faiz__legal { margin-top: 16px; padding-inline: 24px; max-width: 880px; margin-inline: auto; font-size: var(--fs-caption); line-height: 1.5; color: var(--gf-ink-500); text-align: center; }
 .fpoint p { font-weight: var(--fw-regular); font-size: 18px; line-height: 24px; color: var(--gf-purple); }
 
 /* ===== 8. Calculator ===== */

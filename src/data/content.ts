@@ -8,11 +8,16 @@ export interface HeroOffer {
   legal?: string;
 }
 
+/* Deposit-rate legal — shared by the hero's %44 slide and the Faiz section
+   (same claim, same disclaimer required in both places). */
+export const FAIZ_LEGAL =
+  "belirtilen faiz oranı yıllıktır ve günlük hesap faiz oranı brüttür ve 2.500 TL – 4.500.000 TL bakiyeli hesaplarda alt limitin üstünde kalan tutarlar için geçerlidir";
+
 export const HERO_OFFERS: HeroOffer[] = [
   /* "yıllık" de-emphasized as a small cap above the % — revizyon feedback:
      the annual rate was overpowering the daily-earn message */
   { title: "<small class='hero__title-yr'>yıllık</small>%44 faizle", sub: "paranı bağlamadan<br>her gün iyi kazan",
-    legal: "belirtilen faiz oranı yıllıktır ve günlük hesap faiz oranı brüttür ve 2.500 TL – 4.500.000 TL bakiyeli hesaplarda alt limitin üstünde kalan tutarlar için geçerlidir" },
+    legal: FAIZ_LEGAL },
   { title: "iyi faizli kredi",            sub: "aylık %3,49’dan başlayan faizlerle",
     legal: "örnek hesaplama: 100.000 TL için aylık %3,49 faiz oranlı 12 ay vadeli hayat sigortalı kredinin YMO’su %72,2963’tür" },
   { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
@@ -128,7 +133,7 @@ export const DEBIT_ABROAD = {
 export const NEWSLETTER = {
   title: "paranın gündemi",
   titleHl: "getirfinans ekspres'te",
-  lead: "kampanyalar, ipuçları ve finans gündemi her ay gazetende",
+  lead: "kampanyaları, ipuçlarını ve finans gündemini takip et",
   cta: "gazeteyi oku",
   /* CTA target: real newsletter URL pending — placeholder like the other page CTAs */
   href: "#",

@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "motion/react";
 import Reveal, { RevealItem, iconPopVariants } from "./Reveal";
 import AnimatedHighlight from "./AnimatedHighlight";
+import { FAIZ_LEGAL } from "@/data/content";
 
 const FAIZ_POINTS = [
   {
@@ -73,6 +74,10 @@ export default function Faiz() {
               <p>{point.text}</p>
             </RevealItem>
           ))}
+        </Reveal>
+
+        <Reveal as="p" className="faiz__legal" delay={0.2}>
+          {FAIZ_LEGAL}
         </Reveal>
       </div>
     </section>

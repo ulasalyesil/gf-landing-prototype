@@ -12,6 +12,13 @@ img, video, svg { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 ul { list-style: none; }
+/* Wrapping: headings are short enough that evening out every line reads as
+   deliberate; balance is capped by the browser to ~4-6 lines so it's unsafe
+   on longer copy. Body text (paragraphs, block-level bold lines like
+   .debit__list b) instead only fixes an orphaned last word, uncapped. No-op
+   on text that stays on one line or on inline (non-block) elements. */
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+p, b, strong { text-wrap: pretty; }
 
 /* Layout */
 .container { width: 100%; max-width: calc(var(--container) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
