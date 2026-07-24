@@ -88,9 +88,9 @@ export const DEBIT_STEPS_SECTION = {
 
 /* step titles: owner (2026-07-13); desc lines are DRAFT — need owner review */
 export const DEBIT_STEPS: DebitStep[] = [
-  { title: "kartını iste",                desc: ["hesap kartını uygulamadan", "tek dokunuşla iste"] },
-  { title: "ücretsiz kurye teslim etsin", desc: ["kurye kartını dakikalar içinde", "adresine teslim etsin"] },
-  { title: "kazanmaya başla",             desc: ["harcadıkça nakit iade", "ve getirpara kazan"] }
+  { title: "[TASLAK] kartını iste",                desc: ["[TASLAK] hesap kartını uygulamadan", "tek dokunuşla iste"] },
+  { title: "[TASLAK] ücretsiz kurye teslim etsin", desc: ["[TASLAK] kurye kartını dakikalar içinde", "adresine teslim etsin"] },
+  { title: "[TASLAK] kazanmaya başla",             desc: ["[TASLAK] harcadıkça nakit iade", "ve getirpara kazan"] }
 ];
 
 /* "neler var?" answers what the PHYSICAL card does — attributes of the card
@@ -107,7 +107,7 @@ export const DEBIT_CAPS = {
    benefit-led draft; needs owner review. "özel" avoided per GF wording rules. */
 export const DEBIT_SANAL = {
   id: "sanal-kart",
-  title: "sanal hesap kartıyla",
+  title: "[TASLAK] sanal hesap kartıyla",
   titleHl: "güvenle harca",
   cta: "kart al",
   features: [
@@ -119,13 +119,13 @@ export const DEBIT_SANAL = {
 };
 
 export const DEBIT_ABROAD = {
-  title: "hesap kartınla yurtdışında",
+  title: "[TASLAK] hesap kartınla yurtdışında",
   titleHl: "yapılacaklar listesi",
   /* \n = hard line break (li renders white-space: pre-line) */
   captions: [
-    "avantajlı kurlarla\nharcama yap",
-    "yurt dışında harcarken de %1 nakit iade kazan",
-    "ATM'den para çekerken komisyonu avantajlı kurla öde"
+    "[TASLAK] avantajlı kurlarla\nharcama yap",
+    "[TASLAK] yurt dışında harcarken de %1 nakit iade kazan",
+    "[TASLAK] ATM'den para çekerken komisyonu avantajlı kurla öde"
   ]
 };
 
