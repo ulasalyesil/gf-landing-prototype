@@ -385,6 +385,10 @@
 /* Remove stacking context from inner so children layer individually around the traveler (z=60) */
 .dpc-sanal__inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 40px; }
 .dpc-sanal .dpc-title { color: #fff; }
+/* "güvenle" descends past the tight 1.1 line-height box; the shared .hl bar
+   (base.css, tuned for non-descender text) crosses mid-tail here — push it
+   down (em-relative, so it scales with the clamp'd title size) to clear it. */
+.dpc-sanal__head .hl::after { bottom: -0.36em; height: 0.2em; }
 /* 18px box gap renders a 16px VISUAL gap: the title's hl bar overhangs the
    text box by 4px and the CTA sits 2px high in its wrapper (measured) */
 .dpc-sanal__head { display: flex; flex-direction: column; align-items: center; gap: 18px; position: relative; z-index: 61; }
@@ -449,6 +453,8 @@
 .dpc-abroad { padding-block: 120px; }
 .dpc-abroad__title { text-align: center; }
 .dpc-abroad__title .hl { display: inline-block; margin-top: 8px; }
+/* same descender fix as .dpc-sanal__head above — "yapılacaklar" */
+.dpc-abroad__title .hl::after { bottom: -0.36em; height: 0.2em; }
 .dpc-abroad__captions { display: flex; justify-content: center; gap: 16px; margin: 48px 0 0; padding: 0; list-style: none; }
 /* backgroundless (owner feedback 2026-07-20: was bg-soft pills); item box
    mirrors the sanal feature cards (320px + 16px padding) so the two lists
