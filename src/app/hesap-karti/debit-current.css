@@ -22,6 +22,12 @@
 /* keyboard focus — page-wide (UA default was the only affordance) */
 .dpc :is(a, button):focus-visible { outline: 2px solid var(--gf-purple); outline-offset: 2px; }
 
+/* shared Footer: the gray backdrop (--gf-bg-soft, sections.css) is a landing-
+   page-specific device — it sits behind the dark rounded panel because the
+   section above it there is dark. This page's last section is white, so
+   that gray reads as a seam; pure white blends straight into the panel. */
+body.dpc .footer { background: var(--gf-bg); }
+
 /* ============ Shared: card hover tilt (transitions.dev, adapted) ============
    Used by the sanal kart render and every abroad collage photo (Tilt.tsx).
    Mouse-only — gated per-event in JS (pointerType), no CSS media query
