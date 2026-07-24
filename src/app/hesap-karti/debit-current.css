@@ -103,7 +103,7 @@
    section-level stage with independent coords). Shows through the video's
    knocked-out white. Desktop-only; mobile keeps the clean white hero. */
 .dpc-hero__blob { display: none; }
-@media (min-width: 921px) {
+@media (min-width: 768px) {
   .dpc-hero__card { overflow: visible; } /* the glow spills past the card box */
   .dpc-hero__blob {
     display: block; position: absolute;
@@ -117,7 +117,7 @@
 }
 /* Desktop: text block flex-centered vertically, card at display scale.
    ≤920 keeps the static stacked layout further down this file. */
-@media (min-width: 921px) {
+@media (min-width: 768px) {
   .dpc-hero .dpc-container { display: flex; flex-direction: column; justify-content: center; }
   .dpc-hero__text { position: static; }
   /* title scale = landing hero desktop size */
@@ -160,7 +160,7 @@
    (position: sticky) while scroll drives the 3-step sequence. Modes are
    set by DeliverySteps.tsx via data-mode (scrub / timed / off). */
 .dpc-steps { background: var(--gf-lilac-50); padding-block: 100px; }
-@media (min-width: 921px) {
+@media (min-width: 768px) {
   /* track = pin height (measured into --dpc-pin-h) + the scrub distance,
      so sticky travel === --dpc-scrub at any viewport height */
   .dpc-steps[data-mode="scrub"] {
@@ -222,7 +222,7 @@
    the phone overlapping both on the seam. Panel radius 32 is a comp
    value (above the --r-* scale). Same pin/track mechanics as .dpc-steps. */
 .dpc-stepsc { padding-block: 100px; }
-@media (min-width: 921px) {
+@media (min-width: 768px) {
   .dpc-stepsc[data-mode="scrub"] {
     height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
     padding-block: 0;
@@ -259,7 +259,7 @@
 .dpc-stepsc__phone-fill { width: 100%; }
 .dpc-stepsc__phone img { width: 100%; height: auto; display: block; }
 .dpc-stepsc__phone-lottie { width: 100%; aspect-ratio: 450 / 920; }
-@media (min-width: 921px) {
+@media (min-width: 768px) {
   /* phone rides the seam: absolute center, panels pad away from it */
   .dpc-stepsc__phone {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
@@ -269,7 +269,7 @@
      only the list pads away so step copy clears the phone */
   .dpc-stepsc__list { padding-left: 160px; padding-right: 16px; }
 }
-@media (max-width: 920px) {
+@media (max-width: 767px) {
   .dpc-stepsc__grid { flex-direction: column; align-items: stretch; }
   .dpc-stepsc__phone { order: 2; margin-inline: auto; }
   .dpc-stepsc__intro { order: 1; }
@@ -302,10 +302,11 @@
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
   margin: 72px 0 0; padding: 0; list-style: none;
 }
+.dpc-steps__item { will-change: transform, opacity; }
 /* ≥921: the phone is the hero of the view — 3× scale, right-anchored,
    bleeding past the pin bottom (pin clips). Steps stack vertically on the
    left so the composition reads text-left / product-right. */
-@media (min-width: 921px) {
+@media (min-width: 768px) {
   .dpc-steps__phone {
     /* 56px = the old 80px container padding + the -24px comp offset; the
        stage padding box now starts at the band's top edge, so the offset
@@ -477,7 +478,7 @@
 .dpc-abroad__img-5    { left: 63.41%; top: 44.67%; width: 14.48%; }
 
 /* ============ Responsive (page-scoped 920 layer) ============ */
-@media (max-width: 920px) {
+@media (max-width: 767px) {
   .dpc-hero { height: auto; padding-block: 100px 40px; }
   .dpc-hero__text { position: static; transform: none; }
   .dpc-hero__card { position: relative; top: auto; left: auto; transform: none; width: 100%; height: auto; aspect-ratio: 1/1; margin-top: 32px; max-width: 450px; margin-inline: auto; }

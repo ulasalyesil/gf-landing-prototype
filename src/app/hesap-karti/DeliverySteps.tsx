@@ -245,7 +245,7 @@ export default function DeliverySteps() {
      lets a trackpad flick teleport progress 0→1 in ~100ms, firing both
      completion lotties at once. ~1s settle makes a flick animate through
      each step so every completion state is seen. Verified by probe. */
-  const scrubProgress = useSpring(scrollYProgress, { stiffness: 70, damping: 28, mass: 1 });
+  const scrubProgress = useSpring(scrollYProgress, { stiffness: 150, damping: 20, mass: 1 });
 
   // timed driver (768–920): one eased run when the section enters view
   const timedProgress = useMotionValue(0);

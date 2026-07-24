@@ -101,7 +101,7 @@ const LAND_AT = 0.62;
 const FADE_V: [number, number] = [0.25, 0.7];
 const FADE_P: [number, number] = [0.3, 0.75];
 /* decisive but not violent; ~0.5s settle */
-const SNAP_SPRING = { type: "spring", stiffness: 260, damping: 30 } as const;
+const SNAP_SPRING = { type: "spring", stiffness: 200, damping: 25 } as const;
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;

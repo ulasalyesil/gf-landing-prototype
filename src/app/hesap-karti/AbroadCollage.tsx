@@ -47,8 +47,8 @@ const REST: CollageImg[] = [
   { cls: "dpc-abroad__img-4", src: "/assets/img/debit-abroad-4.png", w: 256, h: 170 },
 ];
 
-const STAGGER = 0.08;
-const POP = { type: "spring", duration: 0.5, bounce: 0.25 } as const;
+const STAGGER = 0.04;
+const POP = { type: "spring", stiffness: 260, damping: 20 } as const;
 
 /* Fixed DOM order. Anchors first, then the shuffled group in declaration
    order — only their DELAYS get shuffled. */
