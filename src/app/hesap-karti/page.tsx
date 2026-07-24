@@ -12,6 +12,8 @@ import DeliveryCompact from "./DeliveryCompact";
 import AbroadCollage from "./AbroadCollage";
 import SanalCard from "./SanalCard";
 import CardHandoff from "./CardHandoff";
+import TransferIllustration from "./illustrations/TransferIllustration";
+import AtmIllustration from "./illustrations/AtmIllustration";
 import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
 import "./debit-current.css";
 
@@ -99,7 +101,7 @@ export default function HesapKartiDetail() {
                   <p>{DEBIT_CAPS.transfer.sub}</p>
                 </div>
                 <div className="dpc-cap__media" aria-hidden="true">
-                  <img src={DEBIT_CAPS.transfer.media} alt="" width={600} height={440} loading="lazy" />
+                  <TransferIllustration />
                 </div>
               </RevealItem>
               <RevealItem as="article" className="dpc-cap dpc-cap--atm">
@@ -109,7 +111,7 @@ export default function HesapKartiDetail() {
                   <p>{DEBIT_CAPS.atm.sub}</p>
                 </div>
                 <div className="dpc-cap__media" aria-hidden="true">
-                  <img src={DEBIT_CAPS.atm.media} alt="" width={600} height={440} loading="lazy" />
+                  <AtmIllustration />
                 </div>
               </RevealItem>
             </Reveal>

@@ -247,6 +247,9 @@ export default function DeliverySteps() {
      each step so every completion state is seen. Verified by probe. */
   const scrubProgress = useSpring(scrollYProgress, { stiffness: 150, damping: 20, mass: 1 });
 
+  // Dedicated softer spring for the phone lift so it trails naturally on fast flicks
+  const liftScrubProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 30, mass: 1 });
+
   // timed driver (768–920): one eased run when the section enters view
   const timedProgress = useMotionValue(0);
   const inView = useInView(trackRef, { once: true, margin: "0px 0px -20% 0px" });
@@ -261,6 +264,7 @@ export default function DeliverySteps() {
   }, [mode, inView, timedProgress]);
 
   const driver = mode === "timed" ? timedProgress : scrubProgress;
+  const liftDriver = mode === "timed" ? timedProgress : liftScrubProgress;
 
   const bar1 = useTransform(driver, SEG.bar1, [0, 1]);
   const bar2 = useTransform(driver, SEG.bar2, [0, 1]);
@@ -342,7 +346,7 @@ export default function DeliverySteps() {
     observer.observe(mock);
     return () => observer.disconnect();
   }, [mode, lift]);
-  const liftProgress = useTransform(driver, w2, [0, 1]);
+  const liftProgress = useTransform(liftDriver, w2, [0, 1]);
   const mockT = useTransform(
     () => `translateY(${(-(lift.get() * liftProgress.get())).toFixed(1)}px)`
   );

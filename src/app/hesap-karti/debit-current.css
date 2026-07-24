@@ -119,7 +119,7 @@
    ≤920 keeps the static stacked layout further down this file. */
 @media (min-width: 768px) {
   .dpc-hero .dpc-container { display: flex; flex-direction: column; justify-content: center; }
-  .dpc-hero__text { position: static; }
+  .dpc-hero__text { position: static; margin-top: -80px; }
   /* title scale = landing hero desktop size */
   .dpc-hero__title { font-size: 64px; line-height: 1.02; }
   .dpc-badge { margin-bottom: 20px; }
@@ -374,7 +374,7 @@
 /* both illustrations (SVG, 600×440) ship their own white bg + edge fade; the
    transfer one keeps native aspect so the plane/trail composition isn't
    crop-severed, the ATM map tolerates side-cropping to fill the slimmer card */
-.dpc-cap__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dpc-cap__media img, .dpc-cap__media svg { display: block; width: 100%; height: 100%; object-fit: cover; }
 .dpc-cap--transfer .dpc-cap__media { flex: 0 0 auto; min-height: 0; aspect-ratio: 600 / 440; }
 /* ============ 5. SANAL KART — own dark section ============ */
 /* Full-bleed dark, same grammar as the landing `.debit` product moment.
@@ -408,7 +408,7 @@
    box/rotation stay untouched by the hover tilt; only the nested .t-tilt-card
    receives the pointer-driven 3D tilt, so CardHandoff's measurement is
    unaffected. */
-.dpc-sanal__media { position: relative; display: flex; align-items: center; justify-content: center; }
+.dpc-sanal__media { position: relative; display: flex; align-items: center; justify-content: center; margin-top: 40px; }
 .dpc-sanal__media::before {
   content: ""; position: absolute; width: 380px; height: 380px; border-radius: 50%;
   background: radial-gradient(circle, rgba(93,62,188,.45) 0%, rgba(93,62,188,0) 70%);
