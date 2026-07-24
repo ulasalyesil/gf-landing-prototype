@@ -4,14 +4,14 @@
 
 ## Next up
 
-- [ ] **Hesap kartı — review feedback (2026-07-24)** — copy targets are in `src/data/content.ts`. **Do not merge to `main`** (page pending CMO/COO approval); work on the `gfdes-2174-qa-pass` branch.
+- [ ] **Hesap kartı — review feedback (2026-07-24)** — copy targets are in `src/data/content.ts`. **Do not merge to `main`** (page pending CMO/COO approval); implemented on the `gfdes-2174-feedback` branch.
 
-  Ready to implement:
-  - `DEBIT_HERO.sub` → "harcadıkça getirpara ve nakit iade kazan". ⚠ This nearly duplicates the `DEBIT_EARN` heading right below ("harcadıkça getirpara / ve nakit iade kazan") — flag for owner, don't silently reword.
-  - `DEBIT_EARN.sub` → "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla" (only change: "su siparişinden" → "yemekten").
-  - Move the `DEBIT_CAPS` "daha neler var?" section to the **bottom** of the page (after abroad).
-  - Yellow highlight bar clips the **descenders of g / y** — adjust so tails clear (highlight sits in front of text; don't touch the hero, it has no highlight).
-  - `DEBIT_SANAL.features` — swap items 2 and 3 → 1) ayrı kartlar oluştur, 2) limitini belirle bütçeni kontrol et, 3) internet alışverişlerini güvenle yap.
+  Ready-to-implement items — done, on `gfdes-2174-feedback`:
+  - [x] `DEBIT_HERO.sub` → "harcadıkça getirpara ve nakit iade kazan". ⚠ Still duplicates the `DEBIT_EARN` heading right below ("harcadıkça getirpara / ve nakit iade kazan") almost verbatim — implemented as given per instruction, flagging again here for owner sign-off before this ships.
+  - [x] `DEBIT_EARN.sub` → "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla" ("su siparişinden" → "yemekten").
+  - [x] `DEBIT_CAPS` "daha neler var?" moved to the bottom of the page (after abroad, before the footer). Sanal still renders immediately before abroad, so `CardHandoff`'s scroll-linked geometry (anchored to that adjacency) is unaffected.
+  - [x] Yellow highlight bar descender clipping ("güvenle harca", "yapılacaklar listesi") — `.hl::after` (base.css) is tuned for non-descender text and was hiding most of the g/y tail under the bar. Fixed with a scoped override (`.dpc-sanal__head .hl::after`, `.dpc-abroad__title .hl::after` in `debit-current.css`), not a global base.css change, so the landing page and this page's two non-descender headings (earn, caps) keep the original tight bar. Verified via computed geometry (canvas TextMetrics + getBoundingClientRect) rather than a screenshot — the preview tool's screenshot capture wasn't rendering paint this session (DOM/CSS confirmed correct via JS; header painted, `<main>` didn't). **Worth a real-browser visual QA pass before this ships**, since verification here was numeric, not eyeballed.
+  - [x] `DEBIT_SANAL.features` — swapped items 2 and 3 (now: ayrı kartlar oluştur → limitini belirle bütçeni kontrol et → internet alışverişlerini güvenle yap).
 
   Blocked on owner input (do NOT guess):
   - `DEBIT_CAPS`: add an "ücretsiz kart" item and change "para transferi" — final item set + copy TBD (currently: ücretsiz para transferi + anlaşmalı ATM).
