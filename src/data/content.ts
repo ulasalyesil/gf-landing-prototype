@@ -60,14 +60,16 @@ export const DEBIT_HERO = {
   badge: "kartın dakikalar içinde kapında",
   title: "geri dönüşü",
   titleHl: "muhteşem kart",
-  sub: "ücretsiz hesap kartınla fiziksel harcamalarında %1 nakit iade kazan",
+  /* ⚠ near-duplicate of DEBIT_EARN heading below ("harcadıkça getirpara / ve nakit
+     iade kazan") — flagged for owner (review feedback 2026-07-24), implemented as given */
+  sub: "harcadıkça getirpara ve nakit iade kazan",
   cta: "kart al"
 };
 
 export const DEBIT_EARN = {
   title: "harcadıkça getirpara",
   titleHl: "ve nakit iade kazan",
-  sub: "su siparişinden markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
+  sub: "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
   iade: "fiziksel tüm harcamalarına aylık ₺1.250'ye kadar anında nakit iade!",
   getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" }
 };
@@ -112,8 +114,8 @@ export const DEBIT_SANAL = {
   cta: "kart al",
   features: [
     "harcamaların için ayrı kartlar oluştur, rahatça takip et",
-    "internet alışverişlerini güvenle yap",
-    "her kartın için limitini belirle, bütçeni kontrol et"
+    "her kartın için limitini belirle, bütçeni kontrol et",
+    "internet alışverişlerini güvenle yap"
   ],
   media: "/assets/img/virtual-card.png"
 };
