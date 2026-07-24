@@ -4,6 +4,22 @@
 
 ## Next up
 
+- [ ] **Hesap kartı — review feedback (2026-07-24)** — copy targets are in `src/data/content.ts`. **Do not merge to `main`** (page pending CMO/COO approval); work on the `gfdes-2174-qa-pass` branch.
+
+  Ready to implement:
+  - `DEBIT_HERO.sub` → "harcadıkça getirpara ve nakit iade kazan". ⚠ This nearly duplicates the `DEBIT_EARN` heading right below ("harcadıkça getirpara / ve nakit iade kazan") — flag for owner, don't silently reword.
+  - `DEBIT_EARN.sub` → "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla" (only change: "su siparişinden" → "yemekten").
+  - Move the `DEBIT_CAPS` "daha neler var?" section to the **bottom** of the page (after abroad).
+  - Yellow highlight bar clips the **descenders of g / y** — adjust so tails clear (highlight sits in front of text; don't touch the hero, it has no highlight).
+  - `DEBIT_SANAL.features` — swap items 2 and 3 → 1) ayrı kartlar oluştur, 2) limitini belirle bütçeni kontrol et, 3) internet alışverişlerini güvenle yap.
+
+  Blocked on owner input (do NOT guess):
+  - `DEBIT_CAPS`: add an "ücretsiz kart" item and change "para transferi" — final item set + copy TBD (currently: ücretsiz para transferi + anlaşmalı ATM).
+  - Add a **YouTube Premium** package to the earn area — placement / offer copy / YT asset TBD (third-party branding, needs a source).
+  - Delivery copy: "tek tık" / "tek dokunuş" sentences to change — current build only has step 1 "tek dokunuşla iste"; new wording TBD.
+  - Delivery phone mockup **numbers** to update — which + target values TBD.
+  - `DEBIT_ABROAD.captions`: drop the 3rd (ATM komisyon); 1st item → "yurtdışında rahatça kullanırsın" — replace-vs-prepend (2 vs 3 captions) TBD.
+
 - [x] **Hero + debit legal footnotes** (Aycan, Slack 2026-07-22) — added the Fibabanka rate legals to the hero and the delivery-time legal to the landing debit section:
   - hero: two rate legals under the Fibabanka line, **synced to the active offer** (`HeroOffer.legal` in content.ts) — deposit-rate legal on the %44 slide, kredi YMÖ example on the "iyi faizli kredi" slide, blank on kurlar/hesap kartı. New `.hero__disclosure` wraps the bank line + `.hero__legal`; bottom scrim on `.hero__media::after` for legibility; fixed min-height reserves the tallest legal so the bank line never jumps on swap
   - debit: `.debit__legal` muted footnote under the "keşfet" CTA
