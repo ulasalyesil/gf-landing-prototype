@@ -84,7 +84,35 @@ export default function HesapKartiDetail() {
         {/* ============ 3. DELIVERY — scroll-driven "dakikalar" sequence ============ */}
         {stepsParam === "compact" ? <DeliveryCompact /> : <DeliverySteps />}
 
-        {/* ============ 4. CAPABILITIES — transfers / ATM / sanal ============ */}
+        {/* ============ 4. SANAL KART — own dark section (distinct product) ============ */}
+        <SanalCard />
+
+        {/* ============ 5. ABROAD ============ */}
+        <section className="dpc-abroad">
+          <div className="dpc-container">
+            <Reveal as="header">
+              <h2 className="dpc-title dpc-abroad__title">
+                {DEBIT_ABROAD.title}
+                <br />
+                <AnimatedHighlight type="hl">{DEBIT_ABROAD.titleHl}</AnimatedHighlight>
+              </h2>
+            </Reveal>
+            <Reveal as="ul" className="dpc-abroad__captions" stagger={0.06}>
+              {DEBIT_ABROAD.captions.map((caption) => (
+                <RevealItem as="li" key={caption}>
+                  {caption}
+                </RevealItem>
+              ))}
+            </Reveal>
+            <AbroadCollage />
+          </div>
+        </section>
+
+        {/* sanal→abroad card traveler (fixed overlay, desktop scrub only) */}
+        <CardHandoff />
+
+        {/* ============ 6. CAPABILITIES — transfers / ATM ("daha neler var?", moved to
+            page bottom per review feedback 2026-07-24) ============ */}
         <section className="dpc-caps">
           <div className="dpc-container">
             <Reveal as="header" className="dpc-caps__head">
@@ -117,33 +145,6 @@ export default function HesapKartiDetail() {
             </Reveal>
           </div>
         </section>
-
-        {/* ============ 5. SANAL KART — own dark section (distinct product) ============ */}
-        <SanalCard />
-
-        {/* ============ 6. ABROAD ============ */}
-        <section className="dpc-abroad">
-          <div className="dpc-container">
-            <Reveal as="header">
-              <h2 className="dpc-title dpc-abroad__title">
-                {DEBIT_ABROAD.title}
-                <br />
-                <AnimatedHighlight type="hl">{DEBIT_ABROAD.titleHl}</AnimatedHighlight>
-              </h2>
-            </Reveal>
-            <Reveal as="ul" className="dpc-abroad__captions" stagger={0.06}>
-              {DEBIT_ABROAD.captions.map((caption) => (
-                <RevealItem as="li" key={caption}>
-                  {caption}
-                </RevealItem>
-              ))}
-            </Reveal>
-            <AbroadCollage />
-          </div>
-        </section>
-
-        {/* sanal→abroad card traveler (fixed overlay, desktop scrub only) */}
-        <CardHandoff />
       </main>
       <Footer />
     </>
