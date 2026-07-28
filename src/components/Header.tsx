@@ -271,9 +271,36 @@ export default function Header({ variant = "home" }: HeaderProps) {
       id="siteHeader"
     >
       <div className="container site-header__inner">
-        <Link href="/" className="brand" aria-label="getirfinans" onClick={closeMega}>
-          <img className="brand__logo" src={logoSrc} alt="getirfinans" />
-        </Link>
+        <div className="header__brand-group">
+          <Link href="/" className="brand" aria-label="getirfinans" onClick={closeMega}>
+            <img className="brand__logo" src={logoSrc} alt="getirfinans" />
+          </Link>
+          <a
+            href="#"
+            className="header__mobile-badge"
+            aria-label="#paranaiyibak"
+            onClick={
+              MENU_DIALS_ENABLED
+                ? (e) => {
+                    e.preventDefault();
+                    toggleSubtexts();
+                  }
+                : undefined
+            }
+            title={
+              MENU_DIALS_ENABLED
+                ? `dev: alt metinler ${subtexts ? "açık" : "kapalı"} — değiştirmek için dokun`
+                : undefined
+            }
+            data-gf-dev-toggle={MENU_DIALS_ENABLED ? "subtexts" : undefined}
+          >
+            <img
+              className="paranaiyibak__logo"
+              src="/assets/logos/paranaiyibak.svg"
+              alt="#paranaiyibak"
+            />
+          </a>
+        </div>
 
         <div className="site-header__col">
           <nav className="nav">

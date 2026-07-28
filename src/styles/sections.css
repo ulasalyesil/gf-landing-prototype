@@ -9,6 +9,8 @@
 }
 .site-header.is-scrolled { background: rgba(255,255,255,.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: var(--shadow-sm); padding-block: 14px; }
 .site-header__inner { display: flex; align-items: center; gap: 87px; }
+.header__brand-group { display: flex; align-items: center; gap: 16px; }
+.header__mobile-badge { display: none; }
 .brand { display: inline-flex; align-items: center; }
 .brand__logo { height: 30px; width: auto; }
 .brand__ph { font-weight: 700; font-size: 26px; color: #fff; letter-spacing: -.02em; }
@@ -498,6 +500,9 @@
   .paranaiyibak__logo { height: 26px; }
   .brand__logo { height: 26px; }
   .hide-on-mobile { display: none !important; }
+  
+  /* Show header badge on mobile when scrolled (white bg) unless menu is open */
+  .site-header.is-scrolled:not(.is-mega) .header__mobile-badge { display: inline-flex; }
 
   /* ---------- Full-screen menu ----------
      920 is the menu's breakpoint everywhere: it's where .nav hides, so the JS
