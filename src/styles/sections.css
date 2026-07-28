@@ -58,6 +58,9 @@
 .mega__badge-img { display: inline-flex; align-items: center; margin-left: -2px; height: 22px; }
 .mega__badge-img img { height: 100%; width: auto; }
 .mega__link { color: var(--gf-purple); font-weight: var(--fw-semibold); }
+/* Category rows and the in-menu actions belong to the ≤920 menu only — the desktop
+   dropdown shows just the grid for the category you clicked. */
+.mega__cat-head, .mega__cat-link, .mega__actions { display: none; }
 
 /* ===== 1. Hero ===== */
 .hero { position: relative; min-height: 100vh; display: flex; align-items: center; color: #fff; overflow: hidden; }
@@ -489,25 +492,105 @@
 @media (max-width: 920px) {
   .nav { display: none; }
   .nav-toggle { display: flex; }
-  .header__cta { display: none !important; }
+  /* badge + CTA move out of the header and into the menu's sticky bar at this
+     breakpoint — they used to only move at ≤767, so 768–920 had neither. */
+  .header__cta, .site-header__actions .paranaiyibak { display: none !important; }
   .paranaiyibak__logo { height: 26px; }
   .brand__logo { height: 26px; }
   .hide-on-mobile { display: none !important; }
 
+  /* ---------- Full-screen menu ----------
+     920 is the menu's breakpoint everywhere: it's where .nav hides, so the JS
+     matchMedia in Header.tsx and this block agree. All of the menu's small-screen
+     rules live here — they used to be split across a second ≤767 copy in mobile.css
+     that overrode the transform and the background with !important. Only
+     --menu-bar-h is re-set there, because the header bar itself is shorter. */
+  :root { --menu-bar-h: 74px; }
+  /* The panel is fixed at top:0 and used to paint over the header row — the logo
+     disappeared whenever the menu was open. Lift the whole row, not just .brand,
+     so the hamburger keeps its existing z-index:101 company. */
+  .site-header__inner { position: relative; z-index: 101; }
+
   .mega {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh;
-    padding-top: 90px; overflow-y: auto; padding-inline: var(--gutter);
-    background: rgba(255,255,255,0.96) !important;
-    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh;
+    padding: calc(var(--menu-bar-h) + env(safe-area-inset-top)) 0 0;
+    overflow-y: auto; overscroll-behavior: contain;
+    background: #fff; box-shadow: none; border-radius: 0;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
     transform: translateY(100%);
-    transition: transform 0.4s var(--ease-drawer, cubic-bezier(0.32, 0.72, 0, 1)), opacity 0.4s;
-    box-shadow: none;
+    transition: transform var(--menu-dur) var(--ease-drawer),
+                opacity var(--menu-dur) var(--ease-drawer);
   }
   .mega.is-open { transform: none; }
-  .mega__grid { grid-template-columns: 1fr; gap: 32px; padding-bottom: 80px; }
-  .mega__item p { display: none; }
-  
+  /* exit faster than enter — the user has already decided */
+  .mega.is-closing { transform: translateY(100%); transition-duration: var(--menu-dur-out); }
+  .mega > .container { display: flex; flex-direction: column; min-height: 100%; }
+
+  /* Category rows — the three top-level entries, all peers. Only "ürünler" carries
+     items, so it's the only one that renders as a disclosure. */
+  /* No dividers between category rows (owner, 2026-07-28) — spacing carries the
+     separation. The only rule left in the menu is the sticky bar's top edge, which
+     earns it by separating fixed chrome from scrolling content. */
+  .mega__cat-head, .mega__cat-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; padding: 18px 0; background: none; text-align: left;
+    font-size: 22px; line-height: 30px; font-weight: var(--fw-regular); color: var(--gf-ink);
+  }
+  /* border: 0 resets the <button> default */
+  .mega__cat-head { border: 0; transition: color var(--tabs-dur) var(--tabs-ease); }
+  /* Expanded, the header steps back and lets its items carry the emphasis.
+     text/content/tertiary — see the note on --gf-ink-400 in tokens.css. */
+  .mega__cat-head.is-open { color: var(--gf-ink-400); }
+  @media (prefers-reduced-motion: reduce) { .mega__cat-head { transition: none; } }
+  /* press feedback — a full-width row tinting reads better than scaling it */
+  .mega__cat-head:active, .mega__cat-link:active, .mega__item:active { background: var(--gf-lilac-50); }
+  /* Only the disclosure has a chevron (owner, 2026-07-28), so it reads as "this
+     expands" rather than "this is tappable". Its centre lines up with the hamburger/X
+     icon: the 44px toggle sits flush to the container edge, so its 24px icon is
+     centred 22px in, and the chevron's own half-width is 4.5px. Holds at any gutter,
+     since both hang off the same edge. */
+  .mega__chev {
+    flex: 0 0 auto; width: 9px; height: 9px; margin-right: calc(22px - 4.5px);
+    color: var(--gf-ink-700);
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+  }
+  /* points right when collapsed, falls to point down when open */
+  .mega__chev--toggle { transition: transform var(--tabs-dur) var(--tabs-ease); }
+  .mega__cat-head.is-open .mega__chev--toggle { transform: rotate(45deg); }
+  @media (prefers-reduced-motion: reduce) { .mega__chev--toggle { transition: none; } }
+
+  /* Products inside the disclosure — one level quieter than the category rows. */
+  .mega__grid { grid-template-columns: 1fr; gap: 0; padding-bottom: 8px; }
+  .mega__item { padding: 12px 0; }
+  /* Product labels match the category rows' 22px/30px (owner, 2026-07-28); they stay
+     one step quieter in colour, so level 2 reads as level 2 without a size step. */
+  .mega__item h4 { font-size: 22px; line-height: 30px; margin-bottom: 0; color: var(--gf-ink-700); }
+  /* text/content/secondary — stated explicitly here rather than inherited from the
+     desktop rule, so the role is legible at the point of use */
+  .mega__item p { margin-top: 2px; color: var(--gf-ink-700); }
+  /* dev-only escape hatch: DialKit "Menu › subtexts" off writes this (see useMenuDials) */
+  [data-gf-menu-subtexts="off"] .mega__item p { display: none; }
+
+  /* Actions pinned to the bottom of the scrollport — the CTA sat below 12 products
+     and was out of thumb reach. Sticky (not fixed) so nothing hides under it at the
+     end of the scroll; bled out to full width past the container gutters. */
+  .mega__actions {
+    display: flex; flex-direction: row; align-items: center; gap: 12px;
+    position: sticky; bottom: 0; z-index: 2; margin: auto 0 0;
+    margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter);
+    padding-block: 12px max(12px, env(safe-area-inset-bottom));
+    background: #fff; border-top: 1px solid var(--gf-line);
+  }
+  .mega__actions .paranaiyibak { flex: 0 0 auto; }
+  .mega__actions .paranaiyibak__logo { height: 26px; }
+  /* grows to fill on a phone, capped so it isn't a slab at the top of the band */
+  .mega__actions .btn { flex: 1 1 auto; max-width: 360px; margin-left: auto; justify-content: center; padding: 14px 18px; font-size: 16px; }
+
   .site-header__inner { gap: 16px; justify-content: space-between; }
+  /* with .nav hidden the col holds only the hamburger — don't let it stretch, or the
+     toggle lands next to the logo instead of at the right edge */
+  .site-header__col { flex: 0 0 auto; }
   .hero__inner { padding-block: 110px 60px; min-height: 100vh; }
   
   .stats__card { flex-direction: column; gap: 32px; padding: 40px 24px; }

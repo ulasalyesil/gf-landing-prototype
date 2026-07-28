@@ -6,9 +6,10 @@
    sticky-stacking feature deck below.
    ============================================================ */
 
-/* badge + CTA live in the header on desktop; on mobile they move into the
-   menu (see .mega__actions in the mobile block). Hidden everywhere by default. */
-.mega__actions { display: none; }
+/* The menu (.mega, .nav-toggle, .brand) lives entirely in the @media (max-width: 920px)
+   block in sections.css — 920 is where .nav hides, so that's the menu's real
+   breakpoint. Only --menu-bar-h is re-set below, because this layer shortens the
+   header bar the panel has to clear. */
 
 @media (max-width: 767px) {
 
@@ -24,30 +25,15 @@
   /* ---------- Header + hamburger ---------- */
   .site-header { padding-block: 12px; padding-top: max(12px, env(safe-area-inset-top)); }
   .site-header__inner { gap: 12px; justify-content: space-between; }
-  .site-header__col { flex: 0 0 auto; }
   .nav { display: none !important; }
-  .site-header__actions .paranaiyibak, .site-header__actions .header__cta { display: none !important; }
   .site-header__actions { gap: 8px; }
   .nav-toggle { display: inline-flex; color: #fff; }
   .is-scrolled .nav-toggle, .is-mega .nav-toggle { color: var(--gf-ink); }
 
-  /* Mega → full-screen mobile menu */
-  .mega {
-    position: fixed; left: 0; right: 0; top: 0; bottom: 0; height: 100dvh;
-    padding: calc(72px + env(safe-area-inset-top)) 0 40px; overflow-y: auto;
-    transform: translateY(-12px); border-radius: 0;
-    box-shadow: none;
-  }
-  /* override the rejected pass's translucent .96 bg — bleeds over the hero */
-  .mega, .mega.is-open { background: #fff !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .mega.is-open { transform: none; }
-  .mega .container { padding-inline: 24px; }
-  .mega__grid { grid-template-columns: 1fr; gap: 26px; }
+  /* Menu rules live in the ≤920 block in sections.css. This layer only shortens the
+     header bar (above), so the panel's top inset shortens with it. */
+  :root { --menu-bar-h: 50px; }
   .mega__item p { max-width: none; }
-  /* badge + CTA, relocated from the header into the menu footer */
-  .mega__actions { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin: 36px 0 0; padding-top: 28px; border-top: 1px solid var(--gf-line); }
-  .mega__actions .paranaiyibak__logo { height: 34px; }
-  .mega__actions .btn { width: 100%; padding: 16px 24px; font-size: 17px; }
 
   /* ---------- 1. Hero ---------- */
   .hero { min-height: 100svh; }

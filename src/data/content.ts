@@ -1,3 +1,67 @@
+/* ===== Site navigation =====
+   One source for both header surfaces: the desktop nav + mega dropdown and the
+   ≤920px hamburger menu. Before this existed the mega panel was hardcoded JSX and
+   rendered the same product grid whichever category you clicked. */
+
+export interface NavItem {
+  label: string;
+  href: string;
+  /* Supporting line under the label. May carry inline HTML (rendered via
+     dangerouslySetInnerHTML, same as HeroOffer.sub) — authored here in the repo,
+     never user input. Hidden on the mobile menu by default; see useMenuDials. */
+  sub?: string;
+  /** Purple third line, below sub. */
+  note?: string;
+  /** Badge asset shown beside the label. */
+  badge?: string;
+}
+
+export interface NavCategory {
+  id: string;
+  label: string;
+  /** Categories with items are dropdown (desktop) / disclosure (mobile) triggers. */
+  items?: NavItem[];
+  /** Categories without items are plain links. Only one of items/href is set. */
+  href?: string;
+}
+
+/* Only "ürünler" has sub-items; the other two are destinations, so on desktop they
+   navigate instead of opening a panel, and on mobile they're plain rows. */
+export const NAV: NavCategory[] = [
+  {
+    id: "urunler",
+    label: "ürünler",
+    items: [
+      { label: "hesap", href: "#",
+        sub: "paranı bağlamadan her gün faiz kazan" },
+      { label: "hesap kartı", href: "/hesap-karti",
+        sub: "kartınla harcadıkça <b>%1 nakit iade</b> ve <b>getirpara</b> kazan!" },
+      { label: "kredi kartı", href: "#",
+        sub: "taksit yapan, kazandıran, aidatsız kredi kartı" },
+      { label: "ihtiyaç kredisi", href: "#",
+        sub: "hızlı başvuru, uygun faiz ve esnek vade seçenekleri" },
+      { label: "mini kredi", href: "#",
+        sub: "kolay al, kolay öde" },
+      { label: "kasada kredi", href: "#",
+        sub: "kasada al, taksitle öde" },
+      { label: "avans limit", href: "#",
+        sub: "acil ihtiyaçların için yanında" },
+      { label: "getirsonraöde", href: "#", badge: "/assets/badges/yeni.svg",
+        sub: "getir’deki harcamalarını <b>60 güne kadar</b> <b>%0 faiz</b> ile erteleme imkanı" },
+      { label: "döviz işlemleri", href: "#",
+        sub: "dar makas ile avantajlı kurlar" },
+      { label: "ödemeler", href: "#" },
+      { label: "para transferi", href: "#",
+        sub: "7/24 ücretsiz havale, EFT, FAST" },
+      { label: "ücretsiz atm’ler", href: "#",
+        sub: "tüm atm’lerden ücretsiz çekebilirsin",
+        note: "Fibabanka ve Akbank’ta ücretsiz" }
+    ]
+  },
+  { id: "kampanyalar", label: "kampanyalar", href: "#" },
+  { id: "ucretler", label: "ürün ve hizmet ücretleri", href: "#" }
+];
+
 export interface HeroOffer {
   /** May carry inline HTML (rendered via dangerouslySetInnerHTML, same as sub). */
   title: string;
