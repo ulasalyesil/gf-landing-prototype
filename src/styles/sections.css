@@ -524,7 +524,7 @@
   .mega.is-open { transform: none; }
   /* exit faster than enter — the user has already decided */
   .mega.is-closing { transform: translateY(100%); transition-duration: var(--menu-dur-out); }
-  .mega > .container { display: flex; flex-direction: column; min-height: 100%; }
+  .mega > .container { display: flex; flex-direction: column; min-height: 100%; padding-top: 16px; }
 
   /* Category rows — the three top-level entries, all peers. Only "ürünler" carries
      items, so it's the only one that renders as a disclosure. */
