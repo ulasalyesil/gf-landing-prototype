@@ -16,17 +16,16 @@
   --gf-lilac-200: #e6e1f5;
   --gf-lilac-300: #aa9cd5;
 
-  /* Ink / neutrals — Figma roles confirmed against the mega-menu node
-     (oQBanFVh7xrVxnYHokRLt7 / 21442-42526) so these stop being guesswork */
-  --gf-ink: #0e0e0e;            /* text/content/primary   — confirmed */
-  --gf-ink-700: #3e3e3e;        /* text/content/secondary — confirmed */
-  --gf-ink-500: #606a7c;        /* slate; legal + body copy, breaks the neutral ramp */
-  /* text/content/tertiary — INFERRED, not confirmed. The variable exists in the
-     component library but no node queried resolves its hex. Chosen over --gf-ink-500
-     because it continues the neutral ramp and already carries the lowest-emphasis
-     roles here (kickers, field labels, inactive .calc__tab). Verify before launch. */
-  --gf-ink-400: #959595;
-  --gf-line: #e8e8e8;
+  /* Ink / neutrals — every value below verified against design-tokens/ (the Figma
+     export). Roles are the Light-theme semantic names. Note the "--gf-ink-*" family
+     mixes two primitive ramps: -700 is neutral, -500 is cool gray. Historical, and
+     renaming would touch a lot; documented rather than churned. */
+  --gf-ink: #0e0e0e;            /* neutral/900   = text/content/primary */
+  --gf-ink-700: #3e3e3e;        /* neutral/700   = text/content/secondary */
+  --gf-cool-400: #8c96a4;       /* cool gray/400 = text/content/tertiary */
+  --gf-ink-500: #606a7c;        /* cool gray/500 = text/amount/default */
+  --gf-ink-400: #959595;        /* neutral/500   = icon/selection/checked-disabled */
+  --gf-line: #e8e8e8;           /* neutral/100   = border/base/neutral-subtle */
 
   /* Semantic */
   --gf-up: #008c29;

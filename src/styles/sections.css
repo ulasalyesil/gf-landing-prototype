@@ -544,8 +544,8 @@
   /* border: 0 resets the <button> default */
   .mega__cat-head { border: 0; transition: color var(--tabs-dur) var(--tabs-ease); }
   /* Expanded, the header steps back and lets its items carry the emphasis.
-     text/content/tertiary — see the note on --gf-ink-400 in tokens.css. */
-  .mega__cat-head.is-open { color: var(--gf-ink-400); }
+     text/content/tertiary = cool gray/400, verified against design-tokens/. */
+  .mega__cat-head.is-open { color: var(--gf-cool-400); }
   @media (prefers-reduced-motion: reduce) { .mega__cat-head { transition: none; } }
   /* press feedback — a full-width row tinting reads better than scaling it */
   .mega__cat-head:active, .mega__cat-link:active, .mega__item:active { background: var(--gf-lilac-50); }
