@@ -568,11 +568,13 @@
   /* Products inside the disclosure — one level quieter than the category rows. */
   .mega__grid { grid-template-columns: 1fr; gap: 0; padding-bottom: 8px; }
   .mega__item { padding: 12px 0; }
-  /* Product labels match the category rows' 22px/30px (owner, 2026-07-28); they stay
-     one step quieter in colour, so level 2 reads as level 2 without a size step. */
-  .mega__item h4 { font-size: 22px; line-height: 30px; margin-bottom: 0; color: var(--gf-ink-700); }
+  /* Product labels match the category rows' 22px/30px (owner, 2026-07-28) and their
+     colour, text/content/primary (owner, 2026-07-29) — level 2 is distinguished from
+     level 1 by the chevron/border, not by dimming the label. */
+  .mega__item h4 { font-size: 22px; line-height: 30px; margin-bottom: 0; color: var(--gf-ink); }
   /* text/content/secondary — stated explicitly here rather than inherited from the
-     desktop rule, so the role is legible at the point of use */
+     desktop rule, so the role is legible at the point of use. Now the step down from
+     the primary-colour label above, doing the quieting work the label used to. */
   .mega__item p { margin-top: 2px; color: var(--gf-ink-700); }
   /* dev-only escape hatch: DialKit "Menu › subtexts" off writes this (see useMenuDials) */
   [data-gf-menu-subtexts="off"] .mega__item p { display: none; }
