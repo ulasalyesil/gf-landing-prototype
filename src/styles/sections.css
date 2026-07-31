@@ -10,7 +10,12 @@
 .site-header.is-scrolled { background: rgba(255,255,255,.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: var(--shadow-sm); padding-block: 14px; }
 .site-header__inner { display: flex; align-items: center; gap: 87px; }
 .header__brand-group { display: flex; align-items: center; gap: 16px; }
+/* Compact-only (≤920) chrome, hidden by default and switched on in the Responsive
+   block. .pnib-drawer needs a base rule too: every other property it has lives
+   inside the media query, so without this it falls back to a static in-flow block
+   and renders a stray pill below the footer on desktop. */
 .header__mobile-badge { display: none; }
+.pnib-drawer, .pnib-flag { display: none; }
 .brand { display: inline-flex; align-items: center; }
 .brand__logo { height: 30px; width: auto; }
 .brand__ph { font-weight: 700; font-size: 26px; color: #fff; letter-spacing: -.02em; }
@@ -503,6 +508,74 @@
   
   /* Show header badge on mobile when scrolled (white bg) unless menu is open */
   .site-header.is-scrolled:not(.is-mega) .header__mobile-badge { display: inline-flex; }
+
+  /* ---------- #paranaiyibak drawer (Figma 22041:80165) ----------
+     Persistent bottom bar, slides in past the same 40px scroll threshold as the
+     header chrome. Lives here rather than in mobile.css because 920 is its real
+     breakpoint — it's the counterpart to .header__mobile-badge directly above,
+     and splitting the pair across two layers is exactly the duplication the menu
+     consolidation removed.
+
+     z-index 99 parks it below .site-header (100) on purpose: .mega is an opaque
+     full-screen fixed panel inside the header, so it paints over the drawer when
+     the menu opens. No open/close wiring needed, and no new global menu signal.
+
+     Colours are the node's own tokens: bg/surface/default → --gf-bg,
+     border/base/default → --gf-lilac. Note the hairline is a lilac tint, NOT the
+     neutral --gf-line (#e8e8e8 = border/base/neutral-subtle) used elsewhere.
+     Logo returns to its 32px base height (the ≤920 rule above drops it to 26px
+     for the header/menu, but the comp specifies 32px here). */
+  .pnib-drawer {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 99;
+    display: flex; align-items: center; justify-content: center;
+    height: calc(64px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--gf-bg);
+    border-top: 1px solid var(--gf-lilac);
+    will-change: transform;
+  }
+  .pnib-drawer .paranaiyibak { display: inline-flex; }
+  .pnib-drawer .paranaiyibak__logo { height: 32px; }
+
+  /* The bar is fixed, so the footer's last rows would sit under it at the end of
+     the page. Pad inside the dark panel, not on body — body padding would show a
+     light band below .footer__panel's rounded top corners. */
+  html:not([data-gf-pnib="header"]) .footer__panel {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+
+  /* ---- placement switch (?pnib=, ParanaiyibakFlag) ----
+     Exactly one arrangement is ever on screen. Written as :not([…="header"]) so the
+     attribute-less state (server HTML, and the tick before the effect runs) already
+     equals DEFAULT_PLACEMENT="drawer" — keyed on ="drawer" instead, both marks would
+     flash on every load. Specificity beats the .site-header.is-scrolled rule above
+     without !important, so the two don't end up in an override war.
+     Delete this pair, and .pnib-flag below, once a placement is chosen. */
+  html:not([data-gf-pnib="header"]) .site-header.is-scrolled:not(.is-mega) .header__mobile-badge { display: none; }
+  html[data-gf-pnib="header"] .pnib-drawer { display: none; }
+
+  /* ---- review flag ----
+     Right edge, vertically centred: the two things being compared sit at the top
+     (header badge) and the bottom (drawer), so the control must occupy neither.
+     z-index 98 keeps it under .site-header (100), so the opaque .mega panel covers
+     it when the menu opens, and it never overlaps the drawer (99) spatially. */
+  .pnib-flag {
+    position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 98;
+    display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+    padding: 8px; border-radius: 12px 0 0 12px;
+    background: var(--gf-bg); border: 1px solid var(--gf-lilac); border-right: 0;
+    box-shadow: var(--shadow-sm);
+  }
+  .pnib-flag__cap {
+    font-size: 9px; font-weight: var(--fw-semibold); text-transform: uppercase;
+    letter-spacing: .08em; color: var(--gf-ink-500); text-align: center; padding-bottom: 2px;
+  }
+  .pnib-flag__btn {
+    min-height: 40px; padding: 8px 12px; border-radius: var(--r-full);
+    font-size: 13px; font-weight: var(--fw-semibold); color: var(--gf-ink-700);
+    background: none; transition: background .18s, color .18s;
+  }
+  .pnib-flag__btn.is-active { background: var(--gf-purple); color: #fff; }
 
   /* ---------- Full-screen menu ----------
      920 is the menu's breakpoint everywhere: it's where .nav hides, so the JS

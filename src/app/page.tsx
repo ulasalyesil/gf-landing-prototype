@@ -14,6 +14,8 @@ import AppFeatures from "@/components/AppFeatures";
 import AiAssistant from "@/components/AiAssistant";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
+import ParanaiyibakDrawer from "@/components/ParanaiyibakDrawer";
+import ParanaiyibakFlag from "@/components/ParanaiyibakFlag";
 
 export default function Home() {
   return (
@@ -40,6 +42,11 @@ export default function Home() {
         <Newsletter />
       </main>
       <Footer />
+      {/* Compact-only (≤920) persistent #paranaiyibak bar. Outside <main> — it's
+          site chrome like the header, not page content. The flag next to it is
+          temporary review scaffolding; both go when a placement is chosen. */}
+      <ParanaiyibakDrawer />
+      <ParanaiyibakFlag />
     </>
   );
 }
