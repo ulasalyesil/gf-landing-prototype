@@ -14,6 +14,7 @@ import SanalCard from "./SanalCard";
 import CardHandoff from "./CardHandoff";
 import TransferIllustration from "./illustrations/TransferIllustration";
 import AtmIllustration from "./illustrations/AtmIllustration";
+import SubscriptionsMotif from "./illustrations/SubscriptionsMotif";
 import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
 import "./debit-current.css";
 
@@ -23,10 +24,20 @@ import "./debit-current.css";
    reconciled after hydration without a mismatch — HeroVariants pattern). */
 const subscribeNoop = () => () => {};
 const getStepsParam = () => new URLSearchParams(window.location.search).get("steps");
-const getServerStepsParam = () => null;
+/* server snapshot for both param stores — keeps `window` untouched during SSR */
+const getServerParam = () => null;
+
+/* ?earn=equal renders the three earn benefits as same-size peer tiles — the
+   arrangement all three Figma comps (22054:45003) assume — instead of the
+   default unequal bento. Kept as the owner's alternative for on-device
+   comparison (owner, 2026-08-03); same link-only, no-picker pattern as ?steps=.
+   Once a call is made: delete this param, the loser's container rule in
+   debit-current.css, and the ternary on .dpc-earn__bento / .dpc-earn__row. */
+const getEarnParam = () => new URLSearchParams(window.location.search).get("earn");
 
 export default function HesapKartiDetail() {
-  const stepsParam = useSyncExternalStore(subscribeNoop, getStepsParam, getServerStepsParam);
+  const stepsParam = useSyncExternalStore(subscribeNoop, getStepsParam, getServerParam);
+  const earnParam = useSyncExternalStore(subscribeNoop, getEarnParam, getServerParam);
   // Add body class on mount, cleanup on unmount
   useEffect(() => {
     document.body.classList.add("dpc");
@@ -52,30 +63,57 @@ export default function HesapKartiDetail() {
               </h2>
               <p className="dpc-earn__sub">{DEBIT_EARN.sub}</p>
             </Reveal>
-            <Reveal className="dpc-earn__cards" stagger={0.08}>
+            <Reveal
+              className={earnParam === "equal" ? "dpc-earn__row" : "dpc-earn__bento"}
+              stagger={0.08}
+            >
+              {/* hero tile — broadest promise (all physical spend) leads */}
               <RevealItem as="article" className="dpc-earn__card dpc-earn__card--iade">
-                <img
-                  src="/assets/img/debit-earn-photo.png"
-                  alt=""
-                  width={380}
-                  height={520}
-                  loading="lazy"
-                />
-                <p>{DEBIT_EARN.iade}</p>
+                <p className="dpc-earn__copy">{DEBIT_EARN.iade}</p>
+                <div className="dpc-earn__media">
+                  <img
+                    src="/assets/img/debit-earn-photo.png"
+                    alt=""
+                    width={720}
+                    height={520}
+                    loading="lazy"
+                  />
+                </div>
               </RevealItem>
               <RevealItem as="article" className="dpc-earn__card dpc-earn__card--getirpara">
-                <img
-                  src="/assets/img/debit-earn-phone.png"
-                  alt=""
-                  width={380}
-                  height={520}
-                  loading="lazy"
-                />
-                <p>
+                <p className="dpc-earn__copy">
                   {DEBIT_EARN.getirpara.pre}
                   <span className="y">{DEBIT_EARN.getirpara.em}</span>
                   {DEBIT_EARN.getirpara.post}
                 </p>
+                <div className="dpc-earn__media">
+                  <img
+                    src="/assets/img/debit-earn-phone.png"
+                    alt=""
+                    width={380}
+                    height={520}
+                    loading="lazy"
+                  />
+                </div>
+              </RevealItem>
+              <RevealItem as="article" className="dpc-earn__card dpc-earn__card--abonelik">
+                <p className="dpc-earn__copy">
+                  {DEBIT_EARN.abonelik.pre}
+                  <span className="y">{DEBIT_EARN.abonelik.em}</span>
+                  {DEBIT_EARN.abonelik.post}
+                </p>
+                <div className="dpc-earn__media">
+                  <SubscriptionsMotif className="dpc-earn__motif" />
+                  {/* coin is the sanctioned cashback mark (AGENTS.md), not a % bubble */}
+                  <img
+                    className="dpc-earn__coin"
+                    src="/assets/icons/cashback.svg"
+                    alt=""
+                    width={48}
+                    height={48}
+                    loading="lazy"
+                  />
+                </div>
               </RevealItem>
             </Reveal>
           </div>

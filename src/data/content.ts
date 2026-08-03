@@ -130,12 +130,27 @@ export const DEBIT_HERO = {
   cta: "kart al"
 };
 
+/* Three benefits, deliberately NOT peers — `iade` is the broadest promise (all
+   physical spend) and leads the bento; getirpara and abonelik are the narrow,
+   higher-rate specifics that pair beneath it (owner, 2026-08-03). */
 export const DEBIT_EARN = {
   title: "harcadıkça getirpara",
   titleHl: "ve nakit iade kazan",
+  /* ⚠ still names only two of the three mechanics — says nothing about
+     abonelik nakit iade. Flagged for owner; needs a third clause or a rewrite. */
   sub: "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
   iade: "fiziksel tüm harcamalarına aylık ₺1.250'ye kadar anında nakit iade!",
-  getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" }
+  getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" },
+  /* DRAFT, from Figma 22054:45003 — needs owner + legal review. Names three
+     third-party services in body copy; the tile carries NO third-party marks
+     (owner, 2026-08-03), so the offer rests on this sentence plus a generic
+     motif. If legal objects to naming them, "seçili dijital abonelikler"
+     alone still stands on its own. */
+  abonelik: {
+    pre: "spotify, amazon prime, chatgpt ve dahası… seçili dijital aboneliklerde ",
+    em: "%20",
+    post: " nakit iade"
+  }
 };
 
 export interface DebitStep {

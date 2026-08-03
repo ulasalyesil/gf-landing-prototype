@@ -139,27 +139,105 @@ body.dpc .footer { background: var(--gf-bg); }
   }
 }
 
-/* ============ 2. EARN — centered head + 2 cards ============ */
+/* ============ 2. EARN — centered head + 3 benefit tiles ============ */
+/* The three benefits are NOT peers: `iade` covers all physical spend, the other
+   two are narrow high-rate specifics. The default bento says that with tile
+   size — iade spans, the pair sits beneath. ?earn=equal renders the same three
+   as same-size peers (the arrangement every Figma comp assumed) for comparison;
+   see page.tsx for the delete path once a call is made. */
 .dpc-earn { padding-block: 24px; }
 .dpc-earn__head { text-align: center; }
 .dpc-earn__sub { margin: 16px auto 0; max-width: 720px; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); text-wrap: pretty; }
-.dpc-earn__cards { display: flex; justify-content: center; gap: 36px; margin-top: 48px; }
+
+.dpc-earn__bento,
+.dpc-earn__row { display: grid; gap: 24px; margin-top: 48px; }
+.dpc-earn__bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dpc-earn__bento .dpc-earn__card--iade { grid-column: 1 / -1; }
+.dpc-earn__row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* copy left, media right — the split replaces the old full-bleed photo with
+   copy floated on top of it, which is what forced a scrim over the sky */
 .dpc-earn__card {
-  position: relative; width: 380px; height: 520px; border-radius: var(--r-xl); overflow: hidden; flex: none;
+  position: relative; overflow: hidden; border-radius: var(--r-xl);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end;
   /* hairline ring keeps the photo's light edges off the white page (neutral
      black/10, never a tinted near-black — image-outline rule) */
   outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px;
 }
-.dpc-earn__card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.dpc-earn__card--iade { background: linear-gradient(180deg, #7cc7f2, #4a9fd8); }
-/* scrim keeps white copy legible over the photo's light sky */
-.dpc-earn__card--iade::after {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 200px;
-  background: linear-gradient(180deg, rgba(14, 14, 14, .45), rgba(14, 14, 14, 0));
+.dpc-earn__bento .dpc-earn__card--iade { min-height: clamp(320px, 27vw, 400px); }
+/* pair gives copy the wider column — at an even 50/50 the sentence ran 6-7
+   lines in ~240px of text width */
+.dpc-earn__bento .dpc-earn__card--getirpara,
+.dpc-earn__bento .dpc-earn__card--abonelik {
+  min-height: clamp(300px, 24vw, 340px);
+  /* media capped, copy takes the remainder — a plain fr split squeezed the
+     copy to 7-8 lines between 920 and 1200 where the container narrows but
+     the desktop 2-up still applies */
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 34%, 240px);
 }
-.dpc-earn__card--getirpara { background: var(--gf-purple); }
-.dpc-earn__card p { position: absolute; top: 32px; left: 32px; width: 316px; margin: 0; z-index: 1; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: #fff; }
-.dpc-earn__card p .y { color: var(--gf-yellow); }
+
+.dpc-earn__copy {
+  position: relative; z-index: 1; margin: 0; padding: 32px; max-width: 34ch;
+  font-size: clamp(20px, 1.7vw, 24px); line-height: 1.34; font-weight: var(--fw-semibold);
+  color: #fff; text-wrap: pretty;
+}
+/* one step down on the pair — the size step is part of what says "these two
+   are the supporting specifics, iade is the headline" */
+.dpc-earn__bento .dpc-earn__card--getirpara .dpc-earn__copy,
+.dpc-earn__bento .dpc-earn__card--abonelik .dpc-earn__copy { font-size: clamp(18px, 1.45vw, 21px); }
+.dpc-earn__copy .y { color: var(--gf-yellow); }
+
+.dpc-earn__media { position: relative; align-self: stretch; }
+/* :not() keeps the coin badge out of the fill rule — as a bare `img` selector
+   it outranked .dpc-earn__coin and stretched the coin to the whole slot */
+.dpc-earn__media > img:not(.dpc-earn__coin) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* iade — deepened left end of the blue so white copy clears AA (5.4:1). The
+   original #7cc7f2→#4a9fd8 pair only reached 2.9:1 behind white and leaned on
+   a dark scrim to stay legible; with copy in its own column the gradient can
+   do that work honestly. Blues are hand-picked, not tokens — see
+   design-tokens/README.md on the seven off-export values. */
+/* One stop list, three orientations (copy beside the photo on desktop, above it
+   on the peer row and on mobile) — factored so the measured contrast can't
+   drift when one of them is edited. The dark end holds to 55% because that's
+   how far the copy's content box reaches in the worst case (the peer row at
+   1440, where copy sits at the top of a 520px tile); measured 5.2:1 there,
+   4.5:1 is the floor. Stops past 55% are behind the photo, not text. */
+.dpc-earn__card--iade {
+  --dpc-iade-stops: #2f6f9e 0%, #33739b 55%, #4a9fd8 80%, #7cc7f2 100%;
+  background: linear-gradient(90deg, var(--dpc-iade-stops));
+}
+/* photo dissolves into the panel instead of butting against it (matches comp) */
+.dpc-earn__card--iade .dpc-earn__media img {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 20%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 20%);
+}
+
+.dpc-earn__card--getirpara,
+.dpc-earn__card--abonelik { background: var(--gf-purple); }
+.dpc-earn__card--getirpara .dpc-earn__media img { object-position: center bottom; }
+
+/* abonelik — generic motif + brand coin, no third-party marks and no % bubble */
+.dpc-earn__motif { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* sits mostly on the purple field so the silver coin has something to read
+   against, overlapping the tile stack's corner — the overlap is the sentence
+   ("the subscriptions you pay for" → "cash back") */
+.dpc-earn__coin {
+  position: absolute; z-index: 1; right: 20%; bottom: 8%;
+  width: clamp(48px, 4.8vw, 64px); height: auto;
+  filter: drop-shadow(0 6px 14px rgba(14, 14, 14, .3));
+}
+
+/* equal-peer alternative: copy stacks above the media, portrait proportions */
+.dpc-earn__row .dpc-earn__card {
+  grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
+  align-items: start; min-height: 520px;
+}
+.dpc-earn__row .dpc-earn__card--iade { background: linear-gradient(180deg, var(--dpc-iade-stops)); }
+.dpc-earn__row .dpc-earn__card--iade .dpc-earn__media img {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 20%);
+}
 
 /* ============ 3. DELIVERY — "dakikalar" scroll sequence ============ */
 /* Track/pin pattern: the section is the scroll track; the pin stays stuck
@@ -497,8 +575,23 @@ body.dpc .footer { background: var(--gf-bg); }
 
   .dpc-earn { padding-block: 64px; }
   .dpc-earn__sub { font-size: 18px; line-height: 28px; }
-  .dpc-earn__cards { flex-direction: column; align-items: center; }
-  .dpc-earn__card { width: 100%; max-width: 380px; }
+  /* both arrangements collapse to one column — DOM order already leads with
+     iade, so the hierarchy survives the stack */
+  .dpc-earn__bento,
+  .dpc-earn__row { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .dpc-earn__bento .dpc-earn__card--iade { grid-column: auto; }
+  .dpc-earn__bento .dpc-earn__card,
+  .dpc-earn__row .dpc-earn__card {
+    grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
+    align-items: start; min-height: 420px;
+  }
+  .dpc-earn__copy { padding: 24px; }
+  /* vertical dissolve once the photo sits below the copy, not beside it */
+  .dpc-earn__card--iade { background: linear-gradient(180deg, var(--dpc-iade-stops)); }
+  .dpc-earn__card--iade .dpc-earn__media img {
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%);
+    mask-image: linear-gradient(180deg, transparent 0, #000 20%);
+  }
 
   .dpc-steps { padding-block: 64px; }
   .dpc-steps__top { grid-template-columns: 1fr; }
