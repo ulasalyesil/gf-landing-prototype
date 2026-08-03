@@ -36,17 +36,19 @@ export default function Button({
     </>
   );
 
+  // onClick is forwarded on the link branches too — the header CTA sits inside the
+  // mega menu and passes both href and a close handler.
   if (href) {
     // If it's an external link or hash link, use simple <a>
     if (href.startsWith("http") || href.startsWith("#")) {
       return (
-        <a href={href} className={combinedClasses} id={id}>
+        <a href={href} onClick={onClick} className={combinedClasses} id={id}>
           {innerContent}
         </a>
       );
     }
     return (
-      <Link href={href} className={combinedClasses} id={id}>
+      <Link href={href} onClick={onClick} className={combinedClasses} id={id}>
         {innerContent}
       </Link>
     );

@@ -34,15 +34,18 @@ This file is the full context. The session running here has no access to the own
 - `src/app/page.tsx` — the landing page, 13 sections: hero → stats → rates → features → campaigns → loan/faiz/calculator → debit → transfer → app-split (dark toggle) → AI → footer
 - `src/app/hesap-karti/` — GFDES-2174 debit card page redesign wireframe (layout locked: "Dakikalar, drenched"; next: layout iteration → micro-interactions)
 - `src/components/` — one component per section, BEM class names (`.hero__inner`, `.rate-card`…)
-- `src/data/content.ts` — all copy and seed data (content is Turkish)
+- `src/data/content.ts` — all copy and seed data (content is Turkish). Site nav is data too: `NAV` feeds both the desktop nav/mega-dropdown and the ≤920px hamburger menu in `Header.tsx` — don't hardcode menu items back into JSX.
 - `src/styles/` — `tokens.css`, `base.css`, `sections.css`, `mobile.css`
+- `src/dials/` — DialKit tuning panels (`use<Thing>Dials.ts`), dev-only comparison toggles that get baked into CSS and deleted once a call is made. See `docs/dialkit-plan.md`.
+- `design-tokens/` — verbatim Figma colour-token export (primitives + Light/Dark semantics). Reference only, not built code — see `design-tokens/README.md` before assuming a `--gf-*` value maps to what its name implies.
 
 ## CSS conventions (critical — a broken migration was already fixed once)
 
 - The four style files are a **verbatim port** from the vanilla build with **original GF token names intact** (`--gf-purple`, `--sp-*`, `--fs-*`, `--r-*`). Do **not** move tokens into Tailwind `@theme` — Tailwind v4 renames them and every component stylesheet breaks. `@theme` exists only for the few Tailwind utilities in use.
 - Import cascade order is load-bearing: `tokens → base → sections → mobile` (from `globals.css`).
 - One deliberate deviation: `--font-sans` → `var(--font-open-sans)` so `next/font` (self-hosted Open Sans) resolves.
-- `mobile.css` (`@media ≤767px`, loaded last) is the authoritative mobile layer. A legacy `@media ≤920px` layer lives in `sections.css` — known tech debt, consolidate when touched, don't grow it.
+- `mobile.css` (`@media ≤767px`, loaded last) is the authoritative mobile layer. A legacy `@media ≤920px` layer lives in `sections.css` — known tech debt, consolidate when touched, don't grow it. The header/menu rules in that block are now fully consolidated (single source, no duplication in `mobile.css`); the rest of the ≤920 block is still the old debt.
+- `--gf-ink-*` names don't imply one ramp — `-700` is `neutral`, `-500`/`--gf-cool-400` are `cool gray`. Check `design-tokens/README.md` before assuming a numbered step continues the one above or below it.
 - Yellow highlight sits **in front** of text (z-index); the kredi headline is the exception (per-line cloned bar behind, can't render in front in pure CSS).
 
 ## Motion conventions

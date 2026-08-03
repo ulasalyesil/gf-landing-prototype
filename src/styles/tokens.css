@@ -16,12 +16,16 @@
   --gf-lilac-200: #e6e1f5;
   --gf-lilac-300: #aa9cd5;
 
-  /* Ink / neutrals */
-  --gf-ink: #0e0e0e;
-  --gf-ink-700: #3e3e3e;
-  --gf-ink-500: #606a7c;
-  --gf-ink-400: #959595;
-  --gf-line: #e8e8e8;
+  /* Ink / neutrals — every value below verified against design-tokens/ (the Figma
+     export). Roles are the Light-theme semantic names. Note the "--gf-ink-*" family
+     mixes two primitive ramps: -700 is neutral, -500 is cool gray. Historical, and
+     renaming would touch a lot; documented rather than churned. */
+  --gf-ink: #0e0e0e;            /* neutral/900   = text/content/primary */
+  --gf-ink-700: #3e3e3e;        /* neutral/700   = text/content/secondary */
+  --gf-cool-400: #8c96a4;       /* cool gray/400 = text/content/tertiary */
+  --gf-ink-500: #606a7c;        /* cool gray/500 = text/amount/default */
+  --gf-ink-400: #959595;        /* neutral/500   = icon/selection/checked-disabled */
+  --gf-line: #e8e8e8;           /* neutral/100   = border/base/neutral-subtle */
 
   /* Semantic */
   --gf-up: #008c29;
@@ -102,6 +106,11 @@
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  /* ≤920px menu drawer. --ease-drawer was referenced by sections.css but never
+     defined anywhere, so the inline fallback had always been the real value. */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --menu-dur: 400ms;
+  --menu-dur-out: 240ms;
 
   /* ===== Elevation ===== */
   --shadow-sm: 0 2px 8px rgba(37, 26, 73, .06);
