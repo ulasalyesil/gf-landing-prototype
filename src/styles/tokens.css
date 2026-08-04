@@ -12,7 +12,12 @@
   --gf-bg: #ffffff;
   --gf-bg-soft: #fafafa;        /* bg/surface/subtle */
   --gf-lilac-50: #f9f7ff;       /* bg/surface/subtle-brand-tint */
-  --gf-yellow-50: #fffdf0;      /* color/yellow/50 = bg/surface/subtle-brand-tint-secondary */
+  /* Sampled from the comp's rendered tile fill (Figma 22074:20218), NOT from the
+     token export — `color/yellow/50` there is #fffdf0, a visibly different cream.
+     Using the measured value so the Figma phone export (whose baked bg was this
+     same #fffcf7) sits seamlessly. Worth a designer check: should the tile be
+     the token or the comp? */
+  --gf-yellow-50: #fffcf7;
   --gf-lilac: #f3f0fe;
   --gf-lilac-200: #e6e1f5;
   --gf-lilac-300: #aa9cd5;

@@ -73,11 +73,14 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.iade.post}
                 </p>
                 <div className="dpc-earn__media">
+                  {/* Figma's own crop of the lead frame at 2x (22074:20228),
+                      jpeg because it's a photograph and the CSS rounds it, so no
+                      transparency is needed — 257KB vs 1.8MB as png */}
                   <img
-                    src="/assets/img/debit-earn-photo.png"
+                    src="/assets/img/debit-earn-photo.jpg"
                     alt=""
-                    width={380}
-                    height={520}
+                    width={1216}
+                    height={880}
                     loading="lazy"
                   />
                 </div>
@@ -89,11 +92,16 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.getirpara.post}
                 </p>
                 <div className="dpc-earn__media">
+                  {/* Figma export of the comp's phone frame (22074:20231) at 2x.
+                      Its baked #fffcf7 background was flood-filled off from the
+                      edges only — a global colour match would punch holes in the
+                      screen's own near-white UI — so it now sits on the cream
+                      tint and the bento's purple alike. */}
                   <img
                     src="/assets/img/debit-earn-phone.png"
                     alt=""
-                    width={380}
-                    height={520}
+                    width={820}
+                    height={822}
                     loading="lazy"
                   />
                 </div>

@@ -249,10 +249,16 @@ body.dpc .footer { background: var(--gf-bg); }
   grid-template-columns: minmax(0, 672fr) minmax(0, 608fr);
   column-gap: 32px; align-items: center; min-height: clamp(300px, 30.5vw, 440px);
 }
-/* 34/40 in the comp; fluid down so it doesn't crowd narrower containers */
-.dpc-earn__v2 .dpc-earn__copy { font-size: clamp(22px, 2.36vw, 34px); line-height: 1.18; max-width: none; }
-/* purple, not yellow — yellow on #fffdf0 / #f9f7ff is invisible */
-.dpc-earn__v2 .dpc-earn__em { color: var(--gf-purple); }
+/* 28 at the comp width (owner, 2026-08-03 — down from the comp's 34), fluid
+   below so it doesn't crowd narrower containers. Weight splits by colour:
+   regular for the ink sentence, semibold only on the coloured figure, so the
+   rate is what carries emphasis rather than the whole line. */
+.dpc-earn__v2 .dpc-earn__copy {
+  font-size: clamp(20px, 1.95vw, 28px); line-height: 1.25; max-width: none;
+  font-weight: var(--fw-regular);
+}
+/* purple, not yellow — yellow on the pale tints is invisible */
+.dpc-earn__v2 .dpc-earn__em { color: var(--gf-purple); font-weight: var(--fw-semibold); }
 
 .dpc-earn__v2 .dpc-earn__card--iade .dpc-earn__media {
   align-self: stretch; border-radius: var(--r-xl); overflow: hidden;
@@ -281,10 +287,10 @@ body.dpc .footer { background: var(--gf-bg); }
   position: absolute; inset: 0; width: min(391px, 100%); height: 100%;
   margin-inline: auto; object-fit: contain; object-position: center bottom;
 }
-/* cover + bottom anchor crops the phone's purple app header off the top, which
-   is what the comp does by offsetting the image to y:-180. Contained, that
-   header reads as a hard purple slab on the cream tint — the asset was authored
-   to sit on a tinted card (its own bg is #fffcf0), not to be shown whole. */
+/* The phone export is near-square (820x822) with transparent margin, so
+   `contain` is height-bound and never fills the 391 art width — it reads small.
+   Cover fills the width and takes ~42px off the top instead, which is what the
+   comp does by bottom-aligning a 548-tall phone in a 368 frame. */
 .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img {
   object-fit: cover; object-position: center bottom;
 }
