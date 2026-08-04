@@ -197,9 +197,7 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__bento .dpc-earn__em { color: var(--gf-yellow); }
 
 .dpc-earn__media { position: relative; align-self: stretch; }
-/* :not() keeps the coin badge out of the fill rule — as a bare `img` selector
-   it outranked .dpc-earn__coin and stretched the coin to the whole slot */
-.dpc-earn__media > img:not(.dpc-earn__coin) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dpc-earn__media > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
 /* iade — deepened left end of the blue so white copy clears AA (5.4:1). The
    original #7cc7f2→#4a9fd8 pair only reached 2.9:1 behind white and leaned on
@@ -223,17 +221,6 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__bento .dpc-earn__card--getirpara,
 .dpc-earn__bento .dpc-earn__card--abonelik { background: var(--gf-purple); }
 .dpc-earn__bento .dpc-earn__card--getirpara .dpc-earn__media img { object-position: center bottom; }
-
-/* abonelik — generic motif + brand coin, no third-party marks and no % bubble */
-.dpc-earn__motif { position: absolute; inset: 0; width: 100%; height: 100%; }
-/* sits mostly on the purple field so the silver coin has something to read
-   against, overlapping the tile stack's corner — the overlap is the sentence
-   ("the subscriptions you pay for" → "cash back") */
-.dpc-earn__coin {
-  position: absolute; z-index: 1; right: 20%; bottom: 8%;
-  width: clamp(48px, 4.8vw, 64px); height: auto;
-  filter: drop-shadow(0 6px 14px rgba(14, 14, 14, .3));
-}
 
 /* ---- v2 (default) — Figma 22074:20218, 1440 frame / 1312 column ----------
    Comp geometry, all of it on a single 32px gutter: lead row 1312×440 split
@@ -285,22 +272,16 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__media { grid-row: 1; }
 .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__copy,
 .dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__copy { grid-row: 2; }
-/* comp centres a 391-wide art block in the 640 tile rather than bleeding it */
+/* Both tile arts are the owner's 3x exports of the whole 640x368 art area, so
+   they're authored at the tile's own width and aspect — fill the cell and let
+   `contain` seat them exactly, no inner width or crop needed. (The earlier
+   min(391px) block and the phone's cover crop existed only because the assets
+   I pulled were the comp's smaller inner frame.) */
 .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img,
-.dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__motif {
-  position: absolute; inset: 0; width: min(391px, 100%); height: 100%;
-  margin-inline: auto; object-fit: contain; object-position: center bottom;
+.dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__media > img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
 }
-/* The phone export is near-square (820x822) with transparent margin, so
-   `contain` is height-bound and never fills the 391 art width — it reads small.
-   Cover fills the width and takes ~42px off the top instead, which is what the
-   comp does by bottom-aligning a 548-tall phone in a 368 frame. */
-.dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img {
-  object-fit: cover; object-position: center bottom;
-}
-/* the motif already reads as cashback next to the coin; on the pale tint the
-   coin needs no shadow to separate */
-.dpc-earn__v2 .dpc-earn__coin { right: 16%; bottom: 6%; filter: none; }
 
 /* ============ 3. DELIVERY — "dakikalar" scroll sequence ============ */
 /* Track/pin pattern: the section is the scroll track; the pin stays stuck
@@ -675,8 +656,6 @@ body.dpc .footer { background: var(--gf-bg); }
   /* tiles: art block shrinks so the tile isn't mostly empty at phone widths */
   .dpc-earn__v2 .dpc-earn__card--getirpara,
   .dpc-earn__v2 .dpc-earn__card--abonelik { min-height: 400px; }
-  .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img,
-  .dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__motif { width: min(320px, 100%); }
 
   .dpc-steps { padding-block: 64px; }
   .dpc-steps__top { grid-template-columns: 1fr; }

@@ -14,7 +14,6 @@ import SanalCard from "./SanalCard";
 import CardHandoff from "./CardHandoff";
 import TransferIllustration from "./illustrations/TransferIllustration";
 import AtmIllustration from "./illustrations/AtmIllustration";
-import SubscriptionsMotif from "./illustrations/SubscriptionsMotif";
 import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
 import "./debit-current.css";
 
@@ -73,14 +72,14 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.iade.post}
                 </p>
                 <div className="dpc-earn__media">
-                  {/* Figma's own crop of the lead frame at 2x (22074:20228),
-                      jpeg because it's a photograph and the CSS rounds it, so no
-                      transparency is needed — 257KB vs 1.8MB as png */}
+                  {/* Owner's 3x export (1824x1320, 2026-08-03). Converted to jpeg:
+                      it's a photograph and the CSS rounds the corners, so the baked
+                      transparency is redundant — 626KB vs 3.7MB as png. */}
                   <img
                     src="/assets/img/debit-earn-photo.jpg"
                     alt=""
-                    width={1216}
-                    height={880}
+                    width={1824}
+                    height={1320}
                     loading="lazy"
                   />
                 </div>
@@ -92,16 +91,15 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.getirpara.post}
                 </p>
                 <div className="dpc-earn__media">
-                  {/* Figma export of the comp's phone frame (22074:20231) at 2x.
-                      Its baked #fffcf7 background was flood-filled off from the
-                      edges only — a global colour match would punch holes in the
-                      screen's own near-white UI — so it now sits on the cream
-                      tint and the bento's purple alike. */}
+                  {/* Owner's 3x export (1920x1104 = the full 640x368 art area,
+                      transparent). The near-opaque light block at its top measures
+                      255,254,247 against the tile's 255,252,247 — a 2-unit
+                      difference, so it blends invisibly. */}
                   <img
                     src="/assets/img/debit-earn-phone.png"
                     alt=""
-                    width={820}
-                    height={822}
+                    width={1920}
+                    height={1104}
                     loading="lazy"
                   />
                 </div>
@@ -113,18 +111,20 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.abonelik.post}
                 </p>
                 <div className="dpc-earn__media">
-                  {/* Placeholder for the DS instance in the comp,
-                      "Illustration / Comm Area & Lottie / Platform Abonelik" — that asset
-                      carries third-party marks and isn't cleared for the public site yet,
-                      and its Lottie isn't in public/assets/lottie. Swap this in when both
-                      land. No % bubble either way (AGENTS.md reserves % for faiz). */}
-                  <SubscriptionsMotif className="dpc-earn__motif" />
+                  {/* Owner's export of the comp's DS illustration (2026-08-03).
+                      ⚠ Carries third-party marks (Spotify, Amazon Prime, ChatGPT,
+                      Gemini) — clearance for the PUBLIC site is still unconfirmed;
+                      the branch is preview-only and must not merge to main until it
+                      is. The generic no-logo fallback is recoverable from git at
+                      6f634f8 (illustrations/SubscriptionsMotif.tsx) if legal
+                      objects. No % bubble either way (AGENTS.md reserves % for
+                      faiz), and the illustration carries its own composition, so
+                      the GF coin badge is gone — the comp has none. */}
                   <img
-                    className="dpc-earn__coin"
-                    src="/assets/icons/cashback.svg"
+                    src="/assets/img/debit-earn-platforms.png"
                     alt=""
-                    width={48}
-                    height={48}
+                    width={1920}
+                    height={1104}
                     loading="lazy"
                   />
                 </div>
