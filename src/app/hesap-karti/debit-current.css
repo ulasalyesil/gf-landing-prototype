@@ -8,7 +8,15 @@
    Hero is "kart xl" — variant C from the round-1 lab, locked.
    ============================================================ */
 
-.dpc { background: #fff; }
+.dpc {
+  background: #fff;
+  /* Shared content inset for the page's big panels. The teslimatı band and the
+     earn copy blocks BOTH read from this so their left edges line up (owner,
+     2026-08-03) — hardcoding matching numbers in two places is how they drift. */
+  --dpc-panel-pad: 64px;
+}
+@media (max-width: 1360px) { .dpc { --dpc-panel-pad: 32px; } }
+@media (max-width: 767px)  { .dpc { --dpc-panel-pad: 20px; } }
 
 /* Figma content column: 1312 centered (64 margins at 1440) */
 .dpc-container { width: 100%; max-width: 1312px; margin-inline: auto; position: relative; }
@@ -247,6 +255,9 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__v2 .dpc-earn__copy {
   font-size: clamp(20px, 1.95vw, 28px); line-height: 1.25; max-width: none;
   font-weight: var(--fw-regular);
+  /* same inset as the teslimatı band, so the two sections' content share a
+     left edge (owner, 2026-08-03). Applies to all three items. */
+  padding-inline: var(--dpc-panel-pad);
 }
 /* purple, not yellow — yellow on the pale tints is invisible */
 .dpc-earn__v2 .dpc-earn__em { color: var(--gf-purple); font-weight: var(--fw-semibold); }
@@ -305,7 +316,7 @@ body.dpc .footer { background: var(--gf-bg); }
   /* content inset lives HERE, not on the inner .dpc-container — the band and
      that container are both 1312, so without this the copy and the ghost
      numerals sat flush against the rounded edge and got clipped */
-  padding-inline: 64px;
+  padding-inline: var(--dpc-panel-pad);
   /* clips the phone's bleed to the rounded corners. Safe on the pin's
      stickiness — the sticky element is the ANCESTOR (.dpc-steps__pin), and
      clipping only breaks sticky when it's on an ancestor of the sticky node. */
@@ -317,9 +328,8 @@ body.dpc .footer { background: var(--gf-bg); }
 /* below the comp width, inset via max-width rather than side margins — with
    width:100% a margin would push the band past the viewport (24px of overflow) */
 @media (max-width: 1360px) {
-  .dpc-steps__band { max-width: calc(100% - 48px); padding-inline: 32px; }
+  .dpc-steps__band { max-width: calc(100% - 48px); }
 }
-@media (max-width: 767px) { .dpc-steps__band { padding-inline: 20px; } }
 @media (min-width: 768px) {
   /* track = pin height (measured into --dpc-pin-h) + the scrub distance,
      so sticky travel === --dpc-scrub at any viewport height */
@@ -668,8 +678,8 @@ body.dpc .footer { background: var(--gf-bg); }
   .dpc-earn__v2 .dpc-earn__card {
     grid-template-columns: minmax(0, 1fr); column-gap: 0; min-height: 420px;
   }
-  .dpc-earn__copy { padding: 24px; }
-  .dpc-earn__v2 .dpc-earn__copy { font-size: 22px; }
+  .dpc-earn__bento .dpc-earn__copy { padding: 24px; }
+  .dpc-earn__v2 .dpc-earn__copy { padding-block: 24px; font-size: 22px; }
   /* bento only: vertical dissolve once the photo sits below the copy */
   .dpc-earn__bento .dpc-earn__card--iade { background: linear-gradient(180deg, var(--dpc-iade-stops)); }
   .dpc-earn__bento .dpc-earn__card--iade .dpc-earn__media img {
