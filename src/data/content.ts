@@ -139,7 +139,10 @@ export const DEBIT_EARN = {
   /* ⚠ still names only two of the three mechanics — says nothing about
      abonelik nakit iade. Flagged for owner; needs a third clause or a rewrite. */
   sub: "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
-  iade: "fiziksel tüm harcamalarına aylık ₺1.250'ye kadar anında nakit iade!",
+  /* All three share pre/em/post so the emphasised figure is one span the layout
+     colours: yellow on the dark bento tiles, purple on the light v2 tints
+     (yellow would be invisible on #fffdf0 / #f9f7ff). */
+  iade: { pre: "fiziksel tüm harcamalarına aylık ", em: "₺1.250", post: "'ye kadar anında nakit iade!" },
   getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" },
   /* DRAFT, from Figma 22054:45003 — needs owner + legal review. Names three
      third-party services in body copy; the tile carries NO third-party marks

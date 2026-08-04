@@ -141,27 +141,33 @@ body.dpc .footer { background: var(--gf-bg); }
 
 /* ============ 2. EARN — centered head + 3 benefit tiles ============ */
 /* The three benefits are NOT peers: `iade` covers all physical spend, the other
-   two are narrow high-rate specifics. The default bento says that with tile
-   size — iade spans, the pair sits beneath. ?earn=equal renders the same three
-   as same-size peers (the arrangement every Figma comp assumed) for comparison;
-   see page.tsx for the delete path once a call is made. */
+   two are narrow high-rate specifics.
+   DEFAULT is v2 (Figma 22074:20218): a cardless lead row on white — copy left,
+   photo right — then two tinted tiles with media above copy. Ink on tint, so
+   contrast is ~19:1 with no gradient work. ?earn=bento keeps the previous
+   unequal bento (white copy on purple/blue) for one comparison round; see
+   page.tsx for the delete path. */
 .dpc-earn { padding-block: 24px; }
 .dpc-earn__head { text-align: center; }
 .dpc-earn__sub { margin: 16px auto 0; max-width: 720px; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); text-wrap: pretty; }
 
 .dpc-earn__bento,
-.dpc-earn__row { display: grid; gap: 24px; margin-top: 48px; }
-.dpc-earn__bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dpc-earn__v2 { display: grid; margin-top: 40px; }
+.dpc-earn__bento { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .dpc-earn__bento .dpc-earn__card--iade { grid-column: 1 / -1; }
-.dpc-earn__row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
 /* copy left, media right — the split replaces the old full-bleed photo with
    copy floated on top of it, which is what forced a scrim over the sky */
 .dpc-earn__card {
-  position: relative; overflow: hidden; border-radius: var(--r-xl);
+  position: relative; border-radius: var(--r-xl);
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end;
-  /* hairline ring keeps the photo's light edges off the white page (neutral
-     black/10, never a tinted near-black — image-outline rule) */
+}
+/* clip + hairline belong to the bento's filled tiles. v2's lead row has no card
+   at all, and a black hairline round a pale tint reads as a box, so both are
+   scoped rather than sitting on the shared base. */
+.dpc-earn__bento .dpc-earn__card {
+  overflow: hidden;
+  /* neutral black/10, never a tinted near-black — image-outline rule */
   outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px;
 }
 .dpc-earn__bento .dpc-earn__card--iade { min-height: clamp(320px, 27vw, 400px); }
@@ -179,13 +185,16 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__copy {
   position: relative; z-index: 1; margin: 0; padding: 32px; max-width: 34ch;
   font-size: clamp(20px, 1.7vw, 24px); line-height: 1.34; font-weight: var(--fw-semibold);
-  color: #fff; text-wrap: pretty;
+  color: var(--gf-ink); text-wrap: pretty;
 }
+/* only the bento inverts — its tiles are filled purple/blue */
+.dpc-earn__bento .dpc-earn__copy { color: #fff; }
 /* one step down on the pair — the size step is part of what says "these two
    are the supporting specifics, iade is the headline" */
 .dpc-earn__bento .dpc-earn__card--getirpara .dpc-earn__copy,
 .dpc-earn__bento .dpc-earn__card--abonelik .dpc-earn__copy { font-size: clamp(18px, 1.45vw, 21px); }
-.dpc-earn__copy .y { color: var(--gf-yellow); }
+/* emphasised figure — one span, coloured by the layout it sits in */
+.dpc-earn__bento .dpc-earn__em { color: var(--gf-yellow); }
 
 .dpc-earn__media { position: relative; align-self: stretch; }
 /* :not() keeps the coin badge out of the fill rule — as a bare `img` selector
@@ -203,19 +212,17 @@ body.dpc .footer { background: var(--gf-bg); }
    how far the copy's content box reaches in the worst case (the peer row at
    1440, where copy sits at the top of a 520px tile); measured 5.2:1 there,
    4.5:1 is the floor. Stops past 55% are behind the photo, not text. */
-.dpc-earn__card--iade {
-  --dpc-iade-stops: #2f6f9e 0%, #33739b 55%, #4a9fd8 80%, #7cc7f2 100%;
-  background: linear-gradient(90deg, var(--dpc-iade-stops));
-}
-/* photo dissolves into the panel instead of butting against it (matches comp) */
-.dpc-earn__card--iade .dpc-earn__media img {
+.dpc-earn__card--iade { --dpc-iade-stops: #2f6f9e 0%, #33739b 55%, #4a9fd8 80%, #7cc7f2 100%; }
+.dpc-earn__bento .dpc-earn__card--iade { background: linear-gradient(90deg, var(--dpc-iade-stops)); }
+/* photo dissolves into the panel instead of butting against it */
+.dpc-earn__bento .dpc-earn__card--iade .dpc-earn__media img {
   -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 20%);
   mask-image: linear-gradient(90deg, transparent 0, #000 20%);
 }
 
-.dpc-earn__card--getirpara,
-.dpc-earn__card--abonelik { background: var(--gf-purple); }
-.dpc-earn__card--getirpara .dpc-earn__media img { object-position: center bottom; }
+.dpc-earn__bento .dpc-earn__card--getirpara,
+.dpc-earn__bento .dpc-earn__card--abonelik { background: var(--gf-purple); }
+.dpc-earn__bento .dpc-earn__card--getirpara .dpc-earn__media img { object-position: center bottom; }
 
 /* abonelik — generic motif + brand coin, no third-party marks and no % bubble */
 .dpc-earn__motif { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -228,16 +235,62 @@ body.dpc .footer { background: var(--gf-bg); }
   filter: drop-shadow(0 6px 14px rgba(14, 14, 14, .3));
 }
 
-/* equal-peer alternative: copy stacks above the media, portrait proportions */
-.dpc-earn__row .dpc-earn__card {
-  grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
-  align-items: start; min-height: 520px;
+/* ---- v2 (default) — Figma 22074:20218, 1440 frame / 1312 column ----------
+   Comp geometry, all of it on a single 32px gutter: lead row 1312×440 split
+   672 / 32 / 608; tile row two 640s with the same 32px between them; 32px
+   between the rows. Percentages rather than the comp's pixels so it scales
+   with .dpc-container instead of pinning to 1440. */
+.dpc-earn__v2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.dpc-earn__v2 .dpc-earn__card--iade { grid-column: 1 / -1; }
+
+/* lead row: cardless on white, copy left and vertically centred against the
+   photo (comp centres the 144-tall copy block in 440) */
+.dpc-earn__v2 .dpc-earn__card--iade {
+  grid-template-columns: minmax(0, 672fr) minmax(0, 608fr);
+  column-gap: 32px; align-items: center; min-height: clamp(300px, 30.5vw, 440px);
 }
-.dpc-earn__row .dpc-earn__card--iade { background: linear-gradient(180deg, var(--dpc-iade-stops)); }
-.dpc-earn__row .dpc-earn__card--iade .dpc-earn__media img {
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 20%);
+/* 34/40 in the comp; fluid down so it doesn't crowd narrower containers */
+.dpc-earn__v2 .dpc-earn__copy { font-size: clamp(22px, 2.36vw, 34px); line-height: 1.18; max-width: none; }
+/* purple, not yellow — yellow on #fffdf0 / #f9f7ff is invisible */
+.dpc-earn__v2 .dpc-earn__em { color: var(--gf-purple); }
+
+.dpc-earn__v2 .dpc-earn__card--iade .dpc-earn__media {
+  align-self: stretch; border-radius: var(--r-xl); overflow: hidden;
+  /* the photo is the only thing on white here, so it carries the hairline */
+  outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px;
 }
+
+/* tile row: media above copy. `1fr auto` on the rows makes the media absorb
+   whatever the copy doesn't need, which reproduces the comp's 368 / 320 split
+   between the 2-line and 3-line tiles without hardcoding either. */
+.dpc-earn__v2 .dpc-earn__card--getirpara,
+.dpc-earn__v2 .dpc-earn__card--abonelik {
+  grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto;
+  align-items: stretch; min-height: clamp(420px, 35.5vw, 512px);
+  overflow: hidden;
+}
+.dpc-earn__v2 .dpc-earn__card--getirpara { background: var(--gf-yellow-50); }
+.dpc-earn__v2 .dpc-earn__card--abonelik { background: var(--gf-lilac-50); }
+.dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media,
+.dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__media { grid-row: 1; }
+.dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__copy,
+.dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__copy { grid-row: 2; }
+/* comp centres a 391-wide art block in the 640 tile rather than bleeding it */
+.dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img,
+.dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__motif {
+  position: absolute; inset: 0; width: min(391px, 100%); height: 100%;
+  margin-inline: auto; object-fit: contain; object-position: center bottom;
+}
+/* cover + bottom anchor crops the phone's purple app header off the top, which
+   is what the comp does by offsetting the image to y:-180. Contained, that
+   header reads as a hard purple slab on the cream tint — the asset was authored
+   to sit on a tinted card (its own bg is #fffcf0), not to be shown whole. */
+.dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img {
+  object-fit: cover; object-position: center bottom;
+}
+/* the motif already reads as cashback next to the coin; on the pale tint the
+   coin needs no shadow to separate */
+.dpc-earn__v2 .dpc-earn__coin { right: 16%; bottom: 6%; filter: none; }
 
 /* ============ 3. DELIVERY — "dakikalar" scroll sequence ============ */
 /* Track/pin pattern: the section is the scroll track; the pin stays stuck
@@ -575,23 +628,45 @@ body.dpc .footer { background: var(--gf-bg); }
 
   .dpc-earn { padding-block: 64px; }
   .dpc-earn__sub { font-size: 18px; line-height: 28px; }
-  /* both arrangements collapse to one column — DOM order already leads with
-     iade, so the hierarchy survives the stack */
+  /* No comp defines mobile for either layout — this is derived. Both collapse to
+     one column with copy above media; DOM order already leads with iade, so the
+     hierarchy survives the stack. */
   .dpc-earn__bento,
-  .dpc-earn__row { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .dpc-earn__bento .dpc-earn__card--iade { grid-column: auto; }
-  .dpc-earn__bento .dpc-earn__card,
-  .dpc-earn__row .dpc-earn__card {
+  .dpc-earn__v2 { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .dpc-earn__bento .dpc-earn__card--iade,
+  .dpc-earn__v2 .dpc-earn__card--iade { grid-column: auto; }
+  /* bento: copy row then media row (its media is a full-bleed fill) */
+  .dpc-earn__bento .dpc-earn__card {
     grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr);
-    align-items: start; min-height: 420px;
+    align-items: start; min-height: 420px; column-gap: 0;
+  }
+  /* v2 tiles keep the desktop row model — media takes the flexible row, copy is
+     auto. Overriding to `auto minmax(0,1fr)` here collapsed the media to zero
+     height, because the desktop grid-row assignments outrank a blanket rule and
+     kept the art in the `auto` row. */
+  .dpc-earn__v2 .dpc-earn__card {
+    grid-template-columns: minmax(0, 1fr); column-gap: 0; min-height: 420px;
   }
   .dpc-earn__copy { padding: 24px; }
-  /* vertical dissolve once the photo sits below the copy, not beside it */
-  .dpc-earn__card--iade { background: linear-gradient(180deg, var(--dpc-iade-stops)); }
-  .dpc-earn__card--iade .dpc-earn__media img {
+  .dpc-earn__v2 .dpc-earn__copy { font-size: 22px; }
+  /* bento only: vertical dissolve once the photo sits below the copy */
+  .dpc-earn__bento .dpc-earn__card--iade { background: linear-gradient(180deg, var(--dpc-iade-stops)); }
+  .dpc-earn__bento .dpc-earn__card--iade .dpc-earn__media img {
     -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 20%);
     mask-image: linear-gradient(180deg, transparent 0, #000 20%);
   }
+  /* v2: the lead photo becomes a full-width block under its copy; the lead row
+     has no tint so it needs no min-height of its own */
+  .dpc-earn__v2 .dpc-earn__card--iade {
+    grid-template-rows: auto minmax(0, 1fr); align-items: start; min-height: 0;
+  }
+  .dpc-earn__v2 .dpc-earn__card--iade .dpc-earn__media { grid-row: 2; min-height: 280px; }
+  .dpc-earn__v2 .dpc-earn__card--iade .dpc-earn__copy { grid-row: 1; }
+  /* tiles: art block shrinks so the tile isn't mostly empty at phone widths */
+  .dpc-earn__v2 .dpc-earn__card--getirpara,
+  .dpc-earn__v2 .dpc-earn__card--abonelik { min-height: 400px; }
+  .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img,
+  .dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__motif { width: min(320px, 100%); }
 
   .dpc-steps { padding-block: 64px; }
   .dpc-steps__top { grid-template-columns: 1fr; }

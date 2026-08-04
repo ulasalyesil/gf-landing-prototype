@@ -27,17 +27,18 @@ const getStepsParam = () => new URLSearchParams(window.location.search).get("ste
 /* server snapshot for both param stores — keeps `window` untouched during SSR */
 const getServerParam = () => null;
 
-/* ?earn=equal renders the three earn benefits as same-size peer tiles — the
-   arrangement all three Figma comps (22054:45003) assume — instead of the
-   default unequal bento. Kept as the owner's alternative for on-device
-   comparison (owner, 2026-08-03); same link-only, no-picker pattern as ?steps=.
-   Once a call is made: delete this param, the loser's container rule in
-   debit-current.css, and the ternary on .dpc-earn__bento / .dpc-earn__row. */
+/* Earn layout. Default is v2 (Figma 22074:20218) — cardless lead row on white,
+   two tinted tiles beneath, ink-on-tint. ?earn=bento keeps the previous unequal
+   bento (white copy on purple/blue) for one comparison round; the earlier
+   equal-peer row is gone, superseded by v2.
+   Once a call is made: delete this param, the loser's rules in
+   debit-current.css, and the earnLayout ternary below. */
 const getEarnParam = () => new URLSearchParams(window.location.search).get("earn");
 
 export default function HesapKartiDetail() {
   const stepsParam = useSyncExternalStore(subscribeNoop, getStepsParam, getServerParam);
   const earnParam = useSyncExternalStore(subscribeNoop, getEarnParam, getServerParam);
+  const earnLayout = earnParam === "bento" ? "dpc-earn__bento" : "dpc-earn__v2";
   // Add body class on mount, cleanup on unmount
   useEffect(() => {
     document.body.classList.add("dpc");
@@ -63,18 +64,19 @@ export default function HesapKartiDetail() {
               </h2>
               <p className="dpc-earn__sub">{DEBIT_EARN.sub}</p>
             </Reveal>
-            <Reveal
-              className={earnParam === "equal" ? "dpc-earn__row" : "dpc-earn__bento"}
-              stagger={0.08}
-            >
-              {/* hero tile — broadest promise (all physical spend) leads */}
+            <Reveal className={earnLayout} stagger={0.08}>
+              {/* lead row — broadest promise (all physical spend) goes first */}
               <RevealItem as="article" className="dpc-earn__card dpc-earn__card--iade">
-                <p className="dpc-earn__copy">{DEBIT_EARN.iade}</p>
+                <p className="dpc-earn__copy">
+                  {DEBIT_EARN.iade.pre}
+                  <span className="dpc-earn__em">{DEBIT_EARN.iade.em}</span>
+                  {DEBIT_EARN.iade.post}
+                </p>
                 <div className="dpc-earn__media">
                   <img
                     src="/assets/img/debit-earn-photo.png"
                     alt=""
-                    width={720}
+                    width={380}
                     height={520}
                     loading="lazy"
                   />
@@ -83,7 +85,7 @@ export default function HesapKartiDetail() {
               <RevealItem as="article" className="dpc-earn__card dpc-earn__card--getirpara">
                 <p className="dpc-earn__copy">
                   {DEBIT_EARN.getirpara.pre}
-                  <span className="y">{DEBIT_EARN.getirpara.em}</span>
+                  <span className="dpc-earn__em">{DEBIT_EARN.getirpara.em}</span>
                   {DEBIT_EARN.getirpara.post}
                 </p>
                 <div className="dpc-earn__media">
@@ -99,12 +101,16 @@ export default function HesapKartiDetail() {
               <RevealItem as="article" className="dpc-earn__card dpc-earn__card--abonelik">
                 <p className="dpc-earn__copy">
                   {DEBIT_EARN.abonelik.pre}
-                  <span className="y">{DEBIT_EARN.abonelik.em}</span>
+                  <span className="dpc-earn__em">{DEBIT_EARN.abonelik.em}</span>
                   {DEBIT_EARN.abonelik.post}
                 </p>
                 <div className="dpc-earn__media">
+                  {/* Placeholder for the DS instance in the comp,
+                      "Illustration / Comm Area & Lottie / Platform Abonelik" — that asset
+                      carries third-party marks and isn't cleared for the public site yet,
+                      and its Lottie isn't in public/assets/lottie. Swap this in when both
+                      land. No % bubble either way (AGENTS.md reserves % for faiz). */}
                   <SubscriptionsMotif className="dpc-earn__motif" />
-                  {/* coin is the sanctioned cashback mark (AGENTS.md), not a % bubble */}
                   <img
                     className="dpc-earn__coin"
                     src="/assets/icons/cashback.svg"
