@@ -244,9 +244,13 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__v2 .dpc-earn__card--iade { grid-column: 1 / -1; }
 
 /* lead row: cardless on white, copy left and vertically centred against the
-   photo (comp centres the 144-tall copy block in 440) */
+   photo (comp centres the 144-tall copy block in 440).
+   Columns mirror the parent grid rather than the comp's 672/608 split, so the
+   photo is exactly as wide as the tile below it (640 at container width) and
+   their edges line up. The comp's 608 photo sat 32px narrower than its own
+   640 tiles, which read as a misalignment down the right-hand column. */
 .dpc-earn__v2 .dpc-earn__card--iade {
-  grid-template-columns: minmax(0, 672fr) minmax(0, 608fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 32px; align-items: center; min-height: clamp(300px, 30.5vw, 440px);
 }
 /* 28 at the comp width (owner, 2026-08-03 — down from the comp's 34), fluid
