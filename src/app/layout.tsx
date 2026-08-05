@@ -25,9 +25,15 @@ export default function RootLayout({
     <html lang="tr" className={`${openSans.variable} antialiased`}>
       <body className="font-sans text-gf-ink bg-gf-bg min-h-screen">
         {children}
-        {/* dev-only tuning panel (auto-hidden in production builds).
+        {/* dev-only tuning panel. Gated the same way as Agentation below —
+            DialRoot's own `productionEnabled` default is unreliable in the client
+            bundle (it reads `typeof process`, which the browser build doesn't
+            always define, and falls through to `true`), so the panel was shipping
+            on the Vercel deploy at z-index 9999. Gate at the mount instead.
             bottom-left so it clears Agentation's bottom-right toolbar. */}
-        <DialRoot position="bottom-left" defaultOpen={false} />
+        {process.env.NODE_ENV !== "production" && (
+          <DialRoot position="bottom-left" defaultOpen={false} />
+        )}
         {/* dev-only visual-feedback overlay: click elements → annotate → copy
             structured markdown for the agent. Gated so it never ships. */}
         {process.env.NODE_ENV !== "production" && <Agentation />}
