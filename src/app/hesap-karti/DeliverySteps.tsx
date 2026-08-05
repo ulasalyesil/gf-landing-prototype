@@ -247,9 +247,6 @@ export default function DeliverySteps() {
      each step so every completion state is seen. Verified by probe. */
   const scrubProgress = useSpring(scrollYProgress, { stiffness: 150, damping: 20, mass: 1 });
 
-  // Dedicated softer spring for the phone lift so it trails naturally on fast flicks
-  const liftScrubProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 30, mass: 1 });
-
   // timed driver (768–920): one eased run when the section enters view
   const timedProgress = useMotionValue(0);
   const inView = useInView(trackRef, { once: true, margin: "0px 0px -20% 0px" });
@@ -264,19 +261,25 @@ export default function DeliverySteps() {
   }, [mode, inView, timedProgress]);
 
   const driver = mode === "timed" ? timedProgress : scrubProgress;
-  const liftDriver = mode === "timed" ? timedProgress : liftScrubProgress;
 
   const bar1 = useTransform(driver, SEG.bar1, [0, 1]);
   const bar2 = useTransform(driver, SEG.bar2, [0, 1]);
   const bar3 = useTransform(driver, SEG.bar3, [0, 1]);
   const bars = [bar1, bar2, bar3];
 
-  // step copy: fade+rise windows ending exactly where each bar segment starts.
-  // Full transform strings (not the y shorthand) — scroll-linked motion runs
-  // while the main thread is busy scrolling, so it must stay composited.
+  /* step copy: fade+rise windows. These used to END where each bar segment
+     starts, which placed them INSIDE the phone's screen-swap window
+     (item2 0.26–0.32 against a 0.23–0.32 slide; item3 0.60–0.66 against
+     0.57–0.66) — left and right moving together, the exact thing the CMO
+     round flagged. They now START at the segment boundary, so the swap
+     finishes before the copy moves and only one column is ever in motion.
+     Copy rising while its own bar fills is same-column and reads as a list
+     revealing, not as two competing animations.
+     Full transform strings (not the y shorthand) — scroll-linked motion runs
+     while the main thread is busy scrolling, so it must stay composited. */
   const item1In = useTransform(driver, [0, APPEAR], [0, 1]);
-  const item2In = useTransform(driver, [SEG.bar2[0] - APPEAR, SEG.bar2[0]], [0, 1]);
-  const item3In = useTransform(driver, [SEG.bar3[0] - APPEAR, SEG.bar3[0]], [0, 1]);
+  const item2In = useTransform(driver, [SEG.bar2[0], SEG.bar2[0] + APPEAR], [0, 1]);
+  const item3In = useTransform(driver, [SEG.bar3[0], SEG.bar3[0] + APPEAR], [0, 1]);
   const item1T = useTransform(() => `translateY(${((1 - item1In.get()) * 16).toFixed(2)}px)`);
   const item2T = useTransform(() => `translateY(${((1 - item2In.get()) * 16).toFixed(2)}px)`);
   const item3T = useTransform(() => `translateY(${((1 - item3In.get()) * 16).toFixed(2)}px)`);
@@ -301,55 +304,17 @@ export default function DeliverySteps() {
   const screen3T = useTransform(driver, w3, ["translateX(100%)", "translateX(0%)"]);
   const screenT = [screen1T, screen2T, screen3T];
 
-  /* Phone lift — the hero mock is taller than the clip STAGE (the band)
-     and rests bottom-cropped (step 1). Steps 2 and 3 carry their payoff in the
-     screen's bottom drawer (kurye tracking / kazanç), so the phone rises over
-     the step-2 window until its VISIBLE bezel clears the band, and holds
-     there. frame.png carries transparent margins (source 800×1355: 80px above
-     the bezel, 205px shadow buffer below — measured off the PNG alpha), so
-     the math targets the bezel edges, not the image box: the lifted bezel's
-     bottom gap mirrors the idle bezel's top gap (owner request 2026-07-14 —
-     the box-bottom target left a ~236px hole under the phone). Lift distance
-     is measured against the stage (offset chain + ResizeObserver), not the
-     pin — the pin fills the viewport, the stage is the fixed window — so any
-     viewport height works. */
-  const FRAME_H = 1355; // frame.png natural height
-  const FRAME_TOP = 80; // transparent rows above the bezel
-  const FRAME_BOTTOM = 205; // transparent shadow buffer below the bezel
+  /* Phone lift REMOVED (CMO round 2026-08-05). The phone used to be taller
+     than the stage and rested bottom-cropped, so it rose ~500-600px over the
+     step-2 window to reveal the screens' bottom drawers. That translate was
+     the heaviest motion on the page and it ran concurrently with bar 2 + the
+     courier on the left — "hem sağda hem solda aynı anda animasyon".
+     The phone is now sized to fit the stage whole (see --dpc-phone-w in
+     debit-current.css, derived from the stage height), so there is nothing to
+     reveal and nothing to move: the right column only changes screens.
+     The FRAME_* constants and the offset-chain measurement went with it. If
+     the phone ever grows past the stage again, recover this from git. */
   const mockRef = useRef<HTMLDivElement>(null);
-  const lift = useMotionValue(0);
-  useEffect(() => {
-    if (mode !== "scrub") {
-      lift.set(0);
-      return;
-    }
-    const pin = pinRef.current;
-    const mock = mockRef.current;
-    const stage = pin?.querySelector<HTMLElement>(".dpc-steps__stage");
-    if (!pin || !mock || !stage) return;
-    const measure = () => {
-      let top = 0;
-      let el: HTMLElement | null = mock;
-      while (el && el !== stage) {
-        top += el.offsetTop;
-        el = el.offsetParent as HTMLElement | null;
-      }
-      const scale = mock.offsetHeight / FRAME_H;
-      // idle: bezel top → band top; the lifted bezel bottom mirrors it
-      const bezelGap = top + FRAME_TOP * scale;
-      const targetBoxBottom = stage.clientHeight - bezelGap + FRAME_BOTTOM * scale;
-      lift.set(Math.max(0, top + mock.offsetHeight - targetBoxBottom));
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(stage);
-    observer.observe(mock);
-    return () => observer.disconnect();
-  }, [mode, lift]);
-  const liftProgress = useTransform(liftDriver, w2, [0, 1]);
-  const mockT = useTransform(
-    () => `translateY(${(-(lift.get() * liftProgress.get())).toFixed(1)}px)`
-  );
 
   // courier travel: measured once + on resize (DebitCard.tsx pattern) into a
   // motion value, then composed reactively as a pure x-transform
@@ -411,12 +376,7 @@ export default function DeliverySteps() {
           {/* hero mock — desktop: absolute right, 3× scale, bleeding past the
               pin bottom (pin clips it, so track height is unaffected) */}
           <Reveal direction="none" className="dpc-steps__phone">
-            <motion.div
-              className="dpc-steps__mock"
-              aria-hidden="true"
-              ref={mockRef}
-              style={mode === "scrub" ? { transform: mockT } : undefined}
-            >
+            <motion.div className="dpc-steps__mock" aria-hidden="true" ref={mockRef}>
               <div className="dpc-steps__mock-screen">
                 {MOCK_SCREENS.map((src, i) => (
                   <motion.img

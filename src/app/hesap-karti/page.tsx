@@ -149,10 +149,26 @@ export default function HesapKartiDetail() {
                 <AnimatedHighlight type="hl">{DEBIT_ABROAD.titleHl}</AnimatedHighlight>
               </h2>
             </Reveal>
-            <Reveal as="ul" className="dpc-abroad__captions" stagger={0.06}>
+            {/* faiz-points pattern (landing `.faiz__points`): one panel holding an
+                equal grid of icon-over-text cells. Replaces the fixed-320px flex
+                row whose items were three different heights — the panel gives the
+                list an edge, the icons give a repeating anchor, and 18/24 (down
+                from 24/32) makes the remaining length differences read as normal
+                wrapping rather than as disorder. */}
+            <Reveal
+              as="ul"
+              className="dpc-points dpc-abroad__captions"
+              stagger={0.06}
+              style={{ "--dpc-points-n": DEBIT_ABROAD.captions.length } as React.CSSProperties}
+            >
               {DEBIT_ABROAD.captions.map((caption) => (
-                <RevealItem as="li" key={caption}>
-                  {caption}
+                <RevealItem as="li" className="dpc-point" key={caption.text}>
+                  {caption.icon && (
+                    <span className="dpc-point__ic" aria-hidden="true">
+                      <img src={`/assets/icons/${caption.icon}`} alt="" width={40} height={40} />
+                    </span>
+                  )}
+                  <p>{caption.text}</p>
                 </RevealItem>
               ))}
             </Reveal>
