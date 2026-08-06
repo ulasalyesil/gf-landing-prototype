@@ -1,0 +1,1099 @@
+/* Created by Claude — INTERNAL
+   GFDES-2175 — paranaiyibak sözlük: dictionary index, term entry, and the
+   homepage entry section.
+
+   Page-local sheet, imported by src/app/pnib/layout.tsx — same pattern as
+   hesap-karti/debit-current.css. Nothing here leaks onto getirfinans.com pages.
+
+   COLOUR: every value is a --gf-* token from src/styles/tokens.css. No private
+   palette — the last standalone paranaiyibak prototype forked its own --primary
+   and drifted. One accent (purple) carries every interactive state; yellow
+   appears only through the existing `.hl` heading device, never as text or as a
+   state indicator (#ffd300 is 1.55:1 on these surfaces).
+
+   Measured contrast on white, for the record:
+     --gf-ink      #0e0e0e  19.9:1   term headwords, letter spine
+     --gf-ink-700  #3e3e3e  10.7:1   teasers, definition body
+     --gf-ink-500  #606a7c   5.45:1  labels, counts, DISABLED rail letters
+     --gf-purple   #5d3ebc   7.43:1  links, active state, focus ring
+     --gf-cool-400 #8c96a4   2.99:1  input borders ONLY, never text (see the
+                                     INPUT BORDERS note further down)
+   The lilac surfaces (#f9f7ff, #f3f0fe) cost at most ~10% of those figures, so
+   every pair above still clears AA on tint.
+
+   TYPOGRAPHY: sizes come from the --fs-* scale. Line-heights are authored
+   unitless wherever the text wraps (teasers, definition bodies) so they scale
+   with the size; the fixed --lh-* tokens are kept for the single-line display
+   type they were cut for. */
+
+.pnib {
+  /* Narrower than the GF marketing container (1424): this page is a reading
+     surface with a two-column index, and 1424 would push the teaser column past
+     a comfortable measure. */
+  --pnib-container: 1200px;
+  --pnib-gutter: clamp(20px, 5vw, 48px);
+  --pnib-rule: 1px solid var(--gf-line);
+  background: var(--gf-bg);
+}
+
+.pnib-container {
+  width: 100%;
+  max-width: calc(var(--pnib-container) + 2 * var(--pnib-gutter));
+  margin-inline: auto;
+  padding-inline: var(--pnib-gutter);
+}
+
+.pnib-main {
+  display: block;
+  padding-bottom: clamp(64px, 8vw, 120px);
+}
+
+/* Visually hidden but announced. Not `display:none` — that removes it from the
+   accessibility tree, which would silence the live region entirely. */
+.pnib-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* One focus treatment for the whole surface. Purple at 2px with an offset
+   survives on white, on lilac tint, and on the purple submit button (where the
+   offset gap is page-coloured). Never suppressed anywhere below. */
+.pnib a:focus-visible,
+.pnib button:focus-visible,
+.pnib input:focus-visible {
+  outline: 2px solid var(--gf-purple);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+/* ============================================================ chrome ===== */
+
+.pnib-chrome {
+  border-bottom: var(--pnib-rule);
+}
+.pnib-chrome__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-xl);
+  min-height: 72px;
+}
+.pnib-chrome__mark {
+  display: inline-flex;
+  align-items: center;
+  /* The wordmark is 32px tall, so the link needed padding to reach a 44px
+     target — measured, not assumed. */
+  min-height: 44px;
+  padding-inline: var(--sp-xs);
+  margin-inline: calc(-1 * var(--sp-xs));
+}
+.pnib-chrome__mark img {
+  width: 160px;
+  height: 32px;
+}
+.pnib-chrome__nav {
+  display: flex;
+  gap: var(--sp-lg);
+}
+.pnib-chrome__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--sp-md);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+  border-radius: var(--r-md);
+  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pnib-chrome__link:hover {
+    background: var(--gf-lilac);
+    color: var(--gf-purple);
+  }
+}
+
+.pnib-foot {
+  border-top: var(--pnib-rule);
+}
+.pnib-foot__inner {
+  padding-block: var(--sp-2xl);
+}
+.pnib-foot__note {
+  font-size: var(--fs-body-sm);
+  color: var(--gf-ink-500);
+}
+
+/* =========================================================== the stub ==== */
+
+.pnib-main--stub {
+  padding-top: var(--sp-2xl);
+}
+/* The dashed block OCCUPIES the space the rest of the homepage will fill,
+   rather than being a one-line note above an unexplained 140px of white — an
+   empty gap reads as a bug, a labelled empty region reads as a placeholder. */
+.pnib-stub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: start;
+  gap: var(--sp-md);
+  min-height: clamp(180px, 26vw, 320px);
+  padding: var(--sp-lg) var(--sp-xl);
+  border: 1px dashed var(--gf-lilac-300);
+  border-radius: var(--r-lg);
+  background: var(--gf-lilac-50);
+  margin-bottom: var(--sp-3xl);
+}
+.pnib-stub__tag {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--gf-purple);
+}
+.pnib-stub__copy {
+  flex: 1 1 20ch;
+  font-size: var(--fs-body-sm);
+  line-height: 1.5;
+  color: var(--gf-ink-700);
+  max-width: 70ch;
+}
+.pnib-stub__copy strong {
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+}
+
+/* ============================================== homepage entry section === */
+
+.pnib-sozluk-entry {
+  padding-block: clamp(56px, 7vw, 96px);
+  border-top: var(--pnib-rule);
+}
+.pnib-sozluk-entry__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+.pnib-sozluk-entry__title {
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.15;
+  font-weight: var(--fw-regular);
+  color: var(--gf-ink);
+}
+.pnib-sozluk-entry__copy {
+  margin-top: var(--sp-lg);
+  /* 60–75 characters is the readable band; this copy is two sentences and must
+     not run the full 660px column. */
+  max-width: 52ch;
+  font-size: var(--fs-body-lg);
+  line-height: 1.55;
+  color: var(--gf-ink-700);
+}
+
+.pnib-entry-search {
+  margin-top: var(--sp-xl);
+  max-width: 460px;
+}
+.pnib-entry-search__label,
+.sozluk-bar__label {
+  display: block;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink-700);
+  margin-bottom: var(--sp-sm);
+}
+.pnib-entry-search__row {
+  display: flex;
+  gap: var(--sp-sm);
+}
+/* INPUT BORDERS — a known design-system gap, flagged rather than papered over.
+   WCAG 1.4.11 wants 3:1 for the boundary that identifies a UI component, and GF
+   has no border token that clears it: --gf-line #e8e8e8 is 1.2:1 and
+   --gf-lilac-200 #e6e1f5 is 1.2:1 against white. --gf-cool-400 #8c96a4 is the
+   darkest neutral in the export that still reads as a hairline and measures
+   2.99:1 — at the threshold, not past it. Using it as the least-bad existing
+   token; needs a designer call on a real border token, not a value invented here. */
+.pnib-entry-search__input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding-inline: var(--sp-lg);
+  border: 1px solid var(--gf-cool-400);
+  border-radius: var(--r-md);
+  background: var(--gf-bg);
+  /* 16px, not smaller: iOS Safari zooms the whole page on focus below that. */
+  font-size: var(--fs-body-md);
+  font-family: inherit;
+  color: var(--gf-ink);
+  transition: border-color 0.16s var(--ease-out), box-shadow 0.16s var(--ease-out);
+}
+.pnib-entry-search__input::placeholder {
+  color: var(--gf-ink-500);
+}
+.pnib-entry-search__input:focus {
+  border-color: var(--gf-purple);
+  outline: none;
+}
+.pnib-entry-search__submit {
+  height: 52px;
+  padding-inline: var(--sp-xl);
+  border-radius: var(--r-md);
+  background: var(--gf-purple);
+  color: #fff;
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  transition: background 0.16s var(--ease-out), transform 0.16s var(--ease-out-strong);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pnib-entry-search__submit:hover {
+    background: var(--gf-purple-700);
+  }
+}
+.pnib-entry-search__submit:active {
+  transform: scale(0.97);
+}
+
+.pnib-sozluk-entry__all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  min-height: 44px;
+  margin-top: var(--sp-xl);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-purple);
+}
+.pnib-sozluk-entry__all svg {
+  transition: transform 0.2s var(--ease-out-strong);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pnib-sozluk-entry__all:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+/* Featured term — the Merriam-Webster "Word of the Day" shape: one bordered
+   card, one colour accent, no second competing element. */
+.pnib-featured {
+  position: relative;
+  padding: var(--sp-xl);
+  border: 1px solid var(--gf-lilac-200);
+  border-radius: var(--r-xl);
+  background: var(--gf-lilac-50);
+  transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out-strong);
+}
+.pnib-featured__label {
+  display: inline-block;
+  padding: 4px var(--sp-md);
+  border-radius: var(--r-full);
+  background: var(--gf-lilac);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  color: var(--gf-purple);
+}
+.pnib-featured__term {
+  margin-top: var(--sp-lg);
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+}
+/* Whole-card hit area from ONE link, rather than a second overlapping link:
+   the anchor's ::after covers the card, so there is one tab stop and one
+   accessible name (the term). */
+.pnib-featured__term a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.pnib-featured__def {
+  margin-top: var(--sp-md);
+  font-size: var(--fs-body-md);
+  line-height: 1.55;
+  color: var(--gf-ink-700);
+  text-wrap: pretty;
+}
+.pnib-featured__cta {
+  margin-top: var(--sp-lg);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-purple);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pnib-featured:hover {
+    border-color: var(--gf-lilac-300);
+    transform: translateY(-2px);
+  }
+}
+/* The ring belongs on the card, not on the invisible overlay rect. */
+.pnib-featured:focus-within {
+  outline: 2px solid var(--gf-purple);
+  outline-offset: 2px;
+}
+.pnib-featured__term a:focus-visible {
+  outline: none;
+}
+
+/* ============================================== dictionary page: hero === */
+
+.sozluk-hero {
+  padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px);
+}
+.sozluk-hero__eyebrow {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--gf-purple);
+}
+.sozluk-hero__title {
+  margin-top: var(--sp-md);
+  font-size: clamp(36px, 5.4vw, 64px);
+  line-height: 1.06;
+  letter-spacing: var(--ls-tight);
+  font-weight: var(--fw-regular);
+  color: var(--gf-ink);
+}
+.sozluk-hero__lead {
+  margin-top: var(--sp-xl);
+  max-width: 58ch;
+  font-size: var(--fs-body-lg);
+  line-height: 1.55;
+  color: var(--gf-ink-700);
+  text-wrap: pretty;
+}
+
+/* ================================================ search + letter rail === */
+
+.sozluk-barwrap {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  /* Opaque, and bled to the container edges, so rows scrolling underneath
+     never appear through the card's rounded corners or beside it. */
+  background: var(--gf-bg);
+  padding-block: var(--sp-md);
+  margin-inline: calc(-1 * var(--pnib-gutter));
+  padding-inline: var(--pnib-gutter);
+}
+
+.sozluk-bar {
+  border: 1px solid var(--gf-lilac-200);
+  border-radius: var(--r-lg);
+  background: var(--gf-lilac-50);
+  overflow: hidden;
+}
+
+.sozluk-bar__search {
+  padding: var(--sp-lg) var(--sp-lg) var(--sp-md);
+}
+.sozluk-bar__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  height: 52px;
+  padding-inline: var(--sp-lg);
+  /* see the INPUT BORDERS note above */
+  border: 1px solid var(--gf-cool-400);
+  border-radius: var(--r-md);
+  background: var(--gf-bg);
+  transition: border-color 0.16s var(--ease-out);
+}
+/* The FIELD carries the focus ring, not the bare input: the input fills a
+   bordered wrapper, so its own ring drew a second rounded rect inside the
+   first. One 2px purple ring on the wrapper, and the input's is suppressed —
+   with specificity high enough to beat the surface-wide `.pnib input` rule. */
+.sozluk-bar__field:focus-within {
+  border-color: var(--gf-purple);
+  outline: 2px solid var(--gf-purple);
+  outline-offset: 1px;
+}
+.sozluk-bar__field .sozluk-bar__input:focus-visible {
+  outline: none;
+}
+.sozluk-bar__icon {
+  flex: none;
+  color: var(--gf-ink-500);
+}
+.sozluk-bar__input {
+  flex: 1;
+  min-width: 0;
+  /* Fills the field's full height. As a baseline-aligned flex child its box was
+     only 24px tall, so clicking the padding band above or below the text did
+     nothing — the visible 52px field has to be the real hit area. */
+  align-self: stretch;
+  border: none;
+  background: none;
+  font-family: inherit;
+  /* Stays 16px at every width — see the iOS zoom note above. */
+  font-size: var(--fs-body-md);
+  color: var(--gf-ink);
+}
+.sozluk-bar__input:focus {
+  outline: none;
+}
+.sozluk-bar__input::placeholder {
+  color: var(--gf-ink-500);
+}
+/* Suppress the WebKit/Blink native clear glyph — ours is the labelled one. */
+.sozluk-bar__input::-webkit-search-cancel-button,
+.sozluk-bar__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.sozluk-bar__clear {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 44px hit area from a 32px visual, via the negative margin, so the button
+     doesn't inflate the 52px field. */
+  width: 44px;
+  height: 44px;
+  margin-right: calc(-1 * var(--sp-md));
+  border-radius: var(--r-full);
+  color: var(--gf-ink-700);
+  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .sozluk-bar__clear:hover {
+    background: var(--gf-lilac);
+    color: var(--gf-purple);
+  }
+}
+
+.sozluk-bar__rail {
+  padding: var(--sp-md) var(--sp-lg) var(--sp-lg);
+  border-top: 1px solid var(--gf-lilac-200);
+}
+
+/* Side by side from 1024 up — literally "both in one horizontal bar".
+   Stacked, the bar measured 283px, and since it is sticky that is 31% of a
+   900px viewport permanently spent on chrome. Side by side the two blocks
+   overlap in height instead of adding up, and the bar lands near 150px. */
+@media (min-width: 1024px) {
+  .sozluk-bar {
+    display: grid;
+    grid-template-columns: 340px minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .sozluk-bar__search {
+    padding: var(--sp-lg);
+  }
+  .sozluk-bar__rail {
+    padding: var(--sp-lg);
+    border-top: none;
+    border-left: 1px solid var(--gf-lilac-200);
+  }
+}
+
+.sozluk-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.sozluk-rail__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* ≥44px in both axes on every state, disabled included. */
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
+}
+.sozluk-rail__item--all {
+  padding-inline: var(--sp-lg);
+}
+.sozluk-rail__glyph {
+  position: relative;
+  z-index: 1;
+  /* Turkish casing: the data already stores rail letters uppercase, so nothing
+     is transformed here — text-transform would turn a hypothetical "i" into
+     "I" instead of "İ". */
+}
+/* Travelling active indicator. Underline, not a filled pill — see the note in
+   SozlukIndex.tsx for why. Purple: 7.4:1 on the lilac surface, well past the
+   3:1 non-text threshold. */
+.sozluk-rail__ind {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 6px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--gf-purple);
+}
+.sozluk-rail__item.is-active {
+  color: var(--gf-purple);
+  font-weight: var(--fw-bold);
+  background: var(--gf-lilac);
+}
+/* Disabled letters: ink-500 at 5.45:1 — legible, AA-passing, and still clearly
+   subordinate. Weight is the second cue, so the state never rests on colour
+   alone. Kept in the rail, never removed: a rail with holes in it reads as a
+   broken alphabet. */
+.sozluk-rail__item.is-empty {
+  color: var(--gf-ink-500);
+  font-weight: var(--fw-regular);
+  cursor: not-allowed;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sozluk-rail__item:not(.is-empty):not(.is-active):hover {
+    background: var(--gf-lilac);
+    color: var(--gf-purple);
+  }
+  .sozluk-rail__item.is-empty:hover {
+    background: none;
+  }
+}
+
+/* ==================================================== count + controls === */
+
+.sozluk__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-lg);
+  min-height: 44px;
+  padding-block: var(--sp-xl) var(--sp-md);
+}
+.sozluk__count {
+  font-size: var(--fs-body-sm);
+  color: var(--gf-ink-500);
+  /* The number changes as you type; proportional digits would shift the label
+     beside it on every keystroke. */
+  font-variant-numeric: tabular-nums;
+}
+.sozluk__reset {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-purple);
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 2px;
+}
+
+/* ================================================== results: the index === */
+
+.sozluk-group {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  column-gap: clamp(16px, 2vw, 28px);
+  padding-block: var(--sp-xl);
+  border-top: var(--pnib-rule);
+}
+
+/* The letter spine — the page's one structural signature. Sticky inside its own
+   group, so while you scroll a long letter you always know which letter you are
+   in, and the alphabet reads as a column down the left edge rather than as a
+   series of banners. Offset by the measured bar height (--sozluk-bar-h, written
+   by a ResizeObserver because the rail wraps to a different number of rows at
+   every width) so it parks under the bar instead of behind it. */
+.sozluk-group__letter {
+  position: sticky;
+  top: calc(var(--sozluk-bar-h, 148px) + var(--sp-lg));
+  align-self: start;
+  font-size: clamp(32px, 3.6vw, 44px);
+  line-height: 1;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  color: var(--gf-ink);
+  /* Cancels the inherited balance from base.css — a single glyph can't be
+     balanced, and the property would only cost a layout pass. */
+  text-wrap: nowrap;
+}
+
+.sozluk-list--flat {
+  padding-top: var(--sp-lg);
+  border-top: var(--pnib-rule);
+}
+
+.sozluk-row + .sozluk-row {
+  border-top: var(--pnib-rule);
+}
+.sozluk-row__link {
+  display: grid;
+  grid-template-columns: minmax(160px, 260px) minmax(0, 1fr) 16px;
+  column-gap: clamp(16px, 2.5vw, 40px);
+  /* First baselines of the headword and the teaser align, which is what makes
+     a two-column dictionary row read as one line rather than two stacked
+     blocks. The chevron opts out — an icon has no useful baseline. */
+  align-items: baseline;
+  padding: var(--sp-lg);
+  /* Pulled back out so the hover wash reads as a full-width row while the text
+     stays flush with the column above it. */
+  margin-inline: calc(-1 * var(--sp-lg));
+  border-radius: var(--r-md);
+  min-height: 44px;
+  transition: background 0.18s var(--ease-out);
+}
+.sozluk-row__term {
+  position: relative;
+  /* Content-sized, so the yellow rule below spans the word and not the column. */
+  justify-self: start;
+  font-size: var(--fs-body-lg);
+  line-height: 1.4;
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+  overflow-wrap: break-word;
+  transition: color 0.18s var(--ease-out);
+}
+/* Hover rule — the same yellow device as the site's `.hl`, at hairline weight.
+   Decorative reinforcement only: hover is already carried by the row wash and
+   the headword colour, so nothing depends on yellow's contrast. */
+.sozluk-row__term::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--gf-yellow);
+  transform: scaleX(0);
+  transform-origin: left center;
+  /* Slightly slower than the 180ms wash so it reads as being drawn, close
+     enough that the hover doesn't feel like two separate events. */
+  transition: transform 0.24s var(--ease-out);
+}
+.sozluk-row__teaser {
+  font-size: var(--fs-body-md);
+  line-height: 1.5;
+  color: var(--gf-ink-700);
+  /* Capped near 65 characters: the set runs to 119-character definitions and an
+     uncapped teaser would stretch to a 900px measure at desktop. */
+  max-width: 64ch;
+  text-wrap: pretty;
+  /* Two lines, so one long definition can't make its row three times the
+     height of its neighbours. The full text is one click away at its own URL —
+     truncation here never hides anything unreachable. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.sozluk-row__chev {
+  align-self: center;
+  color: var(--gf-ink-500);
+  transition: transform 0.18s var(--ease-out-strong), color 0.18s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .sozluk-row__link:hover {
+    background: var(--gf-lilac-50);
+  }
+  .sozluk-row__link:hover .sozluk-row__term {
+    color: var(--gf-purple);
+  }
+  .sozluk-row__link:hover .sozluk-row__term::after {
+    transform: scaleX(1);
+  }
+  .sozluk-row__link:hover .sozluk-row__chev {
+    color: var(--gf-purple);
+    transform: translateX(3px);
+  }
+}
+.sozluk-row__link:focus-visible {
+  background: var(--gf-lilac-50);
+}
+
+/* Matched run in a searched headword. A tinted background rather than the
+   browser default yellow-on-black, which would collide with the brand yellow
+   used as a hover rule two pixels below it. */
+.sozluk-mark {
+  background: var(--gf-lilac);
+  color: inherit;
+  border-radius: var(--r-xs);
+  padding-inline: 2px;
+}
+
+/* ======================================================= empty states ==== */
+
+.sozluk-empty {
+  padding-block: clamp(40px, 6vw, 72px);
+  /* The rule spans the container while the copy is measure-capped below —
+     capping the block itself cut the hairline off mid-page, which read as a
+     broken border rather than a section divider. */
+  border-top: var(--pnib-rule);
+}
+.sozluk-empty__head {
+  max-width: 46ch;
+  font-size: var(--fs-h4);
+  line-height: 1.35;
+  color: var(--gf-ink);
+  text-wrap: pretty;
+}
+.sozluk-empty__head strong {
+  font-weight: var(--fw-semibold);
+}
+.sozluk-empty__sub {
+  margin-top: var(--sp-md);
+  max-width: 60ch;
+  font-size: var(--fs-body-md);
+  line-height: 1.55;
+  color: var(--gf-ink-700);
+}
+.sozluk-empty__chips,
+.entry__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-sm);
+  margin-top: var(--sp-xl);
+}
+.sozluk-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--sp-lg);
+  border: 1px solid var(--gf-lilac-200);
+  border-radius: var(--r-full);
+  background: var(--gf-bg);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+  transition: background 0.16s var(--ease-out), border-color 0.16s var(--ease-out),
+    color 0.16s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .sozluk-chip:hover {
+    background: var(--gf-lilac-50);
+    border-color: var(--gf-lilac-300);
+    color: var(--gf-purple);
+  }
+}
+
+/* ======================================================= term entry ====== */
+
+.pnib-crumb {
+  padding-block: var(--sp-xl) 0;
+}
+.pnib-crumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-xs);
+  font-size: var(--fs-body-sm);
+  color: var(--gf-ink-500);
+}
+/* min-width as well as min-height: the single-letter crumb measured 9px wide,
+   which is a real miss on a touch screen even though its height was fine. The
+   padding is absorbed by dropping the list gap, so the line still reads tight. */
+.pnib-crumb a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding-inline: var(--sp-sm);
+  min-height: 44px;
+  color: var(--gf-ink-500);
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 3px;
+  transition: color 0.16s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pnib-crumb a:hover {
+    color: var(--gf-purple);
+  }
+}
+.pnib-crumb__sep {
+  color: var(--gf-lilac-300);
+}
+.pnib-crumb li[aria-current] {
+  color: var(--gf-ink);
+  font-weight: var(--fw-semibold);
+}
+
+.entry {
+  /* One reading column. Capped near 68 characters at the body size — long
+     measures make the eye lose the next line, and a definition is prose. */
+  max-width: 68ch;
+  padding-block: var(--sp-xl) clamp(40px, 6vw, 72px);
+}
+/* The one brand accent on an otherwise deliberately plain reading page: a short
+   yellow rule, the same device as the `.hl` bar, above the category kicker.
+   Decorative — it carries no state, so its 1.55:1 against white is not a
+   contrast question. */
+.entry__kicker::before {
+  content: "";
+  display: block;
+  width: 32px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gf-yellow);
+  margin-bottom: var(--sp-md);
+}
+.entry__kicker {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--gf-purple);
+}
+.entry__title {
+  margin-top: var(--sp-md);
+  font-size: clamp(32px, 4.6vw, 56px);
+  line-height: 1.08;
+  letter-spacing: var(--ls-tight);
+  font-weight: var(--fw-regular);
+  color: var(--gf-ink);
+}
+.entry__english {
+  margin-top: var(--sp-sm);
+  font-size: var(--fs-body-md);
+  color: var(--gf-ink-500);
+  font-style: italic;
+}
+.entry__lead {
+  margin-top: var(--sp-xl);
+  font-size: clamp(20px, 2.2vw, 24px);
+  line-height: 1.45;
+  color: var(--gf-ink);
+  text-wrap: pretty;
+}
+.entry__body {
+  margin-top: var(--sp-xl);
+  font-size: var(--fs-body-lg);
+  line-height: 1.65;
+  color: var(--gf-ink-700);
+  text-wrap: pretty;
+}
+.entry__related {
+  margin-top: clamp(32px, 4vw, 56px);
+  padding-top: var(--sp-xl);
+  border-top: var(--pnib-rule);
+}
+.entry__subhead {
+  font-size: var(--fs-h6);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--gf-ink-500);
+}
+.entry__product {
+  margin-top: var(--sp-xl);
+  padding-top: var(--sp-xl);
+  border-top: var(--pnib-rule);
+}
+.entry__product-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--sp-xl);
+  border-radius: var(--r-full);
+  background: var(--gf-purple);
+  color: #fff;
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+}
+
+.entry__near {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-lg);
+  padding-top: var(--sp-xl);
+  border-top: var(--pnib-rule);
+  /* Same measure as the article above it — a full-container nav under a 68ch
+     column read as two unrelated layouts sharing a page. */
+  max-width: 68ch;
+}
+.entry__near-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-xs);
+  min-height: 44px;
+  padding: var(--sp-lg);
+  border: 1px solid var(--gf-lilac-200);
+  border-radius: var(--r-lg);
+  transition: background 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
+}
+.entry__near-link--next {
+  text-align: right;
+  grid-column: 2;
+}
+.entry__near-label {
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--gf-ink-500);
+}
+.entry__near-term {
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
+}
+@media (hover: hover) and (pointer: fine) {
+  .entry__near-link:hover {
+    background: var(--gf-lilac-50);
+    border-color: var(--gf-lilac-300);
+  }
+  .entry__near-link:hover .entry__near-term {
+    color: var(--gf-purple);
+  }
+}
+
+/* ========================================================== ≤920px ======= */
+
+@media (max-width: 920px) {
+  .pnib-sozluk-entry__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sozluk-row__link {
+    grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) 16px;
+  }
+}
+
+/* ========================================================== ≤767px ======
+   The authoritative mobile layer for this page. Kept in this sheet rather than
+   in src/styles/mobile.css: that file is the shared site layer, and none of
+   these rules should be loadable on a getirfinans.com page. */
+
+@media (max-width: 767px) {
+  .pnib-chrome__inner {
+    min-height: 64px;
+  }
+  .pnib-chrome__mark img {
+    width: 140px;
+    height: 28px;
+  }
+
+  .pnib-entry-search__row {
+    flex-direction: column;
+  }
+  .pnib-entry-search__submit {
+    width: 100%;
+  }
+
+  /* The rail wraps to four or five rows on a phone, which would leave a stuck
+     bar owning most of the viewport. So the bar scrolls away here, and with it
+     the letter spine's reason to be sticky. */
+  .sozluk-barwrap {
+    position: static;
+    padding-inline: 0;
+    margin-inline: 0;
+  }
+
+  .sozluk-bar__search,
+  .sozluk-bar__rail {
+    padding: var(--sp-md);
+  }
+
+  /* Grid, not a wrapped flex row: with flex-grow the final row stretched its
+     two remaining letters across the full width, so Y and Z sat at opposite
+     ends of an otherwise even alphabet. A grid keeps every cell the same width
+     and leaves the last row flush left, which is what an alphabet should look
+     like. */
+  .sozluk-rail {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  }
+  .sozluk-rail__item {
+    min-width: 0;
+  }
+  .sozluk-rail__item--all {
+    /* "tümü" is a word, not a glyph — it needs two cells. */
+    grid-column: span 2;
+    padding-inline: var(--sp-sm);
+  }
+
+  /* Letter above its group instead of beside it — a 44px spine column would
+     eat a quarter of a 375px viewport. */
+  .sozluk-group {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-md);
+    padding-block: var(--sp-lg);
+  }
+  .sozluk-group__letter {
+    position: static;
+    font-size: var(--fs-h3);
+  }
+
+  /* Headword above teaser: two columns inside 375px would leave the teaser a
+     ~14-character measure. */
+  .sozluk-row__link {
+    grid-template-columns: minmax(0, 1fr) 16px;
+    grid-template-areas:
+      "term chev"
+      "teaser teaser";
+    row-gap: var(--sp-xs);
+    align-items: center;
+    padding: var(--sp-md) var(--sp-sm);
+    margin-inline: calc(-1 * var(--sp-sm));
+  }
+  .sozluk-row__term {
+    grid-area: term;
+    font-size: var(--fs-body-md);
+  }
+  .sozluk-row__teaser {
+    grid-area: teaser;
+    font-size: var(--fs-body-sm);
+    line-height: 1.5;
+  }
+  .sozluk-row__chev {
+    grid-area: chev;
+  }
+
+  .entry__near {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .entry__near-link--next {
+    grid-column: 1;
+  }
+}
+
+/* =============================================== reduced motion ========= */
+
+/* Gentler, not off. A blanket `transition-duration: 0` here would also kill the
+   colour and background fades, which carry no movement and are the part of a
+   hover that a motion-sensitive user still benefits from. So: MOVEMENT is
+   dropped (the chevron slide, the card lift, the yellow rule's draw) and the
+   paint transitions stay. Motion-driven pieces read prefers-reduced-motion in
+   JS — see SozlukIndex.tsx. */
+@media (prefers-reduced-motion: reduce) {
+  .pnib *,
+  .pnib *::before,
+  .pnib *::after {
+    /* transforms land instantly … */
+    transition-property: color, background-color, border-color, outline-color, opacity;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  /* … and the two transforms that are the whole point of their element are
+     removed rather than animated to a resting state that never arrives. */
+  .sozluk-row__term::after {
+    transform: none;
+    opacity: 0;
+    transition: opacity 0.18s var(--ease-out);
+  }
+  .sozluk-row__link:hover .sozluk-row__term::after {
+    opacity: 1;
+  }
+  .pnib-featured:hover {
+    transform: none;
+  }
+  .sozluk-row__link:hover .sozluk-row__chev,
+  .pnib-sozluk-entry__all:hover svg {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

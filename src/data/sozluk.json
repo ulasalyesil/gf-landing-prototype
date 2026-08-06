@@ -1,0 +1,659 @@
+{
+  "_meta": {
+    "created_by": "Claude",
+    "classification": "INTERNAL",
+    "jira": "GFDES-2175",
+    "purpose": "Mock data for the paranaiyibak finans sözlüğü design. Definitions are original, written for this mock in GF lowercase tone. Nothing is lifted from Investopedia or any other source.",
+    "letters_tr": [
+      "A",
+      "B",
+      "C",
+      "Ç",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "İ",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "Ö",
+      "P",
+      "R",
+      "S",
+      "Ş",
+      "T",
+      "U",
+      "Ü",
+      "V",
+      "Y",
+      "Z"
+    ],
+    "letters_with_no_terms": [
+      "J"
+    ],
+    "notes": [
+      "Q, W, X are not in the Turkish alphabet and must not appear in the rail.",
+      "J is deliberately empty so the disabled-letter state gets designed.",
+      "long_definition is present only on a subset, to exercise the truncation / 'fazlasını gör' state.",
+      "term_of_month flags the single featured term for the homepage section.",
+      "related on acik-bankacilik originally pointed at 'api' and 'veri-paylasimi', neither of which is one of the 82 terms — so the 'term with related links' design state could never render. Repointed to two terms that DO exist and are genuinely related (yetkilendirme is the consent mechanism the definition itself names; dijital-cuzdan is the adjacent digital-banking concept). If marketing wants api / veri-paylasimi as headwords, add them and revert this."
+    ]
+  },
+  "terms": [
+    {
+      "slug": "anapara",
+      "term": "anapara",
+      "letter": "A",
+      "category": "temel",
+      "short": "faiz ya da getiri eklenmemiş, işin başındaki para. hesabına koyduğun ya da kredi olarak aldığın tutarın kendisi."
+    },
+    {
+      "slug": "acik-bankacilik",
+      "term": "açık bankacılık",
+      "letter": "A",
+      "category": "dijital",
+      "short": "senin iznin ile bir bankanın verilerini başka bir finans uygulamasına açması.",
+      "long": "açık bankacılık, farklı bankalardaki hesaplarını tek bir uygulamadan görmeni sağlayan altyapının adı. çalışması için iznin şart: onay vermediğin sürece hiçbir kurum verini paylaşamaz. izni verdikten sonra da dilediğin an geri çekebilirsin.",
+      "related": [
+        "yetkilendirme",
+        "dijital-cuzdan"
+      ]
+    },
+    {
+      "slug": "atm",
+      "term": "atm",
+      "letter": "A",
+      "category": "temel",
+      "short": "kart ile para çekip yatırabildiğin, bakiye görebildiğin cihaz."
+    },
+    {
+      "slug": "altin-hesabi",
+      "term": "altın hesabı",
+      "letter": "A",
+      "category": "yatirim",
+      "short": "paranı gram altın olarak tuttuğun hesap. bakiyen altının güncel fiyatına göre değişir."
+    },
+    {
+      "slug": "avans",
+      "term": "avans",
+      "letter": "A",
+      "category": "kredi",
+      "short": "bir ödemenin ya da gelirin öncesinde peşin alınan tutar."
+    },
+    {
+      "slug": "bakiye",
+      "term": "bakiye",
+      "letter": "B",
+      "category": "temel",
+      "short": "hesabında o an duran para."
+    },
+    {
+      "slug": "bilesik-faiz",
+      "term": "bileşik faiz",
+      "letter": "B",
+      "category": "faiz",
+      "short": "kazandığın faizin de faiz kazanması.",
+      "long": "bileşik faizde her dönemin sonunda kazandığın faiz anaparaya eklenir, bir sonraki dönem daha büyük bir tutar üzerinden faiz işler. bu yüzden vade uzadıkça arada açılan fark hızlanır. birikimde zamanın en çok işe yaradığı yer burası."
+    },
+    {
+      "slug": "bes",
+      "term": "bes",
+      "letter": "B",
+      "category": "birikim",
+      "short": "bireysel emeklilik sistemi. maaşından ya da hesabından düzenli kesilen tutarın uzun vadede fon olarak biriktiği sistem."
+    },
+    {
+      "slug": "blokaj",
+      "term": "blokaj",
+      "letter": "B",
+      "category": "temel",
+      "short": "bakiyenin bir kısmının geçici olarak kullanılamaz hale gelmesi. tutar hesabında görünür ama harcanamaz."
+    },
+    {
+      "slug": "birikim",
+      "term": "birikim",
+      "letter": "B",
+      "category": "birikim",
+      "short": "harcamadığın ve bir kenara ayırdığın para."
+    },
+    {
+      "slug": "cari-hesap",
+      "term": "cari hesap",
+      "letter": "C",
+      "category": "temel",
+      "short": "faiz işlemeyen, günlük işlemler için kullandığın hesap."
+    },
+    {
+      "slug": "cari-acik",
+      "term": "cari açık",
+      "letter": "C",
+      "category": "ekonomi",
+      "short": "bir ülkenin dışarıya ödediği paranın, dışarıdan aldığından fazla olması."
+    },
+    {
+      "slug": "capraz-kur",
+      "term": "çapraz kur",
+      "letter": "Ç",
+      "category": "doviz",
+      "short": "iki para biriminin, dolar üzerinden geçmeden birbirine oranı."
+    },
+    {
+      "slug": "cek",
+      "term": "çek",
+      "letter": "Ç",
+      "category": "temel",
+      "short": "üzerinde yazan tutarın, yazan tarihte ödenmesini taahhüt eden belge."
+    },
+    {
+      "slug": "doviz",
+      "term": "döviz",
+      "letter": "D",
+      "category": "doviz",
+      "short": "yabancı para birimi. dolar, euro, sterlin gibi."
+    },
+    {
+      "slug": "dekont",
+      "term": "dekont",
+      "letter": "D",
+      "category": "temel",
+      "short": "bir işlemin gerçekleştiğini gösteren belge. kimden kime, ne kadar, ne zaman."
+    },
+    {
+      "slug": "devaluasyon",
+      "term": "devalüasyon",
+      "letter": "D",
+      "category": "ekonomi",
+      "short": "bir ülkenin kendi parasının değerini bilinçli olarak düşürmesi."
+    },
+    {
+      "slug": "dijital-cuzdan",
+      "term": "dijital cüzdan",
+      "letter": "D",
+      "category": "dijital",
+      "short": "kart bilgilerini telefonunda tutup temassız ödeme yapmanı sağlayan uygulama."
+    },
+    {
+      "slug": "enflasyon",
+      "term": "enflasyon",
+      "letter": "E",
+      "category": "ekonomi",
+      "short": "fiyatların genel olarak yükselmesi, yani paranın alım gücünün düşmesi.",
+      "long": "enflasyon, aynı parayla geçen yıl aldığın şeyi bu yıl alamamak demek. tek bir ürünün pahalanması enflasyon değil; ölçüm, geniş bir ürün ve hizmet sepetinin ortalaması üzerinden yapılır. birikimini değerlendirirken bakman gereken şey, kazandığın getirinin enflasyonun üzerinde kalıp kalmadığı."
+    },
+    {
+      "slug": "eft",
+      "term": "eft",
+      "letter": "E",
+      "category": "transfer",
+      "short": "farklı bankalardaki hesaplar arasında para göndermek."
+    },
+    {
+      "slug": "ekstre",
+      "term": "ekstre",
+      "letter": "E",
+      "category": "temel",
+      "short": "bir dönem içindeki tüm işlemlerin listesi."
+    },
+    {
+      "slug": "faiz",
+      "term": "faiz",
+      "letter": "F",
+      "category": "faiz",
+      "short": "paranın kullanım bedeli. birikimde sana ödenen, kredide senin ödediğin oran.",
+      "long": "faiz, bir süre boyunca parayı kullanmanın fiyatı. birikim tarafında bankaya para bırakırsın, banka sana faiz öder. kredi tarafında parayı sen kullanırsın, faizi sen ödersin. iki tarafta da iki şey belirleyici: oran ve süre."
+    },
+    {
+      "slug": "fast",
+      "term": "fast",
+      "letter": "F",
+      "category": "transfer",
+      "short": "günün her saati çalışan, saniyeler içinde sonuçlanan para transferi sistemi."
+    },
+    {
+      "slug": "fon",
+      "term": "fon",
+      "letter": "F",
+      "category": "yatirim",
+      "short": "çok sayıda yatırımcının parasının bir araya gelip birlikte yönetildiği havuz."
+    },
+    {
+      "slug": "fatura",
+      "term": "fatura",
+      "letter": "F",
+      "category": "temel",
+      "short": "alınan mal ya da hizmetin tutarını gösteren resmi belge."
+    },
+    {
+      "slug": "gecelik-faiz",
+      "term": "gecelik faiz",
+      "letter": "G",
+      "category": "faiz",
+      "short": "bir günlük, yani bir gecelik vade için işleyen faiz."
+    },
+    {
+      "slug": "gider",
+      "term": "gider",
+      "letter": "G",
+      "category": "temel",
+      "short": "hesabından çıkan para."
+    },
+    {
+      "slug": "getiri",
+      "term": "getiri",
+      "letter": "G",
+      "category": "yatirim",
+      "short": "bir yatırımın sana kazandırdığı tutar ya da oran."
+    },
+    {
+      "slug": "havale",
+      "term": "havale",
+      "letter": "H",
+      "category": "transfer",
+      "short": "aynı banka içindeki iki hesap arasında para göndermek."
+    },
+    {
+      "slug": "harcama-limiti",
+      "term": "harcama limiti",
+      "letter": "H",
+      "category": "kart",
+      "short": "bir kart ya da hesapla belirli bir dönemde harcayabileceğin en yüksek tutar."
+    },
+    {
+      "slug": "hisse-senedi",
+      "term": "hisse senedi",
+      "letter": "H",
+      "category": "yatirim",
+      "short": "bir şirketin küçük bir parçasına sahip olduğunu gösteren belge."
+    },
+    {
+      "slug": "iskonto",
+      "term": "ıskonto",
+      "letter": "I",
+      "category": "kredi",
+      "short": "vadesi gelmemiş bir alacağın, bugünkü değerine indirilerek peşin ödenmesi."
+    },
+    {
+      "slug": "iban",
+      "term": "iban",
+      "letter": "İ",
+      "category": "transfer",
+      "short": "hesabını uluslararası standartta tanımlayan numara. türkiye'de tr ile başlar ve 26 karakterdir."
+    },
+    {
+      "slug": "ipotek",
+      "term": "ipotek",
+      "letter": "İ",
+      "category": "kredi",
+      "short": "bir kredinin teminatı olarak taşınmazın kayda bağlanması."
+    },
+    {
+      "slug": "iade",
+      "term": "iade",
+      "letter": "İ",
+      "category": "temel",
+      "short": "yapılmış bir ödemenin geri dönmesi."
+    },
+    {
+      "slug": "islem-gecmisi",
+      "term": "işlem geçmişi",
+      "letter": "İ",
+      "category": "temel",
+      "short": "hesabında bugüne kadar olan tüm hareketlerin kaydı."
+    },
+    {
+      "slug": "kredi",
+      "term": "kredi",
+      "letter": "K",
+      "category": "kredi",
+      "short": "belirli bir vadede geri ödemek üzere aldığın borç."
+    },
+    {
+      "slug": "kredi-notu",
+      "term": "kredi notu",
+      "letter": "K",
+      "category": "kredi",
+      "short": "geçmiş ödeme davranışına göre hesaplanan, borcunu ödeme alışkanlığını gösteren puan.",
+      "long": "kredi notu, geçmişte borçlarını zamanında ödeyip ödemediğine bakarak hesaplanan bir puan. kurumlar krediye başvurduğunda bu puana bakar. düzenli ödeme notu yukarı taşır, geciken ödemeler aşağı çeker. tek bir işlemle değil, zaman içinde oluşur."
+    },
+    {
+      "slug": "kmh",
+      "term": "kmh",
+      "letter": "K",
+      "category": "kredi",
+      "short": "kredili mevduat hesabı. bakiyen bittiğinde hesabının eksiye geçmesine izin veren, kullandığın kadar faiz işleyen limit."
+    },
+    {
+      "slug": "kur",
+      "term": "kur",
+      "letter": "K",
+      "category": "doviz",
+      "short": "bir para biriminin başka bir para birimi karşısındaki değeri."
+    },
+    {
+      "slug": "komisyon",
+      "term": "komisyon",
+      "letter": "K",
+      "category": "temel",
+      "short": "bir işlem için alınan hizmet bedeli."
+    },
+    {
+      "slug": "kkm",
+      "term": "kkm",
+      "letter": "K",
+      "category": "birikim",
+      "short": "kur korumalı mevduat. vade sonunda kur artışının, faiz getirisini aşan kısmının telafi edildiği tl mevduat ürünü."
+    },
+    {
+      "slug": "likidite",
+      "term": "likidite",
+      "letter": "L",
+      "category": "yatirim",
+      "short": "bir varlığın değerini kaybetmeden ne kadar hızlı nakde çevrilebildiği."
+    },
+    {
+      "slug": "limit",
+      "term": "limit",
+      "letter": "L",
+      "category": "kart",
+      "short": "kullanabileceğin üst sınır."
+    },
+    {
+      "slug": "mevduat",
+      "term": "mevduat",
+      "letter": "M",
+      "category": "birikim",
+      "short": "bankaya belirli bir süre için bıraktığın, karşılığında faiz aldığın para."
+    },
+    {
+      "slug": "masraf",
+      "term": "masraf",
+      "letter": "M",
+      "category": "temel",
+      "short": "bir işlem ya da hizmet için ödediğin ek tutar."
+    },
+    {
+      "slug": "minimum-odeme",
+      "term": "minimum ödeme",
+      "letter": "M",
+      "category": "kart",
+      "short": "kart borcunun gecikmeye düşmemesi için ödemen gereken en düşük tutar.",
+      "long": "minimum ödeme, ekstre borcunun tamamını değil, gecikmiş sayılmamak için yetecek en küçük kısmını kapatır. kalan borç bir sonraki döneme devreder ve üzerine faiz işler. yani minimum ödemek borcu bitirmez, sadece erteler."
+    },
+    {
+      "slug": "nakit-iade",
+      "term": "nakit iade",
+      "letter": "N",
+      "category": "kart",
+      "short": "yaptığın harcamanın bir kısmının sana geri dönmesi."
+    },
+    {
+      "slug": "net-getiri",
+      "term": "net getiri",
+      "letter": "N",
+      "category": "yatirim",
+      "short": "vergi ve masraflar düşüldükten sonra elinde kalan getiri."
+    },
+    {
+      "slug": "nakit-avans",
+      "term": "nakit avans",
+      "letter": "N",
+      "category": "kart",
+      "short": "kredi kartı limitinden nakit çekmek. çekildiği andan itibaren faiz işler."
+    },
+    {
+      "slug": "otomatik-odeme",
+      "term": "otomatik ödeme",
+      "letter": "O",
+      "category": "temel",
+      "short": "faturanın her dönem sen işlem yapmadan hesabından ödenmesi."
+    },
+    {
+      "slug": "onay-kodu",
+      "term": "onay kodu",
+      "letter": "O",
+      "category": "guvenlik",
+      "short": "bir işlemi senin yaptığını doğrulamak için tek kullanımlık gönderilen kod."
+    },
+    {
+      "slug": "odeme-talimati",
+      "term": "ödeme talimatı",
+      "letter": "Ö",
+      "category": "temel",
+      "short": "belirli bir ödemenin belirli tarihlerde yapılması için verdiğin kalıcı yönlendirme."
+    },
+    {
+      "slug": "ozkaynak",
+      "term": "özkaynak",
+      "letter": "Ö",
+      "category": "ekonomi",
+      "short": "bir şirketin varlıklarından borçları çıkarıldığında kalan kısım."
+    },
+    {
+      "slug": "portfoy",
+      "term": "portföy",
+      "letter": "P",
+      "category": "yatirim",
+      "short": "elinde tuttuğun yatırımların tamamı."
+    },
+    {
+      "slug": "pos",
+      "term": "pos",
+      "letter": "P",
+      "category": "kart",
+      "short": "iş yerlerinde kart ile ödeme alınan cihaz."
+    },
+    {
+      "slug": "para-transferi",
+      "term": "para transferi",
+      "letter": "P",
+      "category": "transfer",
+      "short": "bir hesaptan başka bir hesaba para göndermek."
+    },
+    {
+      "slug": "repo",
+      "term": "repo",
+      "letter": "R",
+      "category": "yatirim",
+      "short": "bir menkul kıymetin, ileride geri alınmak üzere satılması. kısa vadeli borçlanma yöntemi."
+    },
+    {
+      "slug": "referans-numarasi",
+      "term": "referans numarası",
+      "letter": "R",
+      "category": "temel",
+      "short": "bir işlemi tek başına tanımlayan numara. sorun olduğunda aranan şey bu."
+    },
+    {
+      "slug": "risk",
+      "term": "risk",
+      "letter": "R",
+      "category": "yatirim",
+      "short": "bir yatırımın beklediğinden farklı sonuçlanma olasılığı."
+    },
+    {
+      "slug": "son-odeme-tarihi",
+      "term": "son ödeme tarihi",
+      "letter": "S",
+      "category": "kart",
+      "short": "gecikme faizi işlemeye başlamadan ödemen gereken en son gün."
+    },
+    {
+      "slug": "sanal-kart",
+      "term": "sanal kart",
+      "letter": "S",
+      "category": "kart",
+      "short": "sadece internet alışverişi için oluşturduğun, fiziksel karşılığı olmayan kart."
+    },
+    {
+      "slug": "swap",
+      "term": "swap",
+      "letter": "S",
+      "category": "yatirim",
+      "short": "iki tarafın nakit akışlarını belirli kurallara göre değiştirdiği anlaşma."
+    },
+    {
+      "slug": "sigorta",
+      "term": "sigorta",
+      "letter": "S",
+      "category": "temel",
+      "short": "belirli bir zarar gerçekleşirse karşılanması için önceden ödenen düzenli bedel."
+    },
+    {
+      "slug": "serefiye",
+      "term": "şerefiye",
+      "letter": "Ş",
+      "category": "ekonomi",
+      "short": "bir şirket satın alınırken, defterdeki varlık değerinin üzerine ödenen fark."
+    },
+    {
+      "slug": "sube",
+      "term": "şube",
+      "letter": "Ş",
+      "category": "temel",
+      "short": "bankanın fiziksel hizmet noktası."
+    },
+    {
+      "slug": "taksit",
+      "term": "taksit",
+      "letter": "T",
+      "category": "kredi",
+      "short": "bir borcun eşit parçalara bölünüp belirli aralıklarla ödenmesi."
+    },
+    {
+      "slug": "tcmb",
+      "term": "tcmb",
+      "letter": "T",
+      "category": "ekonomi",
+      "short": "türkiye cumhuriyet merkez bankası. para politikasını yürüten ve politika faizini belirleyen kurum."
+    },
+    {
+      "slug": "temerrut",
+      "term": "temerrüt",
+      "letter": "T",
+      "category": "kredi",
+      "short": "borcun vadesinde ödenmemesi durumu."
+    },
+    {
+      "slug": "tasarruf",
+      "term": "tasarruf",
+      "letter": "T",
+      "category": "birikim",
+      "short": "geliriyle harcaması arasındaki farkı bilerek büyütmek."
+    },
+    {
+      "slug": "uzun-pozisyon",
+      "term": "uzun pozisyon",
+      "letter": "U",
+      "category": "yatirim",
+      "short": "fiyatın yükselmesinden kazanmak üzere alınan pozisyon."
+    },
+    {
+      "slug": "uluslararasi-transfer",
+      "term": "uluslararası transfer",
+      "letter": "U",
+      "category": "transfer",
+      "short": "yurt dışındaki bir hesaba para göndermek."
+    },
+    {
+      "slug": "uye-isyeri",
+      "term": "üye iş yeri",
+      "letter": "Ü",
+      "category": "kart",
+      "short": "kart ile ödeme kabul eden iş yeri."
+    },
+    {
+      "slug": "ucret",
+      "term": "ücret",
+      "letter": "Ü",
+      "category": "temel",
+      "short": "bir hizmet karşılığında ödenen tutar."
+    },
+    {
+      "slug": "vade",
+      "term": "vade",
+      "letter": "V",
+      "category": "temel",
+      "short": "bir işlemin ya da anlaşmanın süresi. bittiği tarih."
+    },
+    {
+      "slug": "valor",
+      "term": "valör",
+      "letter": "V",
+      "category": "transfer",
+      "short": "bir işlemin gerçekten hesaba geçtiği, faiz işlemeye başladığı tarih."
+    },
+    {
+      "slug": "vergi",
+      "term": "vergi",
+      "letter": "V",
+      "category": "temel",
+      "short": "gelir ya da işlem üzerinden devlete ödenen pay."
+    },
+    {
+      "slug": "yatirim-fonu",
+      "term": "yatırım fonu",
+      "letter": "Y",
+      "category": "yatirim",
+      "short": "bir yöneticinin, toplanan parayı belirli bir strateji ile farklı varlıklara dağıttığı fon."
+    },
+    {
+      "slug": "yillik-maliyet-orani",
+      "term": "yıllık maliyet oranı",
+      "letter": "Y",
+      "category": "kredi",
+      "short": "bir kredinin faiz dışındaki tüm masrafları da dahil edildiğinde sana yıllık toplam maliyeti.",
+      "long": "yıllık maliyet oranı, kredinin gerçek fiyatını gösteren tek sayı. faizin yanına dosya masrafı, sigorta ve varsa diğer kesintiler eklenir. iki krediyi karşılaştırırken faiz oranına değil bu orana bakmak gerekir; düşük faizli görünen bir kredi masraflarla birlikte daha pahalı çıkabilir."
+    },
+    {
+      "slug": "yetkilendirme",
+      "term": "yetkilendirme",
+      "letter": "Y",
+      "category": "guvenlik",
+      "short": "bir işlemin yapılmasına izin verilmesi."
+    },
+    {
+      "slug": "zorunlu-karsilik",
+      "term": "zorunlu karşılık",
+      "letter": "Z",
+      "category": "ekonomi",
+      "short": "bankaların topladıkları mevduatın merkez bankasında tutmak zorunda olduğu oranı."
+    },
+    {
+      "slug": "zeyilname",
+      "term": "zeyilname",
+      "letter": "Z",
+      "category": "temel",
+      "short": "mevcut bir sözleşmeye sonradan eklenen, onu değiştiren ek belge."
+    }
+  ],
+  "term_of_month": {
+    "slug": "bilesik-faiz",
+    "term": "bileşik faiz",
+    "search_count_label": "bu ay en çok arananı",
+    "note": "Placeholder. Whether this comes from real site-search analytics or an editorial CMS field is an open product question (see the task note)."
+  },
+  "popular_terms": [
+    "enflasyon",
+    "faiz",
+    "iban",
+    "kredi-notu",
+    "kmh",
+    "minimum-odeme"
+  ],
+  "design_states_to_cover": [
+    "letter with many terms (K, T)",
+    "letter with a single term (I, Ş)",
+    "letter with zero terms (J) — disabled rail item + empty state",
+    "long definition needing truncation (bilesik-faiz, enflasyon, kredi-notu, minimum-odeme, yillik-maliyet-orani)",
+    "abbreviation-only headword (bes, eft, kmh, kkm, pos, atm, tcmb, fast)",
+    "search with no result",
+    "search with a single result",
+    "term with related links (acik-bankacilik)"
+  ]
+}

@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "-p", "3971"],
       "port": 3971
+    },
+    {
+      "name": "pnib-sozluk",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3975"],
+      "port": 3975
     }
   ]
 }
