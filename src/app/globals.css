@@ -8,6 +8,9 @@
 @import "../styles/base.css";
 @import "../styles/sections.css";
 @import "../styles/mobile.css";
+/* last, so its [data-gf-spacing] layer outranks the mobile.css overrides it
+   restates. Dev-only A/B — delete with the dial once the rhythm is settled. */
+@import "../styles/spacing-system.css";
 
 /* Tailwind v4 theme — mirrors the tokens above under Tailwind's namespaced
    names so the handful of utility classes in use (font-sans, text-gf-ink,

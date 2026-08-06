@@ -1,0 +1,94 @@
+/* ============================================================================
+   SECTION RHYTHM — proposal under review (2026-08-05)
+
+   Spec + reasoning: vault `brand/website/landing-page/section-rhythm.md`.
+
+   Everything here is scoped to [data-gf-spacing="new"], applied to <html> by
+   SpacingDial.tsx in DEV ONLY. Without the attribute the page renders exactly
+   as it does today, so production is untouched and the DialKit toggle is a
+   true A/B on the same page. Nothing here is a hydration risk: the attribute
+   lands in an effect and only CSS reads it — no JSX is gated on it (the trap
+   that bit CampaignsCarousel and AbroadCollage).
+
+   WHY THESE VALUES
+   `design-tokens/primitives.json` (the Figma export) defines
+   spacing/ none 0 · xs 4 · sm 8 · md 12 · lg 16 · xl 24 · 2xl 32 · 3xl 48 · 4xl 64,
+   and tokens.css's --sp-* already matches it exactly. So this invents nothing:
+   every value below is a step on the DS scale, and responsive change is a STEP
+   DOWN the scale at a breakpoint rather than a clamp() between two arbitrary
+   numbers. That's the part that makes it a system — any value on the page can
+   be named.
+
+   The page it replaces had no rhythm above 64px at all: 65, 72, 80, 84, 90, 92,
+   100, 110, 120, 130, 140. The CMO asked to "reduce the gaps", but the real
+   complaint is arbitrariness — arbitrary large gaps read as too large.
+
+   BANDS GET THE SAME 64 AS CHAPTERS, deliberately. A fill crops its own
+   whitespace, so equal padding reads tighter inside a band (.debit,
+   .newsletter) than on open page white, and an earlier draft gave them 72-80.
+   But there is no 72 or 80 primitive, and inventing one locally is the exact
+   drift this is meant to end. If bands genuinely need more once seen, that is
+   evidence for a NEW DS PRIMITIVE, not a licence for a local value.
+
+   ONCE A CALL IS MADE: fold the winning values into base.css/sections.css and
+   delete this file, SpacingDial.tsx, useSpacingDials.ts, the mount in
+   layout.tsx, and the globals.css import.
+   ========================================================================= */
+
+[data-gf-spacing="new"] {
+  /* chapter break — the default between two independent sections */
+  --section-y: var(--sp-4xl); /* 64 */
+  /* two sections that are one thought (faiz → calc: here's the rate, now
+     calculate it). The only reason the rhythm is allowed to change. */
+  --section-y-join: var(--sp-2xl); /* 32 */
+}
+
+/* .transfer is the reason this started: it never overrode .section, so it sat
+   on the dead clamp(72px, 9vw, 130px) base at 130/130 while every section
+   around it had been overridden down to 65-80. */
+[data-gf-spacing="new"] .section {
+  padding-block: var(--section-y);
+}
+
+/* Sections that already carried their own override, now all on one step.
+   Listed explicitly rather than deleted from sections.css so this file stays
+   a pure additive layer and the toggle can go both ways. */
+[data-gf-spacing="new"] .stats,
+[data-gf-spacing="new"] .rates,
+[data-gf-spacing="new"] .features,
+[data-gf-spacing="new"] .campaigns,
+[data-gf-spacing="new"] .debit,
+[data-gf-spacing="new"] .newsletter {
+  padding-block: var(--section-y);
+}
+
+/* faiz ↓ joins calc ↑ — one thought, so the seam between them is tighter than
+   a chapter break (64 total instead of 128). */
+[data-gf-spacing="new"] .faiz {
+  padding-block: var(--section-y) var(--section-y-join);
+}
+/* calc's bottom was never set: its top was overridden and its bottom fell
+   through to the .section base, giving 40/130. That's a bug, not a style
+   choice, and adopting the token fixes it. */
+[data-gf-spacing="new"] .calc {
+  padding-block: var(--section-y-join) var(--section-y);
+}
+
+/* .ai keeps a 0 bottom — its lottie bleeds off the section edge by design. */
+[data-gf-spacing="new"] .ai {
+  padding-block: var(--section-y) 0;
+}
+
+/* Responsive = one step down the scale, not a clamp. */
+@media (max-width: 767px) {
+  [data-gf-spacing="new"] {
+    --section-y: var(--sp-3xl); /* 48 */
+  }
+  /* mobile.css sets .section to a flat 56px and .features to 56/64; both are
+     single-class so the attribute selector wins, but they must be restated
+     here or they'd survive inside this breakpoint. */
+  [data-gf-spacing="new"] .section,
+  [data-gf-spacing="new"] .features {
+    padding-block: var(--section-y);
+  }
+}
