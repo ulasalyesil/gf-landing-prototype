@@ -17,7 +17,16 @@
   :root { --gutter: 20px; }
   * { -webkit-tap-highlight-color: transparent; }
   a, button, input, .btn, .hero__cta { touch-action: manipulation; }
-  .section { padding-block: 56px; }
+  /* Section rhythm steps DOWN the DS scale here (64 → 48) rather than being
+     re-declared as a flat px value. One token move retunes every section, and
+     the phone rhythm stays on the same scale as desktop. */
+  :root { --section-y: var(--sp-3xl); }
+  /* .ai keeps a bottom on phones: its desktop 0 exists so the lottie can bleed
+     off the section edge, and the mobile lottie isn't wired yet (TODO.md).
+     This used to happen by accident — mobile.css's flat `.section` override
+     out-specified `.ai` — so it's now stated on purpose. Drop this rule when
+     the mobile lottie lands. */
+  .ai { padding-block: var(--section-y); }
   .sec-head, .eyebrow-wrap { margin-bottom: 28px; }
   .sec-lead, .h-lead { font-size: 16px; line-height: 1.45; }
   .h-sec, .sec-title { font-size: 28px; }
@@ -76,7 +85,9 @@
   .rates__more span:first-child { max-width: none; }
 
   /* ---------- 4. Features — sticky stacking deck (signature) ---------- */
-  .features { padding-block: 56px 64px; }
+  /* was 56/64 — an asymmetry with no stated reason; it now takes the scale
+     step like every other section */
+  .features { padding-block: var(--section-y); }
   .features__grid { display: block; }
   .feat {
     position: sticky; flex-direction: column; align-items: stretch; gap: 14px;

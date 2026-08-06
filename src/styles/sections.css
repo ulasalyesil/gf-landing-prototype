@@ -133,7 +133,7 @@
 .hero .fiba b { font-weight: var(--fw-bold); }
 
 /* ===== 2. Stats — tavsiyelerle büyüyen ===== */
-.stats { background: #fff; padding-block: clamp(56px, 6vw, 80px); }
+.stats { background: #fff; padding-block: var(--section-y); }
 .stats .sec-head { margin-bottom: 40px; }
 .stats__card {
   display: flex; align-items: center; justify-content: center; gap: 48px;
@@ -149,7 +149,7 @@
 .stats__legal { margin-top: 16px; padding-inline: 24px; font-size: var(--fs-caption); line-height: 1.5; color: var(--gf-ink-500); text-align: center; }
 
 /* ===== 3. Rates — güncel kurlar ===== */
-.rates { background: #fff; padding-block: clamp(56px, 6vw, 80px); }
+.rates { background: #fff; padding-block: var(--section-y); }
 .rates .sec-head { margin-bottom: 40px; }
 .rates__updated { color: var(--gf-ink-700); font-size: var(--fs-h5); line-height: var(--lh-h5); }
 .rates__updated b { color: var(--gf-ink); font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; transition: opacity .3s ease; }
@@ -194,7 +194,7 @@
 .rates__more-ic img { width: 24px; height: 24px; }
 
 /* ===== 4. Features — parana iyi bakmanın yolları ===== */
-.features { padding-block: clamp(56px, 6vw, 80px); }
+.features { padding-block: var(--section-y); }
 .features__grid { display: flex; gap: 16px; align-items: stretch; }
 .feat { flex: 1 1 0; min-width: 0; max-width: 344px; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; cursor: pointer; transition: transform .3s var(--ease-out); }
 .feat__img { width: 100%; aspect-ratio: 1 / 1; border-radius: var(--r-xl); overflow: hidden; }
@@ -216,7 +216,7 @@
 }
 
 /* ===== 5. Campaigns ===== */
-.campaigns { padding-block: clamp(36px, 4.5vw, 65px); }
+.campaigns { padding-block: var(--section-y); }
 .campaigns__track { display: flex; gap: 24px; justify-content: center; align-items: center; }
 .camp { position: relative; flex: 0 0 292.4px; width: 292.4px; height: 442px; border-radius: 27.2px; overflow: hidden; --camp-scale: 1; transform: scale(var(--camp-scale)); transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
 .camp--feature { --camp-scale: 1.1765; } /* 344/292.4 — size + radius via GPU scale, not layout */
@@ -269,7 +269,9 @@
 .loan__snap img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%; }
 
 /* ===== 7. Faiz ===== */
-.faiz { padding-top: clamp(36px, 4.5vw, 65px); padding-bottom: clamp(32px, 4vw, 56px); }
+/* faiz ↓ joins calc ↑ — one thought (here's the rate, now calculate it),
+   so the seam between them is a join, not a chapter break. */
+.faiz { padding-block: var(--section-y) var(--section-y-join); }
 .faiz__phones { position: relative; height: clamp(360px, 36vw, 460px); margin-bottom: 0; }
 .faiz__phones img { position: absolute; bottom: 0; left: 50%; height: 100%; width: auto; object-fit: contain; transform: translateX(-50%); z-index: 2; }
 /* single lilac panel holding the three points */
@@ -281,7 +283,9 @@
 .fpoint p { font-weight: var(--fw-regular); font-size: 18px; line-height: 24px; color: var(--gf-purple); }
 
 /* ===== 8. Calculator ===== */
-.calc { padding-top: clamp(24px, 3vw, 40px); }
+/* bottom was never set: the top was overridden and the bottom fell through to
+   .section's old clamp, giving 40/130. That was a bug, not a style choice. */
+.calc { padding-block: var(--section-y-join) var(--section-y); }
 .calc__tabs { position: relative; display: flex; justify-content: center; margin-bottom: 24px; }
 .calc__tab { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 320px; max-width: 50%; padding-bottom: 16px; position: relative; color: var(--gf-ink-400); border-bottom: 2px solid var(--gf-line); transition: color var(--tabs-dur) var(--tabs-ease), transform .12s var(--ease-out-strong); }
 .calc__tab:active { transform: scale(.98); }
@@ -329,7 +333,11 @@
 .calc-rates-row__ic img { width: 20px; height: 20px; }
 
 /* ===== 9. Debit ===== */
-.debit { background: var(--gf-card-purple); color: #fff; border-radius: 0; padding-block: clamp(36px, 4.5vw, 65px); }
+/* Bands (.debit, .newsletter) take the SAME step as a chapter. A fill crops
+   its own whitespace, so equal padding reads a touch tighter inside a band —
+   but there is no 72 or 80 primitive and inventing one locally is the drift
+   this system exists to end. If bands need more, raise it as a DS primitive. */
+.debit { background: var(--gf-card-purple); color: #fff; border-radius: 0; padding-block: var(--section-y); }
 .debit__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 6vw, 80px); align-items: center; }
 /* square frame on the same purple as the rendered card video, so it sits flush
    and the video is shown whole (contain) rather than cropped */
@@ -416,7 +424,7 @@
 /* ===== 12. AI (full-width lottie) ===== */
 /* half the base .section rhythm, and no bottom padding at all — the lottie
    stage carries its own visual air (owner feedback 2026-07-21) */
-.ai { padding-block: clamp(36px, 4.5vw, 65px) 0; }
+.ai { padding-block: var(--section-y) 0; }
 .ai__stage { display: flex; justify-content: center; }
 .ai__lottie { width: 100%; max-width: 1120px; margin-inline: auto; aspect-ratio: 1920 / 822; }
 .ai__lottie.ph { border-radius: var(--radius-lg); }
@@ -428,7 +436,7 @@
    peeking) linking out on the right. Mirrors the debit section's layout
    (same grid, gap, media footprint — owner feedback 2026-07-21), with the
    copy on the LEFT where debit has it on the right. */
-.newsletter { background: var(--gf-bg-soft); padding-block: clamp(36px, 4.5vw, 65px); }
+.newsletter { background: var(--gf-bg-soft); padding-block: var(--section-y); }
 .newsletter__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 6vw, 80px); align-items: center; }
 .newsletter__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
 .newsletter__title { margin: 0; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2; font-weight: var(--fw-regular); color: var(--gf-ink); }

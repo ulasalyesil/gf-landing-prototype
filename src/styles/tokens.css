@@ -86,7 +86,11 @@
   --ls-normal: 0;
   --ls-wide: 0.25px;
 
-  /* ===== Spacing (4-base) ===== */
+  /* ===== Spacing (4-base) =====
+     Mirrors `spacing/*` in design-tokens/primitives.json (the Figma export)
+     value-for-value and name-for-name. Do not add steps here that the DS
+     doesn't have — if a value is missing, that's a DS gap to raise, not a
+     local one to patch. */
   --sp-xs: 4px;
   --sp-sm: 8px;
   --sp-md: 12px;
@@ -95,6 +99,20 @@
   --sp-2xl: 32px;
   --sp-3xl: 48px;
   --sp-4xl: 64px;
+
+  /* ===== Section rhythm =====
+     Semantic layer over the primitives above. The DS spacing scale stops at
+     64, so page-level rhythm had no tokens and every section invented its own
+     value — the page ran 65 / 72 / 80 / 84 / 90 / 92 / 100 / 110 / 120 / 130 /
+     140 with no rule behind any of it. (That gap is worth raising with the DS.)
+
+     Two tiers, and the rhythm changes for exactly one reason: whether two
+     sections are independent chapters or one continued thought. Responsive
+     change is a STEP DOWN the scale at a breakpoint (see mobile.css), never a
+     clamp() between two arbitrary numbers — so every spacing value on the page
+     can be named. Spec: vault brand/website/landing-page/section-rhythm.md */
+  --section-y: var(--sp-4xl); /* 64 — chapter break, the default */
+  --section-y-join: var(--sp-2xl); /* 32 — two sections, one thought */
 
   /* ===== Radius ===== */
   --r-xs: 4px;
