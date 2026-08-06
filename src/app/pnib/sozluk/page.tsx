@@ -7,7 +7,6 @@
    layers filtering on top of markup that is already complete. */
 
 import type { Metadata } from "next";
-import AnimatedHighlight from "@/components/AnimatedHighlight";
 import Reveal from "@/components/Reveal";
 import { TERMS } from "@/data/sozluk";
 import SozlukIndex from "./SozlukIndex";
@@ -34,16 +33,19 @@ export default async function SozlukPage({
   return (
     <main className="pnib-main">
       <div className="pnib-container">
-        {/* Reveal, not a plain header: the `.hl` yellow bar only draws once an
-            ancestor carries `is-in`, which Reveal writes. The highlight sits on
-            "finans", not "sözlüğü" — base.css tunes `.hl::after` for
-            non-descender text and the ğ tail would disappear under the bar
-            (the same clipping that needed scoped overrides on /hesap-karti). */}
+        {/* No yellow `.hl` bar and no eyebrow, both removed in the 2026-08-06
+            visual pass:
+
+            - The mark belongs on benefit statements only (AGENTS.md's own audit
+              rule from the round-1 revision), and "finans sözlüğü" is a label,
+              not a benefit. paranaiyibak.com does not use the device at all —
+              its yellow is filled badges and dates on dark panels.
+            - The eyebrow read "paranaiyibak", which the header wordmark now says
+              two rows above it. Live PİB puts the title straight in.
+
+            Reveal stays — the entrance is unrelated to the highlight. */}
         <Reveal as="header" className="sozluk-hero" direction="none">
-          <p className="sozluk-hero__eyebrow">paranaiyibak</p>
-          <h1 className="sozluk-hero__title">
-            <AnimatedHighlight type="hl">finans</AnimatedHighlight> sözlüğü
-          </h1>
+          <h1 className="sozluk-hero__title">finans sözlüğü</h1>
           <p className="sozluk-hero__lead">
             faiz mi, valör mü, kmh mı? paradan konuşurken karşına çıkan kelimeleri
             sade bir dille topladık. hiçbiri bir şey satmak için yazılmadı.
