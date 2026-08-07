@@ -29,11 +29,11 @@
      - Card radius is 16px throughout (rounded-2xl), pills are fully round.
    ------------------------------------------------------------------------
 
-   COLOUR: every value is a --gf-* token from src/styles/tokens.css, plus ONE
-   page-local addition (--pnib-dark, see the .pnib block — it is a real DS
-   primitive with no --gf-* name yet, not an invention). No private palette —
-   the last standalone paranaiyibak prototype forked its own --primary and
-   drifted.
+   COLOUR: every value is a --gf-* token from src/styles/tokens.css, plus two
+   page-local additions (--pnib-dark and --pnib-row-hover, see the .pnib
+   block — both are real DS primitives with no --gf-* name yet, not
+   inventions). No private palette — the last standalone paranaiyibak
+   prototype forked its own --primary and drifted.
 
    Measured contrast on white, for the record:
      --gf-ink      #0e0e0e  19.9:1   term headwords, letter spine
@@ -99,6 +99,19 @@
      Contrast on it, measured: #fff 11.82:1, --gf-yellow 8.20:1,
      --gf-lilac-300 4.74:1. The panel itself is 11.82:1 against page white. */
   --pnib-dark: #3b315b;
+
+  /* Direct designer feedback, not a live-site measurement like the rest of
+     this file's page-locals: the sözlük row hover wants a softer purple than
+     --gf-purple for the headword/chevron. #7c63c9 is `color.purple-dark.600`
+     in design-tokens/primitives.json — real, just from the dark-mode ramp,
+     with no --gf-* name on this (light) theme.
+
+     STILL FLAGGED: on the row's own hover wash (--gf-lilac #f3f0fe) this
+     measures 4.17:1 — under 4.5:1 AA for normal text, and .sozluk-row__term
+     is 18px regular, not "large text" by WCAG's definition. Shipped as
+     instructed; wants a designer call on whether the tone or the row wash
+     moves. Kept in TODO.md. */
+  --pnib-row-hover: #7c63c9;
 
   background: var(--gf-bg);
 }
@@ -580,6 +593,16 @@
 .sozluk-hero {
   padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px);
 }
+.sozluk-hero__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-xl);
+}
+.sozluk-hero__copy {
+  flex: 1;
+  min-width: 0;
+}
 /* `.sozluk-hero__eyebrow` deleted with its markup — an uppercase, letter-spaced
    brand repetition, and paranaiyibak.com has neither uppercase nor eyebrows. */
 .sozluk-hero__title {
@@ -599,6 +622,62 @@
   color: var(--gf-ink-700);
   text-wrap: pretty;
 }
+/* Hidden below 1024px: with the visual gone, .sozluk-hero__copy (flex: 1) is
+   the row's only visible child and reads as full-width. Below that width the
+   visual would just float with no edge left to align to — same breakpoint
+   SozlukIndex uses for its own layout switches. */
+.sozluk-hero__visual {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .sozluk-hero__visual {
+    display: block;
+    position: relative;
+    flex: none;
+    width: 190px;
+    height: 130px;
+  }
+}
+/* Three real terms at a scatter of angles, not a grid — the point is
+   "picked up and set down", the opposite of the tidy list two rows below.
+   Sized and weighted like small headlines, not labels: this is the one
+   place in the hero doing figurative rather than literal work. */
+.sozluk-hero__visual-term {
+  position: absolute;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+.sozluk-hero__visual-term--1 {
+  top: 4px;
+  left: 0;
+  font-size: 22px;
+  color: var(--gf-ink-700);
+  transform: rotate(-9deg);
+}
+.sozluk-hero__visual-term--2 {
+  bottom: 30px;
+  left: 6px;
+  font-size: 20px;
+  color: var(--gf-purple);
+  transform: rotate(7deg);
+}
+.sozluk-hero__visual-term--3 {
+  top: 20px;
+  right: 0;
+  font-size: 24px;
+  color: var(--gf-ink);
+  transform: rotate(-4deg);
+}
+/* The glass sits in front of and overlapping all three — it's what turns a
+   loose scatter of words into "search finds these", same beat the Midas
+   benchmark credited for working in one glance. */
+.sozluk-hero__visual-glass {
+  position: absolute;
+  right: 22px;
+  bottom: 6px;
+  display: flex;
+  filter: drop-shadow(0 2px 6px rgba(37, 26, 73, 0.12));
+}
 
 /* ================================================ search + letter rail === */
 
@@ -606,21 +685,30 @@
   position: sticky;
   top: 0;
   z-index: 5;
-  /* Opaque, and bled to the container edges, so rows scrolling underneath
-     never appear through the card's rounded corners or beside it. */
-  background: var(--gf-bg);
+  /* Lilac-50, not lilac — a direct designer call for this one surface,
+     against the file-level note that --gf-lilac is the live site's dominant
+     fill (see the header comment above): here it's the wash, not the fill.
+     Same tone as the card below, and now rounded to match it too, so the
+     sticky zone reads as one continuous surface instead of a white collar
+     around it. Still opaque and bled to the container edges, so rows
+     scrolling underneath never appear through the card's rounded corners or
+     beside it. */
+  background: var(--gf-lilac-50);
+  border-radius: var(--r-lg);
   padding-block: var(--sp-md);
   margin-inline: calc(-1 * var(--pnib-gutter));
   padding-inline: var(--pnib-gutter);
 }
 
-/* --gf-lilac #f3f0fe, not --gf-lilac-50 #f9f7ff: the live page's dominant
-   surface is #f3f0fe (44 boxes carry it) and #f9f7ff appears nowhere on it. The
-   border goes with it — at this fill the 1px lilac-200 hairline was invisible,
-   and the live cards are borderless fills at 16px radius. */
+/* Always column — search on top, rail below — at every width. The previous
+   ≥1024px side-by-side grid existed to keep the sticky bar's height down; the
+   one-line rail below now does that job instead, so the split layout isn't
+   needed to justify itself. */
 .sozluk-bar {
+  display: flex;
+  flex-direction: column;
   border-radius: var(--r-lg);
-  background: var(--gf-lilac);
+  background: var(--gf-lilac-50);
   overflow: hidden;
 }
 
@@ -640,14 +728,12 @@
   background: var(--gf-bg);
   transition: border-color 0.16s var(--ease-out);
 }
-/* The FIELD carries the focus ring, not the bare input: the input fills a
-   bordered wrapper, so its own ring drew a second rounded rect inside the
-   first. One 2px purple ring on the wrapper, and the input's is suppressed —
-   with specificity high enough to beat the surface-wide `.pnib input` rule. */
+/* Border-color is the whole focus indicator, same as .pnib-entry-search__input
+   — no added outline ring. The FIELD carries it rather than the bare input:
+   the input fills a bordered wrapper, so its own ring would draw a second
+   rounded rect inside the first; that ring is suppressed below. */
 .sozluk-bar__field:focus-within {
   border-color: var(--gf-purple);
-  outline: 2px solid var(--gf-purple);
-  outline-offset: 1px;
 }
 .sozluk-bar__field .sozluk-bar__input:focus-visible {
   outline: none;
@@ -703,39 +789,23 @@
   }
 }
 
-/* The divider between the two halves of the bar moved lilac-200 → lilac-300
-   with the fill change: on --gf-lilac, lilac-200 measures 1.14:1 and simply
-   wasn't there any more. lilac-300 is 2.22:1 — a visible hairline. It separates
-   two regions and identifies no component or state, so 1.4.11's 3:1 doesn't
-   apply to it (unlike the input boundary above). */
+/* Divider is --gf-lilac — the card's OLD fill, now one step down from its
+   new --gf-lilac-50 base, so search and rail get a soft but visible seam
+   instead of lilac-300's harder hairline. It separates two regions and
+   identifies no component or state, so 1.4.11's 3:1 doesn't apply to it
+   (unlike the input boundary above). */
 .sozluk-bar__rail {
   padding: var(--sp-md) var(--sp-lg) var(--sp-lg);
-  border-top: 1px solid var(--gf-lilac-300);
+  border-top: 1px solid var(--gf-lilac);
 }
 
-/* Side by side from 1024 up — literally "both in one horizontal bar".
-   Stacked, the bar measured 283px, and since it is sticky that is 31% of a
-   900px viewport permanently spent on chrome. Side by side the two blocks
-   overlap in height instead of adding up, and the bar lands near 150px. */
-@media (min-width: 1024px) {
-  .sozluk-bar {
-    display: grid;
-    grid-template-columns: 340px minmax(0, 1fr);
-    align-items: stretch;
-  }
-  .sozluk-bar__search {
-    padding: var(--sp-lg);
-  }
-  .sozluk-bar__rail {
-    padding: var(--sp-lg);
-    border-top: none;
-    border-left: 1px solid var(--gf-lilac-300);
-  }
-}
-
+/* One line, no scroll — the letter set is fixed (29 letters + "tümü", never
+   grows), so every item takes an equal flex share of the row instead of a
+   44px floor that would force horizontal scrolling. "tümü" gets extra grow
+   since it's a word, not a glyph, and would otherwise be the tightest cell. */
 .sozluk-rail {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 2px;
 }
 .sozluk-rail__item {
@@ -743,8 +813,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /* ≥44px in both axes on every state, disabled included. */
-  min-width: 44px;
+  flex: 1 1 0;
+  min-width: 0;
+  /* Height stays a real touch target even though width now flexes below it —
+     disabled included. */
   min-height: 44px;
   border-radius: var(--r-md);
   font-size: var(--fs-body-md);
@@ -753,7 +825,8 @@
   transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
 }
 .sozluk-rail__item--all {
-  padding-inline: var(--sp-lg);
+  flex-grow: 2.2;
+  padding-inline: var(--sp-sm);
 }
 .sozluk-rail__glyph {
   position: relative;
@@ -779,13 +852,12 @@
   font-weight: var(--fw-bold);
   background: var(--gf-lilac);
 }
-/* Disabled letters: ink-500, which on the bar's --gf-lilac fill measures 4.86:1
-   (APCA Lc 69.3) rather than the 5.45:1 it had on the old near-white fill. Still
-   AA-passing for normal text, and inactive controls are explicitly exempt from
-   1.4.3 anyway — the point here is that it stays legible while reading as
-   subordinate. Weight is the second cue, so the state never rests on colour
-   alone. Kept in the rail, never removed: a rail with holes in it reads as a
-   broken alphabet. */
+/* Disabled letters: ink-500, which on the bar's --gf-lilac-50 fill measures
+   5.14:1 — AA-passing for normal text with margin, and inactive controls are
+   explicitly exempt from 1.4.3 anyway — the point here is that it stays
+   legible while reading as subordinate. Weight is the second cue, so the
+   state never rests on colour alone. Kept in the rail, never removed: a rail
+   with holes in it reads as a broken alphabet. */
 .sozluk-rail__item.is-empty {
   color: var(--gf-ink-500);
   font-weight: var(--fw-regular);
@@ -954,13 +1026,13 @@
     background: var(--gf-lilac);
   }
   .sozluk-row__link:hover .sozluk-row__term {
-    color: var(--gf-purple);
+    color: var(--pnib-row-hover);
   }
   .sozluk-row__link:hover .sozluk-row__term::after {
     transform: scaleX(1);
   }
   .sozluk-row__link:hover .sozluk-row__chev {
-    color: var(--gf-purple);
+    color: var(--pnib-row-hover);
     transform: translateX(3px);
   }
 }
@@ -1011,36 +1083,43 @@
   gap: var(--sp-sm);
   margin-top: var(--sp-xl);
 }
-/* Suggestion chips. The lilac fill replaces the near-invisible lilac-200 outline
-   (1.28:1 on white) — the live site's own components are borderless tinted
-   fills, so this is both the brand's shape and the more visible one.
+/* Suggestion chips. Outline, not the tinted fill this replaced (2026-08-08,
+   direct designer feedback) — text is `text/action/primary` (`--gf-purple`,
+   design-tokens/semantic.Light.tokens.json), the old fill (--gf-lilac)
+   becomes the border.
 
-   Why this does NOT need the 3:1 boundary the input needed: 1.4.11 asks for
-   contrast on visual information REQUIRED to identify a component. A chip is a
-   labelled control — its text (17.20:1 on this fill) identifies it, and the
-   shape is reinforcement. A text input has no label inside it, so there the
-   boundary is the only thing saying "type here", which is why that one had to
-   clear 3:1 and this one doesn't. Stated so the two decisions don't look
-   inconsistent. */
+   STILL FLAGGED, and worth reading before touching this again: the previous
+   fill's own comment explicitly rejected an outline here, because a
+   lilac-200 outline measured 1.28:1 on white — "near-invisible". --gf-lilac
+   is lighter than lilac-200 and measures **1.12:1**, so this reverts to a
+   weaker version of the thing that was already tried and dropped. Text
+   itself is fine (--gf-purple is 7.29:1, well past 4.5:1), and 1.4.11 still
+   doesn't require the boundary to clear 3:1 — the chip is a labelled
+   control, identified by its text, same reasoning as before. But at rest the
+   shape is carried almost entirely by that text, not by the border. Shipped
+   as instructed; wants a designer call if the border should move to
+   lilac-200 or lilac-300 instead of the exact old fill value. */
 .sozluk-chip {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   padding-inline: var(--sp-lg);
+  border: 1px solid var(--gf-lilac);
   border-radius: var(--r-full);
-  background: var(--gf-lilac);
+  background: none;
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-semibold);
-  color: var(--gf-ink);
-  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
+  color: var(--gf-purple);
+  transition: background 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .sozluk-chip:hover {
-    /* One step DARKER, not lighter: with the fill now at --gf-lilac, the old
-       lilac-50 hover was a lift toward white and read as the chip switching
-       off. */
-    background: var(--gf-lilac-200);
-    color: var(--gf-purple);
+    /* Text is already --gf-purple at rest, so hover can't lean on a colour
+       change the way the old fill version did. Wash fills with the same
+       lilac the border is drawn in, and the border itself darkens one step,
+       so hover still reads as a state change rather than nothing moving. */
+    background: var(--gf-lilac);
+    border-color: var(--gf-lilac-300);
   }
 }
 
@@ -1279,6 +1358,32 @@
      first build shrank both to 64/140x28, which is a GF-header habit, not
      paranaiyibak's behaviour. */
 
+  /* Equal-fit-no-scroll (the base rule above) holds from 768px, where 29
+     letters + "tümü" divide down to a still-legible ~30px+ each. At 375 that
+     same division lands under 10px per letter — not tight, illegible and
+     untappable, a fused blob rather than an alphabet. Below the site's own
+     mobile line, revert to a fixed-width scrollable row instead of shrinking
+     items past the point they still read as letters. */
+  .sozluk-rail {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .sozluk-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .sozluk-rail__item {
+    /* ≥44px in both axes, disabled included — the mobile fallback doesn't
+       need to compromise the touch-target floor the way the equal-fit rule
+       above does; scroll absorbs the overflow instead. */
+    flex: none;
+    min-width: 44px;
+  }
+  .sozluk-rail__item--all {
+    flex-grow: 0;
+  }
+
   .pnib-foot__marks {
     /* Stacked, so the two wordmarks don't sit at opposite ends of a 375 row at
        near-equal weight — the same proportional argument as the drawer-vs-badge
@@ -1314,23 +1419,10 @@
     padding: var(--sp-md);
   }
 
-  /* Grid, not a wrapped flex row: with flex-grow the final row stretched its
-     two remaining letters across the full width, so Y and Z sat at opposite
-     ends of an otherwise even alphabet. A grid keeps every cell the same width
-     and leaves the last row flush left, which is what an alphabet should look
-     like. */
-  .sozluk-rail {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
-  }
-  .sozluk-rail__item {
-    min-width: 0;
-  }
-  .sozluk-rail__item--all {
-    /* "tümü" is a word, not a glyph — it needs two cells. */
-    grid-column: span 2;
-    padding-inline: var(--sp-sm);
-  }
+  /* The old ≤767px override grid-ed this row to stop the last wrapped row
+     from flex-growing Y/Z across the full width. Moot now that .sozluk-rail
+     is nowrap + horizontal-scroll at every width (see the base rule) — there
+     is no wrapped last row left to stretch, on mobile or anywhere else. */
 
   /* Letter above its group instead of beside it — a 44px spine column would
      eat a quarter of a 375px viewport. */

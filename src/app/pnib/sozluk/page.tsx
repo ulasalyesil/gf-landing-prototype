@@ -45,11 +45,55 @@ export default async function SozlukPage({
 
             Reveal stays — the entrance is unrelated to the highlight. */}
         <Reveal as="header" className="sozluk-hero" direction="none">
-          <h1 className="sozluk-hero__title">finans sözlüğü</h1>
-          <p className="sozluk-hero__lead">
-            faiz mi, valör mü, kmh mı? paradan konuşurken karşına çıkan kelimeleri
-            sade bir dille topladık. hiçbiri bir şey satmak için yazılmadı.
-          </p>
+          <div className="sozluk-hero__row">
+            <div className="sozluk-hero__copy">
+              <h1 className="sozluk-hero__title">finans sözlüğü</h1>
+              <p className="sozluk-hero__lead">
+                faiz mi, valör mü, kmh mı? paradan konuşurken karşına çıkan{" "}
+                {TERMS.length} terimi sade bir dille topladık. aradığın
+                kelimeyi yazman yeterli, hiçbiri bir şey satmak için
+                yazılmadı.
+              </p>
+            </div>
+            {/* Replaces the plain "82 / terim" stat — same jobs (one
+                PİB-purple moment, right edge lined up with .sozluk-bar's own
+                edge below), but doing what the Midas benchmark flagged as
+                its strongest move: "a magnifier over three actual terms
+                tells you what the page is in one beat." The three words are
+                the same ones the lead just asked about, not arbitrary picks —
+                text and visual point at the same thing. Decorative only:
+                aria-hidden, no information here that isn't already in the
+                copy. */}
+            <div className="sozluk-hero__visual" aria-hidden="true">
+              <span className="sozluk-hero__visual-term sozluk-hero__visual-term--1">
+                valör
+              </span>
+              <span className="sozluk-hero__visual-term sozluk-hero__visual-term--2">
+                kmh
+              </span>
+              <span className="sozluk-hero__visual-term sozluk-hero__visual-term--3">
+                faiz
+              </span>
+              <span className="sozluk-hero__visual-glass">
+                <svg viewBox="0 0 40 40" width="40" height="40" focusable="false">
+                  <circle
+                    cx="17"
+                    cy="17"
+                    r="12.5"
+                    fill="var(--gf-bg)"
+                    stroke="var(--gf-purple)"
+                    strokeWidth="2.6"
+                  />
+                  <path
+                    d="M26.2 26.2 L35.5 35.5"
+                    stroke="var(--gf-purple)"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
         </Reveal>
 
         <SozlukIndex terms={TERMS} initialQuery={initialQuery} />

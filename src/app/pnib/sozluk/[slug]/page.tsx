@@ -75,7 +75,12 @@ export default async function TermPage({ params }: { params: Promise<{ slug: str
               {/* Anchors to the letter group heading rather than `?q=A`, which
                   would run a text search for "a" and match half the set. The
                   letter axis is client state, not a URL param. */}
-              <Link href={`/pnib/sozluk#harf-${term.letter}`}>{term.letter}</Link>
+              {/* Display-only lowercase, same reasoning as the index's rail
+                  glyph and group heading — the href's anchor id keeps the
+                  uppercase letter it was written with in SozlukIndex.tsx. */}
+              <Link href={`/pnib/sozluk#harf-${term.letter}`}>
+                {term.letter.toLocaleLowerCase("tr")}
+              </Link>
             </li>
             <li aria-hidden="true" className="pnib-crumb__sep">
               /

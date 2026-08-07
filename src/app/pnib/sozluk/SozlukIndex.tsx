@@ -335,7 +335,16 @@ export default function SozlukIndex({
                       transition={indicatorTransition}
                     />
                   )}
-                  <span className="sozluk-rail__glyph">{item.label}</span>
+                  {/* Display-only lowercase — `item.label`/`item.key` stay
+                      uppercase for matching, sorting, and the `#harf-A`
+                      anchor id. `.toLocaleLowerCase("tr")`, not CSS
+                      text-transform, for the same reason `fold()` in
+                      data/sozluk.ts uses it: "I" → "ı" and "İ" → "i" is a
+                      Turkish-specific mapping, not guessable from the glyph
+                      alone. */}
+                  <span className="sozluk-rail__glyph">
+                    {item.label.toLocaleLowerCase("tr")}
+                  </span>
                   {item.disabled && <span className="pnib-sr-only"> — terim yok</span>}
                 </button>
               );
@@ -420,7 +429,10 @@ export default function SozlukIndex({
           groups.map((group) => (
             <section className="sozluk-group" key={group.letter} aria-labelledby={`harf-${group.letter}`}>
               <h2 className="sozluk-group__letter" id={`harf-${group.letter}`}>
-                <span aria-hidden="true">{group.letter}</span>
+                {/* Display-only lowercase, same reasoning as the rail glyph
+                    above — id and sr-only announcement keep the uppercase
+                    letter untouched. */}
+                <span aria-hidden="true">{group.letter.toLocaleLowerCase("tr")}</span>
                 <span className="pnib-sr-only">{group.letter} harfi</span>
               </h2>
               <ul className="sozluk-list">
