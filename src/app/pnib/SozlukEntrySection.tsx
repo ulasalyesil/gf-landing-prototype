@@ -18,7 +18,6 @@
    with one label, so neither answer changes this layout. */
 
 import Link from "next/link";
-import AnimatedHighlight from "@/components/AnimatedHighlight";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import { TERMS, TERM_OF_MONTH, getTerm } from "@/data/sozluk";
 
@@ -30,8 +29,11 @@ export default function SozlukEntrySection() {
       <div className="pnib-container">
         <Reveal className="pnib-sozluk-entry__grid" stagger={0.08} direction="up">
           <RevealItem className="pnib-sozluk-entry__lead">
+            {/* Yellow `.hl` bar removed 2026-08-06 — same reasoning as the index
+                hero: the mark is for benefit statements, and paranaiyibak.com
+                uses yellow as filled badges, not as a text underline. */}
             <h2 className="pnib-sozluk-entry__title" id="sozluk-entry-title">
-              paranaiyibak <AnimatedHighlight type="hl">sözlük</AnimatedHighlight>
+              paranaiyibak sözlük
             </h2>
             <p className="pnib-sozluk-entry__copy">
               faiz, valör, kmh… paradan konuşurken karşına çıkan kelimeleri sade bir

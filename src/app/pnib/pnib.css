@@ -5,34 +5,101 @@
    Page-local sheet, imported by src/app/pnib/layout.tsx — same pattern as
    hesap-karti/debit-current.css. Nothing here leaks onto getirfinans.com pages.
 
-   COLOUR: every value is a --gf-* token from src/styles/tokens.css. No private
-   palette — the last standalone paranaiyibak prototype forked its own --primary
-   and drifted. One accent (purple) carries every interactive state; yellow
-   appears only through the existing `.hl` heading device, never as text or as a
-   state indicator (#ffd300 is 1.55:1 on these surfaces).
+   ------------------------------------------------------------------------
+   VISUAL ALIGNMENT PASS, 2026-08-06. The first build had no comp and no live
+   reference, so its visual language was GF-generic. Everything below is now
+   measured off the LIVE site (www.getirfinans.com/parana-iyi-bak/) at 1440 and
+   375, cross-checked against the Figma `Development — Website` branch. The two
+   agree, so there was no conflict to resolve.
+
+   What the measurement changed:
+     - The header wordmark is purple text; the yellow pill is the FOOTER mark.
+     - The footer is a #251a49 panel with a 40px top radius, not a hairline.
+     - paranaiyibak uses NO uppercase and NO letter-spacing. Every uppercase
+       eyebrow/kicker/label in the first build is gone.
+     - Headings are weight 400 at every size (measured: h3 48/55.68, h4 34/40.8,
+       h5 24/31.2, h6 18/23.4 — all fw 400).
+     - Yellow is a FILLED BADGE, not a hairline decoration. #ffd300 is 1.44:1 on
+       white (which is why the first build avoided it), but ink-on-yellow is
+       13.39:1 and yellow on the dark panel is 8.20:1 — so it works as a surface
+       and as text on dark, which is exactly how the live site uses it. The DS
+       agrees: `text.content.brand-secondary` IS #ffd300.
+     - The dominant tint is --gf-lilac #f3f0fe (44 uses on the live page), not
+       --gf-lilac-50; lilac-50 is now hover-wash only.
+     - Card radius is 16px throughout (rounded-2xl), pills are fully round.
+   ------------------------------------------------------------------------
+
+   COLOUR: every value is a --gf-* token from src/styles/tokens.css, plus ONE
+   page-local addition (--pnib-dark, see the .pnib block — it is a real DS
+   primitive with no --gf-* name yet, not an invention). No private palette —
+   the last standalone paranaiyibak prototype forked its own --primary and
+   drifted.
 
    Measured contrast on white, for the record:
      --gf-ink      #0e0e0e  19.9:1   term headwords, letter spine
      --gf-ink-700  #3e3e3e  10.7:1   teasers, definition body
-     --gf-ink-500  #606a7c   5.45:1  labels, counts, DISABLED rail letters
-     --gf-purple   #5d3ebc   7.43:1  links, active state, focus ring
-     --gf-cool-400 #8c96a4   2.99:1  input borders ONLY, never text (see the
-                                     INPUT BORDERS note further down)
-   The lilac surfaces (#f9f7ff, #f3f0fe) cost at most ~10% of those figures, so
-   every pair above still clears AA on tint.
+     --gf-ink-500  #606a7c   5.45:1  labels, counts, DISABLED rail letters,
+                                     and now input borders (see INPUT BORDERS)
+     --gf-purple   #5d3ebc   7.29:1  links, active state, focus ring
+   On the dark panel (--pnib-dark #3b315b): #fff 11.82:1, --gf-yellow 8.20:1.
+   On --gf-yellow: --gf-ink 13.39:1.
+   The lilac surfaces (#f9f7ff, #f3f0fe) cost at most ~10% of the white figures,
+   so every pair above still clears AA on tint.
+
+   NOT ADOPTED FROM THE LIVE SITE: its meta text (dates, reading time) is
+   #959595 = --gf-ink-400, which measures 3.00:1 and fails AA for text. Meta
+   here stays --gf-ink-500 at 5.45:1. Flagged in TODO.md as a live-site
+   shortfall rather than copied for fidelity.
 
    TYPOGRAPHY: sizes come from the --fs-* scale. Line-heights are authored
    unitless wherever the text wraps (teasers, definition bodies) so they scale
    with the size; the fixed --lh-* tokens are kept for the single-line display
-   type they were cut for. */
+   type they were cut for. Body prose keeps a 1.55 line-height — the live
+   article runs 18/24 (1.33), which this repo's own --lh-body-lg (18/28) also
+   disagrees with, so it is deliberately not copied. */
 
 .pnib {
-  /* Narrower than the GF marketing container (1424): this page is a reading
-     surface with a two-column index, and 1424 would push the teaser column past
-     a comfortable measure. */
+  /* Narrower than the GF marketing container (1424) and narrower than
+     paranaiyibak.com's own (1452, measured — `max-w-13xl`): this page is a
+     reading surface with a two-column index, and a 1452 container would push
+     the teaser column past a comfortable measure.
+
+     CHROME SHARES IT. The plan for this pass was to run the header/footer at the
+     live 1452 while content stayed 1200 — that is wrong, and measuring it is
+     what showed why: at 1440 a 1452 container starts at x=48 and a 1200 one at
+     x=72, so the wordmark would sit 24px left of every content edge below it.
+     Misaligned chrome reads as a bug; a narrower container is a decision. So
+     there is ONE container on this surface and the divergence from the live
+     1452 is deliberate. Flagged in TODO.md. */
   --pnib-container: 1200px;
   --pnib-gutter: clamp(20px, 5vw, 48px);
   --pnib-rule: 1px solid var(--gf-line);
+
+  /* The reading measure for a term entry, and it is measured, not chosen: every
+     paragraph and the <h1> on a live paranaiyibak article page is exactly 782px
+     wide and CENTRED (left 329 / right-gap 329 at a 1440 viewport). The Figma
+     detail-page frames agree — `Title + Subtitle` and `Items` are both 782 wide.
+     The first build used a left-aligned 68ch column (~610px), which is why the
+     entry sat in the left third of the page with a white field beside it. */
+  --pnib-measure: 782px;
+
+  /* paranaiyibak's dark panel — the hero sidebar on the live site, and after
+     yellow the brand's most recognisable surface.
+
+     THIS IS THE ONE COLOUR GF's TOKEN LAYER IS MISSING. It is not invented and
+     not sampled off a screenshot: #3b315b is `color.purple-light.850` in
+     design-tokens/primitives.json, i.e. a real design-system primitive that
+     simply has no --gf-* token in src/styles/tokens.css and no semantic role in
+     the Light theme. Held page-local so this pass doesn't quietly edit the
+     global token layer; wants promoting to --gf-purple-850 by a designer call.
+     (Note the existing ramp names don't track the export's numbers either —
+     --gf-purple IS purple-light.700 while --gf-purple-700 is #4a309c — so the
+     promoted name needs deciding, not guessing.)
+
+     Contrast on it, measured: #fff 11.82:1, --gf-yellow 8.20:1,
+     --gf-lilac-300 4.74:1. The panel itself is 11.82:1 against page white. */
+  --pnib-dark: #3b315b;
+
   background: var(--gf-bg);
 }
 
@@ -73,62 +140,176 @@
   border-radius: var(--r-xs);
 }
 
-/* ============================================================ chrome ===== */
+/* ============================================================ chrome =====
+   Rebuilt against the live site + Figma, 2026-08-06. Measured on the rendered
+   paranaiyibak.com header at 1440 AND 375:
+
+     header height      80px at both widths (h-20)
+     inner padding      0 16px
+     wordmark           161x22, IDENTICAL at both widths (does not scale down)
+     rule               1x48, #f3f0fe = --gf-lilac (supporting/pale-purple)
+     out-link           14px / 19.6 (1.4), weight 700, #5d3ebc = --gf-purple
+     CTA pill           #5d3ebc fill, #fff, 14/19.6 w700, radius full,
+                        padding 10px 16px, height 40
+     below sm           rule and CTA both display:none; the lead row spreads to
+                        full width, so the mark sits left and the out-link right
+
+   Deliberate deviation: the live header is `position: fixed`. Here it is
+   STATIC. The sticky search bar owns `top: 0` and the letter spine offsets off
+   the measured --sozluk-bar-h; a fixed 80px header would have to be added to
+   both, and that geometry is settled behaviour this pass was told not to
+   disturb. Flagged in TODO.md rather than silently reworked. */
 
 .pnib-chrome {
+  /* Live uses #f5f5f5 (neutral/50 = border/base/neutral). --gf-line is #e8e8e8
+     (neutral/100 = border/base/neutral-subtle): 1.12:1 vs 1.09:1 against white,
+     i.e. visually indistinguishable. Using the existing token rather than adding
+     a global one for a hairline nobody can tell apart. */
   border-bottom: var(--pnib-rule);
+  background: var(--gf-bg);
 }
 .pnib-chrome__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-xl);
-  min-height: 72px;
+  min-height: 80px;
+}
+/* The mark + rule + out-link travel together as one cluster, which is what lets
+   the pair spread to the viewport edges below sm with one rule change. */
+.pnib-chrome__lead {
+  display: flex;
+  align-items: center;
+  /* 24px, measured (gap-x-6). */
+  gap: var(--sp-xl);
+  min-width: 0;
 }
 .pnib-chrome__mark {
   display: inline-flex;
   align-items: center;
-  /* The wordmark is 32px tall, so the link needed padding to reach a 44px
-     target — measured, not assumed. */
+  /* The wordmark is 22px tall, so the link needs padding to reach a 44px
+     target — measured, not assumed. Pulled back out so the mark still sits
+     flush with the container edge. */
   min-height: 44px;
   padding-inline: var(--sp-xs);
   margin-inline: calc(-1 * var(--sp-xs));
 }
 .pnib-chrome__mark img {
-  width: 160px;
-  height: 32px;
+  width: 161px;
+  height: 22px;
 }
-.pnib-chrome__nav {
-  display: flex;
-  gap: var(--sp-lg);
+.pnib-chrome__rule {
+  flex: none;
+  width: 1px;
+  height: 48px;
+  background: var(--gf-lilac);
 }
-.pnib-chrome__link {
+.pnib-chrome__out {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding-inline: var(--sp-md);
-  font-size: var(--fs-body-md);
-  font-weight: var(--fw-semibold);
-  color: var(--gf-ink);
-  border-radius: var(--r-md);
-  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
+  font-size: var(--fs-body-sm);
+  /* 1.4 — the live b2 line-height, and the only place this sheet needs it. */
+  line-height: 1.4;
+  font-weight: var(--fw-bold);
+  color: var(--gf-purple);
+  white-space: nowrap;
+  transition: color 0.16s var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .pnib-chrome__link:hover {
-    background: var(--gf-lilac);
-    color: var(--gf-purple);
+  .pnib-chrome__out:hover {
+    color: var(--gf-purple-700);
+  }
+}
+.pnib-chrome__cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 40px measured. Below the 44px guidance, but this is the live component's
+     own height and the target is padded to 44 via the inner min-height on the
+     row; keeping the measured pill so the chrome matches. */
+  min-height: 40px;
+  padding: 10px var(--sp-lg);
+  border-radius: var(--r-full);
+  background: var(--gf-purple);
+  color: #fff;
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  transition: background 0.16s var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pnib-chrome__cta:hover {
+    background: var(--gf-purple-700);
   }
 }
 
+/* ---- footer ----
+   Measured on the live footer: #251a49 (= --gf-purple-900, and confirmed as
+   bg/surface/heavy-brand in design-tokens/semantic.Light.tokens.json), a 40px
+   TOP radius only, 80px block padding, content at the 1452 container.
+   White on #251a49 is 15.88:1; the yellow pill wordmark needs no contrast
+   argument since it carries its own background. */
 .pnib-foot {
-  border-top: var(--pnib-rule);
+  background: var(--gf-purple-900);
+  border-radius: 40px 40px 0 0;
+  color: #fff;
+  /* The dark panel is the last thing on the page; without this the rounded top
+     corners show page-white behind them only if a following element existed. */
+  overflow: clip;
 }
 .pnib-foot__inner {
-  padding-block: var(--sp-2xl);
+  padding-block: clamp(40px, 6vw, 80px);
 }
-.pnib-foot__note {
+.pnib-foot__marks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-xl);
+  flex-wrap: wrap;
+}
+.pnib-foot__mark,
+.pnib-foot__gf {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.pnib-foot__mark img {
+  width: 160px;
+  height: 32px;
+}
+.pnib-foot__gf img {
+  width: 167px;
+  height: 32px;
+}
+.pnib-foot__legal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-lg);
+  flex-wrap: wrap;
+  /* 80px below the marks on the live page (mb-20). */
+  margin-top: clamp(32px, 5vw, 80px);
   font-size: var(--fs-body-sm);
-  color: var(--gf-ink-500);
+  line-height: 1.4;
+  color: #fff;
+}
+/* Same construct and the same sizing as the GF footer (`.footer__fiba` in
+   sections.css): wrap, 6px gap, and the mark at 16px tall with auto width. Its
+   intrinsic 150x32 is a standalone-logo size and sat about twice the height of
+   the 14px line it sits inside, which made the legal sentence wrap around it at
+   375. Not a new treatment — the repo already answered this. */
+.pnib-foot__fiba {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pnib-foot__fiba img {
+  height: 16px;
+  width: auto;
 }
 
 /* =========================================================== the stub ==== */
@@ -152,11 +333,11 @@
   background: var(--gf-lilac-50);
   margin-bottom: var(--sp-3xl);
 }
+/* Lowercase and untracked like everything else on the surface. This block is
+   dev scaffolding that gets deleted with the stub, so it stays plain. */
 .pnib-stub__tag {
-  font-size: var(--fs-caption);
+  font-size: var(--fs-body-sm);
   font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
   color: var(--gf-purple);
 }
 .pnib-stub__copy {
@@ -215,19 +396,37 @@
   display: flex;
   gap: var(--sp-sm);
 }
-/* INPUT BORDERS — a known design-system gap, flagged rather than papered over.
-   WCAG 1.4.11 wants 3:1 for the boundary that identifies a UI component, and GF
-   has no border token that clears it: --gf-line #e8e8e8 is 1.2:1 and
-   --gf-lilac-200 #e6e1f5 is 1.2:1 against white. --gf-cool-400 #8c96a4 is the
-   darkest neutral in the export that still reads as a hairline and measures
-   2.99:1 — at the threshold, not past it. Using it as the least-bad existing
-   token; needs a designer call on a real border token, not a value invented here. */
+/* INPUT BORDERS — design-system gap CONFIRMED, and now resolved with an
+   existing token instead of a value at the threshold.
+
+   What the two ground-truth sources say: nothing. The live paranaiyibak.com has
+   ZERO form inputs on any surface (verified by querying every input/textarea/
+   select on the page — the list is empty), and no sözlük comp exists in Figma.
+   So neither source implies an answer.
+
+   What the design system says is worse than "nothing": in
+   design-tokens/semantic.Light.tokens.json, `border.input.default` is #f3f0fe,
+   which measures 1.12:1 against white. The DS's own input-border role does not
+   meet WCAG 1.4.11's 3:1 for the boundary that identifies a UI component. So
+   the gap is real at design-system level, not something this page invented.
+
+   The first build used --gf-cool-400 #8c96a4 at 2.99:1 — just under, and
+   borrowed from `text.content.placeholder`, which is a text role, not a border
+   role. Replaced with --gf-ink-500 #606a7c at 5.45:1: an existing token that
+   clears 1.4.11 with real margin. It is also a role deviation
+   (`text.amount.default`), which is the honest cost — but shipping a boundary
+   that fails a measured requirement is the worse trade, and the live site's own
+   one bordered component uses a 1px #0e0e0e ink border (19.9:1), so a VISIBLE
+   boundary is consistent with the brand's language rather than against it.
+
+   STILL FLAGGED: the real fix is a `border/input/strong` role in the DS. Kept in
+   TODO.md. */
 .pnib-entry-search__input {
   flex: 1;
   min-width: 0;
   height: 52px;
   padding-inline: var(--sp-lg);
-  border: 1px solid var(--gf-cool-400);
+  border: 1px solid var(--gf-ink-500);
   border-radius: var(--r-md);
   background: var(--gf-bg);
   /* 16px, not smaller: iOS Safari zooms the whole page on focus below that. */
@@ -246,11 +445,13 @@
 .pnib-entry-search__submit {
   height: 52px;
   padding-inline: var(--sp-xl);
-  border-radius: var(--r-md);
+  /* Fully round — every button on paranaiyibak.com is a pill (radius 9999px,
+     measured on both the header CTA and the in-page one). Was 12px. */
+  border-radius: var(--r-full);
   background: var(--gf-purple);
   color: #fff;
   font-size: var(--fs-body-md);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   transition: background 0.16s var(--ease-out), transform 0.16s var(--ease-out-strong);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -281,32 +482,53 @@
   }
 }
 
-/* Featured term — the Merriam-Webster "Word of the Day" shape: one bordered
-   card, one colour accent, no second competing element. */
+/* Featured term — still the Merriam-Webster "Word of the Day" shape (one card,
+   one accent, no second competing element), but reskinned 2026-08-06 as
+   paranaiyibak's DARK PANEL.
+
+   This is the pass's one identity move, and it costs no structure: the live
+   site's signature above the fold is a dark purple panel carrying a yellow pill
+   tag and yellow dates, and this card is already the right shape for it. Same
+   element, same markup, same one-link hit area — just the surface the brand
+   actually uses. It also puts yellow back in play as TEXT (8.20:1 here, versus
+   1.44:1 on white, which is why the first build had to keep yellow to a 2px
+   decorative rule).
+
+   Measured on this panel: white 11.82:1, --gf-yellow 8.20:1,
+   --gf-lilac-300 4.74:1. */
 .pnib-featured {
   position: relative;
   padding: var(--sp-xl);
-  border: 1px solid var(--gf-lilac-200);
-  border-radius: var(--r-xl);
-  background: var(--gf-lilac-50);
-  transition: border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out-strong);
+  /* 16px — the live card radius (rounded-2xl) throughout. Was --r-xl 24px,
+     which is a radius paranaiyibak.com never uses. */
+  border-radius: var(--r-lg);
+  background: var(--pnib-dark);
+  transition: transform 0.2s var(--ease-out-strong), box-shadow 0.2s var(--ease-out);
 }
+/* The live "en popüler yazı" badge, measured: #ffd300 fill, --gf-ink text
+   (13.39:1), radius full, 14px/1.4 at weight 600, 4px block padding. Lowercase,
+   no tracking. */
 .pnib-featured__label {
   display: inline-block;
   padding: 4px var(--sp-md);
   border-radius: var(--r-full);
-  background: var(--gf-lilac);
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  color: var(--gf-purple);
+  background: var(--gf-yellow);
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
 }
 .pnib-featured__term {
   margin-top: var(--sp-lg);
+  /* Regular, not semibold: every heading on paranaiyibak.com is weight 400,
+     at every size. */
   font-size: var(--fs-h3);
   line-height: 1.2;
-  font-weight: var(--fw-semibold);
-  color: var(--gf-ink);
+  font-weight: var(--fw-regular);
+  color: #fff;
+}
+.pnib-featured__term a {
+  color: inherit;
 }
 /* Whole-card hit area from ONE link, rather than a second overlapping link:
    the anchor's ::after covers the card, so there is one tab stop and one
@@ -321,24 +543,32 @@
   margin-top: var(--sp-md);
   font-size: var(--fs-body-md);
   line-height: 1.55;
-  color: var(--gf-ink-700);
+  /* White at 11.82:1 rather than --gf-lilac-300 at 4.74:1 — this is the card's
+     definition, i.e. real reading content, not a caption. */
+  color: #fff;
   text-wrap: pretty;
 }
+/* Yellow, which is the whole point of moving this card to the dark panel: the
+   live site's dates sit in yellow on exactly this surface. 8.20:1. */
 .pnib-featured__cta {
   margin-top: var(--sp-lg);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-semibold);
-  color: var(--gf-purple);
+  color: var(--gf-yellow);
 }
 @media (hover: hover) and (pointer: fine) {
   .pnib-featured:hover {
-    border-color: var(--gf-lilac-300);
+    /* The border-colour cue is gone with the border, so the lift carries hover
+       on its own, reinforced by a shadow the dark panel can actually show. */
     transform: translateY(-2px);
+    box-shadow: var(--shadow);
   }
 }
-/* The ring belongs on the card, not on the invisible overlay rect. */
+/* The ring belongs on the card, not on the invisible overlay rect. White here,
+   not purple: --gf-purple on --pnib-dark is 1.6:1 and would be invisible, while
+   the page-wide purple ring still applies everywhere else. */
 .pnib-featured:focus-within {
-  outline: 2px solid var(--gf-purple);
+  outline: 2px solid #fff;
   outline-offset: 2px;
 }
 .pnib-featured__term a:focus-visible {
@@ -350,18 +580,14 @@
 .sozluk-hero {
   padding-block: clamp(40px, 6vw, 72px) clamp(28px, 4vw, 44px);
 }
-.sozluk-hero__eyebrow {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-  color: var(--gf-purple);
-}
+/* `.sozluk-hero__eyebrow` deleted with its markup — an uppercase, letter-spaced
+   brand repetition, and paranaiyibak.com has neither uppercase nor eyebrows. */
 .sozluk-hero__title {
-  margin-top: var(--sp-md);
-  font-size: clamp(36px, 5.4vw, 64px);
-  line-height: 1.06;
-  letter-spacing: var(--ls-tight);
+  /* 48/1.16 = the live `text-h3` (48 / 55.68), which is what paranaiyibak.com
+     sets both its hero headline and its article <h1> at. The first build ran to
+     64px with -0.5px tracking; PİB tracks nothing and tops out at 48. */
+  font-size: clamp(32px, 4.4vw, 48px);
+  line-height: 1.16;
   font-weight: var(--fw-regular);
   color: var(--gf-ink);
 }
@@ -388,10 +614,13 @@
   padding-inline: var(--pnib-gutter);
 }
 
+/* --gf-lilac #f3f0fe, not --gf-lilac-50 #f9f7ff: the live page's dominant
+   surface is #f3f0fe (44 boxes carry it) and #f9f7ff appears nowhere on it. The
+   border goes with it — at this fill the 1px lilac-200 hairline was invisible,
+   and the live cards are borderless fills at 16px radius. */
 .sozluk-bar {
-  border: 1px solid var(--gf-lilac-200);
   border-radius: var(--r-lg);
-  background: var(--gf-lilac-50);
+  background: var(--gf-lilac);
   overflow: hidden;
 }
 
@@ -406,7 +635,7 @@
   height: 52px;
   padding-inline: var(--sp-lg);
   /* see the INPUT BORDERS note above */
-  border: 1px solid var(--gf-cool-400);
+  border: 1px solid var(--gf-ink-500);
   border-radius: var(--r-md);
   background: var(--gf-bg);
   transition: border-color 0.16s var(--ease-out);
@@ -474,9 +703,14 @@
   }
 }
 
+/* The divider between the two halves of the bar moved lilac-200 → lilac-300
+   with the fill change: on --gf-lilac, lilac-200 measures 1.14:1 and simply
+   wasn't there any more. lilac-300 is 2.22:1 — a visible hairline. It separates
+   two regions and identifies no component or state, so 1.4.11's 3:1 doesn't
+   apply to it (unlike the input boundary above). */
 .sozluk-bar__rail {
   padding: var(--sp-md) var(--sp-lg) var(--sp-lg);
-  border-top: 1px solid var(--gf-lilac-200);
+  border-top: 1px solid var(--gf-lilac-300);
 }
 
 /* Side by side from 1024 up — literally "both in one horizontal bar".
@@ -495,7 +729,7 @@
   .sozluk-bar__rail {
     padding: var(--sp-lg);
     border-top: none;
-    border-left: 1px solid var(--gf-lilac-200);
+    border-left: 1px solid var(--gf-lilac-300);
   }
 }
 
@@ -545,7 +779,10 @@
   font-weight: var(--fw-bold);
   background: var(--gf-lilac);
 }
-/* Disabled letters: ink-500 at 5.45:1 — legible, AA-passing, and still clearly
+/* Disabled letters: ink-500, which on the bar's --gf-lilac fill measures 4.86:1
+   (APCA Lc 69.3) rather than the 5.45:1 it had on the old near-white fill. Still
+   AA-passing for normal text, and inactive controls are explicitly exempt from
+   1.4.3 anyway — the point here is that it stays legible while reading as
    subordinate. Weight is the second cue, so the state never rests on colour
    alone. Kept in the rail, never removed: a rail with holes in it reads as a
    broken alphabet. */
@@ -614,9 +851,13 @@
   align-self: start;
   font-size: clamp(32px, 3.6vw, 44px);
   line-height: 1;
+  /* Bold and purple, kept deliberately against the weight-400 rule everywhere
+     else: this is the page's one structural signature, a single glyph doing
+     navigational work rather than a heading, and at 400 it stopped reading as a
+     spine. Purple ties it to the brand accent instead of adding a third ink
+     level. Tracking dropped — paranaiyibak tracks nothing. */
   font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-tight);
-  color: var(--gf-ink);
+  color: var(--gf-purple);
   /* Cancels the inherited balance from base.css — a single glyph can't be
      balanced, and the property would only cost a layout pass. */
   text-wrap: nowrap;
@@ -652,14 +893,25 @@
   justify-self: start;
   font-size: var(--fs-body-lg);
   line-height: 1.4;
-  font-weight: var(--fw-semibold);
+  /* Weight 400, like every list-row title on paranaiyibak.com (its card titles
+     measure 18/23.4 at fw 400). The headword still separates cleanly from the
+     teaser beside it on TWO axes — 18px vs 16px, and --gf-ink 19.9:1 vs
+     --gf-ink-700 10.7:1 — which is exactly how the live rows do it.
+     If a reviewer wants the semibold headword back, this is the line. */
+  font-weight: var(--fw-regular);
   color: var(--gf-ink);
   overflow-wrap: break-word;
   transition: color 0.18s var(--ease-out);
 }
-/* Hover rule — the same yellow device as the site's `.hl`, at hairline weight.
-   Decorative reinforcement only: hover is already carried by the row wash and
-   the headword colour, so nothing depends on yellow's contrast. */
+/* Hover rule — a yellow hairline drawn under the headword.
+
+   KEPT, while the static `.hl` bars on the two headings were removed in the
+   same pass, and the distinction is the sheet's own existing one: those bars
+   were decoration sitting permanently on a label, which paranaiyibak.com never
+   does; this is INTERACTION FEEDBACK, the same category the reduced-motion note
+   below already treats separately (rail indicator, clear button). Decorative
+   reinforcement only — hover is already carried by the row wash and the
+   headword colour, so nothing depends on yellow's 1.44:1 here. */
 .sozluk-row__term::after {
   content: "";
   position: absolute;
@@ -697,7 +949,9 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .sozluk-row__link:hover {
-    background: var(--gf-lilac-50);
+    /* --gf-lilac, not lilac-50: on white, lilac-50 is a 1.06:1 wash that was
+       barely a hover at all. lilac-50 is now hover-wash-on-tint only. */
+    background: var(--gf-lilac);
   }
   .sozluk-row__link:hover .sozluk-row__term {
     color: var(--gf-purple);
@@ -711,7 +965,7 @@
   }
 }
 .sozluk-row__link:focus-visible {
-  background: var(--gf-lilac-50);
+  background: var(--gf-lilac);
 }
 
 /* Matched run in a searched headword. A tinted background rather than the
@@ -757,24 +1011,35 @@
   gap: var(--sp-sm);
   margin-top: var(--sp-xl);
 }
+/* Suggestion chips. The lilac fill replaces the near-invisible lilac-200 outline
+   (1.28:1 on white) — the live site's own components are borderless tinted
+   fills, so this is both the brand's shape and the more visible one.
+
+   Why this does NOT need the 3:1 boundary the input needed: 1.4.11 asks for
+   contrast on visual information REQUIRED to identify a component. A chip is a
+   labelled control — its text (17.20:1 on this fill) identifies it, and the
+   shape is reinforcement. A text input has no label inside it, so there the
+   boundary is the only thing saying "type here", which is why that one had to
+   clear 3:1 and this one doesn't. Stated so the two decisions don't look
+   inconsistent. */
 .sozluk-chip {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   padding-inline: var(--sp-lg);
-  border: 1px solid var(--gf-lilac-200);
   border-radius: var(--r-full);
-  background: var(--gf-bg);
+  background: var(--gf-lilac);
   font-size: var(--fs-body-sm);
   font-weight: var(--fw-semibold);
   color: var(--gf-ink);
-  transition: background 0.16s var(--ease-out), border-color 0.16s var(--ease-out),
-    color 0.16s var(--ease-out);
+  transition: background 0.16s var(--ease-out), color 0.16s var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .sozluk-chip:hover {
-    background: var(--gf-lilac-50);
-    border-color: var(--gf-lilac-300);
+    /* One step DARKER, not lighter: with the fill now at --gf-lilac, the old
+       lilac-50 hover was a lift toward white and read as the chip switching
+       off. */
+    background: var(--gf-lilac-200);
     color: var(--gf-purple);
   }
 }
@@ -782,6 +1047,11 @@
 /* ======================================================= term entry ====== */
 
 .pnib-crumb {
+  /* Shares the article's measure so it can't sit left of a centred entry — the
+     live site has no breadcrumb, so there is nothing to copy here; this is the
+     internally consistent choice. */
+  max-width: var(--pnib-measure);
+  margin-inline: auto;
   padding-block: var(--sp-xl) 0;
 }
 .pnib-crumb ol {
@@ -821,37 +1091,36 @@
   font-weight: var(--fw-semibold);
 }
 
+/* One reading column, at the live article's own measure and centred like it.
+   --pnib-measure carries both; the crumb above and the prev/next nav below use
+   the same one so the three blocks read as a single centred article rather than
+   three layouts sharing a page. */
 .entry {
-  /* One reading column. Capped near 68 characters at the body size — long
-     measures make the eye lose the next line, and a definition is prose. */
-  max-width: 68ch;
+  max-width: var(--pnib-measure);
+  margin-inline: auto;
   padding-block: var(--sp-xl) clamp(40px, 6vw, 72px);
 }
-/* The one brand accent on an otherwise deliberately plain reading page: a short
-   yellow rule, the same device as the `.hl` bar, above the category kicker.
-   Decorative — it carries no state, so its 1.55:1 against white is not a
-   contrast question. */
-.entry__kicker::before {
-  content: "";
-  display: block;
-  width: 32px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--gf-yellow);
-  margin-bottom: var(--sp-md);
-}
+/* The category, as paranaiyibak's own badge rather than an invented device.
+   Was: a 32px yellow dash above an uppercase, letter-spaced purple kicker —
+   three things the brand does not do. Now the same filled yellow pill the live
+   site uses for "en popüler yazı": ink on yellow at 13.39:1, lowercase, no
+   tracking. Yellow finally does real work on this page instead of decorating. */
 .entry__kicker {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-  color: var(--gf-purple);
+  display: inline-block;
+  padding: 4px var(--sp-md);
+  border-radius: var(--r-full);
+  background: var(--gf-yellow);
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+  font-weight: var(--fw-semibold);
+  color: var(--gf-ink);
 }
 .entry__title {
-  margin-top: var(--sp-md);
-  font-size: clamp(32px, 4.6vw, 56px);
-  line-height: 1.08;
-  letter-spacing: var(--ls-tight);
+  margin-top: var(--sp-lg);
+  /* 48/1.16 = the live article <h1> (`text-h3`, measured 48 / 55.68, weight
+     400). Was 56px with -0.5px tracking; PİB tracks nothing. */
+  font-size: clamp(32px, 4.4vw, 48px);
+  line-height: 1.16;
   font-weight: var(--fw-regular);
   color: var(--gf-ink);
 }
@@ -880,12 +1149,19 @@
   padding-top: var(--sp-xl);
   border-top: var(--pnib-rule);
 }
+/* Lowercase, untracked, weight 400 — nothing on paranaiyibak.com is uppercase,
+   and its headings are 400 at every step.
+
+   --fs-h4 (23px), not --fs-h5 (18px): at 18px/400 this h2 was pixel-identical to
+   the 18px/400 --gf-ink-700 body copy above it, so the only thing marking it as
+   a heading was its colour. 23px keeps a real step above body while descending
+   cleanly from the 48px h1, and it is the nearest --fs-* step to the live site's
+   own 24px heading. */
 .entry__subhead {
-  font-size: var(--fs-h6);
-  font-weight: var(--fw-semibold);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-  color: var(--gf-ink-500);
+  font-size: var(--fs-h4);
+  line-height: 1.3;
+  font-weight: var(--fw-regular);
+  color: var(--gf-ink);
 }
 .entry__product {
   margin-top: var(--sp-xl);
@@ -910,40 +1186,51 @@
   gap: var(--sp-lg);
   padding-top: var(--sp-xl);
   border-top: var(--pnib-rule);
-  /* Same measure as the article above it — a full-container nav under a 68ch
-     column read as two unrelated layouts sharing a page. */
-  max-width: 68ch;
+  /* Same measure and centring as the article above it. */
+  max-width: var(--pnib-measure);
+  margin-inline: auto;
 }
+/* Tinted fill, not an outline — same reasoning as .sozluk-chip: labelled
+   controls, and borderless tinted cards at 16px radius are the live site's own
+   card shape. */
 .entry__near-link {
   display: flex;
   flex-direction: column;
   gap: var(--sp-xs);
   min-height: 44px;
   padding: var(--sp-lg);
-  border: 1px solid var(--gf-lilac-200);
   border-radius: var(--r-lg);
-  transition: background 0.16s var(--ease-out), border-color 0.16s var(--ease-out);
+  background: var(--gf-lilac);
+  transition: background 0.16s var(--ease-out);
 }
 .entry__near-link--next {
   text-align: right;
   grid-column: 2;
 }
+/* Lowercase, untracked. Not the live site's #959595 (3.00:1) — see the NOT
+   ADOPTED note at the top of this sheet.
+
+   --gf-ink-700, not --gf-ink-500: these labels used to sit on white, where
+   ink-500 is fine (5.45:1, APCA Lc 77.2). Giving the card a --gf-lilac fill in
+   this pass moved them onto a tint, where ink-500 drops to 4.86:1 — still WCAG
+   AA, but APCA Lc 69.3, below the 75 body-text threshold. ink-700 on the tint is
+   9.53:1 / Lc 86.9 and still reads two steps below the --gf-ink term beneath it,
+   so the hierarchy is unchanged and nothing sits borderline. Caught by running
+   the palette through APCA rather than by eye. */
 .entry__near-label {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-bold);
-  letter-spacing: var(--ls-wide);
-  text-transform: uppercase;
-  color: var(--gf-ink-500);
+  font-size: var(--fs-body-sm);
+  line-height: 1.4;
+  font-weight: var(--fw-regular);
+  color: var(--gf-ink-700);
 }
 .entry__near-term {
   font-size: var(--fs-body-md);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-regular);
   color: var(--gf-ink);
 }
 @media (hover: hover) and (pointer: fine) {
   .entry__near-link:hover {
-    background: var(--gf-lilac-50);
-    border-color: var(--gf-lilac-300);
+    background: var(--gf-lilac-200);
   }
   .entry__near-link:hover .entry__near-term {
     color: var(--gf-purple);
@@ -961,18 +1248,49 @@
   }
 }
 
+/* ========================================================== ≤640px =======
+   The chrome's own breakpoint, and the only rule in this sheet at 640. It is
+   here because it is where paranaiyibak.com does the same thing (Tailwind
+   `max-sm:`), verified by measuring the live header at 375: the rule and the CTA
+   are both display:none and the mark/out-link pair spreads to the full width.
+   Matching the live behaviour at the live breakpoint rather than bending it to
+   this sheet's 767/920 layers, which exist for the index layout, not the
+   chrome. */
+
+@media (max-width: 640px) {
+  .pnib-chrome__rule,
+  .pnib-chrome__cta {
+    display: none;
+  }
+  .pnib-chrome__lead {
+    flex: 1;
+    justify-content: space-between;
+  }
+}
+
 /* ========================================================== ≤767px ======
    The authoritative mobile layer for this page. Kept in this sheet rather than
    in src/styles/mobile.css: that file is the shared site layer, and none of
    these rules should be loadable on a getirfinans.com page. */
 
 @media (max-width: 767px) {
-  .pnib-chrome__inner {
-    min-height: 64px;
+  /* The header does NOT shrink here. Measured on the live site at 375: still
+     80px tall, and the wordmark is still 161x22 — it does not scale down. The
+     first build shrank both to 64/140x28, which is a GF-header habit, not
+     paranaiyibak's behaviour. */
+
+  .pnib-foot__marks {
+    /* Stacked, so the two wordmarks don't sit at opposite ends of a 375 row at
+       near-equal weight — the same proportional argument as the drawer-vs-badge
+       note in TODO.md. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-lg);
   }
-  .pnib-chrome__mark img {
-    width: 140px;
-    height: 28px;
+  .pnib-foot__legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-md);
   }
 
   .pnib-entry-search__row {
