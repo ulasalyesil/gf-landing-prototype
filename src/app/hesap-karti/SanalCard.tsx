@@ -58,9 +58,21 @@ export default function SanalCard() {
             </div>
           </div>
         </Reveal>
-        <Reveal className="dpc-sanal__row" stagger={0.08}>
+        {/* Same faiz-points device as the abroad list (CMO round 2026-08-05) —
+            the two horizontal benefit lists were near-identical lookalikes, so
+            they now share `.dpc-points` and differ only in skin.
+            Icons are pending: the three sanal glyphs (ayrı kartlar / limit /
+            güvenli internet) aren't in `public/assets/icons` and are coming from
+            the team. The slot renders only when `icon` is set, so they drop in
+            by adding the field in content.ts — no markup change. */}
+        <Reveal
+          as="ul"
+          className="dpc-points dpc-sanal__row"
+          stagger={0.08}
+          style={{ "--dpc-points-n": DEBIT_SANAL.features.length } as React.CSSProperties}
+        >
           {DEBIT_SANAL.features.map((f) => (
-            <RevealItem as="div" className="dpc-sanal__card" key={f}>
+            <RevealItem as="li" className="dpc-point" key={f}>
               <p>{f}</p>
             </RevealItem>
           ))}

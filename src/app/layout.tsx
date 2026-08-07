@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { DialRoot } from "dialkit";
 import { Agentation } from "agentation";
+import SpacingDial from "@/dials/SpacingDial";
 import "dialkit/styles.css";
 import "./globals.css";
 
@@ -32,7 +33,13 @@ export default function RootLayout({
             on the Vercel deploy at z-index 9999. Gate at the mount instead.
             bottom-left so it clears Agentation's bottom-right toolbar. */}
         {process.env.NODE_ENV !== "production" && (
-          <DialRoot position="bottom-left" defaultOpen={false} />
+          <>
+            <DialRoot position="bottom-left" defaultOpen={false} />
+            {/* section-rhythm A/B — writes data-gf-spacing on <html>, styled by
+                styles/spacing-system.css. Renders nothing. Delete with the
+                proposal once the rhythm is settled. */}
+            <SpacingDial />
+          </>
         )}
         {/* dev-only visual-feedback overlay: click elements → annotate → copy
             structured markdown for the agent. Gated so it never ships. */}

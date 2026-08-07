@@ -334,9 +334,18 @@ body.dpc .footer { background: var(--gf-bg); }
   /* track = pin height (measured into --dpc-pin-h) + the scrub distance,
      so sticky travel === --dpc-scrub at any viewport height */
   .dpc-steps[data-mode="scrub"] {
-    /* single source of truth for the phone size — the pinned window height
-       derives from it, so the phone's visible slice stays constant per screen */
-    --dpc-phone-w: min(768px, 53vw);
+    /* CMO round 2026-08-05: the phone is now sized to fit the stage WHOLE,
+       so the lift could be deleted (DeliverySteps.tsx). The dependency is
+       inverted from before — the stage height is the constraint and the phone
+       derives from it, not the other way round.
+       1.338 = the mock's visible-bezel aspect: frame.png is 800×1355 with 80px
+       of transparent margin above the bezel and 205px of shadow buffer below,
+       so the bezel is 1070/800 = 1.338 of the element's width.
+       112px = the 56px top offset (.dpc-steps__phone) mirrored as a bottom gap.
+       The 53vw / 768px ceilings still apply so the phone can't outgrow its
+       column on very tall windows. */
+    --dpc-stage-h: clamp(560px, calc(100vh - 120px), 820px);
+    --dpc-phone-w: min(768px, 53vw, calc((var(--dpc-stage-h) - 112px) / 1.338));
     height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
     /* the track itself is transparent: the lilac field lives on the band only,
        so the phone's crop line and the field's bottom edge are the SAME line —
@@ -374,7 +383,10 @@ body.dpc .footer { background: var(--gf-bg); }
      bottom of the band. */
   .dpc-steps[data-mode="scrub"] .dpc-steps__stage {
     position: relative;
-    min-height: clamp(560px, min(calc(var(--dpc-phone-w) * 1.016), calc(100vh - 120px)), 780px);
+    /* was clamp(560, min(phone-w * 1.016, 100vh-120), 780) — i.e. the stage
+       took ~60% of the phone's height and the lift covered the rest. The stage
+       is now the independent value and the phone fits inside it. */
+    min-height: var(--dpc-stage-h);
     overflow: clip;
     padding-block: 64px;
     display: flex; flex-direction: column; justify-content: center;
@@ -522,28 +534,38 @@ body.dpc .footer { background: var(--gf-bg); }
 /* ============ 4. CAPABILITIES — bento (transfers / ATM / sanal) ============ */
 .dpc-caps { padding-block: 0 100px; }
 .dpc-caps__head { text-align: center; margin-bottom: 48px; }
-.dpc-caps__row { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
+/* CMO round 2026-08-05: the row read as "karmaşık". The note named the
+   left-aligned headings, but the actual disorder was four-way — unequal
+   columns (1.15fr/1fr), 40px padding against a 72px stat, and two media slots
+   sized by DIFFERENT rules (transfer locked to 600/440, ATM flex:1), so the
+   two cards were never the same shape. Alignment stays LEFT: centre is
+   reserved for section headers, and cards/lists are left-aligned page-wide.
+   The fix is equality and compactness. */
+.dpc-caps__row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 .dpc-cap {
-  display: flex; flex-direction: column; gap: 32px;
-  border-radius: var(--r-xl); padding: 40px;
+  display: flex; flex-direction: column; gap: 24px;
+  border-radius: var(--r-xl); padding: 32px;
 }
 /* card type ramp = page reference scale (earn/steps): 24/32 semibold heads, 16/24 body */
 .dpc-cap__copy h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
 .dpc-cap__copy p { margin: 8px 0 0; font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700); }
 .dpc-cap__stat {
   display: block; margin-bottom: 8px;
-  font-size: 72px; line-height: 1; font-variant-numeric: tabular-nums;
+  font-size: 56px; line-height: 1; font-variant-numeric: tabular-nums;
   color: var(--gf-purple);
 }
+/* one sizing rule for BOTH media slots — the aspect ratio is what makes the
+   two cards the same shape, so it must not be overridden per card */
 .dpc-cap__media {
-  flex: 1; min-height: 240px;
+  flex: 0 0 auto; aspect-ratio: 600 / 440;
   background: #fff; border-radius: var(--r-lg); overflow: hidden;
 }
-/* both illustrations (SVG, 600×440) ship their own white bg + edge fade; the
-   transfer one keeps native aspect so the plane/trail composition isn't
-   crop-severed, the ATM map tolerates side-cropping to fill the slimmer card */
+/* both illustrations (SVG, 600×440) ship their own white bg + edge fade. Now
+   that the slot IS 600/440 and the columns are equal, neither is cropped —
+   `cover` is a no-op at the native ratio and only guards odd container widths.
+   (Was: transfer pinned to native aspect, ATM side-cropped to fill a slimmer
+   card. That asymmetry is what made the two cards read as different shapes.) */
 .dpc-cap__media img, .dpc-cap__media svg { display: block; width: 100%; height: 100%; object-fit: cover; }
-.dpc-cap--transfer .dpc-cap__media { flex: 0 0 auto; min-height: 0; aspect-ratio: 600 / 440; }
 /* ============ 5. SANAL KART — own dark section ============ */
 /* Full-bleed dark, same grammar as the landing `.debit` product moment.
    It is the page's mid-scroll color break between the white caps bento
@@ -613,9 +635,33 @@ body.dpc .footer { background: var(--gf-bg); }
 
 /* feature row — backgroundless (owner feedback 2026-07-20: was glass cards,
    dropped for a clear field); text sits directly on the dark section */
-.dpc-sanal__row { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 40px; position: relative; z-index: 61; }
-.dpc-sanal__card { width: 320px; padding: 16px; text-align: left; }
-.dpc-sanal__card p { margin: 0; font-size: 24px; line-height: 32px; color: #fff; }
+/* Dark skin of .dpc-points — and the fix for the CMO's "ortadaki madde
+   okunmuyor" (2026-08-05).
+   The handoff traveler (z 60) flies to viewport CENTRE, which is exactly
+   where the middle feature sits, and this row is z 61 — so white feature
+   text was landing on the near-white card face. Measured on the deployed
+   build: the middle item was 67% covered by the card, white on near-white.
+   CardHandoff's header comment already claimed "the glass cards frost it via
+   backdrop blur", but no backdrop-filter was ever written — the row was
+   transparent. This is that glass, finally implemented: a translucent dark
+   panel that keeps its own contrast whatever passes behind it.
+   ⚠ -webkit-backdrop-filter MUST stay before backdrop-filter — the CSS
+   minifier drops the standard property when the prefixed one follows it
+   (gotcha already logged for the sanal card in the July round). */
+.dpc-sanal__row {
+  /* width:100% is load-bearing — .dpc-sanal__inner is a column flex with
+     align-items:center, so this grid would otherwise size to max-content
+     (3 × 240 = 744px) and blow past a 390px viewport instead of collapsing
+     to one column. max-width alone can't fix it: 744 < 880, so the cap never
+     engages. Same trap as .dpc-steps__band (July round). */
+  width: 100%;
+  margin-top: 40px; position: relative; z-index: 61;
+  background: rgb(26 18 66 / 0.72);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+.dpc-sanal__row .dpc-point p { color: #fff; }
 
 /* ============ 5. ABROAD — centered head + captions + collage ============ */
 .dpc-abroad { padding-block: 120px; }
@@ -623,14 +669,37 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-abroad__title .hl { display: inline-block; margin-top: 8px; }
 /* same descender fix as .dpc-sanal__head above — "yapılacaklar" */
 .dpc-abroad__title .hl::after { bottom: -0.36em; height: 0.2em; }
-.dpc-abroad__captions { display: flex; justify-content: center; gap: 16px; margin: 48px 0 0; padding: 0; list-style: none; }
-/* backgroundless (owner feedback 2026-07-20: was bg-soft pills); item box
-   mirrors the sanal feature cards (320px + 16px padding) so the two lists
-   read as the same device */
-.dpc-abroad__captions li {
-  position: relative; width: 320px; padding: 16px; white-space: pre-line;
-  font-size: 24px; line-height: 32px; color: var(--gf-ink-700);
+/* ---- shared horizontal benefit list (abroad + sanal) ------------------
+   CMO round 2026-08-05: both lists were centred flex rows of fixed 320px
+   items at 24/32, so items of different line counts sat at different
+   heights with nothing tying them together ("dağınık"). Ported from the
+   landing page's `.faiz__points` (sections.css) so the page has ONE device
+   for a horizontal benefit list instead of two lookalikes.
+   auto-fit rather than repeat(3,1fr): the abroad list is 2 items today and
+   product is adding a 3rd, and this reads at both without re-tuning. */
+/* Columns come from the ITEM COUNT (--dpc-points-n, set by the component),
+   not from auto-fit. auto-fit computes 3 columns in this panel regardless, so
+   the 2-item abroad list left a dead third column and the items hugged the
+   left edge. Driving it from the count keeps the cells equal at both 2 and 3,
+   which matters because product is still adding a third abroad benefit. */
+.dpc-points {
+  display: grid; grid-template-columns: repeat(var(--dpc-points-n, 3), minmax(0, 1fr));
+  gap: 24px; padding: 24px 32px; border-radius: var(--r-xl);
+  max-width: 880px; margin-inline: auto; list-style: none;
 }
+/* text-align is explicit, not inherited: .dpc-sanal sets `text-align: center`
+   for its heading stack and that was leaking into the feature copy. Centre is
+   for section headers only — list and card copy is left-aligned page-wide. */
+.dpc-point { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px 8px; text-align: left; }
+.dpc-point__ic { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.dpc-point__ic img { width: 100%; height: 100%; object-fit: contain; }
+/* 18/24 (was 24/32) is doing real work here, not just fitting the panel:
+   at 24/32 a 2-line and a 3-line item differ by a whole 32px band. */
+.dpc-point p { margin: 0; font-size: 18px; line-height: 24px; font-weight: var(--fw-regular); }
+
+/* section skins — the shape lives in .dpc-points, only the surface differs */
+.dpc-abroad__captions { margin: 48px auto 0; background: var(--gf-lilac); }
+.dpc-abroad__captions .dpc-point p { color: var(--gf-purple); }
 /* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly.
    Each slot is a wrapper div (position/size lives here, on .dpc-abroad__photo)
    around the tilting .t-tilt-card + img, so the hover-tilt transform never
@@ -710,13 +779,14 @@ body.dpc .footer { background: var(--gf-bg); }
 
   .dpc-sanal { padding-block: 64px; }
   .dpc-sanal__inner { gap: 32px; }
-  .dpc-sanal__row { flex-direction: column; align-items: stretch; margin-top: 32px; }
-  .dpc-sanal__card { width: 100%; max-width: 380px; }
+  .dpc-sanal__row { margin-top: 32px; }
 
   .dpc-abroad { padding-block: 64px; }
   .dpc-abroad__title br { display: none; }
-  .dpc-abroad__captions { flex-direction: column; gap: 16px; }
-  .dpc-abroad__captions li { width: auto; }
+  /* one column at phone widths, whatever --dpc-points-n says */
+  .dpc-points { grid-template-columns: 1fr; padding: 16px 20px; gap: 8px; }
+  .dpc-point { padding: 12px 8px; }
+  .dpc-abroad__captions { margin-top: 32px; }
   /* collage becomes a scroll-snap strip */
   .dpc-abroad__collage {
     aspect-ratio: auto; display: flex; gap: 8px; margin-top: 32px;

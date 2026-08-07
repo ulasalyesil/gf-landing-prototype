@@ -202,15 +202,27 @@ export const DEBIT_SANAL = {
   media: "/assets/img/virtual-card.png"
 };
 
+/* CMO round 2026-08-05: the ATM-komisyon caption is deleted, and caption 2 is
+   reworded to lead with "yurt dışında DA" — the point is "TR'de var, yurt dışında
+   da var", so the "da" is load-bearing and not a stylistic choice.
+   Captions carry an icon now (faiz-points pattern) — the hard \n is gone, the
+   items wrap naturally and the grid equalises them.
+   ⚠ A third, main-benefit item ("harcamalarını TL olarak rahatça öde" or similar)
+   is COMING FROM PRODUCT. The list is built to read at both 2 and 3 items.
+   ⚠ ICONS PENDING — the teammate is supplying the glyph set (2 here + 3 in
+   DEBIT_SANAL) so all five read as one family. Tried the existing set and
+   pulled it back out: `flag-usd.svg` for "avantajlı kurlar" put a US flag on a
+   Turkish bank's page and says "dollar" rather than "good rates", and
+   `cashback.svg` is a grey coin that sits at low contrast on the lilac panel.
+   Add an `icon` field here and the slot renders itself — no markup change.
+   Whatever lands for the %1 item must be a COIN, never a % (reserved for faiz). */
 export const DEBIT_ABROAD = {
   title: "hesap kartınla yurtdışında",
   titleHl: "yapılacaklar listesi",
-  /* \n = hard line break (li renders white-space: pre-line) */
   captions: [
-    "avantajlı kurlarla\nharcama yap",
-    "yurt dışında harcarken de %1 nakit iade kazan",
-    "ATM'den para çekerken komisyonu avantajlı kurla öde"
-  ]
+    { text: "avantajlı kurlarla harcama yap" },
+    { text: "yurt dışında da harcarken %1 nakit iade kazan" }
+  ] as { text: string; icon?: string }[]
 };
 
 /* ===== Newsletter (gazete, landing) ===== */
