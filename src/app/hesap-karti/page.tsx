@@ -91,15 +91,24 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.getirpara.post}
                 </p>
                 <div className="dpc-earn__media">
-                  {/* Owner's 3x export (1920x1104 = the full 640x368 art area,
-                      transparent). The near-opaque light block at its top measures
-                      255,254,247 against the tile's 255,252,247 — a 2-unit
-                      difference, so it blends invisibly. */}
+                  {/* Owner re-export, 2026-08-10, replacing the 1920×1104 3x one.
+                      It fixes the clipped shadow at the BOTTOM — alpha insets are
+                      now T0 B24 L124 R129, where the old file ran hard to every
+                      edge (T0 B0).
+                      ⚠ Two things to check on it:
+                      1. It is 640×411, and this slot renders ~627px wide — i.e.
+                         effectively 1x. On a 2x display the phone UI (which is full
+                         of small text) will read soft. Wants a 2x/3x re-export at
+                         the same framing.
+                      2. The TOP is still flush (T0), so the top of the art is still
+                         cropped in the file; only the bottom gained padding.
+                      Aspect moved 1.739 → 1.557, so `contain` is now height-bound
+                      and seats it ~588px wide in the cell instead of filling it. */}
                   <img
                     src="/assets/img/debit-earn-phone.png"
                     alt=""
-                    width={1920}
-                    height={1104}
+                    width={640}
+                    height={411}
                     loading="lazy"
                   />
                 </div>
@@ -169,7 +178,7 @@ export default function HesapKartiDetail() {
                 <RevealItem as="li" className="dpc-point" key={caption.text}>
                   {caption.icon && (
                     <span className="dpc-point__ic" aria-hidden="true">
-                      <img src={`/assets/icons/${caption.icon}`} alt="" width={32} height={32} />
+                      <img src={`/assets/icons/${caption.icon}`} alt="" width={40} height={40} />
                     </span>
                   )}
                   <p>{caption.text}</p>

@@ -76,7 +76,7 @@ export default function SanalCard() {
             <RevealItem as="li" className="dpc-point" key={f.text}>
               {f.icon && (
                 <span className="dpc-point__ic" aria-hidden="true">
-                  <img src={`/assets/icons/${f.icon}`} alt="" width={32} height={32} />
+                  <img src={`/assets/icons/${f.icon}`} alt="" width={40} height={40} />
                 </span>
               )}
               <p>{f.text}</p>

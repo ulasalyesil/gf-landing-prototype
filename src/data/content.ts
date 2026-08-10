@@ -230,8 +230,16 @@ export const DEBIT_SANAL = {
    The %1 item's icon is a globe and carries NO % glyph, which is what the AGENTS.md
    rule requires (% reserved for faiz); a coin would have been fine too. */
 export const DEBIT_ABROAD = {
-  title: "hesap kartınla yurtdışında",
-  titleHl: "yapılacaklar listesi",
+  /* "yurtdışında" moved down to join the highlighted phrase (owner, 2026-08-10:
+     "should go in the second line in the same line as yapılacaklar listesi and the
+     border should cover all three"), so line 1 is "hesap kartınla" and the yellow
+     bar runs under all three words of line 2.
+     ⚠ The bar is ONE absolutely-positioned box (`.hl::after`, width 100% of an
+     inline-block), so it only reads correctly while the phrase stays on a single
+     line. Lengthening it from 20 to 31 characters lowers the width at which it
+     wraps — see the `.dpc-abroad__title` rules for the guard. */
+  title: "hesap kartınla",
+  titleHl: "yurtdışında yapılacaklar listesi",
   /* Real icons landed 2026-08-10 (owner-supplied), replacing the placeholder globes
      from earlier the same day. Both are --gf-purple, matching this list's text —
      the panel is the LILAC tint, not the sanal dark, so these are the purple

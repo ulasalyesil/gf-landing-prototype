@@ -767,28 +767,113 @@ body.dpc .footer { background: var(--gf-bg); }
    the 2-item abroad list left a dead third column and the items hugged the
    left edge. Driving it from the count keeps the cells equal at both 2 and 3,
    which matters because product is still adding a third abroad benefit. */
+/* COHERENCE PASS (owner, 2026-08-10: both lists "doesn't look balanced"), routed
+   through ui-skills pbakaus/layout + jakubkrehel/better-typography.
+   What the measurements said, at 1744×1083:
+   - the two panels ran at DIFFERENT TYPE DENSITIES. 1fr tracks meant the 3-item
+     sanal list gave each cell a 235px measure and the 2-item abroad list gave 372px
+     — the same component reading two ways, which is most of why they didn't feel
+     like one device.
+   - every interval was an off-scale 40px, and by accident: panel padding 32 + cell
+     padding 8 inline, panel 24 + cell 16 block. There is no 40 on the DS scale
+     (see spacing-system.css on exactly this drift).
+   - last lines were orphan tails — 61px on sanal item 1, 87px on abroad item 2.
+   Fixes, in order of leverage:
+   1. Tracks cap at --dpc-point-w and the track GROUP centres, instead of each
+      track taking 1fr. Cell width — and therefore measure — is now the same
+      whatever the item count, and a short 2-item list leaves symmetric space
+      outside the pair rather than dead space trapped inside cell 1.
+   2. --dpc-point-w is tuned PER LIST to the width where every item lands on the
+      same line count (2 everywhere), which is what actually aligns the text
+      bottoms. Equal cell heights were never the problem — the cells already
+      stretched equal; it was the text ending at different depths inside them.
+      Values are measured, not guessed: see each skin below.
+   3. Every interval is now a scale step: --sp-2xl inset, --sp-2xl gutter (the
+      page's documented 32px gutter, same as the earn grid), --sp-md icon→text.
+      Cadence is 32 / 12, and the cell's own padding is gone. */
 .dpc-points {
-  display: grid; grid-template-columns: repeat(var(--dpc-points-n, 3), minmax(0, 1fr));
-  gap: 24px; padding: 24px 32px; border-radius: var(--r-xl);
-  max-width: 880px; margin-inline: auto; list-style: none;
+  --dpc-point-w: 264px;
+  /* guard, not a layout driver: if copy is ever edited to a different line count,
+     the text band still reserves this many lines so the bottoms stay aligned.
+     Same device as `.dpc-steps__item p { min-height: 48px }` above. */
+  --dpc-point-lines: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--dpc-points-n, 3), minmax(0, var(--dpc-point-w)));
+  justify-content: center;
+  gap: var(--sp-2xl); padding: var(--sp-2xl); border-radius: var(--r-xl);
+  /* The panel HUGS its tracks instead of being a fixed 880/920 box. Capping the
+     cells inside a fixed panel was measurably worse: the 2-item abroad list became
+     two 240px cells centred in 920px, i.e. ~40% empty lilac, which reads as a
+     mistake rather than as breathing room.
+     Derived, so it can't drift from the track model: n cells + (n-1) gutters +
+     2 insets. Lands at 920 for sanal (3×264) and 576 for abroad (2×240).
+     `width: 100%` stays load-bearing underneath this — .dpc-sanal__inner is a
+     column flex with align-items:center, so without it the grid sizes to
+     max-content and blows past a 390px viewport (the July trap, still live).
+     Below the derived width, `width: 100%` wins and the tracks shrink via
+     minmax(0, …). */
+  max-width: min(920px, calc(
+    var(--dpc-points-n, 3) * var(--dpc-point-w)
+    + (var(--dpc-points-n, 3) - 1) * var(--sp-2xl)
+    + 2 * var(--sp-2xl)));
+  margin-inline: auto; list-style: none;
 }
 /* text-align is explicit, not inherited: .dpc-sanal sets `text-align: center`
    for its heading stack and that was leaking into the feature copy. Centre is
    for section headers only — list and card copy is left-aligned page-wide. */
-/* 32px glyph + 12px icon→text gap, measured off both comps' nodes rather than
-   eyeballed (sanal 22074:14642, abroad 22074:14667 — both draw the glyph at 32
-   with the text baseline 12 below it). These were 40/16 while the lists had no
-   icons; now that BOTH carry them the values live on the shared base instead of
-   being overridden per section (the 08-10 sanal-only override is gone). */
-.dpc-point { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 8px; text-align: left; }
-.dpc-point__ic { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+/* 40px glyph + 12px icon→text gap. The comps (sanal 22074:14642, abroad
+   22074:14667) both draw the glyph at 32, and it shipped at 32 on 2026-08-10, but
+   the owner asked for +8px the same day — the real icons carry more internal
+   detail than the placeholder globe did and read small at 32. The 12px gap is
+   still the comps' value. Shared by both lists, deliberately: they are one device
+   and the icon size is part of what makes them read that way. */
+/* padding: 0 — the cell used to carry `16px 8px` INSIDE a panel that already had
+   `24px 32px`, so the real inset was an accidental 40px on every side and the
+   gutter was an accidental 40px too (24 gap + two 8s). The panel owns the inset
+   now and the gutter is the gap alone. */
+.dpc-point { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-md); padding: 0; text-align: left; }
+.dpc-point__ic { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .dpc-point__ic img { width: 100%; height: 100%; object-fit: contain; }
 /* 18/24 (was 24/32) is doing real work here, not just fitting the panel:
-   at 24/32 a 2-line and a 3-line item differ by a whole 32px band. */
-.dpc-point p { margin: 0; font-size: 18px; line-height: 24px; font-weight: var(--fw-regular); }
+   at 24/32 a 2-line and a 3-line item differ by a whole 32px band. Expressed in
+   tokens now; the tight fs-body-lg / lh-body-md pairing is deliberate (lh-body-lg
+   is 28 and would undo the point above).
+   `text-wrap: balance` overrides base.css's `p { text-wrap: pretty }` on purpose:
+   these are 4-8 word benefit statements — labels, not prose — and `pretty` only
+   protects the last line, which is why sanal item 1 ended on a 61px tail and
+   abroad item 2 on an 87px one. `balance` evens all lines of an item instead.
+   (better-typography's rule: balance for headings/short text, pretty for
+   descriptions, neither for long-form.) */
+.dpc-point p {
+  margin: 0; font-size: var(--fs-body-lg); line-height: var(--lh-body-md);
+  font-weight: var(--fw-regular); text-wrap: balance;
+  min-height: calc(var(--dpc-point-lines) * var(--lh-body-md));
+}
+/* 768–920 is the one band where the reserve has to step up. The container narrows
+   faster than the 3-column track model, so cells fall to ~193-210px and the longer
+   items take a third line — measured 3/2/2 at 820 and 3/3/2 at 768, which put the
+   bottoms 24px out. Reserving three lines here keeps them flush; the 2-line items
+   carry 24px of slack, which is precisely what the reserve is for.
+   Scoped narrowly and locally rather than added to the legacy ≤920 layer in
+   sections.css, which AGENTS.md says not to grow. */
+@media (min-width: 768px) and (max-width: 920px) {
+  /* sanal only. The abroad panel hugs at 576px, which its container still clears
+     in this band, so its cells stay at the 240px cap and never reach a third
+     line — bumping the shared reserve would only pad it out by 24px. */
+  .dpc-sanal__row { --dpc-point-lines: 3; }
+}
 
-/* section skins — the shape lives in .dpc-points, only the surface differs */
-.dpc-abroad__captions { margin: 48px auto 0; background: var(--gf-lilac); }
+/* section skins — the shape lives in .dpc-points, only the surface and the
+   measured cell width differ */
+/* 240, not the 264 the sanal list uses. Measured, not preferred: "avantajlı
+   kurlarla harcama yap" renders 247px of ink, so at any cell ≥247 it sits on ONE
+   line while its neighbour sits on two — the lopsided pair the owner flagged.
+   Capping under 247 forces both items onto two balanced lines, which is what
+   makes the text bottoms align. The two lists needing different values is the
+   honest answer here: sanal's longest item needs ≥261 to stay off a third line,
+   and abroad's shortest needs <247 to reach a second, so one shared width cannot
+   balance both. It is one variable per skin, not a second layout. */
+.dpc-abroad__captions { --dpc-point-w: 240px; margin: 48px auto 0; background: var(--gf-lilac); }
 .dpc-abroad__captions .dpc-point p { color: var(--gf-purple); }
 /* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly.
    Each slot is a wrapper div (position/size lives here, on .dpc-abroad__photo)
@@ -879,9 +964,39 @@ body.dpc .footer { background: var(--gf-bg); }
 
   .dpc-abroad { padding-block: 64px; }
   .dpc-abroad__title br { display: none; }
-  /* one column at phone widths, whatever --dpc-points-n says */
-  .dpc-points { grid-template-columns: 1fr; padding: 16px 20px; gap: 8px; }
-  .dpc-point { padding: 12px 8px; }
+  /* No mark below 480px, and this is a deliberate suppression rather than a bug.
+     The highlighted phrase grew to 31 characters on 2026-08-10 ("yurtdışında" moved
+     into it) and wraps to two lines once the container drops under 445px, i.e. at
+     ≤480 viewport. `.hl::after` is ONE absolutely-positioned box at `width: 100%`,
+     so across two lines it stretched to the full box and overhung the text by ~35px
+     each side — measured at 390: line widths [168, 269] under a 342px bar. That read
+     as a divider under the heading, not as a mark on the phrase.
+     `width: fit-content` was tried first and does NOT fix it: fit-content resolves
+     to min(max-content, available), and max-content here is the UNWRAPPED 445px, so
+     it clamps to the available 432 rather than to the 269px wrapped line. There is
+     no CSS length that means "the width of the last line".
+     AGENTS.md already records the precedent: the kredi headline needed a multi-line
+     mark and had to use per-line cloned bars BEHIND the text, because in front of it
+     is impossible in pure CSS. Adopting that here is a designer call — it changes
+     the mark from in-front to behind on this heading only — so this suppresses
+     rather than guesses. Above 480 the phrase is one line and the mark is unchanged. */
+  @media (max-width: 480px) {
+    .dpc-abroad__title .hl::after { display: none; }
+  }
+  /* one column at phone widths, whatever --dpc-points-n says. `1fr` overrides the
+     capped track — a single column should use the full width, not sit at 240/264
+     with dead space beside it. */
+  .dpc-points {
+    grid-template-columns: 1fr;
+    /* stacked, items follow each other vertically, so the gutter has to separate
+       ROWS rather than columns — 8px read as one block. --sp-xl gives each item
+       its own air; the panel inset steps down the scale to --sp-xl / --sp-lg. */
+    padding: var(--sp-xl) var(--sp-lg); gap: var(--sp-xl);
+    /* the line reserve exists to align text bottoms ACROSS columns. In one column
+       there is nothing to align to, so it would only pad short items out. */
+    --dpc-point-lines: 0;
+  }
+  .dpc-point { padding: 0; }
   .dpc-abroad__captions { margin-top: 32px; }
   /* collage becomes a scroll-snap strip */
   .dpc-abroad__collage {
