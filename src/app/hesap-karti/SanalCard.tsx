@@ -61,10 +61,11 @@ export default function SanalCard() {
         {/* Same faiz-points device as the abroad list (CMO round 2026-08-05) —
             the two horizontal benefit lists were near-identical lookalikes, so
             they now share `.dpc-points` and differ only in skin.
-            Icons are pending: the three sanal glyphs (ayrı kartlar / limit /
-            güvenli internet) aren't in `public/assets/icons` and are coming from
-            the team. The slot renders only when `icon` is set, so they drop in
-            by adding the field in content.ts — no markup change. */}
+            Icons landed 2026-08-10 (owner feedback: "the texts look not
+            balanced, let's add an icon for each item") — a repeated DS globe
+            placeholder, exactly as the comp does it. Markup is identical to the
+            abroad list in page.tsx: the slot renders only when `icon` is set, so
+            the real glyph set drops in from content.ts with no change here. */}
         <Reveal
           as="ul"
           className="dpc-points dpc-sanal__row"
@@ -72,8 +73,13 @@ export default function SanalCard() {
           style={{ "--dpc-points-n": DEBIT_SANAL.features.length } as React.CSSProperties}
         >
           {DEBIT_SANAL.features.map((f) => (
-            <RevealItem as="li" className="dpc-point" key={f}>
-              <p>{f}</p>
+            <RevealItem as="li" className="dpc-point" key={f.text}>
+              {f.icon && (
+                <span className="dpc-point__ic" aria-hidden="true">
+                  <img src={`/assets/icons/${f.icon}`} alt="" width={32} height={32} />
+                </span>
+              )}
+              <p>{f.text}</p>
             </RevealItem>
           ))}
         </Reveal>

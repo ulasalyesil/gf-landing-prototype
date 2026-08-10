@@ -1,0 +1,23 @@
+<!-- abroad list, item 2 "yurt dışında da harcarken %1 nakit iade kazan".
+     Owner-supplied 2026-08-10. A gf-purple (#5d3ebc) disc with white line-work, for
+     the LILAC .dpc-abroad__captions panel.
+     Carries no % glyph, which AGENTS.md requires here: % is reserved for
+     interest/faiz, and the copy's "%1" is cashback. A coin would also have been
+     acceptable; a globe is what the owner chose.
+     One thing to leave alone: `style="mask-type:alpha"` on the mask is FUNCTIONAL
+     (it makes the disc clip the line-work) and must stay, unlike the colour `style`
+     attributes, which were stripped here as on the other three so the icon purple
+     matches the gf-purple text beside it.
+     NOTE: no double hyphens in this comment — writing the token name with its two
+     leading dashes is illegal in XML and makes the icon silently render nothing.
+     Created by Claude — PUBLIC (ships as a web asset on the public site).
+-->
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="16" cy="16" r="10" fill="#5d3ebc"/>
+  <mask id="world_purple_mask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="6" y="6" width="20" height="20">
+    <circle cx="16" cy="16" r="10" fill="#5d3ebc"/>
+  </mask>
+  <g mask="url(#world_purple_mask)">
+    <path d="M16 4.5C20.5022 4.5 24.3971 7.08868 26.2852 10.8574C26.2967 10.8739 26.3052 10.8921 26.3125 10.9111C27.0711 12.4456 27.5 14.1724 27.5 16C27.5 17.8273 27.0709 19.5536 26.3125 21.0879C26.3052 21.107 26.2966 21.1251 26.2852 21.1416C24.9646 23.778 22.6629 25.8349 19.8564 26.834C19.8378 26.8428 19.8186 26.8504 19.7979 26.8545C18.6086 27.2706 17.3313 27.5 16 27.5C15.5782 27.5 15.162 27.4749 14.752 27.4307L14.75 27.4316C14.7297 27.4316 14.7103 27.4274 14.6914 27.4229C8.9565 26.7731 4.5 21.9087 4.5 16C4.5 15.5782 4.52508 15.162 4.56934 14.752L4.56836 14.75C4.56836 14.7297 4.57258 14.7103 4.57715 14.6914C5.0236 10.7511 7.45899 7.41624 10.8574 5.71387C10.8739 5.70243 10.8921 5.69378 10.9111 5.68652C12.4455 4.928 14.1725 4.5 16 4.5ZM10.75 6.33203C7.74254 7.96863 5.5863 10.9674 5.10449 14.5H7.25C8.76878 14.5 10 15.7312 10 17.25V18.5C10 19.7426 11.0074 20.75 12.25 20.75C13.7688 20.75 15 21.9812 15 23.5V26.9521C15.3294 26.9818 15.6628 27 16 27C17.224 27 18.4002 26.7967 19.5 26.4277V23.5C19.5 21.9812 20.7312 20.75 22.25 20.75H25.9238C26.6133 19.3121 27 17.7012 27 16C27 14.2988 26.6133 12.6879 25.9238 11.25H24.75C23.5074 11.25 22.5 12.2574 22.5 13.5C22.5 15.0188 21.2688 16.25 19.75 16.25C18.2312 16.25 17 15.0188 17 13.5C17 12.2574 15.9926 11.25 14.75 11.25H14.125C12.261 11.25 10.75 9.73896 10.75 7.875V6.33203ZM5.04688 15C5.01718 15.3294 5 15.6628 5 16C5 21.5661 9.13474 26.1627 14.5 26.8945V23.5C14.5 22.2574 13.4926 21.25 12.25 21.25C10.7312 21.25 9.5 20.0188 9.5 18.5V17.25C9.5 16.0074 8.49264 15 7.25 15H5.04688ZM22.25 21.25C21.0074 21.25 20 22.2574 20 23.5V26.2461C22.4264 25.2981 24.4345 23.5167 25.668 21.25H22.25ZM16 5C14.2988 5 12.6879 5.38666 11.25 6.07617V7.875C11.25 9.46282 12.5372 10.75 14.125 10.75H14.75C16.2688 10.75 17.5 11.9812 17.5 13.5C17.5 14.7426 18.5074 15.75 19.75 15.75C20.9926 15.75 22 14.7426 22 13.5C22 11.9812 23.2312 10.75 24.75 10.75H25.668C23.8041 7.32488 20.1738 5 16 5Z" fill="#fff"/>
+  </g>
+</svg>

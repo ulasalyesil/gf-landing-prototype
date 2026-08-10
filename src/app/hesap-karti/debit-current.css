@@ -275,7 +275,17 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-earn__v2 .dpc-earn__card--abonelik {
   grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto;
   align-items: stretch; min-height: clamp(420px, 35.5vw, 512px);
-  overflow: hidden;
+  /* visible, not hidden (owner, 2026-08-10: "so the container doesn't cut off
+     the shadow"). The tint keeps its rounded corners either way — that's
+     border-radius, not the clip — so this only lets the art bleed past the tile,
+     which is what a product shot with a soft shadow wants.
+     ⚠ It does NOT bring the phone's shadow back, because nothing was clipping
+     it here: the art is object-fit:contain, which letterboxes it ~5px INSIDE
+     the cell. The shadow is cut in the EXPORT — debit-earn-phone.png is
+     1920×1104 and its alpha runs to row 1103, i.e. hard against the file's
+     bottom edge. That needs a re-export with transparent padding around the
+     art; see TODO.md. */
+  overflow: visible;
 }
 .dpc-earn__v2 .dpc-earn__card--getirpara { background: var(--gf-yellow-50); }
 .dpc-earn__v2 .dpc-earn__card--abonelik { background: var(--gf-lilac-50); }
@@ -331,35 +341,74 @@ body.dpc .footer { background: var(--gf-bg); }
   .dpc-steps__band { max-width: calc(100% - 48px); }
 }
 @media (min-width: 768px) {
-  /* track = pin height (measured into --dpc-pin-h) + the scrub distance,
-     so sticky travel === --dpc-scrub at any viewport height */
+  /* track = the sticky offset + pin height (measured into --dpc-pin-h) + the
+     scrub distance, so sticky travel === --dpc-scrub at any viewport height */
   .dpc-steps[data-mode="scrub"] {
-    /* CMO round 2026-08-05: the phone is now sized to fit the stage WHOLE,
-       so the lift could be deleted (DeliverySteps.tsx). The dependency is
-       inverted from before — the stage height is the constraint and the phone
-       derives from it, not the other way round.
-       1.338 = the mock's visible-bezel aspect: frame.png is 800×1355 with 80px
-       of transparent margin above the bezel and 205px of shadow buffer below,
-       so the bezel is 1070/800 = 1.338 of the element's width.
-       112px = the 56px top offset (.dpc-steps__phone) mirrored as a bottom gap.
-       The 53vw / 768px ceilings still apply so the phone can't outgrow its
-       column on very tall windows. */
-    --dpc-stage-h: clamp(560px, calc(100vh - 120px), 820px);
-    --dpc-phone-w: min(768px, 53vw, calc((var(--dpc-stage-h) - 112px) / 1.338));
-    height: calc(var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
+    /* CMO round 2026-08-05: the phone is sized to fit the stage WHOLE, so the
+       lift could be deleted (DeliverySteps.tsx). The dependency is inverted from
+       before — the stage height is the constraint and the phone derives from it,
+       not the other way round.
+       frame.png metrics, measured off its ALPHA CHANNEL (not from the comment
+       that used to live here, which said 80/205/1.338): the file is 800×1355 and
+       its opaque bezel runs y 82→1148, so relative to the element's WIDTH the
+       bezel starts at 0.1025, is 1.3337 tall, and is centred at 0.76875. The old
+       1.338 height was right; the old 80 was where the shadow starts, not the
+       bezel, which is exactly why the phone sat low (see .dpc-steps__phone).
+       2 × --dpc-phone-gap is the 56px top gap mirrored as a bottom gap. The
+       53vw / 632px ceilings still cap the phone on very tall windows. */
+    --dpc-frame-bezel-top: 0.1025;
+    /* Bezel CENTRE as a fraction of the element's width: (82+1148)/2 = 615 of
+       800. Works as a width ratio because the element's height scales with its
+       width, so this one number centres the bezel at any phone size. */
+    --dpc-frame-bezel-mid: 0.76875;
+    --dpc-phone-gap: 56px;
+    /* Cap raised 820 → 955 (owner, 2026-08-10: "reduce the top and bottom
+       spacing"). 955 is not arbitrary — it is the tallest band whose phone still
+       clears the copy column: the phone derives from the band height, and at
+       955 it reaches 632px, which leaves its element box 32px clear of the
+       520px .dpc-steps__intro. Taller bands just add empty lilac, because the
+       phone can't grow past 632 without overlapping the intro (and its z-index:1
+       would then sit over the CTA). */
+    --dpc-stage-h: clamp(560px, calc(100vh - 120px), 955px);
+    --dpc-phone-w: min(632px, 53vw, calc((var(--dpc-stage-h) - 2 * var(--dpc-phone-gap)) / 1.3337));
+    /* Sticky offset that centres the band now that the pin HUGS it instead of
+       being 100vh (owner, 2026-08-10: "make it hug the inner purple container
+       while keeping the snapping in the middle"). max(0px, …) so a band taller
+       than the viewport falls back to top:0 rather than sticking above the fold. */
+    --dpc-pin-top: max(0px, calc((100vh - var(--dpc-pin-h, 100vh)) / 2));
+    /* The --dpc-pin-top term is load-bearing: with a hugging pin the band sticks
+       --dpc-pin-top BEFORE progress 0, so without it the pin would release that
+       many px early and the band would scroll away with the sequence unfinished.
+       With it, release lands exactly on progress 1, same as before. */
+    height: calc(var(--dpc-pin-top) + var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1600px));
     /* the track itself is transparent: the lilac field lives on the band only,
        so the phone's crop line and the field's bottom edge are the SAME line —
        no floating cut mid-lilac (owner request 2026-07-14) */
     padding-block: 0;
+    /* 20px of air before the dark sanal section (owner, 2026-08-10). The band
+       sits flush with the track's bottom once the pin releases, so hugging the
+       band (the 08-10 change above) left the lilac butting straight into the dark
+       section at 0px. MARGIN, not padding: `height` is explicit here and
+       border-box padding would shrink the sticky containing block, releasing the
+       pin 20px early and scrolling the band away before progress 1.
+       Scrub only — timed/off still carry .dpc-steps' 100/64px block padding. */
+    margin-bottom: 20px;
   }
-  /* pin = a transparent full-viewport sticky window; the lilac BAND centers
-     inside it, so leftover viewport height splits evenly above and below the
-     band while pinned (owner request 2026-07-14; a 07-17 bottom-anchor
-     experiment was reverted same day). Sticky top stays 0, so pin-in still
-     equals progress 0. */
+  /* pin = a transparent sticky window that HUGS the band (owner, 2026-08-10).
+     It used to be `min-height: 100vh; justify-content: center` with `top: 0` —
+     a full-viewport window with the band centred inside it, so the SECTION owned
+     the leftover height (owner request 2026-07-14; a 07-17 bottom-anchor
+     experiment was reverted same day).
+     The band still ends up centred while pinned — leftover viewport height still
+     splits evenly above and below it — but that now comes from --dpc-pin-top
+     rather than from an oversized pin, so the section reserves only the band's
+     own height. Consequence: sticky top is no longer 0, so the pin engages
+     --dpc-pin-top BEFORE progress 0 (hence that term in the track height above).
+     `display: flex; flex-direction: column` stays — .dpc-steps__band's
+     `width: 100%` is load-bearing against it (see the band rule). */
   .dpc-steps[data-mode="scrub"] .dpc-steps__pin {
-    position: sticky; top: 0; min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
+    position: sticky; top: var(--dpc-pin-top);
+    display: flex; flex-direction: column;
     background: none;
   }
   /* The band's fill/width/radius are unconditional now (see the base rule), so
@@ -488,11 +537,29 @@ body.dpc .footer { background: var(--gf-bg); }
    left so the composition reads text-left / product-right. */
 @media (min-width: 768px) {
   .dpc-steps__phone {
-    /* 56px = the old 80px container padding + the -24px comp offset; the
-       stage padding box now starts at the band's top edge, so the offset
-       is expressed directly against the band */
+    /* The bezel is centred in the stage, not the element (owner, 2026-08-10:
+       "phone is closer to bottom than top"). --dpc-phone-w already SIZES for a
+       56/56 split (its `- 112px` term), but `top: 56px` positioned the element
+       box, and frame.png carries transparent margin above the bezel — so the
+       bezel was pushed down by that margin: measured 109px of gap above and 3px
+       below at 1605×1363. Backing the margin out of `top` puts the real 56/56 on
+       the visible phone.
+       Ratios are measured off the PNG's alpha channel, not the comment that
+       used to live here: opaque bounds are y 82→1148 in an 800×1355 file, so the
+       bezel starts at 0.1025 of the element's width and is 1.3337 of it tall. */
     position: absolute; top: 56px; right: 0; margin: 0; z-index: 1;
-    width: var(--dpc-phone-w, min(768px, 53vw));
+    width: var(--dpc-phone-w, min(632px, 53vw));
+  }
+  /* Scoped to scrub: it's the only mode that defines --dpc-stage-h/--dpc-phone-w,
+     so it's the only one where the bezel offset can be computed. 768–920 "timed"
+     shares the rule above and keeps the plain 56px.
+     Centred against the stage's ACTUAL height (50%), not against --dpc-stage-h.
+     The stage is min-height, so step copy can push it taller than that value —
+     at 1440×900 it runs 800 against a 780 --dpc-stage-h, and sizing the offset
+     from the assumed height left the bezel 56 above / 77 below. 50% is right in
+     both cases. */
+  .dpc-steps[data-mode="scrub"] .dpc-steps__phone {
+    top: calc(50% - var(--dpc-phone-w) * var(--dpc-frame-bezel-mid));
   }
   .dpc-steps__intro { max-width: 520px; }
   .dpc-steps__list { grid-template-columns: 1fr; max-width: 480px; gap: 28px; margin-top: 48px; }
@@ -542,10 +609,22 @@ body.dpc .footer { background: var(--gf-bg); }
    reserved for section headers, and cards/lists are left-aligned page-wide.
    The fix is equality and compactness. */
 .dpc-caps__row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+/* Copy BESIDE the art, art at half size (owner, 2026-08-10: "make these cards
+   aligned horizontal with the image and reduce the size of the image… the left
+   alignment appears unbalanced since the images do not have a solid background").
+   Stacked, the art was the full 459px content width and 337px tall against a
+   125px copy block, so a soft-edged illustration with no card fill dominated the
+   cell and left the text stranded at the top. Side by side and halved, the art is
+   a companion to the copy instead of a slab under it.
+   `calc(50% - 12px)` rather than `50%`: 50% of the content box plus a 24px gap
+   would leave the copy 24px narrower than the art, which is the imbalance this is
+   meant to fix. Backing half the gap out of each side makes the two exactly
+   equal — 217px each at 1145, 276px at container width. */
 .dpc-cap {
-  display: flex; flex-direction: column; gap: 24px;
+  display: flex; flex-direction: row; align-items: center; gap: 24px;
   border-radius: var(--r-xl); padding: 32px;
 }
+.dpc-cap__copy { flex: 1 1 0; min-width: 0; }
 /* card type ramp = page reference scale (earn/steps): 24/32 semibold heads, 16/24 body */
 .dpc-cap__copy h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
 .dpc-cap__copy p { margin: 8px 0 0; font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700); }
@@ -557,14 +636,18 @@ body.dpc .footer { background: var(--gf-bg); }
 /* one sizing rule for BOTH media slots — the aspect ratio is what makes the
    two cards the same shape, so it must not be overridden per card */
 .dpc-cap__media {
-  flex: 0 0 auto; aspect-ratio: 600 / 440;
+  flex: 0 0 calc(50% - 12px); aspect-ratio: 600 / 440;
   background: #fff; border-radius: var(--r-lg); overflow: hidden;
 }
-/* both illustrations (SVG, 600×440) ship their own white bg + edge fade. Now
-   that the slot IS 600/440 and the columns are equal, neither is cropped —
-   `cover` is a no-op at the native ratio and only guards odd container widths.
-   (Was: transfer pinned to native aspect, ATM side-cropped to fill a slimmer
-   card. That asymmetry is what made the two cards read as different shapes.) */
+/* both illustrations (SVG, 600×440) ship their own white bg + edge fade, and the
+   slot matches that ratio, so neither is cropped.
+   ⚠ What actually makes that true is the `viewBox` on each illustration, NOT
+   `object-fit` — object-fit does nothing to an inline <svg>, it only applies to
+   replaced elements. An earlier comment here credited `cover`; that was wrong,
+   and the art was uncropped only because the slot happened to sit near the
+   native 600px. Halving the slot to 218px (2026-08-10) exposed it: both exports
+   shipped without a viewBox, so they rendered as top-left crops until one was
+   added. `cover` stays only to guard odd container widths on the <img> path. */
 .dpc-cap__media img, .dpc-cap__media svg { display: block; width: 100%; height: 100%; object-fit: cover; }
 /* ============ 5. SANAL KART — own dark section ============ */
 /* Full-bleed dark, same grammar as the landing `.debit` product moment.
@@ -662,6 +745,8 @@ body.dpc .footer { background: var(--gf-bg); }
   border: 1px solid rgb(255 255 255 / 0.08);
 }
 .dpc-sanal__row .dpc-point p { color: #fff; }
+/* (The 32/12 override that sat here on 2026-08-10 moved to the shared
+   .dpc-point base once the abroad list got its icons too — see that rule.) */
 
 /* ============ 5. ABROAD — centered head + captions + collage ============ */
 .dpc-abroad { padding-block: 120px; }
@@ -690,8 +775,13 @@ body.dpc .footer { background: var(--gf-bg); }
 /* text-align is explicit, not inherited: .dpc-sanal sets `text-align: center`
    for its heading stack and that was leaking into the feature copy. Centre is
    for section headers only — list and card copy is left-aligned page-wide. */
-.dpc-point { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px 8px; text-align: left; }
-.dpc-point__ic { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+/* 32px glyph + 12px icon→text gap, measured off both comps' nodes rather than
+   eyeballed (sanal 22074:14642, abroad 22074:14667 — both draw the glyph at 32
+   with the text baseline 12 below it). These were 40/16 while the lists had no
+   icons; now that BOTH carry them the values live on the shared base instead of
+   being overridden per section (the 08-10 sanal-only override is gone). */
+.dpc-point { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px 8px; text-align: left; }
+.dpc-point__ic { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
 .dpc-point__ic img { width: 100%; height: 100%; object-fit: contain; }
 /* 18/24 (was 24/32) is doing real work here, not just fitting the panel:
    at 24/32 a 2-line and a 3-line item differ by a whole 32px band. */
@@ -774,7 +864,13 @@ body.dpc .footer { background: var(--gf-bg); }
 
   .dpc-caps { padding-block: 64px; }
   .dpc-caps__row { grid-template-columns: 1fr; }
-  .dpc-cap { padding: 24px; }
+  /* back to stacked on phones: the desktop half-and-half would put the art at
+     ~131px at 375, too small for either illustration to read (the ATM map in
+     particular is a wide composition). The cards are already one-per-row here,
+     so the art has the full width and no longer competes with a short copy block
+     the way it did in the two-up desktop cell. */
+  .dpc-cap { padding: 24px; flex-direction: column; align-items: stretch; }
+  .dpc-cap__media { flex: 0 0 auto; }
   .dpc-cap__stat { font-size: 56px; }
 
   .dpc-sanal { padding-block: 64px; }

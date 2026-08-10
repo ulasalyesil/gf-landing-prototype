@@ -6,6 +6,13 @@ const SvgDebitCapTransfer = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     width={600}
     height={440}
+    /* viewBox is load-bearing — the export shipped without one. Without it the
+       CSS `width/height: 100%` shrinks only the SVG VIEWPORT while the artwork
+       stays at 600×440 user units anchored top-left, so the slot shows a crop
+       rather than the scaled composition. Harmless while the slot was ~459px
+       (close to native), but it cut the art to a fragment when the caps media
+       halved to 218px on 2026-08-10. */
+    viewBox="0 0 600 440"
     fill="none"
     {...props}
   >

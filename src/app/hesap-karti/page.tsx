@@ -111,20 +111,24 @@ export default function HesapKartiDetail() {
                   {DEBIT_EARN.abonelik.post}
                 </p>
                 <div className="dpc-earn__media">
-                  {/* Owner's export of the comp's DS illustration (2026-08-03).
-                      ⚠ Carries third-party marks (Spotify, Amazon Prime, ChatGPT,
-                      Gemini) — clearance for the PUBLIC site is still unconfirmed;
-                      the branch is preview-only and must not merge to main until it
-                      is. The generic no-logo fallback is recoverable from git at
-                      6f634f8 (illustrations/SubscriptionsMotif.tsx) if legal
-                      objects. No % bubble either way (AGENTS.md reserves % for
-                      faiz), and the illustration carries its own composition, so
-                      the GF coin badge is gone — the comp has none. */}
+                  {/* Owner-supplied replacement (2026-08-10), and it closes the
+                      clearance question open since 2026-08-03: the third-party
+                      marks are REFUSED, not pending ("we can't use the logos").
+                      This art reproduces nothing identifiable — a faded app screen
+                      behind a crisp getirfinans cashback notification, on a violet
+                      glow. Two versions landed within the hour; this is the second
+                      (1920×1080), which dropped the first's coloured app squircles
+                      entirely. `contain` absorbs the aspect change (1.739 → 2.0 →
+                      1.778) so no CSS moved for either.
+                      ⚠ The art no longer depicts subscriptions at all, while the
+                      copy still names spotify / amazon prime / chatgpt — the
+                      benefit now lives entirely in the text. Worth a look.
+                      No % bubble (AGENTS.md reserves % for faiz) and no coin badge. */}
                   <img
                     src="/assets/img/debit-earn-platforms.png"
                     alt=""
                     width={1920}
-                    height={1104}
+                    height={1080}
                     loading="lazy"
                   />
                 </div>
@@ -165,7 +169,7 @@ export default function HesapKartiDetail() {
                 <RevealItem as="li" className="dpc-point" key={caption.text}>
                   {caption.icon && (
                     <span className="dpc-point__ic" aria-hidden="true">
-                      <img src={`/assets/icons/${caption.icon}`} alt="" width={40} height={40} />
+                      <img src={`/assets/icons/${caption.icon}`} alt="" width={32} height={32} />
                     </span>
                   )}
                   <p>{caption.text}</p>

@@ -6,6 +6,11 @@ const SvgDebitCapAtm = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     width={600}
     height={440}
+    /* viewBox is load-bearing — see the same note in TransferIllustration. The
+       export shipped without one, so `width/height: 100%` scaled the viewport but
+       not the artwork, and the slot showed a top-left crop instead of the whole
+       map. Only became visible when the caps media halved on 2026-08-10. */
+    viewBox="0 0 600 440"
     fill="none"
     {...props}
   >

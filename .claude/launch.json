@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "-p", "3975"],
       "port": 3975
+    },
+    {
+      "name": "hesap-karti",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3977"],
+      "port": 3977
     }
   ]
 }

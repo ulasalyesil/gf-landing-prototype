@@ -1,0 +1,14 @@
+<!-- sanal kart list, item 1 "ayrı kartlar oluştur". Owner-supplied 2026-08-10.
+     White + gf-yellow (#ffd300) accent, so it belongs to the DARK .dpc-sanal__row.
+     Figma's `style="fill:...;fill:color(display-p3 ...)"` attributes were stripped:
+     Figma emits the sRGB channel values reinterpreted in display-p3, which renders
+     MORE saturated than the same hex in sRGB, so the icon would not match the
+     gf-yellow / white used elsewhere on the page on a P3 display. Plain hex keeps
+     it locked to the tokens.
+     Created by Claude — PUBLIC (ships as a web asset on the public site).
+-->
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M7.82103 20.3619L11.9718 4.20684C12.1623 3.49865 12.8911 3.07874 13.5992 3.26914L25.0376 6.34479C25.7011 6.5233 26.1113 7.1746 26.0031 7.83911L25.9744 7.97197L20.7543 27.126L20.7536 27.1289C20.5636 27.8348 19.9299 28.2227 19.2757 28.0896L8.93942 22.0733L8.8529 22.0227L8.75671 21.9969C8.04861 21.8064 7.62859 21.0776 7.81901 20.3694L7.82103 20.3619Z" stroke="#ffd300" stroke-width="1.5"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M19.478 4.86926C20.6254 4.86939 21.5551 5.79995 21.5552 6.94739V26.7911C21.5552 27.9386 20.6255 28.8691 19.478 28.8693H7.6333C6.48573 28.8693 5.55518 27.9387 5.55518 26.7911V6.94739C5.55524 5.79987 6.48577 4.86926 7.6333 4.86926H19.478ZM10.0044 24.7853C9.70112 24.7854 9.42462 24.8807 9.21338 25.0353H9.19678C8.98567 24.8805 8.70899 24.7856 8.40576 24.7853C7.74284 24.7853 7.20467 25.2331 7.20459 25.7853C7.20511 26.3371 7.74311 26.7853 8.40576 26.7853C8.70904 26.785 8.98566 26.6891 9.19678 26.5343H9.21338C9.42458 26.6888 9.70125 26.7852 10.0044 26.7853C10.6665 26.7848 11.205 26.3368 11.2056 25.7853C11.2055 25.2334 10.6668 24.7858 10.0044 24.7853ZM14.6987 7.98645C14.125 7.98645 13.6597 8.45178 13.6597 9.02551V10.0646C13.66 10.6381 14.1251 11.1036 14.6987 11.1036C15.2721 11.1033 15.7375 10.6379 15.7378 10.0646V9.02551C15.7377 8.45196 15.2722 7.98674 14.6987 7.98645Z" fill="#fff"/>
+  <rect x="9.55518" y="18.0486" width="8" height="1.5" rx="0.75" fill="#fff" fill-opacity="0.5"/>
+</svg>

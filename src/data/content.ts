@@ -194,11 +194,22 @@ export const DEBIT_SANAL = {
   title: "sanal hesap kartıyla",
   titleHl: "güvenle harca",
   cta: "kart al",
+  /* Same {text, icon} shape as DEBIT_ABROAD.captions — the two lists share
+     `.dpc-points`, so they share their item shape too.
+     Real icons for items 1-2 landed 2026-08-10 (owner-supplied). All are white /
+     yellow because this list sits on the DARK .dpc-sanal__row.
+     ⚠ Item 3 still carries `placeholder-globe.svg` — kept on the owner's explicit
+     instruction ("keep the third one as is"). It happens to read fine, since a
+     globe for "internet alışverişleri" says web rather than world, but the FILENAME
+     still says placeholder. Rename or replace when the intent is settled.
+     ⚠ ORDER deliberately differs from the comp: 22074:14642 reads
+     kartlar → internet → limit, this keeps kartlar → limit → internet from the
+     review round (2026-07-24), which is newer than the comp. */
   features: [
-    "harcamaların için ayrı kartlar oluştur, rahatça takip et",
-    "her kartın için limitini belirle, bütçeni kontrol et",
-    "internet alışverişlerini güvenle yap"
-  ],
+    { text: "harcamaların için ayrı kartlar oluştur, rahatça takip et", icon: "cards-multi.svg" },
+    { text: "her kartın için limitini belirle, bütçeni kontrol et", icon: "card-limit.svg" },
+    { text: "internet alışverişlerini güvenle yap", icon: "placeholder-globe.svg" }
+  ] as { text: string; icon?: string }[],
   media: "/assets/img/virtual-card.png"
 };
 
@@ -209,19 +220,33 @@ export const DEBIT_SANAL = {
    items wrap naturally and the grid equalises them.
    ⚠ A third, main-benefit item ("harcamalarını TL olarak rahatça öde" or similar)
    is COMING FROM PRODUCT. The list is built to read at both 2 and 3 items.
-   ⚠ ICONS PENDING — the teammate is supplying the glyph set (2 here + 3 in
-   DEBIT_SANAL) so all five read as one family. Tried the existing set and
-   pulled it back out: `flag-usd.svg` for "avantajlı kurlar" put a US flag on a
-   Turkish bank's page and says "dollar" rather than "good rates", and
-   `cashback.svg` is a grey coin that sits at low contrast on the lilac panel.
-   Add an `icon` field here and the slot renders itself — no markup change.
-   Whatever lands for the %1 item must be a COIN, never a % (reserved for faiz). */
+   ICONS: real set landed 2026-08-10 for 4 of the 5 slots (both here + 2 of the 3
+   in DEBIT_SANAL). Only DEBIT_SANAL's third still carries the placeholder globe,
+   held there on the owner's instruction. Two colourways, because the two lists sit
+   on different panels: white/yellow on the sanal dark, --gf-purple on this lilac.
+   The old repo icons were tried for this list and pulled back out: `flag-usd.svg`
+   put a US flag on a Turkish bank's page and says "dollar" rather than "good
+   rates", and `cashback.svg` is a grey coin at low contrast on the lilac panel.
+   The %1 item's icon is a globe and carries NO % glyph, which is what the AGENTS.md
+   rule requires (% reserved for faiz); a coin would have been fine too. */
 export const DEBIT_ABROAD = {
   title: "hesap kartınla yurtdışında",
   titleHl: "yapılacaklar listesi",
+  /* Real icons landed 2026-08-10 (owner-supplied), replacing the placeholder globes
+     from earlier the same day. Both are --gf-purple, matching this list's text —
+     the panel is the LILAC tint, not the sanal dark, so these are the purple
+     counterparts of DEBIT_SANAL.features' white set.
+     Neither carries a % glyph, which AGENTS.md requires: % is reserved for
+     interest/faiz and the "%1" here is cashback.
+     ⚠ WORDING: the comp reads "yurt dışında harcarken de %1…"; this keeps
+     "yurt dışında da harcarken %1…" from the CMO round (2026-08-05), where the
+     "da" placement was called out as load-bearing ("TR'de var, yurt dışında DA
+     var"). Comp is older; not followed.
+     ⚠ Still open from that round: a third, main-benefit item is COMING FROM
+     PRODUCT. The grid is driven by item count, so it reads at 2 and at 3. */
   captions: [
-    { text: "avantajlı kurlarla harcama yap" },
-    { text: "yurt dışında da harcarken %1 nakit iade kazan" }
+    { text: "avantajlı kurlarla harcama yap", icon: "exchange-purple.svg" },
+    { text: "yurt dışında da harcarken %1 nakit iade kazan", icon: "world-purple.svg" }
   ] as { text: string; icon?: string }[]
 };
 
