@@ -232,8 +232,10 @@ export const DEBIT_SANAL = {
    da var", so the "da" is load-bearing and not a stylistic choice.
    Captions carry an icon now (faiz-points pattern) — the hard \n is gone, the
    items wrap naturally and the grid equalises them.
-   ⚠ A third, main-benefit item ("harcamalarını TL olarak rahatça öde" or similar)
-   is COMING FROM PRODUCT. The list is built to read at both 2 and 3 items.
+   A third, main-benefit item ("harcamalarını TL olarak rahatça öde" or similar) was
+   tracked here as COMING FROM PRODUCT — see the caption-1 note below, which as of
+   2026-08-11 appears to have absorbed it into caption 1. The list still reads at
+   both 2 and 3 items either way.
    ICONS: real set landed 2026-08-10 for 4 of the 5 slots (both here + 2 of the 3
    in DEBIT_SANAL). Only DEBIT_SANAL's third still carries the placeholder globe,
    held there on the owner's instruction. Two colourways, because the two lists sit
@@ -260,14 +262,25 @@ export const DEBIT_ABROAD = {
      counterparts of DEBIT_SANAL.features' white set.
      Neither carries a % glyph, which AGENTS.md requires: % is reserved for
      interest/faiz and the "%1" here is cashback.
-     ⚠ WORDING: the comp reads "yurt dışında harcarken de %1…"; this keeps
-     "yurt dışında da harcarken %1…" from the CMO round (2026-08-05), where the
-     "da" placement was called out as load-bearing ("TR'de var, yurt dışında DA
-     var"). Comp is older; not followed.
-     ⚠ Still open from that round: a third, main-benefit item is COMING FROM
-     PRODUCT. The grid is driven by item count, so it reads at 2 and at 3. */
+     WORDING, caption 1 (owner, 2026-08-11): now "harcamalarını avantajlı kurlarla
+     TL olarak rahatça öde", which IS Figma 22200:16954's own wording — so this
+     caption no longer diverges from the comp.
+     ⚠ This probably ABSORBS the third item rather than waiting for it. The note
+     above has tracked a pending "main-benefit" caption from product worded roughly
+     "harcamalarını TL olarak rahatça öde"; the new caption 1 merges exactly that
+     point into the FX-rate one. Treat the list as complete at 2 unless product says
+     otherwise — and if a third does still land, nothing needs building: the row is
+     driven by item count, so adding a record adds a card.
+     ⚠ WORDING, caption 2: the comp reads "yurt dışında harcarken de %1…"; this
+     still keeps "yurt dışında da harcarken %1…" from the CMO round (2026-08-05),
+     where the "da" placement was called out as load-bearing ("TR'de var, yurt
+     dışında DA var"). Deliberately not followed.
+     No hard "\n" in either caption, per the note above: the comp draws caption 1 as
+     two lines, but the cards wrap naturally and `.dpc-point p` carries
+     `text-wrap: balance`, so a manual break would fight the balancer and would be
+     wrong at any width but one. */
   captions: [
-    { text: "avantajlı kurlarla harcama yap", icon: "exchange-purple.svg" },
+    { text: "harcamalarını avantajlı kurlarla TL olarak rahatça öde", icon: "exchange-purple.svg" },
     { text: "yurt dışında da harcarken %1 nakit iade kazan", icon: "world-purple.svg" }
   ] as { text: string; icon?: string }[]
 };
