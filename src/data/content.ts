@@ -124,9 +124,17 @@ export const DEBIT_HERO = {
   badge: "kartın dakikalar içinde kapında",
   title: "geri dönüşü",
   titleHl: "muhteşem kart",
-  /* ⚠ near-duplicate of DEBIT_EARN heading below ("harcadıkça getirpara / ve nakit
-     iade kazan") — flagged for owner (review feedback 2026-07-24), implemented as given */
-  sub: "harcadıkça getirpara ve nakit iade kazan",
+  /* Owner, 2026-08-11 (page feedback round 3). Replaces "harcadıkça getirpara ve
+     nakit iade kazan", which was flagged from 2026-07-24 as a near-duplicate of the
+     DEBIT_EARN heading below — this wording resolves that: it now leads with the
+     free-card promise and a concrete rate instead of restating the earn section.
+     ⚠ TYPO CORRECTED: the instruction read "harcakrken"; shipped as "harcarken".
+     Say so if that was deliberate.
+     ⚠ "%1" — AGENTS.md reserves the % GLYPH for interest/faiz on ICONS; this is
+     body copy stating a cashback rate, which the page already does in
+     DEBIT_ABROAD.captions ("%1 nakit iade") and DEBIT_EARN.getirpara ("%3"), so it
+     is consistent with how the rule has been applied. No % icon is introduced. */
+  sub: "ücretsiz hesap kartınla harcarken %1 nakit iade kazan",
   cta: "kart al"
 };
 
@@ -144,13 +152,19 @@ export const DEBIT_EARN = {
      (yellow would be invisible on #fffdf0 / #f9f7ff). */
   iade: { pre: "fiziksel tüm harcamalarına aylık ", em: "₺1.250", post: "'ye kadar anında nakit iade!" },
   getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" },
-  /* DRAFT, from Figma 22054:45003 — needs owner + legal review. Names three
-     third-party services in body copy; the tile carries NO third-party marks
-     (owner, 2026-08-03), so the offer rests on this sentence plus a generic
-     motif. If legal objects to naming them, "seçili dijital abonelikler"
-     alone still stands on its own. */
+  /* Owner, 2026-08-11 (page feedback round 3). Was "spotify, amazon prime, chatgpt
+     ve dahası… seçili dijital aboneliklerde %20 nakit iade".
+     Two things this changes, both in the right direction on the legal question that
+     has been open since 2026-08-03: it drops "chatgpt" (one fewer named third-party
+     mark) and replaces "ve dahası… seçili dijital" with the generic category
+     "seçili yapay zeka", so the AI half of the offer no longer names anyone.
+     ⚠ STILL NAMES TWO MARKS in body copy — spotify and amazon prime. That is
+     nominative use, not mark reproduction (the tile still carries NO logos, owner
+     2026-08-03, and the marks were refused outright on 2026-08-10), but it is the
+     same open legal item, now narrower. "seçili dijital abonelikler" alone still
+     stands on its own if legal objects to the remaining two. */
   abonelik: {
-    pre: "spotify, amazon prime, chatgpt ve dahası… seçili dijital aboneliklerde ",
+    pre: "spotify, amazon prime ve seçili yapay zeka aboneliklerinde ",
     em: "%20",
     post: " nakit iade"
   }

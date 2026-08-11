@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import AnimatedHighlight from "@/components/AnimatedHighlight";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import { DEBIT_SANAL } from "@/data/content";
@@ -62,16 +61,15 @@ export default function SanalCard() {
             the two horizontal benefit lists were near-identical lookalikes, so
             they now share `.dpc-points` and differ only in skin.
             Icons landed 2026-08-10 (owner feedback: "the texts look not
-            balanced, let's add an icon for each item") — a repeated DS globe
-            placeholder, exactly as the comp does it. Markup is identical to the
+            balanced, let's add an icon for each item"). Markup is identical to the
             abroad list in page.tsx: the slot renders only when `icon` is set, so
-            the real glyph set drops in from content.ts with no change here. */}
-        <Reveal
-          as="ul"
-          className="dpc-points dpc-sanal__row"
-          stagger={0.08}
-          style={{ "--dpc-points-n": DEBIT_SANAL.features.length } as React.CSSProperties}
-        >
+            the real glyph set drops in from content.ts with no change here.
+            Card split per Figma 22200:16926 (owner, 2026-08-11) is entirely in CSS
+            — each `.dpc-point` is now its own card, so this markup is unchanged.
+            The `--dpc-points-n` inline style that used to be here is gone with it:
+            it drove the grid's column count, and a flex row of fixed-width cards
+            derives that from the DOM. */}
+        <Reveal as="ul" className="dpc-points dpc-sanal__row" stagger={0.08}>
           {DEBIT_SANAL.features.map((f) => (
             <RevealItem as="li" className="dpc-point" key={f.text}>
               {f.icon && (

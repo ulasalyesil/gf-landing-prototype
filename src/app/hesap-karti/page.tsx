@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedHighlight from "@/components/AnimatedHighlight";
@@ -162,18 +162,17 @@ export default function HesapKartiDetail() {
                 <AnimatedHighlight type="hl">{DEBIT_ABROAD.titleHl}</AnimatedHighlight>
               </h2>
             </Reveal>
-            {/* faiz-points pattern (landing `.faiz__points`): one panel holding an
-                equal grid of icon-over-text cells. Replaces the fixed-320px flex
-                row whose items were three different heights — the panel gives the
-                list an edge, the icons give a repeating anchor, and 18/24 (down
-                from 24/32) makes the remaining length differences read as normal
-                wrapping rather than as disorder. */}
-            <Reveal
-              as="ul"
-              className="dpc-points dpc-abroad__captions"
-              stagger={0.06}
-              style={{ "--dpc-points-n": DEBIT_ABROAD.captions.length } as React.CSSProperties}
-            >
+            {/* Shares `.dpc-points` with the sanal list — icon-over-text items that
+                differ only in skin (CMO round 2026-08-05).
+                Card split per Figma 22200:16954 (owner, 2026-08-11) is entirely in
+                CSS: each `.dpc-point` is now its own tinted card rather than a cell
+                in a shared lilac panel, so this markup is unchanged. The
+                `--dpc-points-n` inline style that used to be here is gone with it —
+                it drove the grid's column count, and a flex row of fixed-width cards
+                derives that from the DOM. That also means the still-pending third
+                abroad benefit from product needs no CSS change: adding it to
+                content.ts adds a third card. */}
+            <Reveal as="ul" className="dpc-points dpc-abroad__captions" stagger={0.06}>
               {DEBIT_ABROAD.captions.map((caption) => (
                 <RevealItem as="li" className="dpc-point" key={caption.text}>
                   {caption.icon && (

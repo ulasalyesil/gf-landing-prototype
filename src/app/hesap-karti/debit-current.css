@@ -93,7 +93,23 @@ body.dpc .footer { background: var(--gf-bg); }
 }
 .dpc-badge svg { width: 20px; height: 20px; flex: none; }
 .dpc-hero__title { margin: 0; font-size: 48px; line-height: 100%; font-weight: var(--fw-regular); color: var(--gf-ink); }
-.dpc-hero__sub { margin: 16px 0 0; max-width: 460px; font-size: 20px; line-height: 28px; color: var(--gf-ink-700); text-wrap: pretty; }
+/* Sized to the landing hero's description (owner, 2026-08-11: "font size increases
+   to match landing page hero description. which should be 32px but check yourself").
+   Checked: `.hero__sub` (sections.css) is `clamp(20px, 2.4vw, 32px)` at line-height
+   1.3, weight 400 — so 32px is right, but only from ~1333px up; it is a fluid ramp,
+   not a flat value. Ported verbatim rather than hardcoding 32 so the two heroes
+   agree at EVERY width instead of only at desktop. Below ~833px both land on their
+   shared 20px floor, which is what this rule already used.
+   The 64px title above it is already "landing hero desktop size" (see the ≥768
+   block), so 32/64 now reproduces the landing's exact 2.0 title:sub ratio.
+   ⚠ max-width stays 460, deliberately NOT the landing's 726: the card video is
+   right-anchored (right:-60, 740 wide) and a 726px column would run under it.
+   Widening the measure is a layout call, not a type call. */
+.dpc-hero__sub {
+  margin: 16px 0 0; max-width: 460px;
+  font-size: clamp(20px, 2.4vw, 32px); line-height: 1.3;
+  color: var(--gf-ink-700); text-wrap: pretty;
+}
 .dpc-cta {
   display: inline-flex; align-items: center; justify-content: center;
   background: var(--gf-purple); color: #fff; border-radius: var(--r-full);
@@ -627,7 +643,29 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-cap__copy { flex: 1 1 0; min-width: 0; }
 /* card type ramp = page reference scale (earn/steps): 24/32 semibold heads, 16/24 body */
 .dpc-cap__copy h3 { margin: 0; font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
-.dpc-cap__copy p { margin: 8px 0 0; font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700); }
+/* The two-line reserve is what aligns "7/24" with "5.355" (owner, 2026-08-11:
+   "add an empty line so the description is two lines and it makes 7/24 and 5355
+   align visually").
+   Why the stats were out of line: .dpc-cap is a row with align-items:center, so
+   each card centres its own copy block, and the stat is that block's first child.
+   A taller copy block therefore sits HIGHER. Measured at 2504x1363 — transfer
+   body 1 line / copy 125.4px, ATM body 2 lines / copy 149px, stats 11.7px apart.
+   Reserving a second line on the body brings transfer's copy to ~149px and the
+   stats to ~0px apart.
+   Done as a min-height RESERVE rather than a literal blank line in content.ts:
+   same device as `.dpc-steps__item p { min-height: 48px }` below, it keeps a
+   whitespace-only string out of the content layer, and it self-cancels if the copy
+   is ever edited to two real lines. Rendered result is identical — an empty line's
+   worth of space under the body.
+   It improves the narrow desktop band too, though it cannot fully fix it: at 1145
+   the transfer HEAD wraps to 2 lines while the ATM body takes 3, so the blocks
+   land 180.3 vs 172.5 and the stats sit 3.9px apart — half the 7.8px they were.
+   Exact alignment at every width would need the copy blocks top-aligned instead of
+   centred, which is a layout change this round was told not to make. */
+.dpc-cap__copy p {
+  margin: 8px 0 0; font-size: var(--fs-body-md); line-height: 24px; color: var(--gf-ink-700);
+  min-height: calc(2 * 24px);
+}
 .dpc-cap__stat {
   display: block; margin-bottom: 8px;
   font-size: 56px; line-height: 1; font-variant-numeric: tabular-nums;
@@ -733,20 +771,45 @@ body.dpc .footer { background: var(--gf-bg); }
    (gotcha already logged for the sanal card in the July round). */
 .dpc-sanal__row {
   /* width:100% is load-bearing — .dpc-sanal__inner is a column flex with
-     align-items:center, so this grid would otherwise size to max-content
-     (3 × 240 = 744px) and blow past a 390px viewport instead of collapsing
-     to one column. max-width alone can't fix it: 744 < 880, so the cap never
-     engages. Same trap as .dpc-steps__band (July round). */
+     align-items:center, so this row would otherwise size to max-content
+     (3 × 320 + 2 × 16 = 992px) and blow past a 390px viewport instead of letting
+     the cards shrink. Same trap as .dpc-steps__band (July round). */
   width: 100%;
   margin-top: 40px; position: relative; z-index: 61;
-  background: rgb(26 18 66 / 0.72);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  /* The panel that used to live here — fill, blur, hairline — moved ONTO the cards
+     below (card split, 2026-08-11). The row is now only a positioning context: the
+     z-index still has to sit above the CardHandoff traveler at z 60. */
+}
+/* ⚠ READ BEFORE WEAKENING THIS FILL — it is the CMO's "ortadaki madde okunmuyor"
+   fix (2026-08-05), relocated from the panel to the cards, and the comp's own
+   values would undo it.
+   The mechanism: CardHandoff flies a near-WHITE card render (z 60) to viewport
+   centre, which is exactly where the middle card of this row sits, and the row is
+   z 61 — so white copy can end up on a near-white backdrop. Measured on the
+   deployed build once already: the middle item was 67% covered, white on near-white.
+   The comp (22200:16927) draws `shadow/black/10` + 6px blur. Over this section's
+   --gf-card-purple (#2f205d) that composites to #2c1e55 — i.e. the fill is a
+   whisper and the 20%-white border is what actually draws the card. But over a
+   fully white traveler the same 10% black lands at #e8e8e8, where white copy
+   measures 1.08:1. Invisible. That is the regression, re-introduced.
+   So the fill keeps the comp's APPEARANCE and drops its alpha: #2c1e55 (the comp's
+   own composited colour) at 0.72 — the alpha the old panel was proven at.
+   - over the section it composites to #2d1f57, within 2/255 of the comp's #2c1e55
+     on every channel, so on the page it is indistinguishable from the comp;
+   - over a fully white traveler, the worst case, white copy measures 6.03:1.
+   Blur is the comp's 6px (down from the panel's 16px) — mostly cosmetic at this
+   alpha, kept for fidelity. The rings behind still read through at 28%, and they
+   are only rgba(255,255,255,.06) to begin with.
+   ⚠ -webkit-backdrop-filter MUST stay before backdrop-filter — the CSS minifier
+   drops the standard property when the prefixed one follows it (gotcha already
+   logged for the sanal card in the July round). */
+.dpc-sanal__row .dpc-point {
+  background: rgb(44 30 85 / 0.72);
+  border-color: rgb(255 255 255 / 0.2);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 .dpc-sanal__row .dpc-point p { color: #fff; }
-/* (The 32/12 override that sat here on 2026-08-10 moved to the shared
-   .dpc-point base once the abroad list got its icons too — see that rule.) */
 
 /* ============ 5. ABROAD — centered head + captions + collage ============ */
 .dpc-abroad { padding-block: 120px; }
@@ -754,84 +817,77 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-abroad__title .hl { display: inline-block; margin-top: 8px; }
 /* same descender fix as .dpc-sanal__head above — "yapılacaklar" */
 .dpc-abroad__title .hl::after { bottom: -0.36em; height: 0.2em; }
-/* ---- shared horizontal benefit list (abroad + sanal) ------------------
-   CMO round 2026-08-05: both lists were centred flex rows of fixed 320px
-   items at 24/32, so items of different line counts sat at different
-   heights with nothing tying them together ("dağınık"). Ported from the
-   landing page's `.faiz__points` (sections.css) so the page has ONE device
-   for a horizontal benefit list instead of two lookalikes.
-   auto-fit rather than repeat(3,1fr): the abroad list is 2 items today and
-   product is adding a 3rd, and this reads at both without re-tuning. */
-/* Columns come from the ITEM COUNT (--dpc-points-n, set by the component),
-   not from auto-fit. auto-fit computes 3 columns in this panel regardless, so
-   the 2-item abroad list left a dead third column and the items hugged the
-   left edge. Driving it from the count keeps the cells equal at both 2 and 3,
-   which matters because product is still adding a third abroad benefit. */
-/* COHERENCE PASS (owner, 2026-08-10: both lists "doesn't look balanced"), routed
-   through ui-skills pbakaus/layout + jakubkrehel/better-typography.
-   What the measurements said, at 1744×1083:
-   - the two panels ran at DIFFERENT TYPE DENSITIES. 1fr tracks meant the 3-item
-     sanal list gave each cell a 235px measure and the 2-item abroad list gave 372px
-     — the same component reading two ways, which is most of why they didn't feel
-     like one device.
-   - every interval was an off-scale 40px, and by accident: panel padding 32 + cell
-     padding 8 inline, panel 24 + cell 16 block. There is no 40 on the DS scale
-     (see spacing-system.css on exactly this drift).
-   - last lines were orphan tails — 61px on sanal item 1, 87px on abroad item 2.
-   Fixes, in order of leverage:
-   1. Tracks cap at --dpc-point-w and the track GROUP centres, instead of each
-      track taking 1fr. Cell width — and therefore measure — is now the same
-      whatever the item count, and a short 2-item list leaves symmetric space
-      outside the pair rather than dead space trapped inside cell 1.
-   2. --dpc-point-w is tuned PER LIST to the width where every item lands on the
-      same line count (2 everywhere), which is what actually aligns the text
-      bottoms. Equal cell heights were never the problem — the cells already
-      stretched equal; it was the text ending at different depths inside them.
-      Values are measured, not guessed: see each skin below.
-   3. Every interval is now a scale step: --sp-2xl inset, --sp-2xl gutter (the
-      page's documented 32px gutter, same as the earn grid), --sp-md icon→text.
-      Cadence is 32 / 12, and the cell's own padding is gone. */
+/* ---- shared benefit list, used by BOTH the abroad and sanal sections --------
+   History, short version, because this block has been rebuilt three times and each
+   round's reasoning matters to the next one:
+   - CMO round 2026-08-05 made the two lists ONE device instead of two lookalikes
+     (they were separate centred flex rows of fixed 320px items at 24/32, and items
+     of different line counts sat at different heights — "dağınık"). That principle
+     still holds and is why the geometry below is shared rather than per-section.
+   - 2026-08-10 coherence pass put them in a single grid panel per list, with
+     per-list cell widths and a reserved text band, to align the text bottoms.
+   - 2026-08-11 (this) splits each item into its own card per comp, which retires
+     most of the previous round's apparatus — see the note on .dpc-points. */
+/* ── CARD SPLIT (owner, 2026-08-11): one card per item ──────────────────────
+   Comps: sanal 22200:16926, abroad 22200:16954 ("we split the items to their own
+   cards"). Both comps draw the SAME card, so the geometry stays shared and only
+   the surface differs per section — 320 wide, radius 16, 24/16 padding, 16px
+   icon→text, 16px between cards, 40px glyph, 18/24 copy. Every one of those is a
+   token step already on the scale, so nothing here is a raw value.
+   This SUPERSEDES the 2026-08-10 coherence pass, which is why that pass's
+   apparatus is gone rather than adapted:
+   - the shared panel (its fill, radius and 32px inset) — the cards are the
+     surfaces now, so a panel behind them would be a second one;
+   - `--dpc-point-w` tuned per list (264 sanal / 240 abroad) — the comp fixes both
+     at 320, which closes the "two panels are different widths" call that pass
+     left open (920 vs 576). Both rows are now n×320 + gutters;
+   - `--dpc-point-lines`, the reserved text band — equal heights now come from
+     flex `stretch` plus `justify-content: center` on the card, which is what the
+     comp does (22200:16927 carries `justify-center`). A reserve was only ever
+     needed because the text WAS the box; now the card is, so a 1-line item
+     centres inside the height its taller sibling sets. That also retires the
+     768–920 three-line bump and the harness note about min-height masking true
+     line counts — there is no min-height left to mask them.
+   What survives from that pass: the two lists are still ONE device, the intervals
+   are still all on-scale, and `text-wrap: balance` still evens the rag. */
 .dpc-points {
-  --dpc-point-w: 264px;
-  /* guard, not a layout driver: if copy is ever edited to a different line count,
-     the text band still reserves this many lines so the bottoms stay aligned.
-     Same device as `.dpc-steps__item p { min-height: 48px }` above. */
-  --dpc-point-lines: 2;
-  display: grid;
-  grid-template-columns: repeat(var(--dpc-points-n, 3), minmax(0, var(--dpc-point-w)));
-  justify-content: center;
-  gap: var(--sp-2xl); padding: var(--sp-2xl); border-radius: var(--r-xl);
-  /* The panel HUGS its tracks instead of being a fixed 880/920 box. Capping the
-     cells inside a fixed panel was measurably worse: the 2-item abroad list became
-     two 240px cells centred in 920px, i.e. ~40% empty lilac, which reads as a
-     mistake rather than as breathing room.
-     Derived, so it can't drift from the track model: n cells + (n-1) gutters +
-     2 insets. Lands at 920 for sanal (3×264) and 576 for abroad (2×240).
-     `width: 100%` stays load-bearing underneath this — .dpc-sanal__inner is a
-     column flex with align-items:center, so without it the grid sizes to
-     max-content and blows past a 390px viewport (the July trap, still live).
-     Below the derived width, `width: 100%` wins and the tracks shrink via
-     minmax(0, …). */
-  max-width: min(920px, calc(
-    var(--dpc-points-n, 3) * var(--dpc-point-w)
-    + (var(--dpc-points-n, 3) - 1) * var(--sp-2xl)
-    + 2 * var(--sp-2xl)));
-  margin-inline: auto; list-style: none;
+  --dpc-point-w: 320px;
+  display: flex; justify-content: center; align-items: stretch;
+  gap: var(--sp-lg);
+  margin-inline: auto; padding: 0; list-style: none;
 }
 /* text-align is explicit, not inherited: .dpc-sanal sets `text-align: center`
    for its heading stack and that was leaking into the feature copy. Centre is
    for section headers only — list and card copy is left-aligned page-wide. */
-/* 40px glyph + 12px icon→text gap. The comps (sanal 22074:14642, abroad
-   22074:14667) both draw the glyph at 32, and it shipped at 32 on 2026-08-10, but
-   the owner asked for +8px the same day — the real icons carry more internal
-   detail than the placeholder globe did and read small at 32. The 12px gap is
-   still the comps' value. Shared by both lists, deliberately: they are one device
-   and the icon size is part of what makes them read that way. */
-/* padding: 0 — the cell used to carry `16px 8px` INSIDE a panel that already had
-   `24px 32px`, so the real inset was an accidental 40px on every side and the
-   gutter was an accidental 40px too (24 gap + two 8s). The panel owns the inset
-   now and the gutter is the gap alone. */
-.dpc-point { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sp-md); padding: 0; text-align: left; }
+/* 40px glyph + 16px icon→text gap — both now the comps' own values.
+   Worth recording, because it closes a deviation rather than adding one: the 40px
+   glyph shipped on 2026-08-10 as an owner override of the then-current comps
+   (22074:14642 / 22074:14667), which drew 32 and were noted in this file as
+   deliberately not followed. The new comps (22200:16926 / 22200:16954) draw 40, so
+   the override IS the comp now and the note is retired. The gap moved 12 → 16 with
+   it, also the comps' value. Shared by both lists, deliberately: they are one
+   device and the icon size is part of what makes them read that way. */
+/* The card. `flex: 0 1` (shrink allowed, nowrap) rather than `0 0` + wrap: below
+   the row's natural width — 992 for the 3-card sanal list, 656 for the 2-card
+   abroad one — three cards would wrap 2+1 and read as a broken grid, whereas
+   shrinking keeps one row all the way down to the ≤767 stack. It also matches what
+   the old `minmax(0, …)` tracks did, so narrow-desktop behaviour is unchanged in
+   kind. `min-width: 0` is required for the shrink to actually engage on a flex item
+   whose content has a longer min-content width than its share.
+   `justify-content: center` is the comp's own (22200:16927) and is load-bearing
+   here: with `align-items: stretch` on the row, a 1-line item — e.g. abroad's
+   "avantajlı kurlarla harcama yap", which fits one line at this width while its
+   neighbour takes two — sits centred in the taller card's height instead of
+   hanging from the top. That is what replaced the reserved text band. */
+.dpc-point {
+  flex: 0 1 var(--dpc-point-w); min-width: 0;
+  display: flex; flex-direction: column; align-items: flex-start;
+  justify-content: center;
+  gap: var(--sp-lg);
+  padding: var(--sp-lg) var(--sp-xl);
+  border: 1px solid transparent; border-radius: var(--r-lg);
+  text-align: left;
+}
 .dpc-point__ic { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .dpc-point__ic img { width: 100%; height: 100%; object-fit: contain; }
 /* 18/24 (was 24/32) is doing real work here, not just fitting the panel:
@@ -847,33 +903,33 @@ body.dpc .footer { background: var(--gf-bg); }
 .dpc-point p {
   margin: 0; font-size: var(--fs-body-lg); line-height: var(--lh-body-md);
   font-weight: var(--fw-regular); text-wrap: balance;
-  min-height: calc(var(--dpc-point-lines) * var(--lh-body-md));
 }
-/* 768–920 is the one band where the reserve has to step up. The container narrows
-   faster than the 3-column track model, so cells fall to ~193-210px and the longer
-   items take a third line — measured 3/2/2 at 820 and 3/3/2 at 768, which put the
-   bottoms 24px out. Reserving three lines here keeps them flush; the 2-line items
-   carry 24px of slack, which is precisely what the reserve is for.
-   Scoped narrowly and locally rather than added to the legacy ≤920 layer in
-   sections.css, which AGENTS.md says not to grow. */
-@media (min-width: 768px) and (max-width: 920px) {
-  /* sanal only. The abroad panel hugs at 576px, which its container still clears
-     in this band, so its cells stay at the 240px cap and never reach a third
-     line — bumping the shared reserve would only pad it out by 24px. */
-  .dpc-sanal__row { --dpc-point-lines: 3; }
-}
+/* (The 768–920 `--dpc-point-lines: 3` bump that sat here is gone with the reserve
+   it fed. Cards still narrow in that band — three 320s do not fit a ~872px
+   container — but a taller card is now just a taller card, and `stretch` keeps the
+   pair level without anything being reserved. Verified in that band below.) */
 
-/* section skins — the shape lives in .dpc-points, only the surface and the
-   measured cell width differ */
-/* 240, not the 264 the sanal list uses. Measured, not preferred: "avantajlı
-   kurlarla harcama yap" renders 247px of ink, so at any cell ≥247 it sits on ONE
-   line while its neighbour sits on two — the lopsided pair the owner flagged.
-   Capping under 247 forces both items onto two balanced lines, which is what
-   makes the text bottoms align. The two lists needing different values is the
-   honest answer here: sanal's longest item needs ≥261 to stay off a third line,
-   and abroad's shortest needs <247 to reach a second, so one shared width cannot
-   balance both. It is one variable per skin, not a second layout. */
-.dpc-abroad__captions { --dpc-point-w: 240px; margin: 48px auto 0; background: var(--gf-lilac); }
+/* ── section skins — geometry lives in .dpc-points / .dpc-point above; only the
+      surface differs. Both surfaces are the comps' own tokens. ─────────────── */
+/* abroad: the comp's `bg/surface/subtle-brand-tint` and `border/base/subtle` map
+   1:1 onto tokens this repo already exports, so nothing new was added and no hex
+   was sampled — --gf-lilac-50 IS #f9f7ff and --gf-lilac-200 IS #e6e1f5, both
+   annotated with those exact role names in tokens.css.
+   The panel's old --gf-lilac fill is gone: the cards are tinted individually and
+   sit on the white page, per comp.
+   Contrast, computed not eyeballed: --gf-purple on --gf-lilac-50 is 6.91:1, which
+   is a small IMPROVEMENT on the 6.53:1 it measured on the darker --gf-lilac panel.
+   ⚠ The 1px --gf-lilac-200 border measures 1.28:1 on white, so the card BOUNDARY
+   is decorative rather than a 3:1 non-text-contrast affordance. That is the comp's
+   own token choice and it is the same 1.4.11 argument already recorded for the pnib
+   chips: these cards are identified by their labelled text at 6.91:1, not by their
+   outline, so the outline is not "information required to identify a component".
+   Flagged because the pnib round shows this exact question recurs. */
+.dpc-abroad__captions { margin: 48px auto 0; }
+.dpc-abroad__captions .dpc-point {
+  background: var(--gf-lilac-50);
+  border-color: var(--gf-lilac-200);
+}
 .dpc-abroad__captions .dpc-point p { color: var(--gf-purple); }
 /* collage — % offsets of the 1312x600 comp so 921-1360 scales fluidly.
    Each slot is a wrapper div (position/size lives here, on .dpc-abroad__photo)
@@ -955,6 +1011,12 @@ body.dpc .footer { background: var(--gf-bg); }
      so the art has the full width and no longer competes with a short copy block
      the way it did in the two-up desktop cell. */
   .dpc-cap { padding: 24px; flex-direction: column; align-items: stretch; }
+  /* The two-line reserve exists to align the two stats ACROSS the row. Stacked,
+     the cards sit one above the other and there is nothing to align to, so the
+     reserve would only hang 24px of empty line under a 1-line body. Same call the
+     points list used to make with `--dpc-point-lines: 0`. Measured: it added
+     exactly 24px at 390 and bought nothing. */
+  .dpc-cap__copy p { min-height: 0; }
   .dpc-cap__media { flex: 0 0 auto; }
   .dpc-cap__stat { font-size: 56px; }
 
@@ -983,20 +1045,12 @@ body.dpc .footer { background: var(--gf-bg); }
   @media (max-width: 480px) {
     .dpc-abroad__title .hl::after { display: none; }
   }
-  /* one column at phone widths, whatever --dpc-points-n says. `1fr` overrides the
-     capped track — a single column should use the full width, not sit at 240/264
-     with dead space beside it. */
-  .dpc-points {
-    grid-template-columns: 1fr;
-    /* stacked, items follow each other vertically, so the gutter has to separate
-       ROWS rather than columns — 8px read as one block. --sp-xl gives each item
-       its own air; the panel inset steps down the scale to --sp-xl / --sp-lg. */
-    padding: var(--sp-xl) var(--sp-lg); gap: var(--sp-xl);
-    /* the line reserve exists to align text bottoms ACROSS columns. In one column
-       there is nothing to align to, so it would only pad short items out. */
-    --dpc-point-lines: 0;
-  }
-  .dpc-point { padding: 0; }
+  /* one card per row at phone widths, whatever --dpc-points-n says. */
+  .dpc-points { flex-direction: column; align-items: stretch; gap: var(--sp-lg); }
+  /* `flex: 0 1 320px` resolves against the MAIN axis, so in a column it would
+     become a 320px HEIGHT floor and blow every card up. Reset to auto so the card
+     is sized by its content and stretched to full width by the row. */
+  .dpc-point { flex: 0 0 auto; }
   .dpc-abroad__captions { margin-top: 32px; }
   /* collage becomes a scroll-snap strip */
   .dpc-abroad__collage {
