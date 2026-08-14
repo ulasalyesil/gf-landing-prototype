@@ -77,8 +77,22 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   position: relative;
   border-radius: inherit;
   overflow: hidden;
+  /* --tilt-base-rotate lets a caller give the card a resting 2D rotation that
+     the tilt then happens RELATIVE to. Defaults to 0deg, so every existing
+     caller is unchanged (rotate(0deg) is identity).
+     It exists because `overflow: hidden` above clips to this box: a rotation
+     applied further in (on the <img>) gets cropped to the unrotated rectangle —
+     the abroad card came out as a hexagon — and the glare, which is an
+     axis-aligned `inset: 0` rectangle in here, would stay unrotated over
+     rotated art. Rotating THIS element turns the clip box and the glare with
+     the card, so both stay correct.
+     Sanal doesn't need it: `.dpc-sanal__stack` is a plain div, so its own
+     transform carries the rotation and the tilt stays nested inside. Only
+     callers whose outer box is transform-owned by something else (the abroad
+     card is a motion.div) have to bring the rotation in here. */
   transform:
     perspective(var(--tilt-perspective))
+    rotate(var(--tilt-base-rotate, 0deg))
     rotateX(var(--tilt-rx, 0deg))
     rotateY(var(--tilt-ry, 0deg));
   transform-style: preserve-3d;
@@ -100,7 +114,16 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 }
 .t-tilt.is-hover .t-tilt-glare { opacity: var(--tilt-glare-opacity); }
 @media (prefers-reduced-motion: reduce) {
-  .t-tilt-card { transform: none !important; transition: none !important; }
+  /* Kills the tilt, KEEPS --tilt-base-rotate. A resting rotation is a static
+     visual state, not motion, and it is load-bearing for layout: `transform:
+     none` here dropped the abroad card's -20° and its bounding box fell from
+     301px to 258px while `.dpc-abroad__collage` still reserved 301 — a 43px
+     hole, and the card stopped matching the sanal one it is supposed to mirror.
+     Reduced motion should soften movement, not restyle the page. */
+  .t-tilt-card {
+    transform: rotate(var(--tilt-base-rotate, 0deg)) !important;
+    transition: none !important;
+  }
 }
 
 /* ============ 1. HERO — "kart xl" ============ */
@@ -1089,11 +1112,71 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   .dpc-earn__v2 .dpc-earn__card--getirpara,
   .dpc-earn__v2 .dpc-earn__card--abonelik { min-height: 400px; }
 
+  /* ── STEPS: swipe deck inside the lilac band (owner, item 1) ───────────────
+     "hızlı kart teslimatı section looks real bad. needs some touch for mobile
+     adoption. image size is off. let's consider making the steps swipeable cards
+     inside the light purple container."
+     The section measured 1505px at 390 — 1.8 viewports for three steps — because
+     the three items were a full-width vertical stack under an oversized phone.
+     Mode is already "off" at ≤767 (DeliverySteps.tsx: `reduced || small` ⇒ off),
+     so the scrub sequence is not involved and the bars/badges render settled;
+     nothing here touches the desktop pin/scrub machinery. */
   .dpc-steps { padding-block: 64px; }
-  .dpc-steps__top { grid-template-columns: 1fr; }
-  .dpc-steps__phone { margin-inline: auto; }
-  .dpc-steps__list { grid-template-columns: 1fr; gap: 32px; margin-top: 48px; }
+  .dpc-steps__top { grid-template-columns: 1fr; gap: 24px; }
+  /* 256 → 200. The mock is decorative (aria-hidden) and its inner app UI is
+     already illegible at phone width, so it was spending ~380px of height to
+     act as texture. 52vw keeps it proportional below 390. */
+  .dpc-steps__phone { width: min(200px, 52vw); margin: 24px auto 0; }
+
+  /* Horizontal swipe deck. Same device as the landing's rates deck
+     (`.rates__cards`, mobile.css) rather than a new pattern — bleed past the
+     container gutter, snap on x, hide the scrollbar, and let the next card peek
+     so the affordance is the layout itself and needs no dots.
+     ⚠ `grid-template-columns` must be reset: the base rule makes this a GRID,
+     and leaving the template set would keep placing items in grid tracks and
+     the flex row would never engage.
+     The bleed unit is --dpc-panel-pad (the band's own inset, 20px here), not
+     --gutter: the deck lives inside `.dpc-steps__band`, so its edges are the
+     band's, not the viewport's. The band is `overflow: clip`, which is what
+     makes cards scroll away under its rounded corner instead of spilling. */
+  .dpc-steps__list {
+    display: flex; flex-direction: row; grid-template-columns: none;
+    gap: 12px; margin-top: 32px; align-items: stretch;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin-inline: calc(var(--dpc-panel-pad) * -1);
+    padding-inline: var(--dpc-panel-pad);
+    scroll-padding-left: var(--dpc-panel-pad);
+    padding-bottom: 4px;
+  }
+  .dpc-steps__list::-webkit-scrollbar { display: none; }
+  /* White card on the lilac band — the page's existing card surface + --r-lg,
+     same vocabulary as `.dpc-point` and `.dpc-cap`, so the deck reads as this
+     page's cards rather than a new component. */
+  .dpc-steps__item {
+    flex: 0 0 84%; max-width: 300px; scroll-snap-align: start;
+    display: flex; flex-direction: column; align-items: stretch;
+    background: var(--gf-bg); border-radius: var(--r-lg);
+    padding: var(--sp-xl);
+  }
+  /* `desc` is a two-element array joined by a hard <br> in DeliverySteps.tsx,
+     split for the desktop column. In a 206px card that break lands mid-thought
+     and each half wraps again — "hesap kartını uygulamadan" alone needs ~190px —
+     so the copy came out as four short ragged lines. Drop the break and let the
+     balancer set it, the same call `.dpc-abroad__title br` already makes here.
+     `balance` (not `pretty`) to match `.dpc-point p`: these are short card
+     bodies, which is exactly what balance is for. */
+  .dpc-steps__item p br { display: none; }
+  .dpc-steps__item p { text-wrap: balance; }
   .dpc-steps__num { font-size: 56px; }
+  /* The 48px reserve existed to level the bars across a 1-line/2-line pair when
+     the TEXT was the box. In the deck the CARD is the box and `align-items:
+     stretch` already equalises heights, so the reserve would only hang an empty
+     line inside the shorter card — same call `.dpc-cap__copy p` makes. The bar
+     is pushed to the card's floor instead, which levels all three bars exactly;
+     the 20px is carried on the paragraph so `auto` can't collapse the gap. */
+  .dpc-steps__item p { min-height: 0; margin-bottom: 20px; }
+  .dpc-steps__bar { margin-top: auto; }
 
   .dpc-caps { padding-block: 64px; }
   .dpc-caps__row { grid-template-columns: 1fr; }
@@ -1112,9 +1195,66 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   .dpc-cap__media { flex: 0 0 auto; }
   .dpc-cap__stat { font-size: 56px; }
 
+  /* ── SHARED CARD SHOWCASE — sanal + abroad ────────────────────────────────
+     Owner, item 4: abroad should "use it in the same way with the virtual card
+     in terms of size, rotation position etc." That is one rule rather than two
+     because the two renders are the SAME 648×984 canvas — AbroadCollage.tsx
+     documents that `virtual-card.png` and `debit-card.png` share a canvas so the
+     desktop handoff can crossfade them with zero size shift. One width and one
+     rotation therefore make them match exactly, and this var is the single knob
+     for both.
+     170px (item 3: "card image is too large reduce the size so points are
+     visible"). Measured at 390: the card was 234×355, and rotate(-20deg) turns
+     that into a 414px BOUNDING box — rotation adds ~59px of layout height that
+     the width alone doesn't predict. At 170 the bounding box is ~300px, which
+     lifts the benefit cards ~136px up the section. The 44vw ceiling keeps it
+     proportional below 390. */
+  .dpc { --dpc-card-showcase-w: min(170px, 44vw); }
+  .dpc-sanal__stack,
+  .dpc-abroad__img-card {
+    width: var(--dpc-card-showcase-w);
+    aspect-ratio: 648 / 984;
+  }
+  /* The -20° rotation enters at a different level in each section, and the
+     asymmetry is forced rather than sloppy:
+     · sanal — `.dpc-sanal__stack` is a plain <div> (Reveal wraps its PARENT), so
+       CSS owns its transform, exactly as the desktop rule does.
+     · abroad — `.dpc-abroad__img-card` IS the motion.div (CardSlot), and Motion
+       writes the scale entrance to `transform` as an INLINE style, which beats
+       this stylesheet. Rotating that box silently did nothing: measured 258px
+       bounding against sanal's 301px. So the rotation goes to the tilt card via
+       `--tilt-base-rotate` (see `.t-tilt-card`), one level in, where CSS is
+       still in charge. Motion keeps the box's scale, CSS keeps the rotation.
+     Rotating the <img> instead was tried and is wrong: `.t-tilt-card` is
+     `overflow: hidden`, so it cropped the rotated art to the unrotated
+     rectangle and the card rendered as a hexagon.
+     `!important` on the box was the other option and is worse — it would win
+     against Motion, but by seizing the whole `transform` property it would kill
+     the pop-in entrance. */
+  .dpc-sanal__stack { transform: rotate(-20deg); }
+  .dpc-abroad__img-card .t-tilt-card { --tilt-base-rotate: -20deg; }
+
   .dpc-sanal { padding-block: 64px; }
-  .dpc-sanal__inner { gap: 32px; }
-  .dpc-sanal__row { margin-top: 32px; }
+  .dpc-sanal__inner { gap: 24px; }
+  .dpc-sanal__row { margin-top: 24px; }
+  /* Item 2: "button and text spacing looks real bad. adjust the button position."
+     The 18px box gap rendered a 6px VISUAL gap. This section overrides the shared
+     mark to `bottom: -0.36em` to clear "güvenle"'s descender, which hangs the
+     yellow bar 12px BELOW the title's box (measured at 390, 32px title) — so the
+     bar, not the text, is what the CTA sits under, and it ate two thirds of the
+     gap. 36px box gap ⇒ 24px visual, on the --sp-xl step.
+     ⚠ The overhang is em-relative, so desktop has the same problem at 40px
+     (14.4px overhang under an 18px gap ≈ 3.6px visual). Left alone here because
+     this is a mobile pass and that comp is three review rounds old — logged in
+     TODO.md as a question rather than silently changed.
+     ⚠ The comment on `.dpc-sanal__head` still says "18px box gap renders a 16px
+     VISUAL gap … overhangs by 4px". That measurement predates the descender fix
+     and is stale for this section; it holds only where the shared mark applies. */
+  .dpc-sanal__head { gap: 36px; }
+  /* the card stage tightens with the card, and the glow scales to it — a 380px
+     halo around a 170px card reads as fog, not as a lit product */
+  .dpc-sanal__media { margin-top: 16px; }
+  .dpc-sanal__media::before { width: 260px; height: 260px; }
 
   .dpc-abroad { padding-block: 64px; }
   .dpc-abroad__title br { display: none; }
@@ -1143,17 +1283,49 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
      become a 320px HEIGHT floor and blow every card up. Reset to auto so the card
      is sized by its content and stretched to full width by the row. */
   .dpc-point { flex: 0 0 auto; }
-  .dpc-abroad__captions { margin-top: 32px; }
-  /* collage becomes a scroll-snap strip */
+  /* ── ABROAD adopts the sanal section's layout (owner, item 4) ──────────────
+     "use the same layout as virtual card section, we don't need to see the city
+     images. only keep the physical card and use it in the same way with the
+     virtual card."
+     The city photos go, and the horizontal scroll-snap strip that used to carry
+     them is DELETED rather than hidden in place — leaving it would mean a
+     scroll container, a snap axis and a 256px height still applying to a
+     single centred card.
+     Scope is ≤767 only, so nothing above it moves: the 768–920 band keeps the
+     absolute collage, and ≥921 still runs the sanal→abroad handoff — whose
+     landing pad is this very `.dpc-abroad__img-card` box, measured by
+     CardHandoff. That is also why the card keeps a real box here instead of
+     being restyled away. */
+  .dpc-abroad .dpc-container { display: flex; flex-direction: column; align-items: center; }
+  /* DOM order is title → points → collage; sanal's is title → card → points.
+     Reordering is safe: the only things moving ahead of the copy are decorative
+     `alt=""` photos, so the reading order still gives the title then the
+     benefits. Same justification as the hero card. */
+  .dpc-abroad__collage { order: 1; }
+  .dpc-abroad__captions { order: 2; width: 100%; margin-top: 24px; }
+  /* A plain centred stage, matching .dpc-sanal__media — plus a reserved height,
+     which sanal does not need. Rotating the <img> (see the showcase rule above)
+     leaves its BOX unrotated, so the stage would only be 258px tall while the
+     rotated art spans ~301px, and the overflow would sit on top of the benefit
+     cards below. The stage reserves the rotated bounding box itself:
+       h_box    = w × 984/648          = w × 1.5185
+       h_rotated= w·sin20° + h_box·cos20°
+                = w × (0.342 + 1.5185 × 0.9397) = w × 1.769
+     which lands on 301px at w=170 — the same height sanal's genuinely-rotated
+     box reports, so the two stages measure identically. */
   .dpc-abroad__collage {
-    aspect-ratio: auto; display: flex; gap: 8px; margin-top: 32px;
-    overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-    padding-bottom: 8px;
+    position: relative; aspect-ratio: auto; margin-top: 16px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: calc(var(--dpc-card-showcase-w) * 1.769);
   }
-  .dpc-abroad__photo {
-    position: static; width: auto; height: 256px; flex: none; scroll-snap-align: start;
+  .dpc-abroad__photo:not(.dpc-abroad__img-card) { display: none; }
+  /* width/aspect/rotation come from the shared showcase rule above; this only
+     undoes the desktop collage's absolute placement (left/top/% width) and
+     mirrors how .dpc-sanal__stack fills its own box. */
+  .dpc-abroad__img-card { position: relative; left: auto; top: auto; }
+  .dpc-abroad__img-card .t-tilt-card { position: absolute; inset: 0; width: auto; }
+  .dpc-abroad__img-card img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; display: block;
   }
-  .dpc-abroad__photo .t-tilt-card { width: auto; height: 100%; }
-  .dpc-abroad__photo img { width: auto; height: 100%; }
-  .dpc-abroad__img-card { order: -1; }
 }

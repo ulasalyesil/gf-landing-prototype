@@ -462,8 +462,14 @@ export default function DeliverySteps() {
                     </span>
                   )}
                 </div>
+                {/* The explicit space is load-bearing, not cosmetic: the mobile
+                    swipe deck hides this <br> (debit-current.css) because the
+                    desktop-tuned break fragments the copy in a 206px card, and
+                    without a real space character the two halves would run
+                    together as "uygulamadantek". Costs nothing on desktop —
+                    trailing whitespace before a forced break collapses. */}
                 <p>
-                  {step.desc[0]}
+                  {step.desc[0]}{" "}
                   <br />
                   {step.desc[1]}
                 </p>
