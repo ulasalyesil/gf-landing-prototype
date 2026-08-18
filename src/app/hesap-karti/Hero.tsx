@@ -80,8 +80,19 @@ export default function DebitHero({ field = false }: { field?: boolean }) {
               its knocked-out white (multiply). Desktop-only via CSS. */}
           <div className="dpc-hero__blob" />
           <Reveal direction="none" delay={0.2} className="dpc-hero__media-fill">
-            <video className="dpc-hero__video" autoPlay muted playsInline>
-              <source src="/assets/video/debit-white-bg.mp4" type="video/mp4" />
+            {/* Source follows the backdrop, because the knockout is a blend, not
+                an alpha channel. The white hero multiplies `debit-white-bg` to
+                erase its white; on the dark panel that same multiply would erase
+                the CARD instead, so the field variant uses the dark-background
+                master (`debit-card`, bg rgb(41,30,80) ≈ the panel) and no blend.
+                `key` is load-bearing: <source> swaps are not picked up by a live
+                <video>, so without it React reuses the element and keeps playing
+                the old file. */}
+            <video key={field ? "dark" : "light"} className="dpc-hero__video" autoPlay muted playsInline>
+              <source
+                src={field ? "/assets/video/debit-card.mp4" : "/assets/video/debit-white-bg.mp4"}
+                type="video/mp4"
+              />
             </video>
           </Reveal>
         </div>

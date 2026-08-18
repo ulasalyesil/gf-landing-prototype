@@ -129,42 +129,126 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 /* ============ 1. HERO — "kart xl" ============ */
 .dpc-hero { position: relative; height: 840px; overflow: hidden; }
 
-/* ?hero=field — the hero wrapped in a tinted background instead of open white
-   (owner exploration, 2026-08-18). Comparison variant; default stays white.
-   Once a call is made: delete the loser's rules, the param in page.tsx, and the
+/* ?hero=field — the hero as a CONTAINED DARK PANEL (owner, 2026-08-18, Figma
+   22302:68096 "wrap around the hero content not the header").
+   Supersedes the first pass at this variant, which was a full-bleed lilac-50
+   band running under the header. Comparison variant; default stays white. Once
+   a call is made: delete the loser's rules, the param in page.tsx, and the
    `field` prop in Hero.tsx.
 
-   Three things make this work rather than just "paint the section lilac":
+   Comp values, all from the node's own variables — no new hexes:
+     panel      bg/surface/heavy-brand #251a49 → --gf-purple-900 (already in
+                tokens.css, exact match)
+     radius     32px — a comp value above the --r-* scale, same as
+                `.dpc-stepsc__list`; that precedent is why it's a raw number
+     height     608, padding 40, top clearance 24 + 80 = 104
+     badge      transparent fill, 1px rgba(255,255,255,.2), 6px backdrop blur
+     title      text/content/inverse           #fff
+     sub        text/content/inverse-secondary #ffffffb2
 
-   1. FULL-BLEED, not a contained card. `.dpc-steps__band` is a CLOSED 1312
-      container by deliberate decision (see its comment) — so if the hero were
-      also a contained lilac-50 card, the page would open and re-open with the
-      identical device and the steps band would stop reading as a special field.
-      Full-bleed here, contained there: same material, different geometry. The
-      tint stays one system instead of one repeated object.
-   2. The bottom corners round (--r-xl, the page's panel radius) so the field
-      terminates as a deliberate edge against the white `.dpc-earn` below,
-      rather than as a flat seam between two colour bands.
-   3. No change is needed to the card video. `.dpc-hero__media-fill` already
-      multiplies its white out — on white that was a no-op knockout, on lilac-50
-      the same blend tints the knocked-out white to exactly the field colour, so
-      the card keeps sitting ON the page. This is why the tint costs nothing:
-      white × lilac-50 = lilac-50.
+   Geometry: the panel IS `.dpc-container` rather than a new wrapper. The two
+   are the same box — 1312 max, centred, and already the positioning context the
+   card is absolutely placed against — so painting the container is what keeps
+   the card inside the panel and clipped by its corners. Adding a wrapper would
+   have meant re-parenting that context.
 
-   `.dpc-hero`'s existing `overflow: hidden` clips the card's 60px right-hand
-   bleed to the rounded corner — the same trick `.dpc-steps__band`'s
-   `overflow: clip` plays on the phone. */
+   ⚠ The dark backdrop INVERTS the video requirement. `mix-blend-mode: multiply`
+   is what knocks the white-bg video out on the light hero, but multiply against
+   #251a49 drives every channel down — the card would be erased into the panel,
+   not revealed on it. `debit-card.mp4` is the asset for this: its background is
+   rgb(41,30,80), within ~4/255 of the panel, so it composites with NO blend
+   mode at all and keeps its drop shadow (which `lighten` would have clipped
+   away to the panel colour). Hero.tsx picks the source per variant. */
 .dpc-hero--field {
-  background: var(--gf-lilac-50);
-  border-end-start-radius: var(--r-xl);
-  border-end-end-radius: var(--r-xl);
+  height: auto; overflow: visible;
+  /* 24 + 80 in the comp; this is the clearance the header sits in */
+  padding-block: 104px 24px;
 }
-/* The blob is a --gf-lilac glow tuned to read as a soft halo against WHITE.
-   Dropped onto lilac-50 it is sitting on a backdrop already part-way up its own
-   ramp, so at full strength it stops being a halo and becomes a hard patch.
-   Held back so it reads at roughly the same contrast against the field as the
-   untinted version does against white. */
-.dpc-hero--field .dpc-hero__blob { opacity: .55; }
+.dpc-hero--field .dpc-container {
+  background: var(--gf-purple-900);
+  border-radius: 32px;
+  height: 608px; padding: 40px;
+  /* clips the video's bleed to the rounded corners — the panel is the frame */
+  overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center;
+}
+/* Below the comp width, inset via max-width rather than side margins — with
+   `width: 100%` a margin pushes the panel past the viewport. Same fix, same
+   reason, as `.dpc-steps__band` (see its note). */
+@media (max-width: 1360px) {
+  .dpc-hero--field .dpc-container { max-width: calc(100% - 48px); }
+}
+/* Mobile is NOT in the comp — node 22302:68096 is a 1440 desktop frame — so
+   this is a judgement call, and the call is: never a fixed height on a phone.
+   608px happened to fit the current copy at 390 with ~85px to spare, but the
+   panel is `overflow: hidden` (it has to be, to clip the video to the corners),
+   so one extra wrapped line of title or sub would be silently CUT rather than
+   pushed. Content drives the height instead; the comp's 608 becomes a floor on
+   desktop only, where the copy width is known.
+   Radius drops to --r-xl to match the page's other mobile panels — 32px reads
+   markedly rounder on a 342px box than on a 1312px one.
+   The section's own padding is deliberately not set here: the ≤767 `.dpc-hero`
+   rule further down already supplies the 92px + safe-area top inset, and it is
+   later in the file at equal specificity, so it wins — which is what we want. */
+@media (max-width: 767px) {
+  .dpc-hero--field .dpc-container {
+    height: auto; padding: 24px; border-radius: var(--r-xl);
+  }
+}
+/* Inverse type. The defaults are ink-on-white, so every one of these has to
+   flip — a dark panel is not a background swap, it is a colour scheme. */
+.dpc-hero--field .dpc-hero__title { color: #fff; }
+.dpc-hero--field .dpc-hero__sub { color: rgba(255, 255, 255, .7); }
+.dpc-hero--field .dpc-badge {
+  background: transparent; border-color: rgba(255, 255, 255, .2); color: #fff;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+/* The text is flow content inside the panel now, not absolutely placed against
+   the section — the panel's own flex centring positions it. */
+.dpc-hero--field .dpc-hero__text { position: static; margin-top: 0; }
+/* The blob is a lilac glow built to read against WHITE. On #251a49 it is a
+   bright bloom behind a dark product shot — the comp has no such glow, and the
+   video's own shadow is doing that job here. */
+.dpc-hero--field .dpc-hero__blob { display: none; }
+/* No blend: see the ⚠ above. Left explicit rather than unset so the intent
+   survives someone reading only this block.
+   The edge fade is NOT decoration — it is what makes the composite work. The
+   asset's background is rgb(41,30,80) and the panel is rgb(37,26,73): ~4/255
+   apart, which is invisible as a COLOUR and plainly visible as an EDGE, so the
+   600px box read as a lighter rectangle sitting on the panel. Fading its
+   borders dissolves that boundary while leaving the card and its shadow (both
+   well inside the 8% ramp) untouched.
+   Two axes composited with `intersect` rather than one radial: a radial would
+   pull the corners in far enough to clip the card's drop shadow.
+   ⚠ This is a workaround for an asset without alpha. The real fix is a
+   transparent-background export of the same master — see TODO.md. Retuning the
+   panel to the asset's colour was the other option and was rejected: it ties a
+   design token to whatever an asset happens to be exported at. */
+.dpc-hero--field .dpc-hero__media-fill {
+  mix-blend-mode: normal;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%),
+    linear-gradient(180deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%),
+    linear-gradient(180deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-composite: intersect;
+}
+/* Comp geometry, deliberately NOT the --hero-card-* dial vars: those were tuned
+   against the 840px white hero and are set inline by Hero.tsx, so they would
+   win regardless. 600×600 right-anchored, vertically centred, bleeding past the
+   panel's padding into its rounded corner. */
+@media (min-width: 768px) {
+  .dpc-hero--field .dpc-hero__card {
+    width: 600px; height: 600px;
+    /* Centred with `transform`, not the standalone `translate` property: the
+       base rule already owns `transform` on this element (translateX(-50%) for
+       the ≤767 centring), so expressing the offset in the same property is one
+       declaration to reason about instead of two that silently compose. */
+    top: 50%; transform: translateY(-50%); right: -40px; left: auto;
+  }
+}
 .dpc-hero__text { position: absolute; top: 152px; left: 0; z-index: 1; }
 @media (max-width: 1360px) { .dpc-hero__text { left: 24px; } }
 .dpc-badge {
