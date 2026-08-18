@@ -24,7 +24,7 @@ function Bolt() {
   );
 }
 
-export default function DebitHero() {
+export default function DebitHero({ field = false }: { field?: boolean }) {
   const dials = useDialKit("Hero · kart xl", {
     card: {
       size: [740, 520, 1000, 10],
@@ -41,7 +41,7 @@ export default function DebitHero() {
 
   return (
     <section
-      className="dpc-hero"
+      className={field ? "dpc-hero dpc-hero--field" : "dpc-hero"}
       style={
         {
           "--hero-card-size": `${dials.card.size}px`,

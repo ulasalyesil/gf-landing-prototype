@@ -34,10 +34,16 @@ const getServerParam = () => null;
    debit-current.css, and the earnLayout ternary below. */
 const getEarnParam = () => new URLSearchParams(window.location.search).get("earn");
 
+/* Hero background. Default is the locked white "kart xl" field; ?hero=field
+   wraps it in a full-bleed lilac-50 band with a rounded bottom edge for one
+   comparison round (owner, 2026-08-18). Same delete path as ?earn above. */
+const getHeroParam = () => new URLSearchParams(window.location.search).get("hero");
+
 export default function HesapKartiDetail() {
   const stepsParam = useSyncExternalStore(subscribeNoop, getStepsParam, getServerParam);
   const earnParam = useSyncExternalStore(subscribeNoop, getEarnParam, getServerParam);
   const earnLayout = earnParam === "bento" ? "dpc-earn__bento" : "dpc-earn__v2";
+  const heroParam = useSyncExternalStore(subscribeNoop, getHeroParam, getServerParam);
   // Add body class on mount, cleanup on unmount
   useEffect(() => {
     document.body.classList.add("dpc");
@@ -51,7 +57,7 @@ export default function HesapKartiDetail() {
       <Header variant="inner" />
       <main className="dpc">
         {/* ============ 1. HERO — "kart xl" ============ */}
-        <DebitHero />
+        <DebitHero field={heroParam === "field"} />
 
         {/* ============ 2. EARN ============ */}
         <section className="dpc-earn">

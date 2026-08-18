@@ -346,6 +346,58 @@ export default function DeliverySteps() {
 
   const settled = mode === "off";
 
+  /* MOBILE (settled): the deck drives the phone screen.
+     Desktop's whole idea is "the screen changes as the step changes" — scroll
+     is the driver there. At ≤767 the steps became a horizontal swipe deck
+     (2026-08-14) and the phone was left behind: with `settled` suppressing the
+     transforms, all three screens stack at translateX(0) and only the LAST one
+     paints, so the mock showed step 3's screen while the deck sat on step 1.
+     That mismatch is what made it read as useless, not the size — it was a
+     still of a thing whose entire value was that it moved.
+     So the deck's scroll position becomes the driver: swipe is to mobile what
+     scroll is to desktop, and the screen↔step relationship survives the
+     breakpoint intact. Only the mechanism changed, not the idea.
+     IntersectionObserver against the deck, NOT a scroll listener. Three
+     reasons, in order of weight: it is the primitive that actually matches the
+     question being asked ("which snapped card is in view"), so there is no
+     stride arithmetic to drift — the deck bleeds past the band and carries
+     scroll-padding, and any `scrollLeft / cardWidth` estimate is off by that
+     inset and lands wrong by card 3; it needs no rAF throttle, so it cannot
+     stall the way a rAF-gated scroll handler does when the document is hidden;
+     and it keeps working through scroll-snap momentum, where scroll events
+     arrive in bursts that a frame-throttled reader samples unevenly.
+     `threshold` is a ramp rather than a single value so the ratios are
+     comparable while a card is only partly in view — with one threshold the
+     callback reports a stale ratio for whichever card did not just cross it. */
+  const deckRef = useRef<HTMLOListElement>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  useEffect(() => {
+    const deck = deckRef.current;
+    if (!deck || !settled) return;
+    const cards = [...deck.children] as HTMLElement[];
+    if (!cards.length) return;
+    const ratios = new Map<Element, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => ratios.set(e.target, e.intersectionRatio));
+        let best = 0;
+        let bestRatio = -1;
+        cards.forEach((card, i) => {
+          const r = ratios.get(card) ?? 0;
+          // ties go to the earlier card, so a 50/50 split never flickers
+          if (r > bestRatio + 0.001) {
+            bestRatio = r;
+            best = i;
+          }
+        });
+        setActiveStep(best);
+      },
+      { root: deck, threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, [settled]);
+
   return (
     <section
       className="dpc-steps"
@@ -387,6 +439,19 @@ export default function DeliverySteps() {
                     height={1043}
                     loading="lazy"
                     initial={false}
+                    /* Desktop slides screens laterally (iOS push). Mobile has no
+                       room for a lateral swap inside a 178px hole, so it
+                       crossfades instead — and leaves `style` unset so the
+                       per-screen focal offset in CSS keeps its transform.
+                       ⚠ The non-settled branch is `{opacity: 1}`, NOT undefined:
+                       Motion writes opacity as an INLINE style, so dropping the
+                       prop on a mobile→desktop resize would strand screens 2/3
+                       at the 0 they were last animated to and the scrub would
+                       run with two invisible screens. Naming the target makes
+                       the mode flip restore them. Desktop wants all three opaque
+                       — it swaps by transform, never by fade. */
+                    animate={settled ? { opacity: activeStep === i ? 1 : 0 } : { opacity: 1 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
                     style={settled ? undefined : { transform: screenT[i] }}
                   />
                 ))}
@@ -403,7 +468,7 @@ export default function DeliverySteps() {
           </Reveal>
           {/* driver-bound, not Reveal: appearance follows the scrub, not the
               viewport. Settled mode renders static (SSR paints this). */}
-          <ol className="dpc-steps__list">
+          <ol className="dpc-steps__list" ref={deckRef}>
             {DEBIT_STEPS.map((step, i) => (
               <motion.li
                 key={step.title}

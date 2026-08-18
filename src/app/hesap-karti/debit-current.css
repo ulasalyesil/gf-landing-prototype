@@ -128,6 +128,43 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 
 /* ============ 1. HERO — "kart xl" ============ */
 .dpc-hero { position: relative; height: 840px; overflow: hidden; }
+
+/* ?hero=field — the hero wrapped in a tinted background instead of open white
+   (owner exploration, 2026-08-18). Comparison variant; default stays white.
+   Once a call is made: delete the loser's rules, the param in page.tsx, and the
+   `field` prop in Hero.tsx.
+
+   Three things make this work rather than just "paint the section lilac":
+
+   1. FULL-BLEED, not a contained card. `.dpc-steps__band` is a CLOSED 1312
+      container by deliberate decision (see its comment) — so if the hero were
+      also a contained lilac-50 card, the page would open and re-open with the
+      identical device and the steps band would stop reading as a special field.
+      Full-bleed here, contained there: same material, different geometry. The
+      tint stays one system instead of one repeated object.
+   2. The bottom corners round (--r-xl, the page's panel radius) so the field
+      terminates as a deliberate edge against the white `.dpc-earn` below,
+      rather than as a flat seam between two colour bands.
+   3. No change is needed to the card video. `.dpc-hero__media-fill` already
+      multiplies its white out — on white that was a no-op knockout, on lilac-50
+      the same blend tints the knocked-out white to exactly the field colour, so
+      the card keeps sitting ON the page. This is why the tint costs nothing:
+      white × lilac-50 = lilac-50.
+
+   `.dpc-hero`'s existing `overflow: hidden` clips the card's 60px right-hand
+   bleed to the rounded corner — the same trick `.dpc-steps__band`'s
+   `overflow: clip` plays on the phone. */
+.dpc-hero--field {
+  background: var(--gf-lilac-50);
+  border-end-start-radius: var(--r-xl);
+  border-end-end-radius: var(--r-xl);
+}
+/* The blob is a --gf-lilac glow tuned to read as a soft halo against WHITE.
+   Dropped onto lilac-50 it is sitting on a backdrop already part-way up its own
+   ramp, so at full strength it stops being a halo and becomes a hard patch.
+   Held back so it reads at roughly the same contrast against the field as the
+   untinted version does against white. */
+.dpc-hero--field .dpc-hero__blob { opacity: .55; }
 .dpc-hero__text { position: absolute; top: 152px; left: 0; z-index: 1; }
 @media (max-width: 1360px) { .dpc-hero__text { left: 24px; } }
 .dpc-badge {
@@ -197,9 +234,24 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   .dpc-hero__text { position: static; margin-top: -80px; }
   /* title scale = landing hero desktop size */
   .dpc-hero__title { font-size: 64px; line-height: 1.02; }
-  .dpc-badge { margin-bottom: 20px; }
   .dpc-hero__title .hl::after { height: 10px; bottom: -2px; }
-  .dpc-hero__cta { margin-top: 40px; }
+  /* Hero rhythm is set in INK, not in margins (owner, 2026-08-18: "the hero cta
+     spacing is off"). Measured at 1280 the old 20/16/40 margins produced optical
+     gaps of 33/41/51 — near-even, so the CTA read as a fourth line of the
+     paragraph rather than the action, and the 16px title→sub was optically
+     WIDER than the 20px badge→title, inverting the grouping.
+     Each element contributes its own half-leading + the em box's space above
+     cap / below baseline, so the margin needed to hit a target ink gap differs
+     per pair. Constants below are measured, not guessed:
+       badge (box, no leading) → title cap : margin + 13  → 16 ⇒ 29
+       title baseline → sub cap           : margin + 25   →  4 ⇒ 29
+       sub baseline → CTA (box)           : margin + 11   → 44 ⇒ 55
+     Result 29/29/55 — badge+title+sub bind as one block, the CTA sits at ~2×
+     that, so it separates as the action. ⚠ Re-measure these three constants if
+     any of the line-heights above change; the margins alone will not tell you. */
+  .dpc-badge { margin-bottom: 16px; }
+  .dpc-hero__sub { margin-top: 4px; }
+  .dpc-hero__cta { margin-top: 44px; }
   /* geometry vars set inline by Hero.tsx (dial-tunable during the 10/10
      pass); fallbacks mirror the dial defaults */
   .dpc-hero__card {
@@ -1108,9 +1160,40 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   }
   .dpc-earn__v2 .dpc-earn__card--iade .dpc-earn__media { grid-row: 2; min-height: 280px; }
   .dpc-earn__v2 .dpc-earn__card--iade .dpc-earn__copy { grid-row: 1; }
-  /* tiles: art block shrinks so the tile isn't mostly empty at phone widths */
+  /* Tiles: the media box fits the art instead of reserving a slot for it
+     (owner, 2026-08-18: "make the image container fit content on mobile").
+     Measured at 390 both tiles wasted 49px each — the tile's `min-height: 400px`
+     forced the card taller than its content, the `minmax(0,1fr)` media row
+     absorbed all of that surplus, and the art is `object-fit: contain`, so it
+     letterboxed inside the oversized frame and left a band of dead tint above
+     and below it. Frame 266px vs 217px of painted phone; 239 vs 190.
+     Three coupled changes, all needed — dropping the min-height alone just moves
+     the slack, because the 1fr row still absorbs whatever is left:
+       1. rows → `auto auto`, so the media row asks for its content's height
+          rather than claiming the leftovers;
+       2. min-height → 0, so there are no leftovers to claim;
+       3. the img goes back IN FLOW (below), so "its content's height" is a real
+          number instead of the zero an absolutely-positioned child reports.
+     ⚠ Deliberately NOT solved with `aspect-ratio` on the media box: the two arts
+     have different aspects (1.557 and 1.778) and the phone export is already
+     queued for a re-export (see TODO.md), so a hardcoded ratio would silently
+     letterbox again the day the asset changes. Letting the intrinsic size drive
+     it means the fix survives any re-export. */
   .dpc-earn__v2 .dpc-earn__card--getirpara,
-  .dpc-earn__v2 .dpc-earn__card--abonelik { min-height: 400px; }
+  .dpc-earn__v2 .dpc-earn__card--abonelik {
+    grid-template-rows: auto auto; min-height: 0;
+  }
+  .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media,
+  .dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__media { align-self: start; }
+  /* Static, not absolute — an absolute child contributes nothing to its parent's
+     height, which is what let the frame float free of the art in the first
+     place. `height: auto` + the img's own width/height attrs give the box the
+     asset's exact aspect, so `object-fit` no longer has anything to letterbox.
+     Same specificity as the ≥768 rule it overrides (0,4,1), later in the file. */
+  .dpc-earn__v2 .dpc-earn__card--getirpara .dpc-earn__media > img,
+  .dpc-earn__v2 .dpc-earn__card--abonelik .dpc-earn__media > img {
+    position: static; width: 100%; height: auto;
+  }
 
   /* ── STEPS: swipe deck inside the lilac band (owner, item 1) ───────────────
      "hızlı kart teslimatı section looks real bad. needs some touch for mobile
@@ -1122,11 +1205,85 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
      so the scrub sequence is not involved and the bars/badges render settled;
      nothing here touches the desktop pin/scrub machinery. */
   .dpc-steps { padding-block: 64px; }
+  /* The BAND's own vertical inset (owner, 2026-08-18: "top padding in mobile is
+     0. add top padding on mobile so it looks balanced").
+     The 64px above is the section's outer padding — that space is between the
+     earn section and the band, and it was already there. What was missing is
+     inside: measured at 390 the band's content ran 0 → 862 in an 862px band,
+     flush against BOTH rounded edges, so the title's cap sat on the top corner
+     and the swipe deck sat on the bottom one.
+     Cause: the band never had a `padding-block` of its own. On desktop that
+     inset comes from `.dpc-steps[data-mode="scrub"] .dpc-steps__stage`, which
+     lives inside `@media (min-width: 768px)` — so at ≤767, where the mode is
+     `off` and the stage rule never applies, nothing supplied it. The band only
+     ever set `padding-inline`.
+     Set on the band rather than the stage so it holds in every mode, and both
+     sides rather than only the top: fixing the top alone would have left the
+     deck welded to the bottom corner and moved the imbalance instead of
+     removing it. 40px clears the 24px `--r-xl` corner and matches the hero's
+     mobile bottom inset, so the two panels breathe the same amount.
+     ⚠ Vertical only — the deck's horizontal bleed past `--dpc-panel-pad` and
+     the `overflow: clip` that slides cards under the rounded corner are both
+     inline-axis behaviour and are untouched by this. */
+  .dpc-steps__band { padding-block: 40px; }
   .dpc-steps__top { grid-template-columns: 1fr; gap: 24px; }
-  /* 256 → 200. The mock is decorative (aria-hidden) and its inner app UI is
-     already illegible at phone width, so it was spending ~380px of height to
-     act as texture. 52vw keeps it proportional below 390. */
-  .dpc-steps__phone { width: min(200px, 52vw); margin: 24px auto 0; }
+  /* ── Phone mock: desktop → mobile (owner, 2026-08-18: "how would we solve the
+     desktop to mobile on this image? looks too small and useless") ───────────
+     The 2026-08-14 pass took this 256 → 200 and called it decorative. That was
+     the trap the ui-skills `adapt` skill names outright — *adaptation is not
+     scaling* — and shrinking it fixed nothing, because two separate things were
+     wrong and neither was the width:
+
+     1. USELESS. The mock is a composite: a frame with a transparent hole plus
+        three app screens that slide as the steps advance. `settled` suppresses
+        those transforms at ≤767, so all three stacked at translateX(0) and only
+        the last one painted — the phone showed step 3 while the deck sat on
+        step 1. Fixed in DeliverySteps.tsx: the deck's scroll now drives which
+        screen shows, so swipe replaces scroll and screen↔step survives.
+     2. TOO SMALL. Measured at 390: the hole rendered 118.7px against 480px of
+        source art — **0.247×**. The bezel is why. The hole is only 59.33% of
+        the mock's width, so 41% of every pixel spent on width was frame, not
+        screen. At 200px wide the app UI was ~2.5px type: noise.
+
+     Fix: grow the mock to 300 (hole 178px ⇒ **0.371×, 1.5× the content scale**)
+     and take the height back by CLIPPING it — `.dpc-steps__phone` becomes a
+     fixed window the device bleeds out of. Cost is 320px against the old 339,
+     so the section gets *shorter* while the screen gets half again as big.
+     A bottom-bled device is this section's own desktop idiom already (the
+     ≥921 mock bleeds past the pin), so the two breakpoints stay one family
+     rather than diverging — dropping the frame on mobile would have been
+     cheaper still (no bezel tax at all) but splits the device language across
+     breakpoints, which is the one thing `adapt` says never to do. */
+  .dpc-steps__phone {
+    width: min(300px, 78vw); margin: 24px auto 0;
+    /* the window. aspect stays the mock's; the device runs out of the bottom */
+    height: 320px; overflow: clip;
+    /* Dissolve the cut instead of guillotining it. `overflow: clip` alone ended
+       the device on a hard horizontal line, which reads as a crop — a mistake —
+       rather than as a device continuing past the edge. The fade sells the
+       second reading, and it also solves screen-1 specifically: that art is
+       blank white below y500, so its cut landed in an empty field where a hard
+       edge was most obvious. Starts at 78% so no screen's focal content sits
+       inside the ramp. */
+    -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+  }
+  /* Per-screen focal offset — the reason a single crop can't work here.
+     Checked against the source art (480×1043): the three screens put their
+     content in DIFFERENT places, so any one crop serves one and fails two.
+       screen-1 "ürün seçimi"  content y 0→500   — TOP-weighted, bottom is blank
+       screen-2 "kurye takip"  sheet   y 690→1010 — BOTTOM-weighted
+       screen-3 "kazandıkların" sheet  y 490→1010 — BOTTOM-weighted
+     The window shows roughly the top 73% of the hole, so 1 needs nothing and
+     2/3 need their sheets pulled up into view. Percentages are of the img's own
+     height, so they hold at any render width.
+     Safe to use `transform` here: React leaves `style` unset in settled mode
+     (DeliverySteps.tsx), so nothing inline is competing for it — but ⚠ that is
+     exactly why this must stay inside the ≤767 block. Above 767 the scrub
+     writes `transform` inline and would silently drop these. */
+  .dpc-steps__mock-screen img { transform: translateY(var(--dpc-screen-y, 0)); }
+  .dpc-steps__mock-screen img:nth-child(2) { --dpc-screen-y: -26%; }
+  .dpc-steps__mock-screen img:nth-child(3) { --dpc-screen-y: -20%; }
 
   /* Horizontal swipe deck. Same device as the landing's rates deck
      (`.rates__cards`, mobile.css) rather than a new pattern — bleed past the
