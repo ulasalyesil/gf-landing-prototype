@@ -15,6 +15,7 @@ import CardHandoff from "./CardHandoff";
 import TransferIllustration from "./illustrations/TransferIllustration";
 import AtmIllustration from "./illustrations/AtmIllustration";
 import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
+import "@/styles/product-page.css";
 import "./debit-current.css";
 
 /* ?steps=compact swaps the teslimatı section to the compact layout

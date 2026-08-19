@@ -2,7 +2,8 @@
 
 import React from "react";
 import { useDialKit } from "dialkit";
-import Reveal, { RevealItem } from "@/components/Reveal";
+import Reveal from "@/components/Reveal";
+import ProductHero from "@/components/ProductHero";
 import { DEBIT_HERO } from "@/data/content";
 
 /* GFDES-2174 hero — "kart xl" (variant C, picked from the round-1 lab):
@@ -10,6 +11,9 @@ import { DEBIT_HERO } from "@/data/content";
    matches the landing hero scale. Entrance: badge → title → CTA stagger.
    Video plays once and holds its final frame — a perpetual loop next to
    static text pulls the eye forever; one pass presents the card, done.
+
+   The copy column moved to <ProductHero> on 2026-08-18 (shared with
+   /kredi-karti). What stays here is this page's media and its geometry.
 
    Card geometry is dial-tunable (dev only) while the 10/10 pass runs:
    values flow through CSS vars that only the ≥921 rules read, so the
@@ -40,8 +44,8 @@ export default function DebitHero({ field = false }: { field?: boolean }) {
   });
 
   return (
-    <section
-      className={field ? "dpc-hero dpc-hero--field" : "dpc-hero"}
+    <ProductHero
+      className={field ? "dpc-hero--field" : undefined}
       style={
         {
           "--hero-card-size": `${dials.card.size}px`,
@@ -51,30 +55,18 @@ export default function DebitHero({ field = false }: { field?: boolean }) {
           "--hero-blob-blur": `${dials.blob.blur}px`,
         } as React.CSSProperties
       }
-    >
-      <div className="dpc-container h-full relative">
-        <Reveal className="dpc-hero__text" stagger={0.08}>
-          <RevealItem as="span" className="dpc-badge">
-            <Bolt />
-            {DEBIT_HERO.badge}
-          </RevealItem>
-          <RevealItem>
-            {/* no highlight in the hero — the yellow bar is a sub-section device */}
-            <h1 className="dpc-hero__title">
-              {DEBIT_HERO.title}
-              <br />
-              {DEBIT_HERO.titleHl}
-            </h1>
-          </RevealItem>
-          <RevealItem>
-            <p className="dpc-hero__sub">{DEBIT_HERO.sub}</p>
-          </RevealItem>
-          <RevealItem>
-            <a href="#" className="dpc-cta dpc-hero__cta">
-              {DEBIT_HERO.cta}
-            </a>
-          </RevealItem>
-        </Reveal>
+      badge={DEBIT_HERO.badge}
+      badgeIcon={<Bolt />}
+      title={
+        <>
+          {DEBIT_HERO.title}
+          <br />
+          {DEBIT_HERO.titleHl}
+        </>
+      }
+      sub={DEBIT_HERO.sub}
+      cta={DEBIT_HERO.cta}
+      media={
         <div className="dpc-hero__card" aria-hidden="true">
           {/* blurred lilac blob — centered behind the video, shows through
               its knocked-out white (multiply). Desktop-only via CSS. */}
@@ -96,7 +88,7 @@ export default function DebitHero({ field = false }: { field?: boolean }) {
             </video>
           </Reveal>
         </div>
-      </div>
-    </section>
+      }
+    />
   );
 }

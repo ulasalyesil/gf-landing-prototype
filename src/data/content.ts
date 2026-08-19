@@ -303,3 +303,109 @@ export const NEWSLETTER = {
   },
   imageAspect: "1122 / 1036",
 };
+
+/* ===== Kredi kartı (GFDES-2243) =====
+   First draft, 2026-08-19. Every product fact below is lifted from the LIVE
+   page (getirfinans.com/kartlar/kredi-karti) — nothing here is invented. What
+   changed is the ORDER: the live page makes three co-equal promises (aidatsız
+   + taksit + getirpara) in one headline, and this draft leads with `aidatsız`
+   because it is the only one of the three exclusive to this card. Taksit is a
+   Maximum-network feature (shared) and getirpara is already /hesap-karti's lead
+   story, so repeating it here blurs the two cards.
+   ⚠ That reordering is a proposal, not a settled call — it changes what the
+   page argues, so it needs Aycan and product before it ships. */
+export const CREDIT_HERO = {
+  /* True for this card and a real GF differentiator (Getir courier delivery).
+     Live page carries it as a section headline; promoted to the badge here. */
+  badge: "kartın dakikalar içinde kapında",
+  title: "aidatsız",
+  titleHl: "kredi kartı",
+  /* Measured at 1280: the first draft of this line ran 5 lines at 30.7px inside
+     the 460px column, which made it read as a paragraph competing with the
+     64px title rather than a subhead under it. Cut to one sentence — three
+     verbs, one rhythm. The specifics it used to carry (Maximum, %3, ₺1.250)
+     belong in the avantajlar section, which states them properly. */
+  sub: "aidat ödemeden harca, taksitle, getirpara kazan.",
+  cta: "kart al",
+};
+
+/* Three benefits, deliberately NOT peers — same grid shape as DEBIT_EARN (lead
+   row full width, two beneath), because the sibling page proved it and a second
+   product page should not invent a second layout for the same job.
+   The lead tile is the one thing that differs: it is an EKSTRE row rather than a
+   copy block. See credit.css for why. */
+export const CREDIT_AVANTAJ = {
+  title: "kredi kartı",
+  titleHl: "avantajları",
+  sub: "aidat yok, taksit var, harcadıkça getirpara kazanıyorsun.",
+  /* The signature. A Turkish credit card is known by its yıllık kart aidatı —
+     the line that shows up on every ekstre. This states the claim in the exact
+     format where it is normally disproven. No competitor is named and no
+     competitor figure is shown: comparative claims against named banks are a
+     legal problem, and GF is never framed against anyone (AGENTS.md). */
+  aidat: {
+    label: "ekstre",
+    row: "yıllık kart aidatı",
+    amount: "₺0",
+    /* no em dash: GF product copy is plain and lowercase, and a dash here reads
+       as a marketing beat the rest of the page doesn't use */
+    note: "ne ilk yıl, ne sonrasında. kart aidatı diye bir şey yok.",
+  },
+  taksit: {
+    pre: "İş Bankası Maximum üye iş yerlerinde ",
+    em: "taksit",
+    post: " fırsatları",
+  },
+  /* ⚠ "%3" — AGENTS.md reserves the % GLYPH for interest/faiz on ICONS. This is
+     body copy stating a cashback rate, which the live page and DEBIT_EARN both
+     already do. No % icon is introduced; the tile pairs with a coin if it ever
+     gets one. */
+  getirpara: {
+    pre: "getirmarket ve bitaksi'de ",
+    em: "%3",
+    post: " getirpara",
+    note: "kredi kartı ve hesap kartınla her ay toplam ₺1.250'ye kadar kazanabilirsin",
+  },
+};
+
+export const CREDIT_TAKSIT = {
+  title: "ücretsiz",
+  titleHl: "3 taksit",
+  sub: "seçili sektörlerde harcamanı peşin yap, uygulamada sonradan taksitle.",
+  /* Fixes a live-page defect: the raw URL `https://www.maximum.com.tr/kampanyalar`
+     is currently rendered as its own link text. Same destination, labelled. */
+  link: { label: "maximum kampanyalarına göz at", href: "https://www.maximum.com.tr/kampanyalar" },
+};
+
+/* The trust/objection block neither card page has today. /hesap-karti has been
+   missing Trust + FAQ since the 2026-07-03 review; a credit card is the
+   higher-commitment product, so it is the better place to build it first and
+   port back rather than inherit the omission.
+   ⚠ Every answer is paraphrased from live-page copy — no product fact is
+   invented — but FAQ copy still needs product sign-off before it ships. */
+export const CREDIT_SSS = {
+  title: "sık sorulan",
+  titleHl: "sorular",
+  items: [
+    {
+      q: "kredi kartının yıllık aidatı var mı?",
+      a: "yok. getirfinans kredi kartında yıllık kart aidatı alınmıyor.",
+    },
+    {
+      q: "nasıl başvurabilirim?",
+      a: "önce getirfinanslı olman gerekiyor. sonrasında uygulamadan kredi kartına başvurup limitini anında öğrenebilirsin.",
+    },
+    {
+      q: "kart ne zaman elime geçer?",
+      a: "başvurun onaylandıktan sonra kartın istediğin adrese dakikalar içinde gelir.",
+    },
+    {
+      q: "taksit hangi iş yerlerinde geçerli?",
+      a: "İş Bankası Maximum üye iş yerlerinde taksitli alışveriş yapabilirsin.",
+    },
+    {
+      q: "getirpara nasıl kazanıyorum?",
+      a: "getirmarket ve bitaksi harcamalarında %3 getirpara kazanırsın. kredi kartı ve hesap kartınla birlikte her ay toplam ₺1.250'ye kadar kazanabilirsin.",
+    },
+  ],
+};

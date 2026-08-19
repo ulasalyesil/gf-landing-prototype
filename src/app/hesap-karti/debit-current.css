@@ -8,55 +8,10 @@
    Hero is "kart xl" — variant C from the round-1 lab, locked.
    ============================================================ */
 
-.dpc {
-  background: #fff;
-  /* Shared content inset for the page's big panels. The teslimatı band and the
-     earn copy blocks BOTH read from this so their left edges line up (owner,
-     2026-08-03) — hardcoding matching numbers in two places is how they drift. */
-  --dpc-panel-pad: 64px;
-}
-@media (max-width: 1360px) { .dpc { --dpc-panel-pad: 32px; } }
-@media (max-width: 767px)  { .dpc { --dpc-panel-pad: 20px; } }
-
-/* Figma content column: 1312 centered (64 margins at 1440) */
-.dpc-container { width: 100%; max-width: 1312px; margin-inline: auto; position: relative; }
-@media (max-width: 1360px) { .dpc-container { padding-inline: 24px; } }
-
-/* underline highlights draw on scroll via Reveal's is-in (landing behavior) */
-
-/* shared section title (40/40 at comp width, fluid below) */
-.dpc-title { font-size: clamp(32px, 3vw, 40px); line-height: 1.1; font-weight: var(--fw-regular); color: var(--gf-ink); }
-
-/* keyboard focus — page-wide (UA default was the only affordance) */
-.dpc :is(a, button):focus-visible { outline: 2px solid var(--gf-purple); outline-offset: 2px; }
-
-/* shared Footer: the gray backdrop (--gf-bg-soft, sections.css) is a landing-
-   page-specific device — it sits behind the dark rounded panel because the
-   section above it there is dark. This page's last section is white, so
-   that gray reads as a seam; pure white blends straight into the panel. */
-body.dpc .footer { background: var(--gf-bg); }
-
-/* Shared hamburger: white on white. `mobile.css` sets `.nav-toggle` to `#fff`
-   below 767 because the LANDING hero is a dark photo, then flips it to
-   `--gf-ink` once `.is-scrolled`/`.is-mega` paints a light header behind it.
-   This page's hero is white, so at the top of the page the icon was invisible —
-   it only appeared after scrolling, which is why it shows up in section
-   screenshots but not in a first-fold one.
-   Purple is `icon/action/primary` (#5D3EBC in semantic.Light.tokens.json, and
-   `icon/action/nav` is the same value) — which is exactly `--gf-purple`, so this
-   uses the site's existing token rather than reintroducing the hex.
-   Set for every state rather than only the unscrolled one: this page's header is
-   white or translucent-white throughout (`.is-scrolled` .92, `.is-mega` .98,
-   `.mega` itself #fff), so purple holds at 7.3:1 against all of them and the
-   icon doesn't need to change colour mid-scroll the way the landing's does.
-   ⚠ The `.is-scrolled`/`.is-mega` selectors are NOT redundant: `.is-scrolled
-   .nav-toggle` is (0,2,0) and would outrank a lone `body.dpc .nav-toggle`
-   (0,1,1) on specificity, regardless of this file loading later.
-   No media query: `.nav-toggle` is `display: none` above 920, so there is
-   nothing to scope and one rule covers the whole range it's visible in. */
-body.dpc .nav-toggle,
-body.dpc .is-scrolled .nav-toggle,
-body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
+/* ⬆ Page shell, `.dpc-container`, `.dpc-title`, focus ring, and the shared
+   Footer/hamburger overrides moved to `src/styles/product-page.css`
+   (2026-08-18) when /kredi-karti became the second page to need them.
+   That file is imported first by this page — see page.tsx. */
 
 /* ============ Shared: card hover tilt (transitions.dev, adapted) ============
    Used by the sanal kart render and every abroad collage photo (Tilt.tsx).
@@ -127,7 +82,8 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 }
 
 /* ============ 1. HERO — "kart xl" ============ */
-.dpc-hero { position: relative; height: 840px; overflow: hidden; }
+/* `.dpc-hero` box → product-page.css. The `--field` variant below is this
+   page's own. */
 
 /* ?hero=field — the hero as a CONTAINED DARK PANEL (owner, 2026-08-18, Figma
    22302:68096 "wrap around the hero content not the header").
@@ -249,43 +205,9 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
     top: 50%; transform: translateY(-50%); right: -40px; left: auto;
   }
 }
-.dpc-hero__text { position: absolute; top: 152px; left: 0; z-index: 1; }
-@media (max-width: 1360px) { .dpc-hero__text { left: 24px; } }
-.dpc-badge {
-  display: inline-flex; align-items: center; gap: 4px; height: 32px;
-  padding: 0 16px 0 12px; border-radius: var(--r-full);
-  background: var(--gf-lilac-50); border: 1px solid var(--gf-lilac-200);
-  font-size: var(--fs-body-md); line-height: 24px; font-weight: var(--fw-semibold); color: var(--gf-purple);
-}
-.dpc-badge svg { width: 20px; height: 20px; flex: none; }
-.dpc-hero__title { margin: 0; font-size: 48px; line-height: 100%; font-weight: var(--fw-regular); color: var(--gf-ink); }
-/* Sized to the landing hero's description (owner, 2026-08-11: "font size increases
-   to match landing page hero description. which should be 32px but check yourself").
-   Checked: `.hero__sub` (sections.css) is `clamp(20px, 2.4vw, 32px)` at line-height
-   1.3, weight 400 — so 32px is right, but only from ~1333px up; it is a fluid ramp,
-   not a flat value. Ported verbatim rather than hardcoding 32 so the two heroes
-   agree at EVERY width instead of only at desktop. Below ~833px both land on their
-   shared 20px floor, which is what this rule already used.
-   The 64px title above it is already "landing hero desktop size" (see the ≥768
-   block), so 32/64 now reproduces the landing's exact 2.0 title:sub ratio.
-   ⚠ max-width stays 460, deliberately NOT the landing's 726: the card video is
-   right-anchored (right:-60, 740 wide) and a 726px column would run under it.
-   Widening the measure is a layout call, not a type call. */
-.dpc-hero__sub {
-  margin: 16px 0 0; max-width: 460px;
-  font-size: clamp(20px, 2.4vw, 32px); line-height: 1.3;
-  color: var(--gf-ink-700); text-wrap: pretty;
-}
-.dpc-cta {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--gf-purple); color: #fff; border-radius: var(--r-full);
-  font-size: var(--fs-body-md); font-weight: var(--fw-semibold); text-decoration: none;
-  transition: background .2s var(--ease-out), transform .16s var(--ease-out-strong);
-}
-.dpc-cta:hover { background: var(--gf-purple-700); }
-.dpc-cta:active { transform: scale(.96); }
-.dpc-hero__cta { margin-top: 32px; width: 160px; height: 48px; }
-.dpc-hero__card { position: absolute; top: 254px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; border-radius: var(--r-xl); overflow: hidden; }
+/* Hero copy column (`__text`, `.dpc-badge`, `__title`, `__sub`, `.dpc-cta`,
+   `__cta`) and the base `__card` box → product-page.css. Everything below is
+   this page's own media: the video, the multiply knockout, the blob. */
 .dpc-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* Reveal wrapper fills the card box so Motion transforms never fight
    the box's own positioning. multiply knocks out the video's white bg
@@ -314,28 +236,8 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 /* Desktop: text block flex-centered vertically, card at display scale.
    ≤920 keeps the static stacked layout further down this file. */
 @media (min-width: 768px) {
-  .dpc-hero .dpc-container { display: flex; flex-direction: column; justify-content: center; }
-  .dpc-hero__text { position: static; margin-top: -80px; }
-  /* title scale = landing hero desktop size */
-  .dpc-hero__title { font-size: 64px; line-height: 1.02; }
-  .dpc-hero__title .hl::after { height: 10px; bottom: -2px; }
-  /* Hero rhythm is set in INK, not in margins (owner, 2026-08-18: "the hero cta
-     spacing is off"). Measured at 1280 the old 20/16/40 margins produced optical
-     gaps of 33/41/51 — near-even, so the CTA read as a fourth line of the
-     paragraph rather than the action, and the 16px title→sub was optically
-     WIDER than the 20px badge→title, inverting the grouping.
-     Each element contributes its own half-leading + the em box's space above
-     cap / below baseline, so the margin needed to hit a target ink gap differs
-     per pair. Constants below are measured, not guessed:
-       badge (box, no leading) → title cap : margin + 13  → 16 ⇒ 29
-       title baseline → sub cap           : margin + 25   →  4 ⇒ 29
-       sub baseline → CTA (box)           : margin + 11   → 44 ⇒ 55
-     Result 29/29/55 — badge+title+sub bind as one block, the CTA sits at ~2×
-     that, so it separates as the action. ⚠ Re-measure these three constants if
-     any of the line-heights above change; the margins alone will not tell you. */
-  .dpc-badge { margin-bottom: 16px; }
-  .dpc-hero__sub { margin-top: 4px; }
-  .dpc-hero__cta { margin-top: 44px; }
+  /* ≥768 copy-column rules (container flex, text offset, 64px title, the
+     measured 29/29/55 ink rhythm) → product-page.css. */
   /* geometry vars set inline by Hero.tsx (dial-tunable during the 10/10
      pass); fallbacks mirror the dial defaults */
   .dpc-hero__card {
@@ -1147,27 +1049,9 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
      100svh + flex-end here made 954px of content in an 844px viewport and cut
      the CTA off 38px below the fold. The section must size to its content:
      height stays auto, and there is no vertical centering to fight. */
-  .dpc-hero { height: auto; padding-block: calc(92px + env(safe-area-inset-top)) 40px; }
-  /* Only the container is a flex column — that is all `order` below needs.
-     `.dpc-hero__text` deliberately stays block: `.dpc-badge` is `inline-flex`,
-     and as a flex child it would stretch to the full column width under the
-     default `align-items: stretch`, turning the pill into a full-width bar.
-     Block layout shrink-wraps it, which is what a pill wants. */
-  .dpc-hero .dpc-container { display: flex; flex-direction: column; }
-  .dpc-hero__text { position: static; transform: none; }
-  /* The pill is a fixed 32px built for one line, but this label needs 293px and
-     so wraps below ~350px — measured at 320: 39px of text spilling out of the
-     32px box, second line hanging past the rounded edge. Same overrun the
-     landing badge hits, fixed the same way (see `.hero__badge`, mobile.css):
-     let the pill grow to its content instead of clipping it. */
-  .dpc-badge { height: auto; min-height: 32px; padding-block: 4px; line-height: 1.3; margin-bottom: 14px; }
-  .dpc-hero__title { font-size: 40px; line-height: 1.06; margin-bottom: 14px; }
-  /* font-size is intentionally NOT restated: the base `clamp(20px, 2.4vw, 32px)`
-     is already pinned to its 20px floor across this whole range (2.4vw = 18.4px
-     at 767), so a flat 20px would be identical today and would silently break
-     the fluid ramp this hero shares with the landing sub if either moves. */
-  .dpc-hero__sub { margin: 0 0 26px; }
-  .dpc-hero__cta { margin-top: 0; width: 100%; height: auto; padding: 16px 24px; font-size: 17px; }
+  /* ≤767 copy-column rules (auto height, container flex, badge growth, 40px
+     title, CTA full-width) → product-page.css. The card ordering below stays
+     here — it is this page's media. */
   /* Ordered above the copy. Safe to reorder visually against DOM order because
      the card is `aria-hidden="true"` decorative media with nothing focusable
      inside it — reading order and tab order both stay on the copy.

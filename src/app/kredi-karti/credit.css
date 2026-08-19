@@ -1,0 +1,276 @@
+/* ============================================================
+   credit.css — /kredi-karti (GFDES-2243), first draft 2026-08-19
+
+   Page chrome (shell, container, section title, hero copy column) comes from
+   `src/styles/product-page.css`, imported first — see CreditPage.tsx. Only
+   what is specific to this page lives here, under a `ckp-` prefix so it can
+   never collide with the debit page's `dpc-` section rules.
+
+   Palette is GF tokens only. No new colours, no new typeface: the design
+   system governs, and a second product page is not the place to introduce a
+   third visual language.
+
+   THE SIGNATURE is `.ckp-ekstre`. A Turkish credit card is known by its yıllık
+   kart aidatı — the line on every ekstre. Stating "₺0" inside a statement row,
+   with a real leader rule and tabular figures, puts the claim in the exact
+   format where it is normally disproven. Everything else on the page is
+   deliberately quiet so that one block carries it.
+   ============================================================ */
+
+.ckp { background: #fff; }
+
+/* ============ 1. HERO ============ */
+
+/* Shorter than the debit hero's 840. That number is sized to a 740px video
+   with a blurred blob spilling past it; this card is a 560×360 mock, so at 760
+   the measured content (badge→CTA ≈ 430px) left ~330px of dead white above the
+   next section — the same "hero has a large dead zone" note the debit draft
+   picked up in review. 640 keeps the copy centred without the trailing void.
+   ⚠ Re-derive when the real render lands: this is sized to the mock. */
+.ckp-hero { height: 640px; }
+
+/* Card box. Mirrors the debit hero's right-anchored placement so the two pages
+   read as siblings, but with static values — no dials, nothing is mid-tuning
+   (see Hero.tsx). The copy column is capped at 460px by product-page.css, so
+   at ≥768 the two never overlap: that overlap is the defect this page exists
+   to fix. */
+.ckp-hero__card {
+  top: 50%;
+  left: auto;
+  right: 0;
+  transform: translateY(-50%);
+  width: 560px;
+  height: 360px;
+  border-radius: 0;
+  overflow: visible;
+}
+.ckp-hero__media-fill { position: absolute; inset: 0; display: grid; place-items: center; }
+
+/* Cap the copy column so it can NEVER reach the media.
+   `.dpc-hero__sub` carries its own 460px max-width, but `.dpc-hero__title` is a
+   full-width block — measured at 1280 its BOX already overlaps the card box by
+   536×81. Nothing shows today only because "aidatsız / kredi kartı" is short;
+   a longer headline would run straight under the card. That is exactly the
+   defect measured on the live page (44×47px of real overlap, z-index auto on
+   both), so it gets a structural fix here rather than depending on copy length.
+   560 leaves a gap to the card's left edge (~696 at 1280).
+   ⚠ /hesap-karti has the same latent issue and no cap. Worth lifting this into
+   product-page.css once that page is out of CMO review. */
+@media (min-width: 768px) {
+  .ckp-hero .dpc-hero__text { max-width: 560px; }
+  /* Drop the shared -80px lift. It exists on /hesap-karti to sit the copy
+     against a 740px video that overflows the section; this card is 360px tall
+     and vertically centred, so the same offset just pushed the whole hero up
+     and left the dead band underneath. 0 lets the container's own
+     `justify-content: center` do the work. */
+  .ckp-hero .dpc-hero__text { margin-top: 0; }
+}
+
+/* ---- placeholder card mock (replace with the real render) ---- */
+.ckp-cardmock {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1.586;             /* ISO/IEC 7810 ID-1 — a real card's ratio */
+  border-radius: 20px;
+  background: var(--gf-purple);
+  box-shadow: 0 24px 60px -20px color-mix(in srgb, var(--gf-purple) 55%, transparent);
+  overflow: hidden;
+  transform: rotate(-4deg);
+}
+/* single light source, top-left — consistent with the shadow direction above */
+.ckp-cardmock__sheen {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgb(255 255 255 / .16) 0%, rgb(255 255 255 / 0) 55%);
+}
+.ckp-cardmock__chip {
+  position: absolute; top: 26%; left: 8%;
+  width: 44px; height: 34px; border-radius: 6px;
+  background: color-mix(in srgb, var(--gf-yellow) 82%, #fff);
+}
+.ckp-cardmock__brand {
+  position: absolute; left: 8%; bottom: 12%;
+  color: #fff; font-size: 20px; font-weight: var(--fw-semibold); letter-spacing: -.01em;
+}
+/* Says out loud that this is not the product render, so nobody reviews the
+   mock as if it were the card. Goes with CardMock.tsx. */
+.ckp-cardmock__flag {
+  position: absolute; right: 8%; bottom: 12%;
+  padding: 3px 8px; border-radius: var(--r-full);
+  background: rgb(255 255 255 / .18); color: #fff;
+  font-size: 11px; line-height: 1.4; letter-spacing: .02em;
+}
+
+/* ============ 2. AVANTAJLAR ============ */
+
+.ckp-avantaj { padding-block: clamp(56px, 7vw, 96px); }
+.ckp-avantaj__head { text-align: center; }
+.ckp-avantaj__sub {
+  margin: 16px auto 0; max-width: 640px;
+  font-size: var(--fs-body-lg); line-height: 1.5;
+  color: var(--gf-ink-700); text-wrap: pretty;
+}
+
+/* Lead row full width, two tiles beneath — the shape /hesap-karti's earn v2
+   already proved. A second product page should not invent a second layout for
+   the same job. */
+.ckp-avantaj__grid {
+  display: grid; margin-top: 40px;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;
+}
+.ckp-ekstre { grid-column: 1 / -1; }
+
+/* ---- the signature ---- */
+.ckp-ekstre {
+  padding: clamp(28px, 3.2vw, 44px) var(--dpc-panel-pad);
+  border: 1px solid var(--gf-lilac-200);
+  border-radius: var(--r-xl);
+  background: #fff;
+}
+.ckp-ekstre__label {
+  display: inline-block; margin-bottom: 24px;
+  font-size: var(--fs-caption); font-weight: var(--fw-semibold);
+  letter-spacing: .08em; color: var(--gf-ink-500);
+}
+/* Statement row. `baseline` so the 20px label and the display-size amount sit
+   on one line the way a printed ekstre does — `center` floated the label. */
+.ckp-ekstre__row {
+  display: flex; align-items: baseline; gap: 16px; margin: 0;
+}
+.ckp-ekstre__rowlabel {
+  font-size: clamp(18px, 2vw, 24px); color: var(--gf-ink); white-space: nowrap;
+}
+/* The leader is a border on a flex spacer, not dot characters: screen readers
+   never announce it, it can't wrap, and it stays pinned to the baseline at any
+   width. Dotted, because that is what a statement leader is. */
+.ckp-ekstre__leader {
+  flex: 1 1 auto; min-width: 24px;
+  border-bottom: 2px dotted var(--gf-lilac-300);
+  transform: translateY(-.35em);
+}
+/* tabular figures — this is financial data, and the amount must not shift
+   width if the value ever changes */
+.ckp-ekstre__amount {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(48px, 7vw, 88px); line-height: 1;
+  font-weight: var(--fw-semibold); letter-spacing: -.03em;
+  color: var(--gf-purple);
+}
+.ckp-ekstre__note {
+  margin: 20px 0 0; max-width: 46ch;
+  font-size: var(--fs-body-md); line-height: 1.5; color: var(--gf-ink-700);
+}
+
+/* ---- the two quiet tiles ---- */
+/* Top-aligned, NOT bottom-aligned. The debit page's earn v2 bottom-aligns
+   because each tile has media above the copy pinning it; these two have no
+   media, and one carries a note while the other does not — bottom-aligning
+   them put a single line of taksit copy alone at the foot of a 240px box while
+   getirpara's two blocks started 26px higher, so the two never shared a
+   baseline. Top-aligning makes both copy blocks start at the same y, which is
+   the actual rule (align shared elements across side-by-side items).
+   min-height dropped 240 → 200 for the same reason: less empty field to fall
+   out of alignment in. */
+.ckp-tile {
+  display: flex; flex-direction: column; justify-content: flex-start;
+  min-height: 200px; padding: 32px;
+  border-radius: var(--r-xl);
+}
+/* ink-on-tint, matching the debit page's earn v2 — white-on-fill was tried
+   there and lost. */
+.ckp-tile--taksit { background: var(--gf-lilac-50); }
+.ckp-tile--getirpara { background: var(--gf-yellow-50); }
+.ckp-tile__copy {
+  margin: 0; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.3;
+  color: var(--gf-ink); text-wrap: pretty;
+}
+/* purple, not yellow: yellow is invisible on #fffdf0 / #f9f7ff */
+.ckp-tile__em { color: var(--gf-purple); font-weight: var(--fw-semibold); }
+.ckp-tile__note {
+  margin: 12px 0 0; font-size: var(--fs-body-sm); line-height: 1.5; color: var(--gf-ink-700);
+}
+
+/* ============ 3. TAKSİT ============ */
+
+.ckp-taksit { padding-block: clamp(48px, 6vw, 80px); }
+.ckp-taksit__inner { max-width: 720px; }
+.ckp-taksit__sub {
+  margin: 16px 0 0;
+  font-size: var(--fs-body-lg); line-height: 1.5; color: var(--gf-ink-700); text-wrap: pretty;
+}
+.ckp-taksit__link {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 24px;
+  font-size: var(--fs-body-md); font-weight: var(--fw-semibold);
+  color: var(--gf-purple); text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--gf-purple) 35%, transparent);
+  transition: border-color .2s var(--ease-out);
+}
+.ckp-taksit__link:hover { border-bottom-color: var(--gf-purple); }
+.ckp-taksit__ext { font-size: .9em; }
+
+/* ============ 4. SSS ============ */
+
+.ckp-sss { padding-block: clamp(48px, 6vw, 80px) clamp(72px, 8vw, 112px); }
+.ckp-sss__list { margin-top: 32px; max-width: 820px; }
+.ckp-sss__item { border-top: 1px solid var(--gf-lilac-200); }
+.ckp-sss__list > *:last-child .ckp-sss__item { border-bottom: 1px solid var(--gf-lilac-200); }
+
+.ckp-sss__q {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 22px 0; cursor: pointer; list-style: none;
+  font-size: clamp(17px, 1.5vw, 20px); color: var(--gf-ink);
+}
+.ckp-sss__q::-webkit-details-marker { display: none; }
+
+/* Plus that becomes a minus. Two bars, the vertical one collapses on open —
+   cheaper and steadier than rotating a glyph, and it never inherits a font's
+   optical centring problems. */
+.ckp-sss__sign { position: relative; flex: none; width: 16px; height: 16px; }
+.ckp-sss__sign::before,
+.ckp-sss__sign::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  background: var(--gf-purple);
+  transition: transform .2s var(--ease-out), opacity .2s var(--ease-out);
+}
+.ckp-sss__sign::before { width: 16px; height: 2px; }
+.ckp-sss__sign::after  { width: 2px; height: 16px; }
+.ckp-sss__item[open] .ckp-sss__sign::after { transform: scaleY(0); opacity: 0; }
+
+.ckp-sss__a {
+  margin: 0; padding: 0 48px 24px 0;
+  font-size: var(--fs-body-md); line-height: 1.6; color: var(--gf-ink-700); text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ckp-sss__sign::before,
+  .ckp-sss__sign::after { transition: none; }
+}
+
+/* ============ responsive ============ */
+
+@media (max-width: 1100px) {
+  .ckp-hero__card { width: 46%; }
+}
+
+@media (max-width: 767px) {
+  /* Hero height is `auto` from product-page.css at this width; the card is an
+     in-flow sibling, ordered above the copy like the debit hero. */
+  .ckp-hero { height: auto; }
+  .ckp-hero__card {
+    position: static; transform: none;
+    width: 100%; height: auto; order: -1;
+    margin-bottom: 28px;
+  }
+  .ckp-hero__media-fill { position: static; }
+  .ckp-cardmock { max-width: 320px; margin-inline: auto; }
+
+  .ckp-avantaj__grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .ckp-ekstre { padding-inline: 24px; }
+  /* At ≤430 the label and an 88px amount cannot share a line. Stack them and
+     drop the leader: a leader with nothing to lead between is decoration. */
+  .ckp-ekstre__row { flex-wrap: wrap; gap: 4px; }
+  .ckp-ekstre__leader { display: none; }
+  .ckp-ekstre__rowlabel { white-space: normal; }
+  .ckp-tile { min-height: 0; padding: 24px; }
+  .ckp-sss__a { padding-right: 0; }
+}
