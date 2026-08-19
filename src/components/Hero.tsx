@@ -79,8 +79,8 @@ export default function Hero() {
           playsInline
           onTimeUpdate={handleTimeUpdate}
         >
-          <source src="/assets/video/hero-bg.mp4" type="video/mp4" />
-          <source src="/assets/video/hero-bg.webm" type="video/webm" />
+          <source src="/assets/video/GetirFinansi_1920x1080_ALL.mp4" type="video/mp4" />
+          {/* <source src="/assets/video/hero-bg.webm" type="video/webm" /> */}
         </video>
         {reduced ? (
           <div className="hero__overlay"></div>
