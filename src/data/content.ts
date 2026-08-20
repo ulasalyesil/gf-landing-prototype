@@ -80,13 +80,15 @@ export const FAIZ_LEGAL =
 export const HERO_OFFERS: HeroOffer[] = [
   /* "yıllık" de-emphasized as a small cap above the % — revizyon feedback:
      the annual rate was overpowering the daily-earn message */
-  /* Order is locked to the hero video's four beats (hesap → fx → kredi →
-     hesap kartı) — reordering here desyncs the copy from the footage. */
+  /* Order is locked to the hero video's four beats (hesap → kredi → fx →
+     hesap kartı; owner, 2026-08-20) — reordering here desyncs the copy from
+     the footage, since Hero.tsx maps array position straight onto the video's
+     5s segments. */
   { title: "<small class='hero__title-yr'>yıllık</small>%44 faizle", sub: "paranı bağlamadan<br>her gün iyi kazan",
     legal: FAIZ_LEGAL },
-  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
   { title: "iyi faizli kredi",            sub: "aylık %3,49’dan başlayan faizlerle",
     legal: "örnek hesaplama: 100.000 TL için aylık %3,49 faiz oranlı 12 ay vadeli hayat sigortalı kredinin YMO’su %72,2963’tür" },
+  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
   { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında<br>harcarken geri kazan" }
 ];
 
