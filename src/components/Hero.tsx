@@ -108,8 +108,10 @@ export default function Hero() {
           playsInline
           onTimeUpdate={handleTimeUpdate}
         >
+          {/* mp4 only for now — the WebM sibling that used to be stubbed out
+              here pointed at hero-bg, which is deleted. Re-add one for
+              hero-20s.mp4 when it gets re-exported (see TODO.md). */}
           <source src="/assets/video/hero-20s.mp4" type="video/mp4" />
-          {/* <source src="/assets/video/hero-bg.webm" type="video/webm" /> */}
         </video>
         {reduced ? (
           <div className="hero__overlay"></div>
