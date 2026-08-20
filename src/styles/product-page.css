@@ -17,8 +17,10 @@
    title, and the hero's COPY COLUMN (badge → title → sub → CTA).
    What does NOT: hero media. The card/video/blob geometry is
    page-specific and stays with each page — see `ProductHero`'s `media`
-   slot. Anything with a `--hero-card-*` or `--hero-blob-*` var is
-   debit's, not shared.
+   slot. Debit's card/blob geometry lives in `debit-current.css`, baked as
+   literals (it used to arrive as inline `--hero-card-*` vars from a dev
+   tuning hook; that hook was removed 2026-08-20 because it bundled dialkit
+   into production).
 
    Load order: import this BEFORE the page's own stylesheet so the page
    can override.

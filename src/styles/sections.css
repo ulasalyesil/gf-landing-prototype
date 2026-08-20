@@ -658,7 +658,6 @@
      the primary-colour label above, doing the quieting work the label used to. */
   .mega__item p { margin-top: 2px; color: var(--gf-ink-700); }
   /* dev-only escape hatch: DialKit "Menu › subtexts" off writes this (see useMenuDials) */
-  [data-gf-menu-subtexts="off"] .mega__item p { display: none; }
 
   /* Actions pinned to the bottom of the scrollport — the CTA sat below 12 products
      and was out of thumb reach. Sticky (not fixed) so nothing hides under it at the

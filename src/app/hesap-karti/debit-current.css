@@ -191,10 +191,12 @@
     linear-gradient(180deg, transparent 0, #000 8%, #000 92%, transparent 100%);
   mask-composite: intersect;
 }
-/* Comp geometry, deliberately NOT the --hero-card-* dial vars: those were tuned
-   against the 840px white hero and are set inline by Hero.tsx, so they would
-   win regardless. 600×600 right-anchored, vertically centred, bleeding past the
-   panel's padding into its rounded corner. */
+/* Comp geometry, deliberately NOT the default hero's card geometry: that was
+   tuned against the 840px white hero. 600×600 right-anchored, vertically
+   centred, bleeding past the panel's padding into its rounded corner.
+   (Until 2026-08-20 those values arrived as inline --hero-card-* vars from a
+   DialKit hook and won on specificity regardless; they are plain baked
+   declarations now, so this block simply overrides them in cascade order.) */
 @media (min-width: 768px) {
   .dpc-hero--field .dpc-hero__card {
     width: 600px; height: 600px;
@@ -226,10 +228,10 @@
   .dpc-hero__blob {
     display: block; position: absolute;
     top: 50%; left: 50%; translate: -50% -50%;
-    width: var(--hero-blob-size, 680px); height: var(--hero-blob-size, 680px);
+    width: 680px; height: 680px;   /* baked with the card geometry above */
     border-radius: 50%;
     background: var(--gf-lilac);
-    filter: blur(var(--hero-blob-blur, 90px));
+    filter: blur(90px);
     pointer-events: none;
   }
 }
@@ -238,11 +240,15 @@
 @media (min-width: 768px) {
   /* ≥768 copy-column rules (container flex, text offset, 64px title, the
      measured 29/29/55 ink rhythm) → product-page.css. */
-  /* geometry vars set inline by Hero.tsx (dial-tunable during the 10/10
-     pass); fallbacks mirror the dial defaults */
+  /* Settled geometry, baked 2026-08-20. These were --hero-card-* vars fed
+     inline by a DialKit hook in Hero.tsx during the 10/10 pass; the values below
+     are that pass's result and are identical to the fallbacks it shipped with,
+     so this is a no-op visually. The hook is gone because a React hook cannot be
+     lazily loaded, so it dragged the whole dialkit library into this page's
+     production chunk regardless of the NODE_ENV render gate. */
   .dpc-hero__card {
-    top: var(--hero-card-top, 50px); left: auto; right: var(--hero-card-right, -60px); transform: none;
-    width: var(--hero-card-size, 740px); height: var(--hero-card-size, 740px); border-radius: 0;
+    top: 50px; left: auto; right: -60px; transform: none;
+    width: 740px; height: 740px; border-radius: 0;
   }
 }
 

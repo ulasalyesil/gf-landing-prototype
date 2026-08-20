@@ -1,10 +1,27 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import { DialRoot } from "dialkit";
-import { Agentation } from "agentation";
-import SpacingDial from "@/dials/SpacingDial";
-import "dialkit/styles.css";
+import dynamic from "next/dynamic";
 import "./globals.css";
+
+/* Dev tools behind a LAZY import, not a static one. The old
+   `{NODE_ENV !== "production" && <DialRoot />}` gated the render but not the
+   bundle: measured on a clean production build, dialkit + agentation shipped as
+   a 414KB chunk on /hesap-karti — a quarter of that page's JS — for UI that
+   never renders in production. Dynamic import puts them in a chunk production
+   never requests. See src/dials/DevTools.tsx. */
+/* The gate is at MODULE scope, not inside the JSX. Turbopack substitutes
+   process.env.NODE_ENV at build time, so in a production build this ternary
+   folds to `() => null` and the import() below becomes unreachable and is
+   eliminated. Written as `{cond && <DevTools/>}` in the JSX instead, the
+   dynamic() call still ran at module scope and the chunk stayed in the graph —
+   measured: the 443KB dialkit+agentation chunk was still being requested.
+   No `ssr: false`: this is a Server Component and Next rejects that option
+   here. DevTools is a client component and the previous static version was
+   server-rendered too, so dev behaviour is unchanged. */
+const DevTools =
+  process.env.NODE_ENV !== "production"
+    ? dynamic(() => import("@/dials/DevTools"))
+    : () => null;
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -26,24 +43,7 @@ export default function RootLayout({
     <html lang="tr" className={`${openSans.variable} antialiased`}>
       <body className="font-sans text-gf-ink bg-gf-bg min-h-screen">
         {children}
-        {/* dev-only tuning panel. Gated the same way as Agentation below —
-            DialRoot's own `productionEnabled` default is unreliable in the client
-            bundle (it reads `typeof process`, which the browser build doesn't
-            always define, and falls through to `true`), so the panel was shipping
-            on the Vercel deploy at z-index 9999. Gate at the mount instead.
-            bottom-left so it clears Agentation's bottom-right toolbar. */}
-        {process.env.NODE_ENV !== "production" && (
-          <>
-            <DialRoot position="bottom-left" defaultOpen={false} />
-            {/* section-rhythm A/B — writes data-gf-spacing on <html>, styled by
-                styles/spacing-system.css. Renders nothing. Delete with the
-                proposal once the rhythm is settled. */}
-            <SpacingDial />
-          </>
-        )}
-        {/* dev-only visual-feedback overlay: click elements → annotate → copy
-            structured markdown for the agent. Gated so it never ships. */}
-        {process.env.NODE_ENV !== "production" && <Agentation />}
+        <DevTools />
       </body>
     </html>
   );

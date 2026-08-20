@@ -8,7 +8,6 @@ import type { Variants } from "motion/react";
 import Button from "./Button";
 import { NAV } from "@/data/content";
 import type { NavCategory, NavItem } from "@/data/content";
-import { useMenuDials, MENU_DIALS_ENABLED } from "@/dials/useMenuDials";
 
 /* Both header surfaces render from NAV (src/data/content.ts):
    - ≥921px: the nav bar. Categories with items open the mega dropdown; the rest
@@ -88,24 +87,6 @@ export default function Header({ variant = "home" }: HeaderProps) {
 
   const compact = useCompact();
   const reduced = useReducedMotion();
-  const { subtexts, toggleSubtexts } = useMenuDials();
-
-  /* The dial can't gate JSX — persist:true reads localStorage after hydration and the
-     markup would diverge from the server render. It lands as a data attribute set in
-     an effect, and CSS reveals the subtexts.
-     Explicitly dev-gated: DialRoot's *UI* hides itself in production, but useDialKit
-     still rehydrates persisted panels, so without this check anyone carrying a stale
-     "gf-menu" localStorage entry would see subtexts on the live site. */
-  useEffect(() => {
-    if (!MENU_DIALS_ENABLED) return;
-    const root = document.documentElement;
-    /* Subtexts are the CSS default now, so the attribute exists to turn them *off*.
-       No attribute (i.e. production) = shown. */
-    root.dataset.gfMenuSubtexts = subtexts ? "on" : "off";
-    return () => {
-      delete root.dataset.gfMenuSubtexts;
-    };
-  }, [subtexts]);
 
   const closeMega = useCallback(() => {
     if (!openRef.current) return;
@@ -279,20 +260,6 @@ export default function Header({ variant = "home" }: HeaderProps) {
             href="#"
             className="header__mobile-badge"
             aria-label="#paranaiyibak"
-            onClick={
-              MENU_DIALS_ENABLED
-                ? (e) => {
-                    e.preventDefault();
-                    toggleSubtexts();
-                  }
-                : undefined
-            }
-            title={
-              MENU_DIALS_ENABLED
-                ? `dev: alt metinler ${subtexts ? "açık" : "kapalı"} — değiştirmek için dokun`
-                : undefined
-            }
-            data-gf-dev-toggle={MENU_DIALS_ENABLED ? "subtexts" : undefined}
           >
             <img
               className="paranaiyibak__logo"
@@ -460,20 +427,6 @@ export default function Header({ variant = "home" }: HeaderProps) {
               href="#"
               className="paranaiyibak"
               aria-label="#paranaiyibak"
-              onClick={
-                MENU_DIALS_ENABLED
-                  ? (e) => {
-                      e.preventDefault();
-                      toggleSubtexts();
-                    }
-                  : undefined
-              }
-              title={
-                MENU_DIALS_ENABLED
-                  ? `dev: alt metinler ${subtexts ? "açık" : "kapalı"} — değiştirmek için dokun`
-                  : undefined
-              }
-              data-gf-dev-toggle={MENU_DIALS_ENABLED ? "subtexts" : undefined}
             >
               <img
                 className="paranaiyibak__logo"

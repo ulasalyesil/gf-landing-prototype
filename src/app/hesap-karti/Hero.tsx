@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
-import { useDialKit } from "dialkit";
 import Reveal from "@/components/Reveal";
 import ProductHero from "@/components/ProductHero";
 import { DEBIT_HERO } from "@/data/content";
@@ -16,10 +15,11 @@ import { DEBIT_HERO } from "@/data/content";
    The copy column moved to <ProductHero> on 2026-08-18 (shared with
    /kredi-karti). What stays here is this page's media and its geometry.
 
-   Card geometry is dial-tunable (dev only) while the 10/10 pass runs:
-   values flow through CSS vars that only the ≥921 rules read, so the
-   mobile layout never sees them. Bake into debit-current.css + delete
-   the hook once settled (dial defaults == the CSS fallbacks). */
+   Card geometry was dial-tunable during the 10/10 pass. The hero is locked,
+   so the settled values are baked into debit-current.css (2026-08-20) and the
+   DialKit hook is gone — it was pulling the whole dialkit library into this
+   page's production chunk, since a hook cannot be lazily loaded and the
+   NODE_ENV gate in layout only ever stopped the panel from RENDERING. */
 
 function Bolt() {
   return (
@@ -56,32 +56,10 @@ export default function DebitHero({ field = false }: { field?: boolean }) {
     return () => v.removeEventListener("loadedmetadata", settle);
   }, [reduced, field]);
 
-  const dials = useDialKit("Hero · kart xl", {
-    card: {
-      size: [740, 520, 1000, 10],
-      top: [50, -200, 300, 5],
-      right: [-60, -300, 100, 5],
-    },
-    /* blob rides inside the card box, always centered behind the video —
-       only size and blur are tunable; position follows the card */
-    blob: {
-      size: [680, 300, 1100, 10],
-      blur: [90, 0, 200, 5],
-    },
-  });
 
   return (
     <ProductHero
       className={field ? "dpc-hero--field" : undefined}
-      style={
-        {
-          "--hero-card-size": `${dials.card.size}px`,
-          "--hero-card-top": `${dials.card.top}px`,
-          "--hero-card-right": `${dials.card.right}px`,
-          "--hero-blob-size": `${dials.blob.size}px`,
-          "--hero-blob-blur": `${dials.blob.blur}px`,
-        } as React.CSSProperties
-      }
       badge={DEBIT_HERO.badge}
       badgeIcon={<Bolt />}
       title={
