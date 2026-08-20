@@ -33,7 +33,7 @@ export default function SanalCard() {
             </h2>
           </RevealItem>
           <RevealItem>
-            <a href="#" className="dpc-cta dpc-sanal__cta">
+            <a href={DEBIT_SANAL.href} className="dpc-cta dpc-sanal__cta">
               {DEBIT_SANAL.cta}
             </a>
           </RevealItem>

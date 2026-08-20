@@ -420,9 +420,13 @@ export default function DeliverySteps() {
                 <AnimatedHighlight type="hl">{DEBIT_STEPS_SECTION.titleHl}</AnimatedHighlight>
               </h2>
               <p className="dpc-steps__sub">{DEBIT_STEPS_SECTION.sub}</p>
-              <a href="#" className="dpc-cta dpc-steps__cta">
+              <a href={DEBIT_STEPS_SECTION.href} className="dpc-cta dpc-steps__cta">
                 {DEBIT_STEPS_SECTION.cta}
               </a>
+              {/* qualifies "dakikalar içinde" in the sub above and in step 2 */}
+              {DEBIT_STEPS_SECTION.legal && (
+                <p className="dpc-steps__legal">{DEBIT_STEPS_SECTION.legal}</p>
+              )}
             </Reveal>
           </div>
           {/* hero mock — desktop: absolute right, 3× scale, bleeding past the
@@ -468,7 +472,23 @@ export default function DeliverySteps() {
           </Reveal>
           {/* driver-bound, not Reveal: appearance follows the scrub, not the
               viewport. Settled mode renders static (SSR paints this). */}
-          <ol className="dpc-steps__list" ref={deckRef}>
+          {/* At ≤767 this list becomes a horizontally scrolling snap deck, which
+              makes it a scroll container holding content — so it needs to be
+              focusable and named, or steps 2 and 3 are unreachable without a
+              pointer (WCAG 2.1.1). <main> holds only three focusable elements
+              otherwise, so that content was genuinely stranded.
+              Applied unconditionally rather than gated on `settled`: the deck is
+              a CSS breakpoint, not a JS mode, so JS must not be the thing that
+              decides whether it is operable. Above 767 the list does not
+              overflow, so a focusable non-scrolling container is a harmless
+              extra tab stop that lands on the steps the user is already reading. */}
+          <ol
+            className="dpc-steps__list"
+            ref={deckRef}
+            tabIndex={0}
+            role="group"
+            aria-label={DEBIT_STEPS_SECTION.title + " " + DEBIT_STEPS_SECTION.titleHl}
+          >
             {DEBIT_STEPS.map((step, i) => (
               <motion.li
                 key={step.title}

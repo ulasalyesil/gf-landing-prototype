@@ -29,6 +29,9 @@ export interface ProductHeroProps {
   sub: React.ReactNode;
   cta: React.ReactNode;
   ctaHref?: string;
+  /** Legal footnote for any claim in the badge/title/sub. Omitted when the
+      section makes no qualifying claim, same as HeroOffer.legal on the landing. */
+  legal?: string;
   /** The page's hero visual. Wrap it in `.dpc-hero__card` unless it needs its own box. */
   media?: React.ReactNode;
   /** Extra section classes — page variants (e.g. `dpc-hero--field`). */
@@ -43,6 +46,7 @@ export default function ProductHero({
   sub,
   cta,
   ctaHref = "#",
+  legal,
   media,
   className,
   style,
@@ -67,6 +71,14 @@ export default function ProductHero({
               {cta}
             </a>
           </RevealItem>
+          {/* after the CTA, not under the sub: it qualifies the offer, it is not
+              part of the pitch, and the measured badge/title/sub ink rhythm above
+              must not gain a fourth member. */}
+          {legal && (
+            <RevealItem as="p" className="dpc-hero__legal">
+              {legal}
+            </RevealItem>
+          )}
         </Reveal>
         {media}
       </div>

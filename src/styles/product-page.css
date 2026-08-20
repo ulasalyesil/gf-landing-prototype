@@ -43,8 +43,15 @@
 /* shared section title (40/40 at comp width, fluid below) */
 .dpc-title { font-size: clamp(32px, 3vw, 40px); line-height: 1.1; font-weight: var(--fw-regular); color: var(--gf-ink); }
 
-/* keyboard focus — page-wide (UA default was the only affordance) */
-.dpc :is(a, button):focus-visible { outline: 2px solid var(--gf-purple); outline-offset: 2px; }
+/* keyboard focus — page-wide (UA default was the only affordance).
+   `[tabindex]` is in the list because focusable SCROLL CONTAINERS are a real
+   pattern on these pages: a horizontal snap deck has to be focusable to be
+   keyboard-operable (WCAG 2.1.1), and without this it would take focus with no
+   visible ring at all. Negative tabindex is excluded — those are script-focus
+   targets, not tab stops, and ringing them is noise. */
+.dpc :is(a, button, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--gf-purple); outline-offset: 2px;
+}
 
 /* shared Footer: the gray backdrop (--gf-bg-soft, sections.css) is a landing-
    page-specific device — it sits behind the dark rounded panel because the
@@ -121,6 +128,16 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 .dpc-cta:hover { background: var(--gf-purple-700); }
 .dpc-cta:active { transform: scale(.96); }
 .dpc-hero__cta { margin-top: 32px; width: 160px; height: 48px; }
+
+/* Legal footnote. Same treatment as the landing's `.faiz__legal` — caption size,
+   --gf-ink-500, 1.5 leading — so disclaimers read identically site-wide. Left
+   aligned and measure-capped here rather than centred, because this column is
+   left aligned; the landing's is centred because that section is. */
+.dpc-hero__legal {
+  margin: 20px 0 0; max-width: 46ch;
+  font-size: var(--fs-caption); line-height: 1.5; color: var(--gf-ink-500);
+  text-wrap: pretty;
+}
 
 /* Base card box. Each page positions and sizes its own media on top of this
    in its own stylesheet — debit does it with dial-tunable vars at ≥768. */

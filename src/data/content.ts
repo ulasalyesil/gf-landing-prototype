@@ -120,6 +120,30 @@ export const RATES_CYCLE_MS = 180000;
 /* Steps copy is a Turkish draft replacing the English template text —
    needs owner + legal review before lock (esp. anything fee-related). */
 
+/* Every CTA on this page pointed at a bare "#", so the three of them were
+   indistinguishable in the DOM and there was nowhere for the frontend developer
+   to put a real destination without touching JSX. Each section now carries its
+   own `href`, defaulted to this one marker: grep it to find every link still
+   needing a target, and it reads as unfinished rather than as a deliberate
+   same-page anchor. Replace per section — the two card products do NOT share a
+   destination. */
+export const DEBIT_CTA_TODO = "#";
+
+/* Delivery-time disclaimer. NOT new copy — this is the exact string the landing
+   page already carries under the identical "dakikalar içinde kapında" claim
+   (`.debit__legal` in DebitCard.tsx), lifted to a shared constant the way
+   FAIZ_LEGAL was, because the same claim now appears on two surfaces and a
+   second hand-typed copy is how the two drift apart.
+   ⚠ This covers the SPEED claim only. Still unqualified on this page, and each
+   one needs a legal-supplied string before launch — I am not writing these:
+     · "ücretsiz" (hesap kartı, kurye, para transferi, ATM) ×4
+     · the %1 / %3 / %20 nakit iade rates
+     · the ₺1.250 monthly ceiling — and whether it is per-mechanic or combined,
+       which /kredi-karti currently answers differently (see DEBIT_EARN.iade)
+   Add them as `legal` on the owning section; the rendering slot now exists. */
+export const DEBIT_DELIVERY_LEGAL =
+  "teslimat süresi lokasyona ve operasyonel koşullara göre değişiklik gösterebilir";
+
 export const DEBIT_HERO = {
   badge: "kartın dakikalar içinde kapında",
   title: "geri dönüşü",
@@ -135,7 +159,12 @@ export const DEBIT_HERO = {
      DEBIT_ABROAD.captions ("%1 nakit iade") and DEBIT_EARN.getirpara ("%3"), so it
      is consistent with how the rule has been applied. No % icon is introduced. */
   sub: "ücretsiz hesap kartınla harcarken %1 nakit iade kazan",
-  cta: "kart al"
+  cta: "kart al",
+  href: DEBIT_CTA_TODO,
+  /* qualifies the badge's "dakikalar içinde" claim — same string the landing
+     already shows for it. The "ücretsiz" and "%1" claims in this sub are still
+     unqualified; see DEBIT_DELIVERY_LEGAL. */
+  legal: DEBIT_DELIVERY_LEGAL
 };
 
 /* Three benefits, deliberately NOT peers — `iade` is the broadest promise (all
@@ -181,7 +210,11 @@ export const DEBIT_STEPS_SECTION = {
   title: "hızlı kart",
   titleHl: "teslimatı",
   sub: "kartın dakikalar içinde kapında",
-  cta: "kart al"
+  /* same product and same destination as the hero, so the repeated label is
+     deliberate here — unlike DEBIT_SANAL.cta, which sells the other card */
+  cta: "kart al",
+  href: DEBIT_CTA_TODO,
+  legal: DEBIT_DELIVERY_LEGAL
 };
 
 /* step titles: owner (2026-07-13); desc lines are DRAFT — need owner review */
@@ -207,7 +240,19 @@ export const DEBIT_SANAL = {
   id: "sanal-kart",
   title: "sanal hesap kartıyla",
   titleHl: "güvenle harca",
-  cta: "kart al",
+  /* ⚠ COPY CHANGE — needs owner sign-off.
+     Was "kart al", byte-identical to the hero's and the teslimat section's CTA.
+     All three rendered the same label on the same href, but this one sells a
+     DIFFERENT product: :194 above states the model outright ("Sanal kart is a
+     distinct product, so it owns a section"), so a reader clicking "kart al"
+     here could not tell whether they were re-ordering the physical card or
+     creating a virtual one — and three identical label+href pairs cannot be
+     told apart in analytics either.
+     "oluştur" is not a new word: it is the verb this section's own first
+     feature already uses ("ayrı kartlar oluştur"), so the CTA now matches the
+     language the section taught the reader two lines earlier. */
+  cta: "sanal kart oluştur",
+  href: DEBIT_CTA_TODO,
   /* Same {text, icon} shape as DEBIT_ABROAD.captions — the two lists share
      `.dpc-points`, so they share their item shape too.
      Real icons for items 1-2 landed 2026-08-10 (owner-supplied). All are white /

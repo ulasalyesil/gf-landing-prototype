@@ -137,7 +137,7 @@ export default function DeliveryCompact() {
                 <AnimatedHighlight type="hl">{DEBIT_STEPS_SECTION.titleHl}</AnimatedHighlight>
               </h2>
               <p className="dpc-stepsc__sub">{DEBIT_STEPS_SECTION.sub}</p>
-              <a href="#" className="dpc-cta dpc-stepsc__cta">
+              <a href={DEBIT_STEPS_SECTION.href} className="dpc-cta dpc-stepsc__cta">
                 {DEBIT_STEPS_SECTION.cta}
               </a>
             </Reveal>

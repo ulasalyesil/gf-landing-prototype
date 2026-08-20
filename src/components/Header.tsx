@@ -362,6 +362,13 @@ export default function Header({ variant = "home" }: HeaderProps) {
                 <motion.path
                   d="M4 6h16"
                   style={ICON_LINE}
+                  /* explicit initial, same reason as the middle bar's below: without a
+                     baseline Motion writes the literal string "undefined" into the SVG
+                     transform attribute on first render, which the parser rejects
+                     ("<path> attribute transform: Expected transform function"). Two
+                     console errors per page load, on every page — this is the shared
+                     header. Must match the closed-state target exactly. */
+                  initial={{ transform: "rotate(0deg) translateY(0px)" }}
                   animate={{ transform: isMegaOpen ? "rotate(45deg) translateY(6px)" : "rotate(0deg) translateY(0px)" }}
                   transition={reduced ? { duration: 0 } : ICON_TRANSITION}
                 />
@@ -377,6 +384,8 @@ export default function Header({ variant = "home" }: HeaderProps) {
                 <motion.path
                   d="M4 18h16"
                   style={ICON_LINE}
+                  /* see the first bar — same missing-baseline fix */
+                  initial={{ transform: "rotate(0deg) translateY(0px)" }}
                   animate={{ transform: isMegaOpen ? "rotate(-45deg) translateY(-6px)" : "rotate(0deg) translateY(0px)" }}
                   transition={reduced ? { duration: 0 } : ICON_TRANSITION}
                 />

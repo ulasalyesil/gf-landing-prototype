@@ -607,6 +607,12 @@
 .dpc-steps__top { display: grid; grid-template-columns: 1fr; align-items: center; gap: 48px; }
 .dpc-steps__sub { margin: 16px 0 0; font-size: 24px; line-height: 32px; color: var(--gf-ink-700); }
 .dpc-steps__cta { margin-top: 24px; width: 114px; height: 56px; }
+/* shares the hero footnote treatment (product-page.css) */
+.dpc-steps__legal {
+  margin: 20px 0 0; max-width: 46ch;
+  font-size: var(--fs-caption); line-height: 1.5; color: var(--gf-ink-500);
+  text-wrap: pretty;
+}
 /* flow placement (timed 768–920 + settled mobile): centered between intro
    and list. Desktop hero placement is in the ≥921 block below. */
 .dpc-steps__phone { width: 256px; margin: 40px auto 0; }
@@ -633,8 +639,31 @@
 .dpc-steps__item { will-change: transform, opacity; }
 /* ≥921: the phone is the hero of the view — 3× scale, right-anchored,
    bleeding past the pin bottom (pin clips). Steps stack vertically on the
-   left so the composition reads text-left / product-right. */
-@media (min-width: 768px) {
+   left so the composition reads text-left / product-right.
+
+   ⚠ This block used to open `@media (min-width: 768px)` while its own comment,
+   and the flow-placement rule above it, both said ≥921. The query was the typo,
+   not the comments, and it cost a visible break across the whole 768–920 band:
+   the phone is sized `min(632px, 53vw)` here, but `--dpc-phone-w` is only defined
+   by scrub, so timed fell back to the raw 53vw — 466px at 880 — while
+   `.dpc-steps__list` stayed capped at 480px. The two were budgeted independently
+   and collided: measured 174px of EVERY progress bar painted over by
+   `.dpc-steps__mock` at 880 (43% of the bar). The bar is the sequence's payoff,
+   so the courier rode most of step 2 behind the bezel.
+   Splitting the phone rules back out to ≥921 restores the documented intent:
+   768–920 keeps the 256px in-flow phone centred under the list, which cannot
+   overlap the copy. The list/intro/item rules stay at ≥768 deliberately — those
+   were always meant to apply across both bands.
+
+   The breakpoint alone does not fix the LOW END OF SCRUB, though: at 921–~1150
+   the phone is absolute again and `--dpc-phone-w` is derived from the stage
+   HEIGHT with no reference to the width the copy already claimed, so it still
+   overlapped (66px of every bar at 1024). Hence `--dpc-steps-copy-w` below: the
+   list cap and the phone's width budget now read from ONE value instead of two
+   numbers that have to be kept equal by hand. The min() only bites under ~1150 —
+   at 1200 and 1440 the stage-derived width is already the smaller term, so the
+   approved desktop composition is untouched. */
+@media (min-width: 921px) {
   .dpc-steps__phone {
     /* The bezel is centred in the stage, not the element (owner, 2026-08-10:
        "phone is closer to bottom than top"). --dpc-phone-w already SIZES for a
@@ -647,7 +676,12 @@
        used to live here: opaque bounds are y 82→1148 in an 800×1355 file, so the
        bezel starts at 0.1025 of the element's width and is 1.3337 of it tall. */
     position: absolute; top: 56px; right: 0; margin: 0; z-index: 1;
-    width: var(--dpc-phone-w, min(632px, 53vw));
+    /* Second term is the collision guard — see the ⚠ note above. The phone may
+       never claim space the copy column has already taken. */
+    width: min(
+      var(--dpc-phone-w, min(632px, 53vw)),
+      calc(100% - var(--dpc-steps-copy-w) - var(--dpc-steps-gutter))
+    );
   }
   /* Scoped to scrub: it's the only mode that defines --dpc-stage-h/--dpc-phone-w,
      so it's the only one where the bezel offset can be computed. 768–920 "timed"
@@ -660,8 +694,19 @@
   .dpc-steps[data-mode="scrub"] .dpc-steps__phone {
     top: calc(50% - var(--dpc-phone-w) * var(--dpc-frame-bezel-mid));
   }
+}
+/* Copy-column layout, both bands (768–920 "timed" and ≥921 "scrub"): one
+   vertical step list rather than the base 3-across grid. Deliberately NOT moved
+   to ≥921 with the phone above — at 768–920 the phone is in flow BELOW this
+   list, so the single column is still the right shape for the copy. */
+@media (min-width: 768px) {
+  /* One source for the copy column's width. The ≥921 phone rule subtracts this
+     from the stage to size itself, so the two can never be edited apart — the
+     exact drift that produced the bar overlap when they were two hardcoded
+     numbers. Change the cap here and the phone re-budgets itself. */
+  .dpc-steps { --dpc-steps-copy-w: 480px; --dpc-steps-gutter: 32px; }
   .dpc-steps__intro { max-width: 520px; }
-  .dpc-steps__list { grid-template-columns: 1fr; max-width: 480px; gap: 28px; margin-top: 48px; }
+  .dpc-steps__list { grid-template-columns: 1fr; max-width: var(--dpc-steps-copy-w); gap: 28px; margin-top: 48px; }
   .dpc-steps__item { display: grid; grid-template-columns: 60px 1fr; column-gap: 20px; align-items: start; }
   .dpc-steps__item > :not(.dpc-steps__num) { grid-column: 2; }
   .dpc-steps__num { grid-column: 1; grid-row: 1 / span 3; font-size: 48px; line-height: 1.1; }
@@ -792,6 +837,13 @@
   position: absolute; inset: 0; pointer-events: none;
   background-image: repeating-radial-gradient(circle at 50% 46%, transparent 0, transparent 78px, rgba(255,255,255,.06) 79px, rgba(255,255,255,.06) 80px);
   animation: rings-pulse 6s ease-in-out infinite;
+}
+/* The ring field was the last thing still moving under reduced motion — the
+   steps sequence drops to "off", the handoff never mounts, .t-tilt-card is
+   killed above, and the hero video is now gated in Hero.tsx. The rings are pure
+   ambience, so they stop outright rather than degrade. */
+@media (prefers-reduced-motion: reduce) {
+  .dpc-sanal__rings { animation: none; }
 }
 /* bottom vignette — page's color break settles into the abroad section below */
 .dpc-sanal::after {
@@ -1273,6 +1325,9 @@
     padding-inline: var(--dpc-panel-pad);
     scroll-padding-left: var(--dpc-panel-pad);
     padding-bottom: 4px;
+    /* the deck is a real scroll container now that it is keyboard-focusable
+       (DeliverySteps.tsx) — stop its scroll chaining to the page at either end */
+    overscroll-behavior-x: contain;
   }
   .dpc-steps__list::-webkit-scrollbar { display: none; }
   /* White card on the lilac band — the page's existing card surface + --r-lg,
