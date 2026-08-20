@@ -834,9 +834,20 @@
    (base.css, tuned for non-descender text) crosses mid-tail here — push it
    down (em-relative, so it scales with the clamp'd title size) to clear it. */
 .dpc-sanal__head .hl::after { bottom: -0.36em; height: 0.2em; }
-/* 18px box gap renders a 16px VISUAL gap: the title's hl bar overhangs the
-   text box by 4px and the CTA sits 2px high in its wrapper (measured) */
-.dpc-sanal__head { display: flex; flex-direction: column; align-items: center; gap: 18px; position: relative; z-index: 61; }
+/* The gap must measure from the BAR, not from the title's text box. The mark is
+   pushed to `bottom: -0.36em` above to clear "güvenle"'s descender, so it hangs
+   that far BELOW the box — and a flex `gap` knows nothing about an absolutely
+   positioned pseudo-element. Measured before this fix: 18px of box gap became
+   3.6px of visible air at 1440 (14.4px overhang), 4.2px at 1280, 6.5px at 1024.
+   The CTA was effectively touching the yellow bar.
+   Reserving the overhang as em-relative padding on the title puts the mark back
+   inside the title's box, so `gap` becomes a true optical value at every width —
+   it tracks the `clamp(32px, 3vw, 40px)` title on its own instead of needing a
+   hand-tuned number per breakpoint (which is what the ≤767 override was).
+   ⚠ Keep the padding in em and keep it equal to the mark's `bottom` offset. If
+   one changes the other must, or the gap silently drifts again. */
+.dpc-sanal__head .dpc-title { padding-bottom: 0.36em; }
+.dpc-sanal__head { display: flex; flex-direction: column; align-items: center; gap: var(--sp-2xl); position: relative; z-index: 61; }
 .dpc-sanal__cta { width: auto; padding-inline: 32px; height: 48px; }
 /* concentric ring field behind the card, same grammar as landing `.transfer__rings` */
 .dpc-sanal__rings {
@@ -1444,7 +1455,12 @@
      ⚠ The comment on `.dpc-sanal__head` still says "18px box gap renders a 16px
      VISUAL gap … overhangs by 4px". That measurement predates the descender fix
      and is stale for this section; it holds only where the shared mark applies. */
-  .dpc-sanal__head { gap: 36px; }
+  /* 24px (--sp-xl) is the value the 2026-08-14 mobile pass settled on, restated
+     as a token now that the base rule reserves the mark's overhang itself. It
+     used to read `36px` — 24 of visual gap plus 12 of hand-measured overhang
+     compensation. That compensation is now in the base rule and em-relative, so
+     leaving 36 here would double-count it and open the gap to ~36px. */
+  .dpc-sanal__head { gap: var(--sp-xl); }
   /* the card stage tightens with the card, and the glow scales to it — a 380px
      halo around a 170px card reads as fog, not as a lit product */
   .dpc-sanal__media { margin-top: 16px; }
