@@ -39,12 +39,12 @@ interface CollageImg {
 /* debit-card.png and virtual-card.png (sanal section) are the SAME 648×984
    canvas — the handoff crossfade swaps them with zero size shift */
 const CARD: CollageImg = { cls: "dpc-abroad__img-card", src: "/assets/img/debit-card.png", w: 648, h: 984 };
-const LISBON: CollageImg = { cls: "dpc-abroad__img-3", src: "/assets/img/debit-abroad-3.png", w: 240, h: 174 };
-const BERLIN: CollageImg = { cls: "dpc-abroad__img-5", src: "/assets/img/debit-abroad-5.png", w: 190, h: 256 };
+const LISBON: CollageImg = { cls: "dpc-abroad__img-3", src: "/assets/img/debit-abroad-3.jpg", w: 240, h: 174 };
+const BERLIN: CollageImg = { cls: "dpc-abroad__img-5", src: "/assets/img/debit-abroad-5.jpg", w: 190, h: 256 };
 const REST: CollageImg[] = [
-  { cls: "dpc-abroad__img-1", src: "/assets/img/debit-abroad-1.png", w: 170, h: 256 },
-  { cls: "dpc-abroad__img-2", src: "/assets/img/debit-abroad-2.png", w: 240, h: 174 },
-  { cls: "dpc-abroad__img-4", src: "/assets/img/debit-abroad-4.png", w: 256, h: 170 },
+  { cls: "dpc-abroad__img-1", src: "/assets/img/debit-abroad-1.jpg", w: 170, h: 256 },
+  { cls: "dpc-abroad__img-2", src: "/assets/img/debit-abroad-2.jpg", w: 240, h: 174 },
+  { cls: "dpc-abroad__img-4", src: "/assets/img/debit-abroad-4.jpg", w: 256, h: 170 },
 ];
 
 const STAGGER = 0.04;
