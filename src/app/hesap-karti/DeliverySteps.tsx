@@ -86,16 +86,19 @@ const MOCK_SCREENS = [
   "/assets/img/steps/screen-3.png",
 ];
 
-/* SEG / APPEAR / TIMED_* / SCRUB_PX and useStepsMode are exported for the
-   compact layout variant (DeliveryCompact.tsx, ?steps=compact) so both
-   layouts share one timing model and one mode policy. */
+/* The timing model. These were exported for the compact layout variant
+   (DeliveryCompact.tsx, ?steps=compact) so both layouts shared one source; that
+   variant was deleted 2026-08-20, so they are module-private again.
+   `useStepsMode` and `Mode` stay exported — AbroadCollage and CardHandoff both
+   gate on the mode, and all three must agree or the card handoff can activate
+   in a mode the steps sequence is not running in. */
 const SEG_DONE1 = 0.24;
 const SEG_BAR2_IN = 0.32;
 const SEG_BAR2_OUT = 0.58;
 const SEG_BAR3_IN = 0.66;
 const SEG_DONE3 = 0.9;
 
-export const SEG = {
+const SEG = {
   bar1: [0, SEG_DONE1] as [number, number],
   done1: SEG_DONE1,
   bar2: [SEG_BAR2_IN, SEG_BAR2_OUT] as [number, number],
@@ -108,8 +111,8 @@ const MARK1 = SEG_DONE1 * 0.75;
 const MARK3 = SEG_BAR3_IN + (SEG_DONE3 - SEG_BAR3_IN) * 0.75;
 const HYST = 0.03;
 /* width of each step-copy fade window on the driver */
-export const APPEAR = 0.06;
-export const TIMED_DURATION = 5;
+const APPEAR = 0.06;
+const TIMED_DURATION = 5;
 /* Landing .debit__moto travel curve (sections.css: transform 2.4s
    cubic-bezier(.16,1,.3,1)). It governs the courier's TRAVEL leg only —
    driving the whole 3-step timeline with it collapses the sequence
@@ -117,12 +120,12 @@ export const TIMED_DURATION = 5;
 const COURIER_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 /* Driver keyframes for the timed fallback: fill 1 → hold → courier rides →
    hold → fill 3 → hold. Segment boundaries mirror SEG exactly. */
-export const TIMED_KEYS = [0, SEG_DONE1, SEG_BAR2_IN, SEG_BAR2_OUT, SEG_BAR3_IN, SEG_DONE3, 1];
-export const TIMED_TIMES = [0, 0.16, 0.22, 0.55, 0.62, 0.9, 1];
-export const TIMED_EASE = ["linear", "linear", COURIER_EASE, "linear", "linear", "linear"] as const;
+const TIMED_KEYS = [0, SEG_DONE1, SEG_BAR2_IN, SEG_BAR2_OUT, SEG_BAR3_IN, SEG_DONE3, 1];
+const TIMED_TIMES = [0, 0.16, 0.22, 0.55, 0.62, 0.9, 1];
+const TIMED_EASE = ["linear", "linear", COURIER_EASE, "linear", "linear", "linear"] as const;
 /* Sticky travel. Single source of truth: fed to CSS as --dpc-scrub and to
    useScroll as the progress end edge, so the two can never disagree. */
-export const SCRUB_PX = 1600;
+const SCRUB_PX = 1600;
 
 export type Mode = "scrub" | "timed" | "off";
 

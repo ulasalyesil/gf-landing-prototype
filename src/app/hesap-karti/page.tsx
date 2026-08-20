@@ -8,7 +8,6 @@ import AnimatedNumber from "@/components/AnimatedNumber";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import DebitHero from "./Hero";
 import DeliverySteps from "./DeliverySteps";
-import DeliveryCompact from "./DeliveryCompact";
 import AbroadCollage from "./AbroadCollage";
 import SanalCard from "./SanalCard";
 import CardHandoff from "./CardHandoff";
@@ -18,32 +17,29 @@ import { DEBIT_EARN, DEBIT_CAPS, DEBIT_ABROAD } from "@/data/content";
 import "@/styles/product-page.css";
 import "./debit-current.css";
 
-/* ?steps=compact swaps the teslimatı section to the compact layout
-   (Figma 21619:8182) for team comparison — no picker UI, link-only.
-   Read via useSyncExternalStore (server snapshot null → default layout,
-   reconciled after hydration without a mismatch — HeroVariants pattern). */
+/* ?hero=field — the ONE remaining comparison variant on this page (owner,
+   2026-08-20: "we might change the hero layout following the work on credit
+   card so keep it for now"). It renders the hero as a contained dark panel
+   instead of the locked white "kart xl" field — Figma 22302:68096, and it
+   swaps the video master too, because the white hero's multiply knockout would
+   erase the card against dark. See `.dpc-hero--field` in debit-current.css and
+   the `field` prop in Hero.tsx.
+   No picker UI, link-only. Read via useSyncExternalStore so the server snapshot
+   is null → default layout, reconciled after hydration without a mismatch
+   (HeroVariants pattern).
+   Delete path when the credit-card work settles it: this param, the
+   `.dpc-hero--field` rules, the `field` prop, and the dual-source `key` in
+   Hero.tsx.
+
+   ?earn=bento and ?steps=compact were deleted 2026-08-20 — both decisions were
+   settled and the losing layouts were 350 lines of scaffolding a frontend
+   developer could not tell apart from live code. */
 const subscribeNoop = () => () => {};
-const getStepsParam = () => new URLSearchParams(window.location.search).get("steps");
-/* server snapshot for both param stores — keeps `window` untouched during SSR */
+/* server snapshot — keeps `window` untouched during SSR */
 const getServerParam = () => null;
-
-/* Earn layout. Default is v2 (Figma 22074:20218) — cardless lead row on white,
-   two tinted tiles beneath, ink-on-tint. ?earn=bento keeps the previous unequal
-   bento (white copy on purple/blue) for one comparison round; the earlier
-   equal-peer row is gone, superseded by v2.
-   Once a call is made: delete this param, the loser's rules in
-   debit-current.css, and the earnLayout ternary below. */
-const getEarnParam = () => new URLSearchParams(window.location.search).get("earn");
-
-/* Hero background. Default is the locked white "kart xl" field; ?hero=field
-   wraps it in a full-bleed lilac-50 band with a rounded bottom edge for one
-   comparison round (owner, 2026-08-18). Same delete path as ?earn above. */
 const getHeroParam = () => new URLSearchParams(window.location.search).get("hero");
 
 export default function HesapKartiDetail() {
-  const stepsParam = useSyncExternalStore(subscribeNoop, getStepsParam, getServerParam);
-  const earnParam = useSyncExternalStore(subscribeNoop, getEarnParam, getServerParam);
-  const earnLayout = earnParam === "bento" ? "dpc-earn__bento" : "dpc-earn__v2";
   const heroParam = useSyncExternalStore(subscribeNoop, getHeroParam, getServerParam);
   // Add body class on mount, cleanup on unmount
   useEffect(() => {
@@ -70,7 +66,7 @@ export default function HesapKartiDetail() {
               </h2>
               <p className="dpc-earn__sub">{DEBIT_EARN.sub}</p>
             </Reveal>
-            <Reveal className={earnLayout} stagger={0.08}>
+            <Reveal className="dpc-earn__v2" stagger={0.08}>
               {/* lead row — broadest promise (all physical spend) goes first */}
               <RevealItem as="article" className="dpc-earn__card dpc-earn__card--iade">
                 <p className="dpc-earn__copy">
@@ -154,7 +150,7 @@ export default function HesapKartiDetail() {
         </section>
 
         {/* ============ 3. DELIVERY — scroll-driven "dakikalar" sequence ============ */}
-        {stepsParam === "compact" ? <DeliveryCompact /> : <DeliverySteps />}
+        <DeliverySteps />
 
         {/* ============ 4. SANAL KART — own dark section (distinct product) ============ */}
         <SanalCard />
