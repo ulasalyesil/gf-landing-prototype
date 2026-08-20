@@ -14,7 +14,6 @@ import AppFeatures from "@/components/AppFeatures";
 import AiAssistant from "@/components/AiAssistant";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
-import ParanaiyibakDrawer from "@/components/ParanaiyibakDrawer";
 
 export default function Home() {
   return (
@@ -41,12 +40,6 @@ export default function Home() {
         <Newsletter />
       </main>
       <Footer />
-      {/* Compact-only (≤920) persistent #paranaiyibak bar. Outside <main> — it's
-          site chrome like the header, not page content. The on-screen placement
-          switch that used to sit beside it is gone (owner, 2026-08-20: "remove
-          this tag for good"); the drawer is the default arrangement and the
-          header variant is now reachable only via ?pnib=header. */}
-      <ParanaiyibakDrawer />
     </>
   );
 }
