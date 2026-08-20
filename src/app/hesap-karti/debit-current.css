@@ -1230,7 +1230,15 @@
      Mode is already "off" at ≤767 (DeliverySteps.tsx: `reduced || small` ⇒ off),
      so the scrub sequence is not involved and the bars/badges render settled;
      nothing here touches the desktop pin/scrub machinery. */
-  .dpc-steps { padding-block: 64px; }
+  /* Top inset dropped to 0 (owner, 2026-08-20: "remove the top padding on
+     mobile"). Not a reversal of the 08-18 note below — that added the BAND's
+     inner padding, this removes the SECTION's outer padding, and the two were
+     stacking. `.dpc-earn` already closes with its own 64px at this breakpoint,
+     so the gap above the band was 64 + 64 + the band's 40 inner = 168px of
+     dead air before the title. Bottom stays 64: the section below it is the
+     dark `.dpc-sanal`, and collapsing that edge too would weld the lilac band
+     to the dark band. */
+  .dpc-steps { padding-block: 0 64px; }
   /* The BAND's own vertical inset (owner, 2026-08-18: "top padding in mobile is
      0. add top padding on mobile so it looks balanced").
      The 64px above is the section's outer padding — that space is between the

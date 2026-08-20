@@ -15,7 +15,7 @@
    inside the media query, so without this it falls back to a static in-flow block
    and renders a stray pill below the footer on desktop. */
 .header__mobile-badge { display: none; }
-.pnib-drawer, .pnib-flag { display: none; }
+.pnib-drawer { display: none; }
 .brand { display: inline-flex; align-items: center; }
 .brand__logo { height: 30px; width: auto; }
 .brand__ph { font-weight: 700; font-size: 26px; color: #fff; letter-spacing: -.02em; }
@@ -552,38 +552,17 @@
     padding-bottom: calc(64px + env(safe-area-inset-bottom));
   }
 
-  /* ---- placement switch (?pnib=, ParanaiyibakFlag) ----
+  /* ---- placement switch (?pnib=) ----
      Exactly one arrangement is ever on screen. Written as :not([…="header"]) so the
      attribute-less state (server HTML, and the tick before the effect runs) already
      equals DEFAULT_PLACEMENT="drawer" — keyed on ="drawer" instead, both marks would
      flash on every load. Specificity beats the .site-header.is-scrolled rule above
      without !important, so the two don't end up in an override war.
-     Delete this pair, and .pnib-flag below, once a placement is chosen. */
+     The on-screen switch is gone (owner, 2026-08-20) — these two rules stay
+     because ?pnib=header still drives the attribute. Delete the pair once the
+     placement is confirmed and only one arrangement remains. */
   html:not([data-gf-pnib="header"]) .site-header.is-scrolled:not(.is-mega) .header__mobile-badge { display: none; }
   html[data-gf-pnib="header"] .pnib-drawer { display: none; }
-
-  /* ---- review flag ----
-     Right edge, vertically centred: the two things being compared sit at the top
-     (header badge) and the bottom (drawer), so the control must occupy neither.
-     z-index 98 keeps it under .site-header (100), so the opaque .mega panel covers
-     it when the menu opens, and it never overlaps the drawer (99) spatially. */
-  .pnib-flag {
-    position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 98;
-    display: flex; flex-direction: column; align-items: stretch; gap: 4px;
-    padding: 8px; border-radius: 12px 0 0 12px;
-    background: var(--gf-bg); border: 1px solid var(--gf-lilac); border-right: 0;
-    box-shadow: var(--shadow-sm);
-  }
-  .pnib-flag__cap {
-    font-size: 9px; font-weight: var(--fw-semibold); text-transform: uppercase;
-    letter-spacing: .08em; color: var(--gf-ink-500); text-align: center; padding-bottom: 2px;
-  }
-  .pnib-flag__btn {
-    min-height: 40px; padding: 8px 12px; border-radius: var(--r-full);
-    font-size: 13px; font-weight: var(--fw-semibold); color: var(--gf-ink-700);
-    background: none; transition: background .18s, color .18s;
-  }
-  .pnib-flag__btn.is-active { background: var(--gf-purple); color: #fff; }
 
   /* ---------- Full-screen menu ----------
      920 is the menu's breakpoint everywhere: it's where .nav hides, so the JS

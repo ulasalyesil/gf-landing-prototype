@@ -80,11 +80,13 @@ export const FAIZ_LEGAL =
 export const HERO_OFFERS: HeroOffer[] = [
   /* "yıllık" de-emphasized as a small cap above the % — revizyon feedback:
      the annual rate was overpowering the daily-earn message */
+  /* Order is locked to the hero video's four beats (hesap → fx → kredi →
+     hesap kartı) — reordering here desyncs the copy from the footage. */
   { title: "<small class='hero__title-yr'>yıllık</small>%44 faizle", sub: "paranı bağlamadan<br>her gün iyi kazan",
     legal: FAIZ_LEGAL },
+  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
   { title: "iyi faizli kredi",            sub: "aylık %3,49’dan başlayan faizlerle",
     legal: "örnek hesaplama: 100.000 TL için aylık %3,49 faiz oranlı 12 ay vadeli hayat sigortalı kredinin YMO’su %72,2963’tür" },
-  { title: "çok iyi kurlar",              sub: "hafta içi akşamları bile<br>dar makasla işlem yap" },
   { title: "%1 nakit iadeli hesap kartı", sub: "kartın dakikalar içinde kapında<br>harcarken geri kazan" }
 ];
 
@@ -93,7 +95,10 @@ export const HERO_BADGES: string[] = [
   "her 4 getirfinanslı’dan 1’i referans koduyla geliyor"
 ];
 
-export const HERO_FLIP_MS = 4000;
+/* One beat of the hero video. The footage is 20s with four 5s segments, so
+   this is the segment length, not a free choice — Hero.tsx derives the active
+   slide from the video's own currentTime so the copy can't drift from it. */
+export const HERO_FLIP_MS = 5000;
 
 export interface RateItem {
   code: string;

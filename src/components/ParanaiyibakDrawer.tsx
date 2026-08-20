@@ -20,8 +20,9 @@ import { usePlacement } from "./paranaiyibakPlacement";
 
    PLACEMENT REVIEW — this competes with the scrolled header badge (commit
    e60995f): same mark, same trigger, same breakpoint. The two are alternatives,
-   never both on screen (owner, 2026-07-31), switched by ParanaiyibakFlag. State
-   and the ?pnib= param live in paranaiyibakPlacement.ts.
+   never both on screen (owner, 2026-07-31). The on-screen switch was removed on
+   2026-08-20; the drawer is the default and ?pnib=header shows the other one.
+   State and the param live in paranaiyibakPlacement.ts.
 
    The placement is applied as a data attribute on <html> from an effect — never
    gating JSX, which is the SSR hydration trap that already bit CampaignsCarousel

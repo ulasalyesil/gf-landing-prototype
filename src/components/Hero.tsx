@@ -31,37 +31,66 @@ export default function Hero() {
   const hoverRef = useRef(false);
   const reduced = useReducedMotion();
 
-  // Cycle subtitle offers and badges; pause while the reader hovers the copy
+  /* The four offers are the video's four 5s segments, so the active slide is
+     read off the video clock rather than an independent interval: an interval
+     drifts a little every loop (decode jitter, background-tab throttling, a
+     20s loop that isn't exactly 4×5s) and after a few minutes the copy sits on
+     the wrong footage. Slot = which HERO_FLIP_MS segment currentTime is in. */
+  const slotRef = useRef(0);
+  const videoDrivenRef = useRef(false);
+
+  /* Runs the exit → swap → enter phase sequence used by .t-text-swap. */
+  const swapTo = React.useCallback((next: number) => {
+    setPhase("exit");
+
+    // Matches --text-swap-dur (150ms)
+    setTimeout(() => {
+      setIndex(next);
+      setPhase("enter-start");
+
+      // Force reflow and transition to normal state
+      const reflow = document.body.offsetHeight; // triggers reflow
+      void reflow;
+
+      setTimeout(() => {
+        setPhase("normal");
+      }, 30);
+    }, 150);
+  }, []);
+
+  /* Fallback only: keeps the copy cycling on the old fixed cadence if the
+     video never plays (blocked autoplay, failed load, no timeupdate). It
+     stands down as soon as the video starts driving the slides. */
   useEffect(() => {
     const timer = setInterval(() => {
-      if (hoverRef.current) return;
-      setPhase("exit");
-
-      // Matches --text-swap-dur (150ms)
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % HERO_OFFERS.length);
-        setPhase("enter-start");
-
-        // Force reflow and transition to normal state
-        const reflow = document.body.offsetHeight; // triggers reflow
-        void reflow;
-
-        setTimeout(() => {
-          setPhase("normal");
-        }, 30);
-      }, 150);
+      if (videoDrivenRef.current || hoverRef.current) return;
+      slotRef.current = (slotRef.current + 1) % HERO_OFFERS.length;
+      swapTo(slotRef.current);
     }, HERO_FLIP_MS);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [swapTo]);
 
-  // Handle video ending fade logic to prevent loop glitches
   const handleTimeUpdate = () => {
     const video = videoRef.current;
-    if (video && video.duration) {
-      const isEnding = video.duration - video.currentTime < 0.6;
-      setIsVideoFading(isEnding);
-    }
+    if (!video || !video.duration) return;
+
+    videoDrivenRef.current = true;
+
+    // Fade out just before the loop point so the cut back to frame 0 is hidden
+    setIsVideoFading(video.duration - video.currentTime < 0.6);
+
+    const slot =
+      Math.floor(video.currentTime / (HERO_FLIP_MS / 1000)) % HERO_OFFERS.length;
+    if (slot === slotRef.current) return;
+
+    /* Hover pauses the copy but not the video, so on mouse-leave we jump
+       straight to whatever segment is playing instead of resuming a stale
+       position — being one slide behind the footage is the thing to avoid. */
+    if (hoverRef.current) return;
+
+    slotRef.current = slot;
+    swapTo(slot);
   };
 
   const currentOffer = HERO_OFFERS[index];
@@ -79,7 +108,7 @@ export default function Hero() {
           playsInline
           onTimeUpdate={handleTimeUpdate}
         >
-          <source src="/assets/video/GetirFinansi_1920x1080_ALL.mp4" type="video/mp4" />
+          <source src="/assets/video/hero-20s.mp4" type="video/mp4" />
           {/* <source src="/assets/video/hero-bg.webm" type="video/webm" /> */}
         </video>
         {reduced ? (
