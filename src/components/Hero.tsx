@@ -108,9 +108,20 @@ export default function Hero() {
           playsInline
           onTimeUpdate={handleTimeUpdate}
         >
-          {/* mp4 only for now — the WebM sibling that used to be stubbed out
-              here pointed at hero-bg, which is deleted. Re-add one for
-              hero-20s.mp4 when it gets re-exported (see TODO.md). */}
+          {/* Two framings of the same 20s / 4×5s cut, so the copy-sync clock
+              works either way: the 9:16 export for phones, the 16:9 master below.
+              object-fit: cover on a portrait screen crops the landscape master
+              to a slice that loses the subject, hence a separate master rather
+              than a CSS object-position fix. The portrait source must come
+              first — the browser takes the first <source> whose media matches.
+              mp4 only for now; the WebM sibling that used to be stubbed out
+              here pointed at hero-bg, which is deleted. Re-add one for each
+              when they get re-exported (see TODO.md). */}
+          <source
+            src="/assets/video/hero-20s-mobile.mp4"
+            type="video/mp4"
+            media="(max-width: 767px)"
+          />
           <source src="/assets/video/hero-20s.mp4" type="video/mp4" />
         </video>
         {reduced ? (
