@@ -6,6 +6,10 @@ import type { Variants } from "motion/react";
 import { HERO_OFFERS, HERO_BADGES, HERO_FLIP_MS } from "@/data/content";
 import clsx from "clsx";
 
+/* Same breakpoint as mobile.css's layout layer and as the portrait <source>
+   below, so the framing switch and the mobile layout flip on one line. */
+const MOBILE_MQ = "(max-width: 767px)";
+
 /* First-load sequence — the page's only load animation. Badge → title → sub
    → CTA rise in with a 90ms stagger; the overlay settles from darker to its
    final tint so the video eases in underneath the copy. */
@@ -70,6 +74,35 @@ export default function Hero() {
 
     return () => clearInterval(timer);
   }, [swapTo]);
+
+  /* A <source media> list is only consulted while the element is loading its
+     resource, so crossing 767 *after* load leaves the wrong framing in place —
+     devtools device mode, a phone rotating, a dragged desktop window. load()
+     re-runs the resource selection against the now-matching query. currentTime
+     is carried across because the copy is slaved to the video clock: starting
+     the new file at 0 would silently throw the slides a segment out. */
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_MQ);
+
+    const reselect = () => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      const resumeAt = video.currentTime;
+      video.load();
+      video.addEventListener(
+        "loadeddata",
+        () => {
+          video.currentTime = resumeAt;
+          void video.play();
+        },
+        { once: true }
+      );
+    };
+
+    mq.addEventListener("change", reselect);
+    return () => mq.removeEventListener("change", reselect);
+  }, []);
 
   const handleTimeUpdate = () => {
     const video = videoRef.current;
