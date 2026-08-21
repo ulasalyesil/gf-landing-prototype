@@ -141,20 +141,31 @@ export default function Hero() {
           playsInline
           onTimeUpdate={handleTimeUpdate}
         >
-          {/* Two framings of the same 20s / 4×5s cut, so the copy-sync clock
-              works either way: the 9:16 export for phones, the 16:9 master below.
-              object-fit: cover on a portrait screen crops the landscape master
-              to a slice that loses the subject, hence a separate master rather
-              than a CSS object-position fix. The portrait source must come
-              first — the browser takes the first <source> whose media matches.
-              mp4 only for now; the WebM sibling that used to be stubbed out
-              here pointed at hero-bg, which is deleted. Re-add one for each
-              when they get re-exported (see TODO.md). */}
+{/* Two framings of the same 20s / 4×5s cut, so the copy-sync clock
+              works either way: the 9:16 export for phones, the 16:9 master for
+              everything else. object-fit: cover on a portrait screen crops the
+              landscape one to a slice that loses the subject, hence a second
+              master rather than a CSS object-position fix.
+
+              ORDER IS THE WHOLE CONTRACT: the browser takes the first <source>
+              whose media query matches AND whose type it can play. So both
+              portrait entries come before both landscape ones, and WebM leads
+              each pair — VP9 measured smaller AND higher SSIM than h264 on both
+              framings, so it wins wherever it is supported. Safari below 14.1
+              (and iOS below 17.4) reports video/webm unplayable and falls
+              through to the mp4 in the same pair, which is why each breakpoint
+              carries both containers. */}
+          <source
+            src="/assets/video/hero-20s-mobile.webm"
+            type="video/webm"
+            media="(max-width: 767px)"
+          />
           <source
             src="/assets/video/hero-20s-mobile.mp4"
             type="video/mp4"
             media="(max-width: 767px)"
           />
+          <source src="/assets/video/hero-20s.webm" type="video/webm" />
           <source src="/assets/video/hero-20s.mp4" type="video/mp4" />
         </video>
         {reduced ? (
