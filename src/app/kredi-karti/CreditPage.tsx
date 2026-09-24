@@ -1,25 +1,56 @@
 "use client";
 
 import { useEffect } from "react";
+import type { CSSProperties } from "react";
+import { MotionConfig } from "motion/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import AnimatedHighlight from "@/components/AnimatedHighlight";
-import Reveal, { RevealItem } from "@/components/Reveal";
-import CreditHero from "./Hero";
-import { CREDIT_AVANTAJ, CREDIT_TAKSIT, CREDIT_SSS } from "@/data/content";
+import ProductSubnav from "@/components/ProductSubnav";
+import ProductHero, { renderHeroTitle } from "@/components/ProductHero";
+import SectionHead from "@/components/SectionHead";
+import BenefitTile from "@/components/BenefitTile";
+import FaqCarousel from "@/components/FaqCarousel";
+import Reveal from "@/components/Reveal";
+import { MaximumVisual, TransactionVisual, AidatVisual } from "./visuals";
+import TaksitTabs from "./TaksitTabs";
+import CampaignSlider from "./CampaignSlider";
+import BrandTabs from "./BrandTabs";
+import { CREDIT_HERO, CREDIT_BENEFITS, CREDIT_FAQ } from "@/data/content";
 import "@/styles/product-page.css";
 import "./credit.css";
 
-/* GFDES-2243 — /kredi-karti, first draft (2026-08-19).
+/* GFDES-2243 — /kredi-karti, card pages v2 (Figma 22630:12072, 2026-09-23).
+   Replaces the 2026-08-19 first draft (hero → avantajlar → taksit → sss).
 
-   Spine: hero → avantajlar → taksit → sss. Deliberately shorter than
-   /hesap-karti: that page earns its length with real proof sections (pinned
-   delivery scrub, sanal kart, abroad collage) built from shipped assets. There
-   is no equivalent asset set for this card yet, so padding the page with
-   half-filled sections would make it look finished when it is not.
+   Spine: sub-nav → hero → kart avantajları (bento) → ücretsiz 3 taksit
+   (category tabs) → kampanyalar (slider) → maximum taksit (merchant tabs)
+   → sss → footer. Shared pieces (hero, section head, tile, FAQ, sub-nav)
+   live in src/components and product-page.css; the page-specific parts are
+   in this folder and credit.css.
 
    `.dpc` on <body> is what the shared chrome hangs off (footer background,
    hamburger colour) — same as /hesap-karti. */
+
+const I = "/assets/img/kredi-karti";
+
+const TITLE_ICONS = {
+  calendar: (
+    <span className="dpc-hero__icon" style={{ "--icon-h": "0.891em", "--icon-y": "-0.14em" } as CSSProperties}>
+      <img src={`${I}/hero-icon-calendar.svg`} alt="" width={59.7996} height={57.0256} />
+      <img className="dpc-hero__icon-glyph" src={`${I}/hero-icon-calendar-glyph.svg`} alt="" width={20.4331} height={20.4538} />
+    </span>
+  ),
+  chart: (
+    <span className="dpc-hero__icon" style={{ "--icon-h": "0.844em", "--icon-y": "-0.15em" } as CSSProperties}>
+      <img src={`${I}/hero-icon-chart.svg`} alt="" width={64.0498} height={54.0276} />
+    </span>
+  ),
+  card: (
+    <span className="dpc-hero__icon dpc-hero__icon--rot" style={{ "--icon-y": "-0.24em" } as CSSProperties}>
+      <img src={`${I}/hero-icon-card.svg`} alt="" width={72.4004} height={64.251} />
+    </span>
+  ),
+};
 
 export default function CreditPage() {
   useEffect(() => {
@@ -29,122 +60,72 @@ export default function CreditPage() {
     };
   }, []);
 
+  const B = CREDIT_BENEFITS;
+
   return (
     <>
       <Header variant="inner" />
+      {/* reduced motion: transform/layout animations become instant, opacity
+          fades stay — gentler, not zero. Reveal and the scrub handle their own.
+          Scoped to <main> so the shared header behaves exactly as on the landing. */}
+      <MotionConfig reducedMotion="user">
       <main className="dpc ckp">
+        <ProductSubnav current="kartlar" />
+
         {/* ============ 1. HERO ============ */}
-        <CreditHero />
+        <ProductHero
+          badge={CREDIT_HERO.badge}
+          title={renderHeroTitle(CREDIT_HERO.title, TITLE_ICONS)}
+          sub={
+            <>
+              {CREDIT_HERO.sub.muted}
+              <em>{CREDIT_HERO.sub.em}</em>
+            </>
+          }
+          cta={CREDIT_HERO.cta}
+          ctaHref={CREDIT_HERO.href}
+          legal={CREDIT_HERO.legal}
+          media={
+            <div className="dpc-hero__media ckp-hero__media">
+              <img src={CREDIT_HERO.media.src} fetchPriority="high" alt="" width={CREDIT_HERO.media.width} height={CREDIT_HERO.media.height} />
+            </div>
+          }
+        />
 
-        {/* ============ 2. AVANTAJLAR ============
-            Same grid as /hesap-karti's earn v2 — lead row full width, two
-            tinted tiles beneath. The lead tile is the one thing that differs:
-            an ekstre row instead of a copy block. See credit.css. */}
-        <section className="ckp-avantaj">
+        {/* ============ 2. KART AVANTAJLARI ============ */}
+        <section className="dpc-section ckp-benefits" aria-labelledby="ckp-benefits-h">
           <div className="dpc-container">
-            <Reveal as="header" className="ckp-avantaj__head">
-              <h2 className="dpc-title">
-                {CREDIT_AVANTAJ.title}{" "}
-                <AnimatedHighlight type="hl">{CREDIT_AVANTAJ.titleHl}</AnimatedHighlight>
-              </h2>
-              <p className="ckp-avantaj__sub">{CREDIT_AVANTAJ.sub}</p>
-            </Reveal>
-
-            <Reveal className="ckp-avantaj__grid" stagger={0.08}>
-              {/* — the signature — */}
-              <RevealItem as="article" className="ckp-ekstre">
-                <span className="ckp-ekstre__label">{CREDIT_AVANTAJ.aidat.label}</span>
-                {/* Statement row: label left, leader, amount right. The leader is
-                    a border on a flex spacer, not dot characters — screen readers
-                    never read it, and it can't wrap or drift out of alignment. */}
-                <p className="ckp-ekstre__row">
-                  <span className="ckp-ekstre__rowlabel">{CREDIT_AVANTAJ.aidat.row}</span>
-                  <span className="ckp-ekstre__leader" aria-hidden="true" />
-                  <span className="ckp-ekstre__amount">{CREDIT_AVANTAJ.aidat.amount}</span>
-                </p>
-                <p className="ckp-ekstre__note">{CREDIT_AVANTAJ.aidat.note}</p>
-              </RevealItem>
-
-              <RevealItem as="article" className="ckp-tile ckp-tile--taksit">
-                <p className="ckp-tile__copy">
-                  {CREDIT_AVANTAJ.taksit.pre}
-                  <span className="ckp-tile__em">{CREDIT_AVANTAJ.taksit.em}</span>
-                  {CREDIT_AVANTAJ.taksit.post}
-                </p>
-              </RevealItem>
-
-              <RevealItem as="article" className="ckp-tile ckp-tile--getirpara">
-                <p className="ckp-tile__copy">
-                  {CREDIT_AVANTAJ.getirpara.pre}
-                  <span className="ckp-tile__em">{CREDIT_AVANTAJ.getirpara.em}</span>
-                  {CREDIT_AVANTAJ.getirpara.post}
-                </p>
-                <p className="ckp-tile__note">{CREDIT_AVANTAJ.getirpara.note}</p>
-              </RevealItem>
+            <SectionHead eyebrow={B.eyebrow} title={B.title} sub={B.sub} titleId="ckp-benefits-h" />
+            <Reveal className="dpc-bento" stagger={0.08}>
+              <BenefitTile className="ckp-tile-max" visual={<MaximumVisual />} title={B.maximum.title} desc={B.maximum.desc} />
+              <div className="dpc-bento__stack">
+                <BenefitTile className="ckp-tile-txn" visual={<TransactionVisual />} title={B.getirpara.title} />
+                <BenefitTile className="ckp-tile-aidat" visual={<AidatVisual />} title={B.aidat.title} />
+              </div>
+              <BenefitTile
+                photo
+                visual={<img className="dpc-tile__zoom" loading="lazy" src="/assets/img/kartlar/benefit-photo.jpg" alt="" width={1300} height={1625} />}
+                title={B.kampanya.title}
+                desc={B.kampanya.desc}
+              />
             </Reveal>
           </div>
         </section>
 
-        {/* ============ 3. TAKSİT ============ */}
-        <section className="ckp-taksit">
-          <div className="dpc-container">
-            <Reveal className="ckp-taksit__inner">
-              <RevealItem>
-                <h2 className="dpc-title">
-                  {CREDIT_TAKSIT.title}{" "}
-                  <AnimatedHighlight type="hl">{CREDIT_TAKSIT.titleHl}</AnimatedHighlight>
-                </h2>
-              </RevealItem>
-              <RevealItem>
-                <p className="ckp-taksit__sub">{CREDIT_TAKSIT.sub}</p>
-              </RevealItem>
-              <RevealItem>
-                {/* Live page renders the bare URL as its own link text. Labelled
-                    here, and marked as leaving the site. */}
-                <a
-                  className="ckp-taksit__link"
-                  href={CREDIT_TAKSIT.link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {CREDIT_TAKSIT.link.label}
-                  <span className="ckp-taksit__ext" aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
-              </RevealItem>
-            </Reveal>
-          </div>
-        </section>
+        {/* ============ 3. ÜCRETSİZ 3 TAKSİT ============ */}
+        <TaksitTabs />
 
-        {/* ============ 4. SSS ============
-            The objection block neither card page has today. Native <details> so
-            it works without JS and is keyboard-operable for free. */}
-        <section className="ckp-sss">
-          <div className="dpc-container">
-            <Reveal as="header" className="ckp-sss__head">
-              <h2 className="dpc-title">
-                {CREDIT_SSS.title}{" "}
-                <AnimatedHighlight type="hl">{CREDIT_SSS.titleHl}</AnimatedHighlight>
-              </h2>
-            </Reveal>
-            <Reveal className="ckp-sss__list" stagger={0.06}>
-              {CREDIT_SSS.items.map((item) => (
-                <RevealItem key={item.q}>
-                  <details className="ckp-sss__item">
-                    <summary className="ckp-sss__q">
-                      {item.q}
-                      <span className="ckp-sss__sign" aria-hidden="true" />
-                    </summary>
-                    <p className="ckp-sss__a">{item.a}</p>
-                  </details>
-                </RevealItem>
-              ))}
-            </Reveal>
-          </div>
-        </section>
+        {/* ============ 4. KAMPANYALAR ============ */}
+        <CampaignSlider />
+
+        {/* ============ 5. MAXIMUM TAKSİT ============ */}
+        <BrandTabs />
+
+        {/* ============ 6. SSS ============ */}
+        <FaqCarousel title={CREDIT_FAQ.title} items={CREDIT_FAQ.items} />
       </main>
-      <Footer />
+      </MotionConfig>
+      <Footer variant="inner" />
     </>
   );
 }

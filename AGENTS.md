@@ -32,7 +32,7 @@ This file is the full context. The session running here has no access to the own
 ## Architecture
 
 - `src/app/page.tsx` — the landing page, 13 sections: hero → stats → rates → features → campaigns → loan/faiz/calculator → debit → transfer → app-split (dark toggle) → AI → footer
-- `src/app/hesap-karti/` — GFDES-2174 debit card page redesign wireframe (layout locked: "Dakikalar, drenched"; next: layout iteration → micro-interactions)
+- `src/app/hesap-karti/` + `src/app/kredi-karti/` — debit (GFDES-2174) and credit (GFDES-2243) card pages, rebuilt 2026-09-23 from Figma `v2` as one family. Shared pieces (`ProductSubnav`, `ProductHero`, `SectionHead`, `BenefitTile`, `CarouselControls`, `useAutoAdvance`, `FaqCarousel`, `Footer variant="inner"`) are in `src/components/` + `src/styles/product-page.css`; page parts and `debit.css` / `credit.css` are in each route. Read `docs/hesap-karti-handoff.md` (covers both) before touching either
 - `src/components/` — one component per section, BEM class names (`.hero__inner`, `.rate-card`…)
 - `src/data/content.ts` — all copy and seed data (content is Turkish). Site nav is data too: `NAV` feeds both the desktop nav/mega-dropdown and the ≤920px hamburger menu in `Header.tsx` — don't hardcode menu items back into JSX.
 - `src/styles/` — `tokens.css`, `base.css`, `sections.css`, `mobile.css`

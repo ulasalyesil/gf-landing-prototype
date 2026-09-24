@@ -36,7 +36,7 @@ export const NAV: NavCategory[] = [
         sub: "paranı bağlamadan her gün faiz kazan" },
       { label: "hesap kartı", href: "/hesap-karti",
         sub: "kartınla harcadıkça <b>%1 nakit iade</b> ve <b>getirpara</b> kazan!" },
-      { label: "kredi kartı", href: "#",
+      { label: "kredi kartı", href: "/kredi-karti",
         sub: "taksit yapan, kazandıran, aidatsız kredi kartı" },
       { label: "ihtiyaç kredisi", href: "#",
         sub: "hızlı başvuru, uygun faiz ve esnek vade seçenekleri" },
@@ -123,219 +123,167 @@ export const RATES_SEED: RateItem[] = [
 
 export const RATES_CYCLE_MS = 180000;
 
-/* ===== /hesap-karti (GFDES-2174) ===== */
-/* Steps copy is a Turkish draft replacing the English template text —
-   needs owner + legal review before lock (esp. anything fee-related). */
+/* ===== Card pages v2 — shared (/kredi-karti + /hesap-karti) =====
+   Created by Claude · INTERNAL
+   Rebuilt 2026-09-23 from Figma `v2` (22630:19402): credit 22630:12072,
+   debit 22630:16190. Copy below is the comps' VERBATIM, including the
+   parts that are clearly wrong or placeholder — this pass builds the static
+   designs so their issues can be judged on a real page. Every such line is
+   marked ⚠ COMP; the full list is in TODO.md. */
 
-/* Every CTA on this page pointed at a bare "#", so the three of them were
+/* Every CTA on these pages pointed at a bare "#", so they were
    indistinguishable in the DOM and there was nowhere for the frontend developer
-   to put a real destination without touching JSX. Each section now carries its
-   own `href`, defaulted to this one marker: grep it to find every link still
-   needing a target, and it reads as unfinished rather than as a deliberate
-   same-page anchor. Replace per section — the two card products do NOT share a
-   destination. */
-export const DEBIT_CTA_TODO = "#";
+   to put a real destination without touching JSX. Each section carries its own
+   `href`, defaulted to this one marker: grep it to find every link still
+   needing a target. Replace per section — the two card products, and the
+   physical and virtual debit card, do NOT share a destination. */
+export const CTA_TODO = "#";
 
 /* Delivery-time disclaimer. NOT new copy — this is the exact string the landing
    page already carries under the identical "dakikalar içinde kapında" claim
-   (`.debit__legal` in DebitCard.tsx), lifted to a shared constant the way
-   FAIZ_LEGAL was, because the same claim now appears on two surfaces and a
-   second hand-typed copy is how the two drift apart.
-   ⚠ This covers the SPEED claim only. Still unqualified on this page, and each
-   one needs a legal-supplied string before launch — I am not writing these:
-     · "ücretsiz" (hesap kartı, kurye, para transferi, ATM) ×4
-     · the %1 / %3 / %20 nakit iade rates
-     · the ₺1.250 monthly ceiling — and whether it is per-mechanic or combined,
-       which /kredi-karti currently answers differently (see DEBIT_EARN.iade)
-   Add them as `legal` on the owning section; the rendering slot now exists. */
-export const DEBIT_DELIVERY_LEGAL =
+   (`.debit__legal` in DebitCard.tsx). Both card heroes now carry that claim in
+   their badge, so both render it; the v2 comps show no legal line at all.
+   ⚠ This covers the SPEED claim only. Still unqualified, and each needs a
+   legal-supplied string before launch: "ücretsiz" (kurye, taksit), the
+   %1 / %3 / %20 nakit iade rates, ₺350, and the ₺1.250 monthly ceiling. */
+export const CARD_DELIVERY_LEGAL =
   "teslimat süresi lokasyona ve operasyonel koşullara göre değişiklik gösterebilir";
 
-export const DEBIT_HERO = {
-  badge: "kartın dakikalar içinde kapında",
-  title: "geri dönüşü",
-  titleHl: "muhteşem kart",
-  /* Owner, 2026-08-11 (page feedback round 3). Replaces "harcadıkça getirpara ve
-     nakit iade kazan", which was flagged from 2026-07-24 as a near-duplicate of the
-     DEBIT_EARN heading below — this wording resolves that: it now leads with the
-     free-card promise and a concrete rate instead of restating the earn section.
-     ⚠ TYPO CORRECTED: the instruction read "harcakrken"; shipped as "harcarken".
-     Say so if that was deliberate.
-     ⚠ "%1" — AGENTS.md reserves the % GLYPH for interest/faiz on ICONS; this is
-     body copy stating a cashback rate, which the page already does in
-     DEBIT_ABROAD.captions ("%1 nakit iade") and DEBIT_EARN.getirpara ("%3"), so it
-     is consistent with how the rule has been applied. No % icon is introduced. */
-  sub: "ücretsiz hesap kartınla harcarken %1 nakit iade kazan",
-  cta: "kart al",
-  href: DEBIT_CTA_TODO,
-  /* qualifies the badge's "dakikalar içinde" claim — same string the landing
-     already shows for it. The "ücretsiz" and "%1" claims in this sub are still
-     unqualified; see DEBIT_DELIVERY_LEGAL. */
-  legal: DEBIT_DELIVERY_LEGAL
+/* Figma "Breadcrumb" 22630:15278. ⚠ No page exists behind any of these yet;
+   "kartlar" is the section both card pages belong to (aria-current). */
+export const PRODUCT_SUBNAV = {
+  label: "ürünler",
+  items: [
+    { id: "hesap", label: "hesap", href: "#" },
+    { id: "kartlar", label: "kartlar", href: "#" },
+    { id: "kredi", label: "kredi", href: "#" },
+    { id: "avans", label: "avans limit", href: "#" },
+    { id: "getirsonraode", label: "getirsonraöde", href: "#" },
+    { id: "transfer", label: "para transferi", href: "#" },
+    { id: "doviz", label: "döviz işlemleri", href: "#" },
+    { id: "odemeler", label: "ödemeler", href: "#" },
+  ],
 };
 
-/* Three benefits, deliberately NOT peers — `iade` is the broadest promise (all
-   physical spend) and leads the bento; getirpara and abonelik are the narrow,
-   higher-rate specifics that pair beneath it (owner, 2026-08-03). */
-export const DEBIT_EARN = {
-  title: "harcadıkça getirpara",
-  titleHl: "ve nakit iade kazan",
-  /* ⚠ still names only two of the three mechanics — says nothing about
-     abonelik nakit iade. Flagged for owner; needs a third clause or a rewrite. */
-  sub: "yemekten markete, akaryakıttan alışverişe nakit iade kazanırken; getirmarket ve bitaksi'de getirpara ile kazancını katla",
-  /* All three share pre/em/post so the emphasised figure is one span the layout
-     colours: yellow on the dark bento tiles, purple on the light v2 tints
-     (yellow would be invisible on #fffdf0 / #f9f7ff). */
-  iade: { pre: "fiziksel tüm harcamalarına aylık ", em: "₺1.250", post: "'ye kadar anında nakit iade!" },
-  getirpara: { pre: "getirmarket ve bitaksi'de yapacağın harcamalara ", em: "%3", post: " getirpara" },
-  /* Owner, 2026-08-11 (page feedback round 3). Was "spotify, amazon prime, chatgpt
-     ve dahası… seçili dijital aboneliklerde %20 nakit iade".
-     Two things this changes, both in the right direction on the legal question that
-     has been open since 2026-08-03: it drops "chatgpt" (one fewer named third-party
-     mark) and replaces "ve dahası… seçili dijital" with the generic category
-     "seçili yapay zeka", so the AI half of the offer no longer names anyone.
-     ⚠ STILL NAMES TWO MARKS in body copy — spotify and amazon prime. That is
-     nominative use, not mark reproduction (the tile still carries NO logos, owner
-     2026-08-03, and the marks were refused outright on 2026-08-10), but it is the
-     same open legal item, now narrower. "seçili dijital abonelikler" alone still
-     stands on its own if legal objects to the remaining two. */
-  abonelik: {
-    pre: "spotify, amazon prime ve seçili yapay zeka aboneliklerinde ",
-    em: "%20",
-    post: " nakit iade"
-  }
-};
-
-export interface DebitStep {
-  title: string;
-  /** Two explicit lines. Equal-height copy keeps the three progress bars
-      on one baseline — a 1-line step would lift its bar out of alignment. */
-  desc: [string, string];
+export interface FaqEntry {
+  q: string;
+  a: string;
 }
 
-export const DEBIT_STEPS_SECTION = {
-  title: "hızlı kart",
-  titleHl: "teslimatı",
+/* ===== /hesap-karti (GFDES-2174) — v2 ===== */
+
+export const DEBIT_HERO = {
+  badge: "dakikalar içinde kapında",
+  /* one array per line; "@key" = an inline icon the page supplies */
+  title: [["geri dönüşü", "@calendar"], ["muhteşem kart", "@card"]],
+  /* ⚠ COMP: "Maximum" is the credit card's program — this sub is the credit
+     hero's, copied. The owner-approved debit sub (2026-08-11) was
+     "ücretsiz hesap kartınla harcarken %1 nakit iade kazan". */
+  sub: { muted: "Maximum kart’ınızla alışveriş yapın, ", em: "getir’de geçerli ₺350 kazanın!" },
+  cta: "karta başvur",
+  href: CTA_TODO,
+  legal: CARD_DELIVERY_LEGAL,
+  media: { src: "/assets/img/hesap-karti/hero.jpg", width: 2048, height: 1152 },
+};
+
+export const DEBIT_BENEFITS = {
+  eyebrow: "getirfinans hesap kartı",
+  title: "kart avantajları",
+  /* ⚠ COMP: says "kredi kartı" on the debit page */
+  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  getirpara: {
+    title: "getirmarket ve bitaksi’de yapacağın harcamalara %3 getirpara",
+    /* wallet widget inside the phone */
+    wallet: {
+      label: "güncel",
+      brand: "getirpara",
+      amount: { cur: "₺", int: "45", dec: ",00" },
+      cap: { cur: "₺", int: "1.250", dec: ",00", unit: "/ aylık" },
+      totalLabel: "toplam kazancın",
+      total: "₺8.501,00",
+      progress: 0.3444,
+    },
+  },
+  /* ⚠ COMP: Amazon and Spotify marks are drawn in this tile. Legal refused
+     third-party marks on the abonelik tile on 2026-08-10. */
+  abonelik: {
+    title: "spotify, amazon ve dahası… seçili dijital aboneliklerde %20 nakit iade",
+    notification: {
+      app: "getirfinans",
+      time: "15:08",
+      body: "hesap kartınla yaptığın harcamandan kazandığın nakit iade hesabında!",
+    },
+  },
+  /* ⚠ COMP: "₺1250" — the rest of the site writes "₺1.250" */
+  iade: { title: "fiziksel tüm harcamalarına aylık ₺1250’ye kadar anında nakit iade!" },
+};
+
+/* Delivery — the scroll-scrubbed section. Steps drive the list on the right
+   and the tracking card's stepper on the left together. */
+export const DEBIT_DELIVERY = {
+  eyebrow: "GETİR HESAP KARTI",
+  title: "hızlı kart teslimatı",
   sub: "kartın dakikalar içinde kapında",
-  /* same product and same destination as the hero, so the repeated label is
-     deliberate here — unlike DEBIT_SANAL.cta, which sells the other card */
-  cta: "kart al",
-  href: DEBIT_CTA_TODO,
-  legal: DEBIT_DELIVERY_LEGAL
+  steps: [
+    {
+      title: "ücretsiz kurye teslim etsin",
+      desc: "Kuryemiz, yeni kartınızı dakikalar içinde doğrudan adresinize güvenle teslim etsin.",
+    },
+    /* ⚠ COMP: step 02 repeats step 01's title and has no description */
+    { title: "ücretsiz kurye teslim etsin", desc: "" },
+    { title: "kazanmaya başla", desc: "" },
+  ],
+  cta: "detaylı bilgi",
+  href: CTA_TODO,
+  tracking: {
+    status: "yolda",
+    eta: "tvs 15-20 dk.",
+    addressLabel: "Ev;",
+    address: "Etiler Mah. Tanburi Ali Efendi Sok. Maya Residences Sit. T Blok No:13/334 Beşiktaş İstanbul",
+    stages: ["hazırlanıyor", "yolda", "kapıda", "teslim edildi"],
+    faq: "kurye ziyaretinde seni neler bekliyor?",
+  },
 };
 
-/* step titles: owner (2026-07-13); desc lines are DRAFT — need owner review */
-export const DEBIT_STEPS: DebitStep[] = [
-  { title: "kartını iste",                desc: ["hesap kartını uygulamadan", "tek dokunuşla iste"] },
-  { title: "ücretsiz kurye teslim etsin", desc: ["kurye kartını dakikalar içinde", "adresine teslim etsin"] },
-  { title: "kazanmaya başla",             desc: ["harcadıkça nakit iade", "ve getirpara kazan"] }
-];
-
-/* "neler var?" answers what the PHYSICAL card does — attributes of the card
-   you just ordered. Sanal kart is a distinct product, so it owns a section. */
-export const DEBIT_CAPS = {
-  title: "hesap kartında",
-  titleHl: "daha neler var?",
-  transfer: { stat: "7/24", title: "ücretsiz para transferi", sub: "havale, EFT ve FAST", media: "/assets/img/debit-cap-transfer.svg" },
-  /* numeric: rendered via AnimatedNumber (counts up on appear, tr-TR "5.355") */
-  atm: { stat: 5355, title: "anlaşmalı ATM", sub: "Fibabanka ve Akbank ATM'lerinden ücretsiz para çek, yatır", media: "/assets/img/debit-cap-atm.svg" }
-};
-
-/* Own section — dark, full-bleed (landing `.debit` grammar). Heading is a
-   benefit-led draft; needs owner review. "özel" avoided per GF wording rules. */
 export const DEBIT_SANAL = {
   id: "sanal-kart",
-  title: "sanal hesap kartıyla",
-  titleHl: "güvenle harca",
-  /* ⚠ COPY CHANGE — needs owner sign-off.
-     Was "kart al", byte-identical to the hero's and the teslimat section's CTA.
-     All three rendered the same label on the same href, but this one sells a
-     DIFFERENT product: :194 above states the model outright ("Sanal kart is a
-     distinct product, so it owns a section"), so a reader clicking "kart al"
-     here could not tell whether they were re-ordering the physical card or
-     creating a virtual one — and three identical label+href pairs cannot be
-     told apart in analytics either.
-     "oluştur" is not a new word: it is the verb this section's own first
-     feature already uses ("ayrı kartlar oluştur"), so the CTA now matches the
-     language the section taught the reader two lines earlier. */
-  cta: "sanal kart oluştur",
-  href: DEBIT_CTA_TODO,
-  /* Same {text, icon} shape as DEBIT_ABROAD.captions — the two lists share
-     `.dpc-points`, so they share their item shape too.
-     Real icons for items 1-2 landed 2026-08-10 (owner-supplied). All are white /
-     yellow because this list sits on the DARK .dpc-sanal__row.
-     ⚠ Item 3 still carries `placeholder-globe.svg` — kept on the owner's explicit
-     instruction ("keep the third one as is"). It happens to read fine, since a
-     globe for "internet alışverişleri" says web rather than world, but the FILENAME
-     still says placeholder. Rename or replace when the intent is settled.
-     ⚠ ORDER deliberately differs from the comp: 22074:14642 reads
-     kartlar → internet → limit, this keeps kartlar → limit → internet from the
-     review round (2026-07-24), which is newer than the comp. */
+  eyebrow: "getirfinans hesap kartı",
+  title: "sanal hesap kartıyla güvenle harca",
+  /* ⚠ COMP: placeholder sub */
+  sub: "Buraya bir cümle description gelecek",
+  /* comp order (kartlar → internet → limit) */
   features: [
-    { text: "harcamaların için ayrı kartlar oluştur, rahatça takip et", icon: "cards-multi.svg" },
-    { text: "her kartın için limitini belirle, bütçeni kontrol et", icon: "card-limit.svg" },
-    { text: "internet alışverişlerini güvenle yap", icon: "placeholder-globe.svg" }
-  ] as { text: string; icon?: string }[],
-  media: "/assets/img/virtual-card.png"
+    "harcamaların için ayrı kartlar oluştur, rahatça takip et",
+    "internet alışverişlerini güvenle yap",
+    "her kartın için limitini belirle, bütçeni kontrol et",
+  ],
+  cta: "sanal karta başvur",
+  href: CTA_TODO,
 };
 
-/* CMO round 2026-08-05: the ATM-komisyon caption is deleted, and caption 2 is
-   reworded to lead with "yurt dışında DA" — the point is "TR'de var, yurt dışında
-   da var", so the "da" is load-bearing and not a stylistic choice.
-   Captions carry an icon now (faiz-points pattern) — the hard \n is gone, the
-   items wrap naturally and the grid equalises them.
-   A third, main-benefit item ("harcamalarını TL olarak rahatça öde" or similar) was
-   tracked here as COMING FROM PRODUCT — see the caption-1 note below, which as of
-   2026-08-11 appears to have absorbed it into caption 1. The list still reads at
-   both 2 and 3 items either way.
-   ICONS: real set landed 2026-08-10 for 4 of the 5 slots (both here + 2 of the 3
-   in DEBIT_SANAL). Only DEBIT_SANAL's third still carries the placeholder globe,
-   held there on the owner's instruction. Two colourways, because the two lists sit
-   on different panels: white/yellow on the sanal dark, --gf-purple on this lilac.
-   The old repo icons were tried for this list and pulled back out: `flag-usd.svg`
-   put a US flag on a Turkish bank's page and says "dollar" rather than "good
-   rates", and `cashback.svg` is a grey coin at low contrast on the lilac panel.
-   The %1 item's icon is a globe and carries NO % glyph, which is what the AGENTS.md
-   rule requires (% reserved for faiz); a coin would have been fine too. */
 export const DEBIT_ABROAD = {
-  /* "yurtdışında" moved down to join the highlighted phrase (owner, 2026-08-10:
-     "should go in the second line in the same line as yapılacaklar listesi and the
-     border should cover all three"), so line 1 is "hesap kartınla" and the yellow
-     bar runs under all three words of line 2.
-     ⚠ The bar is ONE absolutely-positioned box (`.hl::after`, width 100% of an
-     inline-block), so it only reads correctly while the phrase stays on a single
-     line. Lengthening it from 20 to 31 characters lowers the width at which it
-     wraps — see the `.dpc-abroad__title` rules for the guard. */
-  title: "hesap kartınla",
-  titleHl: "yurtdışında yapılacaklar listesi",
-  /* Real icons landed 2026-08-10 (owner-supplied), replacing the placeholder globes
-     from earlier the same day. Both are --gf-purple, matching this list's text —
-     the panel is the LILAC tint, not the sanal dark, so these are the purple
-     counterparts of DEBIT_SANAL.features' white set.
-     Neither carries a % glyph, which AGENTS.md requires: % is reserved for
-     interest/faiz and the "%1" here is cashback.
-     WORDING, caption 1 (owner, 2026-08-11): now "harcamalarını avantajlı kurlarla
-     TL olarak rahatça öde", which IS Figma 22200:16954's own wording — so this
-     caption no longer diverges from the comp.
-     ⚠ This probably ABSORBS the third item rather than waiting for it. The note
-     above has tracked a pending "main-benefit" caption from product worded roughly
-     "harcamalarını TL olarak rahatça öde"; the new caption 1 merges exactly that
-     point into the FX-rate one. Treat the list as complete at 2 unless product says
-     otherwise — and if a third does still land, nothing needs building: the row is
-     driven by item count, so adding a record adds a card.
-     ⚠ WORDING, caption 2: the comp reads "yurt dışında harcarken de %1…"; this
-     still keeps "yurt dışında da harcarken %1…" from the CMO round (2026-08-05),
-     where the "da" placement was called out as load-bearing ("TR'de var, yurt
-     dışında DA var"). Deliberately not followed.
-     No hard "\n" in either caption, per the note above: the comp draws caption 1 as
-     two lines, but the cards wrap naturally and `.dpc-point p` carries
-     `text-wrap: balance`, so a manual break would fight the balancer and would be
-     wrong at any width but one. */
-  captions: [
-    { text: "harcamalarını avantajlı kurlarla TL olarak rahatça öde", icon: "exchange-purple.svg" },
-    { text: "yurt dışında da harcarken %1 nakit iade kazan", icon: "world-purple.svg" }
-  ] as { text: string; icon?: string }[]
+  eyebrow: "getirfinans hesap kartı",
+  /* ⚠ COMP: same title as DEBIT_BENEFITS, and the same "kredi kartı" sub */
+  title: "kart avantajları",
+  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  /* comp wording "harcarken de"; the CMO round (2026-08-05) had "da harcarken" */
+  cashback: "yurt dışında harcarken de %1 nakit iade kazan",
+  fx: "harcamalarını avantajlı kurlarla TL olarak rahatça öde",
 };
+
+/* ⚠ COMP: these answers are about a daily-interest ACCOUNT ("günlük faiz"),
+   not the card. Used verbatim on the debit page pending real card FAQ copy. */
+export const DEBIT_FAQ: { title: string; items: FaqEntry[] } = {
+  title: "sıkça sorulan sorular",
+  items: [
+    { q: "günlük faiz kazandıran hesap nedir?", a: "Günlük faiz kazandıran hesap, paranızın her gün faiz getirisi sağladığı bir tasarruf hesabıdır." },
+    { q: "günlük faiz hesabı açmak için ne gerekir?", a: "Günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. Günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. a Günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. a" },
+    { q: "günlük faiz oranları nasıl belirlenir?", a: "Günlük faiz oranları piyasa koşulları ve ekonomik gelişmelere göre bankalar tarafından belirlenir." },
+    { q: "faiz kazancım ne zaman hesabıma yansır?", a: "Faiz kazancınız genellikle her gün hesabınıza yansır ve anlık olarak birikir." },
+    { q: "günlük faiz hesabının vadeli mevduattan farkı nedir?", a: "Günlük faiz hesabı, faiz getirisi günlük hesaplanırken, vadeli mevduat faiz oranı vade boyunca sabittir." },
+  ],
+};
+
 
 /* ===== Newsletter (gazete, landing) ===== */
 export const NEWSLETTER = {
@@ -356,108 +304,114 @@ export const NEWSLETTER = {
   imageAspect: "1122 / 1036",
 };
 
-/* ===== Kredi kartı (GFDES-2243) =====
-   First draft, 2026-08-19. Every product fact below is lifted from the LIVE
-   page (getirfinans.com/kartlar/kredi-karti) — nothing here is invented. What
-   changed is the ORDER: the live page makes three co-equal promises (aidatsız
-   + taksit + getirpara) in one headline, and this draft leads with `aidatsız`
-   because it is the only one of the three exclusive to this card. Taksit is a
-   Maximum-network feature (shared) and getirpara is already /hesap-karti's lead
-   story, so repeating it here blurs the two cards.
-   ⚠ That reordering is a proposal, not a settled call — it changes what the
-   page argues, so it needs Aycan and product before it ships. */
+/* ===== /kredi-karti (GFDES-2243) — v2 ===== */
+
 export const CREDIT_HERO = {
-  /* True for this card and a real GF differentiator (Getir courier delivery).
-     Live page carries it as a section headline; promoted to the badge here. */
-  badge: "kartın dakikalar içinde kapında",
-  title: "aidatsız",
-  titleHl: "kredi kartı",
-  /* Measured at 1280: the first draft of this line ran 5 lines at 30.7px inside
-     the 460px column, which made it read as a paragraph competing with the
-     64px title rather than a subhead under it. Cut to one sentence — three
-     verbs, one rhythm. The specifics it used to carry (Maximum, %3, ₺1.250)
-     belong in the avantajlar section, which states them properly. */
-  sub: "aidat ödemeden harca, taksitle, getirpara kazan.",
-  cta: "kart al",
+  badge: "dakikalar içinde kapında",
+  /* one array per line; "@key" = an inline icon the page supplies */
+  title: [["taksit yapan", "@calendar", "kazandıran", "@chart"], ["aidatsız kredi kartı", "@card"]],
+  sub: { muted: "Maximum kart’ınızla alışveriş yapın, ", em: "getir’de geçerli ₺350 kazanın!" },
+  cta: "karta başvur",
+  href: CTA_TODO,
+  legal: CARD_DELIVERY_LEGAL,
+  /* ⚠ COMP asset is 1024×480 for a 1298×607 slot (0.79× at 1x) */
+  media: { src: "/assets/img/kredi-karti/hero.webp", width: 1024, height: 480 },
 };
 
-/* Three benefits, deliberately NOT peers — same grid shape as DEBIT_EARN (lead
-   row full width, two beneath), because the sibling page proved it and a second
-   product page should not invent a second layout for the same job.
-   The lead tile is the one thing that differs: it is an EKSTRE row rather than a
-   copy block. See credit.css for why. */
-export const CREDIT_AVANTAJ = {
-  title: "kredi kartı",
-  titleHl: "avantajları",
-  sub: "aidat yok, taksit var, harcadıkça getirpara kazanıyorsun.",
-  /* The signature. A Turkish credit card is known by its yıllık kart aidatı —
-     the line that shows up on every ekstre. This states the claim in the exact
-     format where it is normally disproven. No competitor is named and no
-     competitor figure is shown: comparative claims against named banks are a
-     legal problem, and GF is never framed against anyone (AGENTS.md). */
-  aidat: {
-    label: "ekstre",
-    row: "yıllık kart aidatı",
-    amount: "₺0",
-    /* no em dash: GF product copy is plain and lowercase, and a dash here reads
-       as a marketing beat the rest of the page doesn't use */
-    note: "ne ilk yıl, ne sonrasında. kart aidatı diye bir şey yok.",
+export const CREDIT_BENEFITS = {
+  eyebrow: "GETİR KREDİ KARTI",
+  title: "kart avantajları",
+  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  maximum: {
+    title: "maximum taksit ayrıcalığı",
+    /* ⚠ COMP: "size özel" sits close to the "kampanyalı, never sana özel" rule */
+    desc: "Maximum üye iş yerlerindeki alışverişlerinizi, size özel esnek taksit seçenekleriyle bütçenizi yormadan ödeyin",
+    rows: ["+1 taksit", "+2 taksit", "+3 taksit"],
   },
-  taksit: {
-    pre: "İş Bankası Maximum üye iş yerlerinde ",
-    em: "taksit",
-    post: " fırsatları",
-  },
-  /* ⚠ "%3" — AGENTS.md reserves the % GLYPH for interest/faiz on ICONS. This is
-     body copy stating a cashback rate, which the live page and DEBIT_EARN both
-     already do. No % icon is introduced; the tile pairs with a coin if it ever
-     gets one. */
   getirpara: {
-    pre: "getirmarket ve bitaksi'de ",
-    em: "%3",
-    post: " getirpara",
-    note: "kredi kartı ve hesap kartınla her ay toplam ₺1.250'ye kadar kazanabilirsin",
+    title: "ilk harcamana ₺350 getirpara",
+    txn: { month: "mayıs", day: "24", merchant: "Ikea Bayrampaşa", amount: { cur: "₺", int: "379", dec: ",00" } },
+    reward: "₺350",
+  },
+  /* ⚠ COMP: Title Case */
+  aidat: { title: "Kart Aidatı Yok" },
+  /* ⚠ COMP: the photo's card is printed "debit" */
+  kampanya: {
+    title: "yıl boyu değişen Getirpara kampanyaları",
+    desc: "GetirFinans ayrıcalığıyla yılın 365 günü devam eden Getirpara kampanyalarını keşfedin; her harcamanızda anında nakit kazanmanın keyfini yaşayın.",
   },
 };
 
+/* Taksit categories. The comp draws one category's large photo (eğitim);
+   the others reuse their thumbnail's source photo at full size. */
 export const CREDIT_TAKSIT = {
-  title: "ücretsiz",
-  titleHl: "3 taksit",
-  sub: "seçili sektörlerde harcamanı peşin yap, uygulamada sonradan taksitle.",
-  /* Fixes a live-page defect: the raw URL `https://www.maximum.com.tr/kampanyalar`
-     is currently rendered as its own link text. Same destination, labelled. */
-  link: { label: "maximum kampanyalarına göz at", href: "https://www.maximum.com.tr/kampanyalar" },
+  eyebrow: "TAKSİT AVANTAJI",
+  title: "ücretsiz 3 taksit",
+  sub: "seçili sektörlerde harcamanı peşin yap, uygulamada sonradan taksitle",
+  /* ⚠ COMP: every category carries the eğitim description */
+  categories: [
+    { id: "egitim", label: "eğitimde", img: "/assets/img/kredi-karti/taksit-egitim.webp", thumb: "/assets/img/kredi-karti/taksit-egitim-thumb.jpg" },
+    { id: "veteriner", label: "veterinerde", img: "/assets/img/kredi-karti/taksit-veteriner.jpg", thumb: "/assets/img/kredi-karti/taksit-veteriner-thumb.jpg" },
+    { id: "dis-hekimi", label: "diş hekiminde", img: "/assets/img/kredi-karti/taksit-dis-hekimi.jpg", thumb: "/assets/img/kredi-karti/taksit-dis-hekimi-thumb.jpg" },
+    { id: "eczane", label: "eczanede", img: "/assets/img/kredi-karti/taksit-eczane.jpg", thumb: "/assets/img/kredi-karti/taksit-eczane-thumb.jpg" },
+    { id: "hastane", label: "hastanede", img: "/assets/img/kredi-karti/taksit-hastane.jpg", thumb: "/assets/img/kredi-karti/taksit-hastane-thumb.jpg" },
+  ].map((c) => ({
+    ...c,
+    desc: "Maximum anlaşmalı üye iş yerlerinden yapacağınız taksitli alışverişlerde hem bütçenizi kolayca yönetin.",
+  })),
 };
 
-/* The trust/objection block neither card page has today. /hesap-karti has been
-   missing Trust + FAQ since the 2026-07-03 review; a credit card is the
-   higher-commitment product, so it is the better place to build it first and
-   port back rather than inherit the omission.
-   ⚠ Every answer is paraphrased from live-page copy — no product fact is
-   invented — but FAQ copy still needs product sign-off before it ships. */
-export const CREDIT_SSS = {
-  title: "sık sorulan",
-  titleHl: "sorular",
+const CAMPAIGN_GETIR = {
+  title: ["Getir’de", "%1 getirpara"],
+  /* ⚠ COMP: an IKEA/Maximum taksit text under a getirpara headline */
+  desc: "5 Ocak - 31 Aralık 2026 tarihleri arasında Maximum Kart ile IKEA  Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
+  img: "/assets/img/kredi-karti/campaign-getir.jpg",
+  href: CTA_TODO,
+};
+
+export const CREDIT_CAMPAIGNS = {
+  title: "kampanyalar",
+  sub: { em: "getirpara", rest: " kazan, getir, bitaksi ve n11’de harca" },
+  /* ⚠ PLACEHOLDER: the comp draws 1 of 4 slides; slides 2–4 repeat it */
+  slides: [0, 1, 2, 3].map((i) => ({ ...CAMPAIGN_GETIR, id: `getir-${i}` })),
+};
+
+export const CREDIT_BRANDS = {
+  title: "taksit",
+  sub: "Tüm kampanyalarla ilgili detaylı bilgi almak için;",
+  cta: "Detaylı bilgi",
+  href: "https://www.maximum.com.tr/kampanyalar",
+  linkLabel: "kampanya detayı",
+  /* ⚠ COMP: only Beymen has detail copy, and it is the IKEA text; the other
+     brands repeat it with their own name. Logo boxes are the comp's. */
+  brands: [
+    { id: "ikea", name: "IKEA", logo: "/assets/img/kredi-karti/brand-ikea.svg", w: 80, h: 32 },
+    { id: "decathlon", name: "Decathlon", logo: "/assets/img/kredi-karti/brand-decathlon.svg", w: 138.115, h: 27 },
+    { id: "adl", name: "adL", logo: "/assets/img/kredi-karti/brand-adl.png", w: 52, h: 26 },
+    { id: "beymen", name: "Beymen", logo: "/assets/img/kredi-karti/brand-beymen.png", w: 105, h: 14, crop: { w: "110.62%", h: "820.47%", l: "-5.31%", t: "-360.63%" } },
+    { id: "etstur", name: "etstur", logo: "/assets/img/kredi-karti/brand-etstur.png", w: 93, h: 15 },
+    { id: "n11", name: "n11", logo: "/assets/img/kredi-karti/brand-n11.png", w: 67, h: 22, crop: { w: "121.44%", h: "207.95%", l: "-10.53%", t: "-53.98%" } },
+  ].map((b) => ({
+    ...b,
+    offer: "3 taksit",
+    desc: "5 Ocak - 31 Aralık 2026 tarihleri arasında Maximum Kart ile IKEA  Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
+    photo: "/assets/img/kredi-karti/brand-beymen-photo.jpg",
+    href: "https://www.maximum.com.tr/kampanyalar",
+  })),
+  initial: 3,
+};
+
+/* FAQ: the comp's copy is the "günlük faiz" account placeholder (same as
+   DEBIT_FAQ). These are the first draft's card answers, paraphrased from the
+   live page, kept because they are about this product.
+   ⚠ FAQ copy still needs product sign-off before it ships. */
+export const CREDIT_FAQ: { title: string; items: FaqEntry[] } = {
+  title: "sıkça sorulan sorular",
   items: [
-    {
-      q: "kredi kartının yıllık aidatı var mı?",
-      a: "yok. getirfinans kredi kartında yıllık kart aidatı alınmıyor.",
-    },
-    {
-      q: "nasıl başvurabilirim?",
-      a: "önce getirfinanslı olman gerekiyor. sonrasında uygulamadan kredi kartına başvurup limitini anında öğrenebilirsin.",
-    },
-    {
-      q: "kart ne zaman elime geçer?",
-      a: "başvurun onaylandıktan sonra kartın istediğin adrese dakikalar içinde gelir.",
-    },
-    {
-      q: "taksit hangi iş yerlerinde geçerli?",
-      a: "İş Bankası Maximum üye iş yerlerinde taksitli alışveriş yapabilirsin.",
-    },
-    {
-      q: "getirpara nasıl kazanıyorum?",
-      a: "getirmarket ve bitaksi harcamalarında %3 getirpara kazanırsın. kredi kartı ve hesap kartınla birlikte her ay toplam ₺1.250'ye kadar kazanabilirsin.",
-    },
+    { q: "kredi kartının yıllık aidatı var mı?", a: "yok. getirfinans kredi kartında yıllık kart aidatı alınmıyor." },
+    { q: "nasıl başvurabilirim?", a: "önce getirfinanslı olman gerekiyor. sonrasında uygulamadan kredi kartına başvurup limitini anında öğrenebilirsin." },
+    { q: "kart ne zaman elime geçer?", a: "başvurun onaylandıktan sonra kartın istediğin adrese dakikalar içinde gelir." },
+    { q: "taksit hangi iş yerlerinde geçerli?", a: "İş Bankası Maximum üye iş yerlerinde taksitli alışveriş yapabilirsin." },
+    { q: "getirpara nasıl kazanıyorum?", a: "getirmarket ve bitaksi harcamalarında %3 getirpara kazanırsın. kredi kartı ve hesap kartınla birlikte her ay toplam ₺1.250'ye kadar kazanabilirsin." },
   ],
 };

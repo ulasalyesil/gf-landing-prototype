@@ -1,0 +1,539 @@
+/* ============================================================
+   debit.css — /hesap-karti only (GFDES-2174, card pages v2)
+   Created by Claude · INTERNAL
+
+   Figma `v2` debit frame 22630:16190. Replaces debit-current.css (in git
+   history). Shared chrome is in product-page.css, which loads first.
+   Page-only blocks keep the historical `dpc-` prefix for the sections and
+   `dbc-` for page hooks. Tile/stage visuals are comp px × `--u`.
+   ============================================================ */
+
+.dbc {
+  --dpc-sanal-lilac: #d6c8ff;    /* sanal glyph */
+  --dpc-sanal-mauve: #b6a6e6;    /* sanal glyph */
+  --dbc-yellow-100: #fff1b0;     /* wallet meter track (`color/yellow/100`) */
+  --dbc-note-muted: #7e7e7e;     /* iOS notification body */
+}
+
+/* hero photo: the comp crops it 70.7% down (Figma: h120.3%, top −14.34%) */
+.dbc-hero__media img { object-position: 50% 70.7%; }
+
+/* the benefit bento's eyebrow is the regular-weight, 1px-tracked one */
+.dbc-eyebrow--regular { font-weight: var(--fw-regular); letter-spacing: 1px; }
+
+
+/* ============ SKELETON SCREEN (inside the bento phones) ============ */
+
+.dpc-skel { display: flex; flex-direction: column; gap: calc(16 * var(--u)); padding-left: calc(21.48 * var(--u)); }
+.dpc-skel__row { display: flex; gap: calc(14.318 * var(--u)); overflow: hidden; }
+.dpc-skel__card {
+  flex: none; width: calc(143 * var(--u));
+  display: flex; flex-direction: column; gap: calc(21.477 * var(--u));
+  padding: calc(21.477 * var(--u)); border-radius: calc(18.085 * var(--u));
+  background: rgb(0 0 0 / .05);
+}
+.dpc-skel__card--tall { height: calc(210 * var(--u)); }
+.dpc-skel__bar { display: block; width: 100%; height: calc(12.811 * var(--u)); background: var(--dbc-skel, var(--dpc-tile-bg)); }
+.dpc-skel__bar--s { width: calc(31.65 * var(--u)); }
+.dpc-skel__bar--xs { width: calc(39 * var(--u)); height: calc(13 * var(--u)); }
+.dpc-skel__pair { display: flex; flex-direction: column; gap: calc(7.536 * var(--u)); }
+.dpc-skel__pair--fill { flex: 1 1 auto; min-width: 0; }
+.dpc-skel__item {
+  display: flex; align-items: center; gap: calc(16 * var(--u));
+  width: calc(230 * var(--u)); padding: calc(16 * var(--u));
+  border-radius: calc(18.085 * var(--u)); background: rgb(0 0 0 / .05);
+}
+.dpc-skel__sq { flex: none; width: calc(34 * var(--u)); height: calc(34 * var(--u)); background: var(--dpc-tile-bg); }
+
+
+/* ============ BENTO 1 — getirpara (22630:18397) ============ */
+
+/* the phone hangs 90 below the visual box in the comp; the margin reserves it
+   so the caption never slides under it when the tile sizes to content (≤920) */
+.dpc-gp { position: relative; width: calc(286.353 * var(--u)); height: calc(360.837 * var(--u)); margin-bottom: calc(90 * var(--u)); }
+/* The comp RENDERS this phone fading out toward the top — frame sides and
+   screen together — although its layer data masks only the screen, and the
+   other way up (the group is flipped in Figma). The render is the target, so
+   the fade is one mask on the whole phone, measured off the comp: clear at
+   5% of the phone's height, solid by 75%. */
+.dpc-gp__phone {
+  position: absolute; left: 50%; top: calc(92 * var(--u)); transform: translateX(-50%);
+  width: calc(286.353 * var(--u)); height: calc(358.837 * var(--u));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 5%, #000 75%);
+  mask-image: linear-gradient(to bottom, transparent 5%, #000 75%);
+}
+.dpc-gp__screen {
+  position: absolute; left: calc(9.63 * var(--u)); top: calc(30 * var(--u));
+  width: calc(268 * var(--u)); height: calc(319 * var(--u));
+}
+/* the comp flips this phone: the open end is the TOP, the rounded end the bottom */
+.dpc-gp__frame {
+  position: absolute; left: 0; top: 0;
+  width: calc(286.353 * var(--u)); height: calc(357.942 * var(--u));
+  border: calc(8.949 * var(--u)) solid #000; border-top: 0;
+  border-radius: 0 0 calc(57.271 * var(--u)) calc(57.271 * var(--u));
+}
+.dpc-gp__home {
+  position: absolute; left: calc(50% + 9.95 * var(--u)); top: calc(336 * var(--u)); transform: translateX(-50%);
+  width: calc(77 * var(--u)); height: calc(6 * var(--u)); border-radius: calc(44.743 * var(--u)); background: #000;
+}
+
+.dpc-gp__wallet {
+  position: absolute; bottom: calc(28.84 * var(--u)); left: calc(50% - 69.67 * var(--u)); transform: translateX(-50%);
+  width: calc(206 * var(--u)); height: calc(232 * var(--u));
+  display: flex; flex-direction: column; gap: calc(25 * var(--u));
+  padding: calc(24 * var(--u)) calc(15 * var(--u)) calc(23 * var(--u)) calc(16 * var(--u));
+  background: #fff; border-radius: calc(16 * var(--u));
+  filter:
+    drop-shadow(0 calc(150 * var(--u)) calc(45 * var(--u)) rgb(0 0 0 / .05))
+    drop-shadow(0 calc(67 * var(--u)) calc(33.5 * var(--u)) rgb(0 0 0 / .09))
+    drop-shadow(0 calc(17 * var(--u)) calc(18.3 * var(--u)) rgb(0 0 0 / .1));
+  color: var(--gf-ink);
+}
+.dpc-gp__w-head { display: flex; flex-direction: column; gap: calc(1.97 * var(--u)); }
+.dpc-gp__w-label, .dpc-gp__w-brand { font-size: calc(13.78 * var(--u)); line-height: calc(15.75 * var(--u)); color: var(--gf-purple); }
+/* the comp sets "getirpara" in Cocon, which the site doesn't load — semibold
+   Open Sans stands in (flagged) */
+.dpc-gp__w-brand { font-weight: var(--fw-semibold); }
+.dpc-gp__w-amount { font-size: calc(17.72 * var(--u)); line-height: calc(23.62 * var(--u)); font-weight: var(--fw-bold); font-variant-numeric: tabular-nums; }
+.dpc-gp__w-amount small { font-size: calc(15.75 * var(--u)); }
+.dpc-gp__w-meter { position: relative; display: block; height: calc(39.4 * var(--u)); }
+.dpc-gp__w-track, .dpc-gp__w-fill {
+  position: absolute; left: 0; top: 0; height: calc(15.749 * var(--u)); border-radius: calc(12.106 * var(--u));
+}
+.dpc-gp__w-track { width: 99.65%; background: var(--dbc-yellow-100); }
+.dpc-gp__w-fill { background: var(--gf-yellow); }
+.dpc-gp__w-cap {
+  position: absolute; right: 0; top: calc(19.68 * var(--u)); white-space: nowrap;
+  font-size: calc(11.81 * var(--u)); line-height: calc(19.69 * var(--u)); font-variant-numeric: tabular-nums;
+}
+.dpc-gp__w-cap b { font-size: calc(13.78 * var(--u)); }
+.dpc-gp__w-cap b small { font-size: calc(11.81 * var(--u)); }
+.dpc-gp__w-total {
+  display: flex; flex-direction: column; justify-content: center; gap: calc(1.97 * var(--u));
+  font-size: calc(11.81 * var(--u)); line-height: calc(15.75 * var(--u)); color: var(--gf-ink-700);
+}
+
+.dpc-gp__pills {
+  position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+  display: flex; align-items: center; gap: calc(10 * var(--u));
+}
+.dpc-gp__pill {
+  flex: none; display: flex; width: calc(156.271 * var(--u)); height: calc(64 * var(--u));
+  padding: calc(8.889 * var(--u)); border: .889px solid var(--gf-purple); border-radius: calc(71.111 * var(--u));
+  background: var(--dpc-tile-bg);
+}
+.dpc-gp__pill-in { flex: 1; display: flex; align-items: center; justify-content: center; border-radius: calc(44.444 * var(--u)); background: var(--gf-purple); }
+.dpc-gp__pill-in img { width: calc(95.826 * var(--u)); height: auto; }
+.dpc-gp__pill > img { width: calc(138.489 * var(--u)); height: auto; }
+/* dotted connector: a 20-wide slot holding a 15.44 dot run, left-aligned */
+.dpc-gp__dots { flex: none; width: calc(15.44 * var(--u)); height: auto; margin-right: calc(4.56 * var(--u)); }
+
+
+/* ============ BENTO 2 — abonelik (22630:18466) ============ */
+
+.dbc-tile-ab .dpc-skel__bar { --dbc-skel: var(--gf-lilac-50); }
+.dpc-ab { position: relative; width: calc(400 * var(--u)); height: calc(461 * var(--u)); }
+.dpc-ab__screen {
+  position: absolute; left: calc(65.54 * var(--u)); top: calc(89.69 * var(--u));
+  width: calc(268.248 * var(--u)); height: calc(229.956 * var(--u));
+  display: flex; flex-direction: column; gap: calc(21.477 * var(--u)); padding-left: calc(21.477 * var(--u));
+  -webkit-mask: url("/assets/img/hesap-karti/phone-mask-2.svg") no-repeat;
+  mask: url("/assets/img/hesap-karti/phone-mask-2.svg") no-repeat;
+  -webkit-mask-size: calc(268.248 * var(--u)) calc(349.889 * var(--u));
+  mask-size: calc(268.248 * var(--u)) calc(349.889 * var(--u));
+  -webkit-mask-position: 0 calc(-80.744 * var(--u));
+  mask-position: 0 calc(-80.744 * var(--u));
+}
+.dpc-ab .dpc-skel__card { width: calc(143.177 * var(--u)); }
+.dpc-ab__apps { display: flex; align-items: center; gap: calc(17.755 * var(--u)); opacity: .05; }
+.dpc-ab__apps img { flex: none; width: calc(42.612 * var(--u)); height: auto; }
+.dpc-ab__frame {
+  position: absolute; left: calc(56.38 * var(--u)); top: 0;
+  width: calc(286.353 * var(--u)); height: calc(357.942 * var(--u));
+  border: calc(8.949 * var(--u)) solid #000; border-bottom: 0;
+  border-radius: calc(57.271 * var(--u)) calc(57.271 * var(--u)) 0 0;
+  /* the comp renders the open end fading out (solid to 46%, gone by 93%) */
+  -webkit-mask-image: linear-gradient(to bottom, #000 46%, transparent 93%);
+  mask-image: linear-gradient(to bottom, #000 46%, transparent 93%);
+}
+.dpc-ab__island { position: absolute; left: calc(161.07 * var(--u)); top: calc(26.85 * var(--u)); width: calc(76.957 * var(--u)); height: auto; }
+
+/* iOS notification — system font on purpose (the comp draws SF Pro) */
+.dpc-ab__note {
+  position: absolute; left: 50%; top: calc(50% - 115.06 * var(--u)); transform: translate(-50%, -50%);
+  width: calc(400 * var(--u)); min-height: calc(85.9 * var(--u));
+  display: flex; align-items: center; gap: calc(12 * var(--u)); padding: calc(16 * var(--u));
+  border-radius: calc(24 * var(--u)); background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; letter-spacing: -0.24px; text-align: left;
+  filter:
+    drop-shadow(0 calc(150 * var(--u)) calc(45 * var(--u)) rgb(0 0 0 / .05))
+    drop-shadow(0 calc(67 * var(--u)) calc(33.5 * var(--u)) rgb(0 0 0 / .09))
+    drop-shadow(0 calc(17 * var(--u)) calc(18.3 * var(--u)) rgb(0 0 0 / .1));
+}
+.dpc-ab__note-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.dpc-ab__note-text b { font-size: calc(15.53 * var(--u)); line-height: calc(17.6 * var(--u)); font-weight: 590; color: #000; }
+.dpc-ab__note-text span { font-size: calc(15.53 * var(--u)); line-height: calc(18.63 * var(--u)); color: var(--dbc-note-muted); }
+.dpc-ab__note-time { align-self: flex-start; flex: none; font-size: calc(15 * var(--u)); line-height: calc(17.6 * var(--u)); color: rgb(0 0 0 / .5); }
+
+.dpc-ab__marks {
+  position: absolute; left: calc(50% + 0.32 * var(--u)); top: calc(353.34 * var(--u)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: calc(14.144 * var(--u));
+}
+.dpc-ab__mark {
+  flex: none; display: flex; width: calc(86 * var(--u)); height: calc(86 * var(--u)); padding: calc(5.831 * var(--u));
+  border-radius: 50%; border: .729px solid; background: var(--dpc-tile-bg);
+}
+.dpc-ab__mark img { width: 100%; height: 100%; object-fit: cover; }
+.dpc-ab__mark--amazon { border-color: #ec912d; }
+.dpc-ab__mark--spotify { border-color: #1ed760; }
+.dpc-ab__dots { flex: none; width: calc(13.647 * var(--u)); height: auto; margin-right: calc(4.03 * var(--u)); }
+
+/* getirfinans app icon (notification), from its layers */
+.dpc-appicon {
+  position: relative; flex: none; width: calc(39.68 * var(--u)); height: calc(39.68 * var(--u));
+  border-radius: calc(10.423 * var(--u)); background: #4b319b; overflow: hidden;
+}
+.dpc-appicon__angle {
+  position: absolute; left: calc(-18.6 * var(--u)); top: calc(-19.69 * var(--u));
+  width: calc(38.26 * var(--u)); height: calc(72.79 * var(--u));
+  display: flex; align-items: center; justify-content: center;
+}
+.dpc-appicon__angle i {
+  display: block; width: calc(20.92 * var(--u)); height: calc(69.75 * var(--u));
+  background: var(--gf-purple); transform: rotate(-15deg);
+  box-shadow: 0 calc(200.7 * var(--u)) calc(242.1 * var(--u)) calc(112 * var(--u)) rgb(0 0 0 / .25);
+}
+.dpc-appicon__getir { position: absolute; left: calc(13.03 * var(--u)); top: calc(11.02 * var(--u)); width: calc(19.84 * var(--u)); height: auto; }
+.dpc-appicon__finans { position: absolute; left: calc(6.8 * var(--u)); top: calc(20.62 * var(--u)); width: calc(26.08 * var(--u)); height: calc(6.975 * var(--u)); }
+.dpc-appicon__finans img { position: absolute; left: calc(-70.26 * var(--u)); top: calc(-70.9 * var(--u)); width: calc(166.65 * var(--u)); height: auto; max-width: none; }
+
+
+/* ============ HIZLI KART TESLİMATI (22630:16440) ============ */
+
+.dpc-dl {
+  position: relative; padding-block: 64px 128px; color: #fff;
+  /* heavy-brand → elevated-brand, over the page white */
+  background: linear-gradient(123.24deg, var(--gf-purple-900) 0.47%, rgb(37 26 73 / .9) 100%);
+  /* ⚠ no overflow here: an overflow ancestor breaks the sticky pin */
+}
+.dpc-dl__head .dpc-title { color: #fff; }
+.dpc-dl__eyebrow { border-color: rgb(239 239 239 / .1); }
+.dpc-dl__eyebrow-text {
+  background: linear-gradient(to right, var(--gf-yellow), #997f00);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+.dpc-dl__stage { display: flex; align-items: center; gap: 64px; max-width: calc(1294px + 2 * var(--dpc-gutter)); }
+.dpc-dl__visual { flex: 1 1 0; min-width: 0; container-type: inline-size; }
+.dpc-dl__art { --u: min(calc(100cqi / 615), 1px); position: relative; height: calc(539.644 * var(--u)); }
+
+.dpc-dl__phone { position: absolute; left: calc(137.5 * var(--u)); top: 0; width: calc(286.353 * var(--u)); height: calc(358.837 * var(--u)); }
+/* ⚠ -webkit- first: the minifier drops the standard property when the
+   prefixed one follows it (caught once on the old page) */
+.dpc-dl__glass {
+  position: absolute; left: calc(3.65 * var(--u)); top: calc(8.95 * var(--u));
+  width: calc(273.758 * var(--u)); height: calc(313.887 * var(--u));
+  border-radius: calc(48 * var(--u)) calc(48 * var(--u)) 0 0;
+  background: linear-gradient(to bottom, rgb(30 19 58 / .3), rgb(83 52 160 / 0));
+  -webkit-backdrop-filter: blur(50px); backdrop-filter: blur(50px);
+}
+.dpc-dl__map {
+  position: absolute; left: 3.14%; top: calc(8.79 * var(--u));
+  width: calc(268.422 * var(--u)); height: calc(314.045 * var(--u)); overflow: hidden;
+  -webkit-mask: url("/assets/img/hesap-karti/delivery-map-mask.svg") no-repeat 0 0 / 100% 100%;
+  mask: url("/assets/img/hesap-karti/delivery-map-mask.svg") no-repeat 0 0 / 100% 100%;
+}
+.dpc-dl__map img { position: absolute; left: 0; top: calc(-70 * var(--u)); width: calc(504.7 * var(--u)); height: calc(504.7 * var(--u)); max-width: none; }
+.dpc-dl__island { position: absolute; left: calc(104.7 * var(--u)); top: calc(26.85 * var(--u)); width: calc(76.957 * var(--u)); height: auto; }
+.dpc-dl__frame {
+  position: absolute; left: 0; top: 0; width: calc(286.353 * var(--u)); height: calc(357.942 * var(--u));
+  border: calc(8.949 * var(--u)) solid #000; border-bottom: 0;
+  border-radius: calc(57.271 * var(--u)) calc(57.271 * var(--u)) 0 0;
+}
+
+.dpc-dl__card {
+  position: absolute; left: calc(77 * var(--u)); top: calc(198.57 * var(--u)); width: calc(400 * var(--u));
+  display: flex; flex-direction: column; padding: calc(32 * var(--u));
+  background: #fff; border: calc(1.166 * var(--u)) solid #f5f5f5; border-radius: calc(24 * var(--u));
+  box-shadow: 0 calc(9.33 * var(--u)) calc(14 * var(--u)) rgb(0 0 0 / .12);
+  color: var(--gf-ink); text-align: left;
+}
+.dpc-dl__card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: calc(8 * var(--u)); }
+.dpc-dl__status { font-size: calc(18.66 * var(--u)); line-height: calc(27.99 * var(--u)); font-weight: var(--fw-bold); }
+.dpc-dl__eta {
+  display: inline-flex; align-items: center; gap: calc(4.665 * var(--u));
+  padding: calc(4.665 * var(--u)) calc(9.329 * var(--u)); border-radius: calc(16 * var(--u));
+  background: var(--gf-yellow); color: var(--gf-purple);
+  font-size: calc(12 * var(--u)); line-height: calc(16 * var(--u)); font-weight: var(--fw-bold); white-space: nowrap;
+}
+.dpc-dl__eta img { width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
+.dpc-dl__addr { margin: calc(18.66 * var(--u)) 0 0; font-size: calc(14 * var(--u)); line-height: calc(20 * var(--u)); }
+.dpc-dl__addr b { color: var(--gf-purple); }
+
+.dpc-dl__stepper { position: relative; margin-top: calc(37.32 * var(--u)); }
+.dpc-dl__road { position: relative; display: flex; align-items: center; gap: calc(4.665 * var(--u)); }
+.dpc-dl__node { display: flex; align-items: center; gap: calc(4.665 * var(--u)); flex: 1 1 0; min-width: 0; }
+.dpc-dl__node:last-of-type { flex: none; }
+.dpc-dl__node img { flex: none; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
+.dpc-dl__seg { flex: 1 1 auto; height: calc(4.665 * var(--u)); border-radius: calc(2 * var(--u)); background: var(--gf-lilac-50); overflow: hidden; }
+.dpc-dl__seg-fill { display: block; height: 100%; background: var(--gf-purple); transform-origin: 0 50%; }
+/* rides the road: its wheels sit on the line (comp: bottom 27.99 of the stepper) */
+.dpc-dl__courier { position: absolute; left: 0; bottom: calc(-4.66 * var(--u)); z-index: 1; width: calc(37.318 * var(--u)); height: auto; }
+.dpc-dl__labels { display: flex; justify-content: space-between; margin-top: calc(3.5 * var(--u)); height: calc(27.99 * var(--u)); }
+.dpc-dl__label {
+  flex: none; width: calc(18.66 * var(--u)); display: flex; justify-content: center; text-align: center;
+  font-size: calc(13.99 * var(--u)); line-height: calc(18.66 * var(--u)); font-weight: var(--fw-semibold);
+  color: var(--gf-lilac-300); white-space: nowrap; transition: color .3s var(--ease-out);
+}
+.dpc-dl__label:first-child { justify-content: flex-start; text-align: left; }
+.dpc-dl__label:last-child { white-space: normal; }
+.dpc-dl__label.is-done { color: var(--gf-purple); }
+.dpc-dl__rule { display: block; margin-top: calc(17.5 * var(--u)); height: calc(1.166 * var(--u)); background: var(--gf-lilac); }
+.dpc-dl__faq {
+  margin-top: calc(17.5 * var(--u)); display: flex; align-items: center; justify-content: space-between; gap: calc(12 * var(--u));
+  padding: calc(18.66 * var(--u)); border: calc(1.166 * var(--u)) solid var(--gf-lilac); border-radius: calc(12 * var(--u));
+  font-size: calc(13.99 * var(--u)); line-height: calc(18.66 * var(--u)); font-weight: var(--fw-semibold);
+}
+.dpc-dl__faq img { flex: none; width: calc(27.99 * var(--u)); height: calc(27.99 * var(--u)); }
+
+/* — the step list — */
+.dpc-dl__steps { flex: 1 1 0; min-width: 0; list-style: none; }
+.dpc-dl__step { padding-block: 32px; border-top: 1px solid rgb(255 255 255 / .07); }
+.dpc-dl__step:last-child { border-bottom: 1px solid rgb(255 255 255 / .07); }
+.dpc-dl__step-head { margin: 0; font: inherit; }
+.dpc-dl__step-head button {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: flex; align-items: center; gap: 24px; width: 100%;
+  font-size: var(--fs-body-sm); line-height: 24px; letter-spacing: 1px; color: #fff;
+}
+.dpc-dl__step-head button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
+.dpc-dl__step-head img { flex: none; width: 4px; height: 4px; }
+.dpc-dl__num { font-weight: var(--fw-semibold); opacity: .3; transition: opacity .3s var(--ease-out); }
+.dpc-dl__step.is-active .dpc-dl__num { opacity: 1; }
+/* the active row shows its title large below; the small label stays in the
+   button for its accessible name, visually hidden */
+.dpc-dl__step.is-active .dpc-dl__label-sm {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.dpc-dl__panel-in { display: flex; flex-direction: column; align-items: flex-start; padding-top: 64px; }
+.dpc-dl__title {
+  margin: 0; font-size: 36px; line-height: 48px; letter-spacing: -0.36px; color: #fff;
+  text-box: trim-both cap alphabetic;
+}
+.dpc-dl__desc {
+  margin: 24px 0 0; font-size: var(--fs-body-sm); line-height: 16px; color: rgb(255 255 255 / .4);
+  text-box: trim-both cap alphabetic; text-wrap: pretty;
+}
+.dpc-dl__cta {
+  margin-top: 37px; display: inline-flex; align-items: center; padding: 20px 32px; border-radius: 100px;
+  background: #fff; color: var(--gf-purple); text-decoration: none;
+  font-size: var(--fs-body-sm); line-height: 16px; font-weight: var(--fw-semibold);
+  transition: transform .16s var(--ease-out-strong), background-color .2s var(--ease-out);
+}
+.dpc-dl__cta:hover { background: var(--gf-lilac); }
+.dpc-dl__cta:active { transform: scale(.96); }
+.dpc-dl__cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* — scrub mode: the stage pins, the scroll drives it — */
+@media (min-width: 921px) {
+  .dpc-dl[data-mode="scrub"] .dpc-dl__track {
+    /* centre the pinned stage in the viewport; a stage taller than the
+       viewport falls back to top:0 rather than sticking above the fold */
+    --dpc-pin-top: max(0px, calc((100vh - var(--dpc-pin-h, 100vh)) / 2));
+    /* the --dpc-pin-top term is load-bearing: the pin engages that many px
+       BEFORE progress 0, so without it the pin would release early */
+    height: calc(var(--dpc-pin-top) + var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1400px));
+  }
+  .dpc-dl[data-mode="scrub"] .dpc-dl__pin { position: sticky; top: var(--dpc-pin-top); }
+}
+
+
+/* ============ SANAL KART (22630:16495) ============ */
+
+.dpc-sanal {
+  position: relative; overflow: hidden; padding-bottom: 320px;
+  /* sampled off the comp render: ~22% yellow in the corner, gone by ~40%
+     along 140° (the exported stops are out of order and would hard-edge) */
+  background: linear-gradient(140deg, rgb(255 211 0 / .23) 0%, rgb(255 211 0 / .08) 25%, rgb(255 211 0 / 0) 40%);
+  --dpc-head-gap: 100px;
+}
+/* foot fade to white, over the art and under the copy (comp layer order) */
+.dpc-sanal::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 572px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0), #fff);
+}
+.dpc-sanal__head { position: relative; z-index: 2; }
+.dpc-sanal__eyebrow {
+  background: rgb(0 0 0 / .05); border-color: transparent; color: var(--gf-ink); letter-spacing: 0;
+}
+.dpc-sanal .dpc-sub { color: rgb(0 0 0 / .5); }
+
+.dpc-sanal__stage { position: relative; container-type: inline-size; }
+/* a zero-size anchor at the stage's centre-top; the art hangs off it in comp px */
+.dpc-sanal__art { --u: min(calc(100cqi / 1440), 1px); position: absolute; left: 50%; top: 0; width: 0; height: 0; z-index: 0; }
+.dpc-sanal__hand {
+  position: absolute; left: calc(171.5 * var(--u)); top: calc(24 * var(--u)); transform: translateX(-50%);
+  width: calc(937 * var(--u)); height: calc(1564 * var(--u)); overflow: hidden;
+}
+.dpc-sanal__hand img { position: absolute; max-width: none; width: 247.8%; height: 124.54%; left: -72.36%; top: -24.54%; }
+.dpc-sanal__ring { position: absolute; border: 2px solid var(--gf-purple); transform: translate(-50%, -50%) rotate(-40.61deg); }
+.dpc-sanal__ring--1 { left: calc(329.8 * var(--u)); top: calc(321.8 * var(--u)); width: calc(596.708 * var(--u)); height: calc(386.153 * var(--u)); border-radius: calc(50 * var(--u)); opacity: .5; }
+.dpc-sanal__ring--2 { left: calc(323.9 * var(--u)); top: calc(326.9 * var(--u)); width: calc(678.574 * var(--u)); height: calc(449.35 * var(--u)); border-radius: calc(70 * var(--u)); opacity: .25; }
+.dpc-sanal__ring--3 { left: calc(321.7 * var(--u)); top: calc(328.7 * var(--u)); width: calc(755.583 * var(--u)); height: calc(513.322 * var(--u)); border-radius: calc(110 * var(--u)); opacity: .1; }
+
+.dpc-sanal__col { position: relative; z-index: 2; width: min(660px, 100%); display: flex; flex-direction: column; align-items: flex-start; gap: 32px; }
+.dpc-sanal__list { width: 100%; list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.dpc-sanal__card {
+  height: 220px; padding: 32px; border-radius: 32px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  background: rgb(0 0 0 / .05);
+  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+}
+.dpc-sanal__glyph { display: grid; grid-template-columns: repeat(2, 24px); grid-template-rows: repeat(2, 24px); }
+.dpc-sanal__glyph i { display: block; }
+.dpc-sanal__text { margin: 0; font-size: 24px; line-height: 32px; color: var(--gf-ink); }
+
+
+/* ============ KART AVANTAJLARI — yurt dışı (22630:19403) ============
+   The comp gives this bento no padding of its own: the sanal section's
+   320px foot is the space above it, the FAQ's 40 the space below. */
+
+.dbc-abroad { padding-block: 0; }
+
+.dbc-tile-cb { flex: 0 0 402px; padding: 48px 0 32px; }
+.dbc-tile-cb .dpc-tile__visual { width: 100%; }
+.dbc-tile-cb .dpc-tile__copy { padding-inline: 32px; }
+/* coin b and the dotted orbit hang ~60 below the box; reserved as for .dpc-gp */
+.dpc-cb { position: relative; width: calc(472 * var(--u)); height: calc(148 * var(--u)); margin: 0 auto calc(60 * var(--u)); }
+.dpc-cb__art { position: absolute; left: calc(-17.28 * var(--u)); top: 0; width: calc(506.558 * var(--u)); height: auto; max-width: none; }
+.dpc-cb__coin {
+  position: absolute; width: calc(54 * var(--u)); height: calc(54 * var(--u)); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(212.6deg, #ffeb88 8.2%, var(--gf-yellow) 73.5%);
+  box-shadow: inset -1px 1px 2px rgb(255 255 255 / .5);
+  color: var(--gf-purple); font-size: calc(16 * var(--u)); font-weight: var(--fw-semibold);
+}
+.dpc-cb__coin--a { left: calc(137.85 * var(--u)); top: calc(8.62 * var(--u)); }
+.dpc-cb__coin--b { left: calc(279.56 * var(--u)); top: calc(152.08 * var(--u)); }
+
+.dbc-abroad__card {
+  position: relative; overflow: hidden;
+  border-radius: 6px; background: var(--gf-purple); border: 2.274px solid rgb(255 255 255 / .25);
+  box-shadow: 0 4.55px 9.1px rgb(0 0 0 / .08);
+}
+.dbc-abroad__card img { position: absolute; inset: -2.27px; width: calc(100% + 4.54px); height: calc(100% + 4.54px); max-width: none; object-fit: cover; }
+
+.dbc-tile-fx { padding: 48px 48px 32px; --tile-w: 376.67; }
+.dbc-tile-fx .dpc-tile__visual { width: 100%; justify-content: flex-start; }
+.dbc-tile-fx .dpc-tile__copy { padding: 0; }
+.dpc-fx { position: relative; width: 100%; height: calc(96 * var(--u)); }
+.dpc-fx__row { position: absolute; left: calc(45 * var(--u)); top: 0; display: flex; align-items: center; gap: calc(16 * var(--u)); }
+.dpc-fx__row > img:not(.dpc-fx__dots) { flex: none; width: calc(32 * var(--u)); height: calc(32 * var(--u)); }
+.dpc-fx__dots { flex: none; width: calc(15.44 * var(--u)); height: auto; margin-right: calc(4.56 * var(--u)); }
+.dpc-fx__tag {
+  position: absolute; padding: calc(4 * var(--u)) calc(12 * var(--u)); border-radius: calc(60 * var(--u));
+  background: #fff; filter: drop-shadow(0 calc(5 * var(--u)) calc(4 * var(--u)) rgb(0 0 0 / .04));
+  font-size: calc(10 * var(--u)); line-height: calc(14 * var(--u)); color: #000;
+}
+.dpc-fx__tag--eur { left: calc(5 * var(--u)); top: calc(62 * var(--u)); }
+.dpc-fx__tag--usd { left: calc(305.55 * var(--u)); top: calc(14 * var(--u)); }
+
+/* TL wallet, from its layers (percentages of the 96 tile) */
+.dpc-wallet {
+  position: relative; flex: none; width: calc(96 * var(--u)); height: calc(96 * var(--u));
+  border-radius: calc(34.286 * var(--u)); background: #fff;
+  filter:
+    drop-shadow(0 calc(60 * var(--u)) calc(30 * var(--u)) rgb(0 0 0 / .04))
+    drop-shadow(0 calc(15 * var(--u)) calc(16.5 * var(--u)) rgb(0 0 0 / .05));
+}
+.dpc-wallet > * { position: absolute; display: block; }
+.dpc-wallet__flap { left: calc(26.05 * var(--u)); top: calc(20.99 * var(--u)); width: calc(26.57 * var(--u)); height: auto; }
+.dpc-wallet__body { left: 26.79%; top: 32.14%; right: 26.79%; bottom: 32.14%; border-radius: calc(6.857 * var(--u)); background: var(--gf-purple); }
+.dpc-wallet__face {
+  left: 30.36%; top: 35.71%; right: 30.36%; bottom: 35.71%; border-radius: calc(5.143 * var(--u));
+  background: linear-gradient(229.6deg, #c8bee7 34.4%, var(--gf-purple) 71.6%);
+  box-shadow: 0 calc(2.11 * var(--u)) calc(4.22 * var(--u)) rgb(0 0 0 / .25), inset -0.63px 0.63px 1.06px rgb(255 255 255 / .25);
+}
+.dpc-wallet__shine {
+  left: 33.93%; top: 39.29%; right: 33.93%; bottom: 48.21%;
+  border-radius: calc(3.429 * var(--u)) calc(3.429 * var(--u)) 0 0;
+  background: linear-gradient(to left, rgb(255 255 255 / 0) 19.4%, rgb(255 255 255 / .2));
+}
+.dpc-wallet__flag { left: calc(20.57 * var(--u)); top: calc(51.43 * var(--u)); width: calc(20.571 * var(--u)); height: calc(20.571 * var(--u)); }
+.dpc-wallet__ring { position: absolute; left: calc(-6.86 * var(--u)); top: calc(-6.86 * var(--u)); width: calc(41.143 * var(--u)); height: auto; max-width: none; }
+.dpc-wallet__tr {
+  position: absolute; left: calc(-1.29 * var(--u)); top: 0; width: calc(30.857 * var(--u)); height: calc(20.571 * var(--u));
+  -webkit-mask: url("/assets/img/hesap-karti/wallet-flag-mask.svg") no-repeat calc(1.285 * var(--u)) 0 / calc(20.571 * var(--u)) calc(20.571 * var(--u));
+  mask: url("/assets/img/hesap-karti/wallet-flag-mask.svg") no-repeat calc(1.285 * var(--u)) 0 / calc(20.571 * var(--u)) calc(20.571 * var(--u));
+}
+.dpc-wallet__tr img { width: 100%; height: 100%; object-fit: cover; }
+.dpc-wallet__tab {
+  left: 66.07%; top: 48.58%; right: 30.36%; bottom: 47.85%;
+  background: var(--gf-purple); border: calc(3.429 * var(--u)) solid var(--gf-lilac-50);
+  border-radius: calc(5.143 * var(--u)) 0 0 calc(5.143 * var(--u));
+  box-shadow: 0 .86px .86px rgb(0 0 0 / .15); box-sizing: content-box;
+}
+
+
+/* ============ ≤1180 ============ */
+@media (max-width: 1180px) {
+  .dpc-dl__stage { gap: 40px; }
+  .dpc-dl__title { font-size: 30px; line-height: 40px; }
+  .dpc-sanal__col { width: min(560px, 100%); }
+}
+
+/* ============ ≤920 ============
+   Delivery runs "timed" here (no pin). The stage stacks: card on top, the
+   steps under it. Sanal's art moves below the cards; the abroad bento
+   collapses to one column with the card at its own aspect. */
+@media (max-width: 920px) {
+  .dpc-dl { padding-block: 48px 72px; }
+  .dpc-dl__stage { flex-direction: column; align-items: stretch; gap: 32px; }
+  .dpc-dl__visual { width: min(615px, 100%); margin-inline: auto; flex: none; }
+  .dpc-dl__title { font-size: 28px; line-height: 36px; white-space: normal; }
+  .dpc-dl__panel-in { padding-top: 32px; }
+  .dpc-dl__cta { margin-top: 28px; }
+
+  .dpc-sanal { padding-bottom: 0; --dpc-head-gap: 48px; }
+  .dpc-sanal::after { height: 240px; }
+  .dpc-sanal__stage { display: flex; flex-direction: column; }
+  .dpc-sanal__col { width: 100%; }
+  .dpc-sanal__art {
+    --u: min(calc(100cqi / 937), 1px);
+    order: 2; position: relative; left: 50%; width: 0; height: calc(900 * var(--u)); margin-top: 16px;
+  }
+  .dpc-sanal__hand { left: 0; top: 0; }
+  .dpc-sanal__ring--1 { left: calc(158.3 * var(--u)); top: calc(297.8 * var(--u)); }
+  .dpc-sanal__ring--2 { left: calc(152.4 * var(--u)); top: calc(302.9 * var(--u)); }
+  .dpc-sanal__ring--3 { left: calc(150.2 * var(--u)); top: calc(304.7 * var(--u)); }
+  .dpc-sanal__card { height: auto; min-height: 180px; gap: 40px; }
+
+  .dbc-abroad { padding-bottom: 32px; }
+  .dbc-tile-cb { flex: none; }
+  .dbc-abroad__card { aspect-ratio: 476 / 700; width: min(420px, 100%); margin-inline: auto; }
+  .dbc-abroad__bento .dpc-photo { aspect-ratio: 16 / 10; }
+}
+
+/* ============ ≤767 ============ */
+@media (max-width: 767px) {
+  .dpc-dl { padding-block: 40px 56px; }
+  .dpc-dl__step { padding-block: 24px; }
+  .dpc-dl__panel-in { padding-top: 24px; }
+  .dpc-dl__title { font-size: 24px; line-height: 32px; }
+  .dpc-dl__cta { padding: 16px 24px; }
+
+  .dpc-sanal { --dpc-head-gap-m: 32px; }
+  .dpc-sanal__card { min-height: 0; padding: 24px; border-radius: 24px; gap: 28px; }
+  .dpc-sanal__text { font-size: 18px; line-height: 26px; }
+  .dpc-sanal__text br { display: none; }
+  .dpc-sanal__col .dpc-cta { width: 100%; }
+
+  .dbc-tile-cb { padding: 32px 0 24px; }
+  .dbc-tile-cb .dpc-tile__copy { padding-inline: 24px; }
+  .dbc-tile-fx { padding: 32px 24px 24px; --tile-w: 424.67; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dpc-dl__label, .dpc-dl__num, .dpc-dl__cta { transition: none; }
+}

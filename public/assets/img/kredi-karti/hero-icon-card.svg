@@ -1,0 +1,50 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="72.4004" height="64.251" viewBox="0 0 72.4004 64.251" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 427326714">
+<path id="Path" d="M50.4196 47.0621L55.7986 26.294C56.2218 24.6626 55.9634 22.9148 55.0804 21.4364C54.1974 19.958 52.7624 18.8705 51.0921 18.4138L19.6141 9.72358C17.945 9.26258 16.176 9.4697 14.6977 10.2992C13.2193 11.1288 12.1531 12.5126 11.7344 14.1451L6.94612 32.5814C6.066 35.9805 8.16276 39.5153 11.6367 40.489L17.9298 42.2182" stroke="#FFD300" stroke-width="3.03934" stroke-linecap="round" stroke-linejoin="round"/>
+<rect id="Rectangle 34624484" x="14.5622" y="60.569" width="40.5245" height="56.7342" rx="8.72835" transform="rotate(-90 14.5622 60.569)" fill="#5D3EBC"/>
+<g id="Rectangle 34624485" filter="url(#filter0_di_0_4)">
+<rect x="18.6146" y="56.5163" width="32.4196" height="48.6294" rx="6.54626" transform="rotate(-90 18.6146 56.5163)" fill="url(#paint0_linear_0_4)"/>
+</g>
+<path id="Rectangle 34624486" d="M22.2894 48.1036C22.2894 50.5139 24.2433 52.4678 26.6536 52.4678L58.4497 52.4678C60.86 52.4678 62.8139 50.5139 62.8139 48.1036L62.8139 42.3367L22.2894 42.3367L22.2894 48.1036Z" fill="url(#paint1_linear_0_4)" fill-opacity="0.2"/>
+<g id="Group 427326775" filter="url(#filter1_d_0_4)">
+<path id="Subtract" d="M51.034 41.3234C51.034 40.4294 51.2662 39.5896 51.6727 38.8605C52.8348 39.9386 54.3903 40.5988 56.1004 40.5988C57.8098 40.5988 59.3643 39.9387 60.5262 38.8615C60.9325 39.5904 61.1649 40.4296 61.1649 41.3234C61.1648 44.1209 58.897 46.3888 56.0995 46.3888C53.3019 46.3887 51.0341 44.1209 51.034 41.3234Z" fill="white"/>
+<circle id="Ellipse 723" cx="56.0996" cy="33.2188" r="5.06556" transform="rotate(-90 56.0996 33.2188)" fill="white"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_di_0_4" x="13.4582" y="21.5185" width="58.9422" height="42.7324" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2.57822"/>
+<feGaussianBlur stdDeviation="2.57822"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_4"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_4" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="-0.773466" dy="0.773466"/>
+<feGaussianBlur stdDeviation="0.644555"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="shape" result="effect2_innerShadow_0_4"/>
+</filter>
+<filter id="filter1_d_0_4" x="50.0209" y="28.1532" width="12.1573" height="20.2618" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="1.01311"/>
+<feGaussianBlur stdDeviation="0.506556"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_4"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_4" result="shape"/>
+</filter>
+<linearGradient id="paint0_linear_0_4" x1="58.5156" y1="30.8508" x2="10.9587" y2="50.4837" gradientUnits="userSpaceOnUse">
+<stop stop-color="#C8BEE7"/>
+<stop offset="1" stop-color="#5D3EBC"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_4" x1="22.2894" y1="47.4022" x2="52.6828" y2="47.4022" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="white" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

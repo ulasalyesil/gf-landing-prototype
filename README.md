@@ -36,8 +36,8 @@ Then open <http://localhost:3000>.
 | Route | |
 |---|---|
 | `/` | landing page — 13 sections, `Hero` through `Newsletter` |
-| `/hesap-karti` | debit card. **Read [`docs/hesap-karti-handoff.md`](docs/hesap-karti-handoff.md) before touching it** |
-| `/kredi-karti` | credit card, in progress |
+| `/hesap-karti` | debit card (card pages v2). **Read [`docs/hesap-karti-handoff.md`](docs/hesap-karti-handoff.md) before touching it** |
+| `/kredi-karti` | credit card (card pages v2) — same handoff doc, shared components |
 | `/pnib`, `/pnib/sozluk` | #paranaiyibak campaign site and its glossary |
 
 ## Layout

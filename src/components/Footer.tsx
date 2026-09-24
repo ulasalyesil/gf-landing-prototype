@@ -1,8 +1,17 @@
 import React from "react";
 
-export default function Footer() {
+/* `variant="inner"` is the product-page footer from the card pages v2 comps
+   (Figma 22630:12711): its own CTA sub, three more legal links, getirsonraöde
+   in ürünler, and the referral footnote. The landing renders the default and
+   is unchanged. The comp lists "çerez politikası" twice; it appears once here. */
+interface FooterProps {
+  variant?: "home" | "inner";
+}
+
+export default function Footer({ variant = "home" }: FooterProps) {
+  const inner = variant === "inner";
   return (
-    <footer className="footer" id="footer">
+    <footer className={inner ? "footer footer--inner" : "footer"} id="footer">
       <div className="footer__panel">
         <div className="container">
           {/* Footer CTA Download Section */}
@@ -10,8 +19,14 @@ export default function Footer() {
             <div>
               <h2 className="footer__cta-title">getirfinans’ı indir</h2>
               <p className="footer__cta-sub">
-                çok iyi faizli çok masrafsız bankacılık hizmetlerinden hemen
-                yararlanmaya başla
+                {inner ? (
+                  "getirfinans’ın bankacılık hizmetlerinden hemen yararlanmaya başla"
+                ) : (
+                  <>
+                    çok iyi faizli çok masrafsız bankacılık hizmetlerinden hemen
+                    yararlanmaya başla
+                  </>
+                )}
               </p>
             </div>
             <div className="footer__badges">
@@ -91,8 +106,11 @@ export default function Footer() {
               <a href="#">gizlilik politikası</a>
               <a href="#">kullanım koşulları</a>
               <a href="#">iletişim aydınlatma metni</a>
+              {inner && <a href="#">kullanıcı kişisel verileri aydınlatma metni</a>}
+              {inner && <a href="#">internet sitesi ziyaretçilerine yönelik aydınlatma metni</a>}
               <a href="#">çerez politikası</a>
               <a href="#">ilgili kişi başvuru formu</a>
+              {inner && <a href="#">çalışan adayı aydınlatma metni</a>}
             </nav>
 
             <nav className="footer__col">
@@ -101,12 +119,21 @@ export default function Footer() {
               <a href="#">kredi kartı</a>
               <a href="#">kredi</a>
               <a href="#">avans limit</a>
+              {inner && <a href="#">getirsonraöde</a>}
               <a href="#">para transferi</a>
               <a href="#">döviz işlemleri</a>
               <a href="#">ücretsiz atm’ler</a>
               <a href="#">ödemeler</a>
             </nav>
           </div>
+
+          {inner && (
+            <p className="footer__note">
+              <span aria-hidden="true">*</span> 2026 yılı itibariyle &quot;arkadaşını getir&quot; kampanyaları
+              üzerinden davet üzerine referans kodu ile getirfinans müşterisi olan
+              müşteriler hesaplamaya dahil edilmiştir
+            </p>
+          )}
 
           {/* Legal notice */}
           <div className="footer__legal">
