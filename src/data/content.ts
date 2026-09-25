@@ -190,7 +190,7 @@ export const DEBIT_BENEFITS = {
   eyebrow: "getirfinans hesap kartı",
   title: "kart avantajları",
   /* ⚠ COMP: says "kredi kartı" on the debit page */
-  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
   getirpara: {
     title: "getirmarket ve bitaksi’de yapacağın harcamalara %3 getirpara",
     /* wallet widget inside the phone */
@@ -221,7 +221,7 @@ export const DEBIT_BENEFITS = {
 /* Delivery — the scroll-scrubbed section. Steps drive the list on the right
    and the tracking card's stepper on the left together. */
 export const DEBIT_DELIVERY = {
-  eyebrow: "GETİR HESAP KARTI",
+  eyebrow: "getirfinans hesap kartı",
   title: "hızlı kart teslimatı",
   sub: "kartın dakikalar içinde kapında",
   steps: [
@@ -265,7 +265,7 @@ export const DEBIT_ABROAD = {
   eyebrow: "getirfinans hesap kartı",
   /* ⚠ COMP: same title as DEBIT_BENEFITS, and the same "kredi kartı" sub */
   title: "kart avantajları",
-  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
   /* comp wording "harcarken de"; the CMO round (2026-08-05) had "da harcarken" */
   cashback: "yurt dışında harcarken de %1 nakit iade kazan",
   fx: "harcamalarını avantajlı kurlarla TL olarak rahatça öde",
@@ -276,11 +276,11 @@ export const DEBIT_ABROAD = {
 export const DEBIT_FAQ: { title: string; items: FaqEntry[] } = {
   title: "sıkça sorulan sorular",
   items: [
-    { q: "günlük faiz kazandıran hesap nedir?", a: "Günlük faiz kazandıran hesap, paranızın her gün faiz getirisi sağladığı bir tasarruf hesabıdır." },
-    { q: "günlük faiz hesabı açmak için ne gerekir?", a: "Günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. Günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. a Günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. a" },
-    { q: "günlük faiz oranları nasıl belirlenir?", a: "Günlük faiz oranları piyasa koşulları ve ekonomik gelişmelere göre bankalar tarafından belirlenir." },
-    { q: "faiz kazancım ne zaman hesabıma yansır?", a: "Faiz kazancınız genellikle her gün hesabınıza yansır ve anlık olarak birikir." },
-    { q: "günlük faiz hesabının vadeli mevduattan farkı nedir?", a: "Günlük faiz hesabı, faiz getirisi günlük hesaplanırken, vadeli mevduat faiz oranı vade boyunca sabittir." },
+    { q: "günlük faiz kazandıran hesap nedir?", a: "günlük faiz kazandıran hesap, paranızın her gün faiz getirisi sağladığı bir tasarruf hesabıdır." },
+    { q: "günlük faiz hesabı açmak için ne gerekir?", a: "günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. a günlük faiz hesabı açmak için kimlik belgesi ve banka hesabınızın olması yeterlidir. a" },
+    { q: "günlük faiz oranları nasıl belirlenir?", a: "günlük faiz oranları piyasa koşulları ve ekonomik gelişmelere göre bankalar tarafından belirlenir." },
+    { q: "faiz kazancım ne zaman hesabıma yansır?", a: "faiz kazancınız genellikle her gün hesabınıza yansır ve anlık olarak birikir." },
+    { q: "günlük faiz hesabının vadeli mevduattan farkı nedir?", a: "günlük faiz hesabı, faiz getirisi günlük hesaplanırken, vadeli mevduat faiz oranı vade boyunca sabittir." },
   ],
 };
 
