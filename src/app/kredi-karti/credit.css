@@ -92,7 +92,7 @@
     drop-shadow(0 calc(10 * var(--u)) calc(5 * var(--u)) rgb(93 62 188 / .26))
     drop-shadow(0 calc(2 * var(--u)) calc(2.5 * var(--u)) rgb(93 62 188 / .29));
 }
-.ckp-txn__bracket { position: absolute; top: calc(36.5 * var(--u)); width: calc(120.5 * var(--u)); height: calc(109 * var(--u)); }
+.ckp-txn__bracket { position: absolute; top: calc(36.5 * var(--u)); width: calc(120.5 * var(--u)); height: calc(109 * var(--u)); overflow: visible; }
 .ckp-txn__bracket--l { left: calc(0.5 * var(--u)); }
 .ckp-txn__bracket--r { left: calc(254 * var(--u)); transform: scaleX(-1); }
 .ckp-txn__spark { position: absolute; height: auto; }
@@ -114,7 +114,15 @@
   position: absolute; left: 50%; top: 50%; width: calc(61.25 * var(--u)); height: auto;
   transform: translate(-50%, -50%) rotate(90deg);
 }
-.ckp-aidat__seal { flex: none; width: calc(200 * var(--u)); height: auto; }
+/* the seal is inline SVG (SealArt) so its star can turn apart from the ₺0 */
+.ckp-aidat__stamp { position: relative; flex: none; display: block; width: calc(200 * var(--u)); }
+.ckp-aidat__seal { display: block; width: 100%; height: auto; }
+.ckp-aidat__seal .seal-star { transform-box: fill-box; transform-origin: 50% 50%; }
+/* the stamp's landing ripple — at rest it is gone */
+.ckp-aidat__ripple {
+  position: absolute; inset: 20%; border-radius: 50%; pointer-events: none;
+  border: calc(4 * var(--u)) solid var(--gf-yellow); opacity: 0;
+}
 
 
 /* ============ ÜCRETSİZ 3 TAKSİT (22630:15718) ============ */
@@ -156,7 +164,12 @@
   .ckp-taksit__tab:not(.is-active):hover .ckp-taksit__thumb { opacity: .7; }
 }
 
-.ckp-taksit__media { position: relative; aspect-ratio: 1; border-radius: 64px; overflow: hidden; background: var(--gf-lilac-50); }
+/* draggable sideways (TaksitTabs); vertical page scroll stays native on touch */
+.ckp-taksit__media {
+  position: relative; aspect-ratio: 1; border-radius: 64px; overflow: hidden; background: var(--gf-lilac-50);
+  touch-action: pan-y; cursor: grab;
+}
+.ckp-taksit__media:active { cursor: grabbing; }
 .ckp-taksit__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ckp-taksit__arrows { position: absolute; right: 48px; bottom: 48px; z-index: 1; display: flex; gap: 24px; }
 
@@ -212,16 +225,18 @@
 
 .ckp-brands__tabs { display: flex; border-block: 1px solid var(--ckp-rule); }
 .ckp-brands__tab {
+  position: relative;
   flex: 1 1 0; min-width: 0; height: 240px; padding: 0; border: 0; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   background: transparent; transition: background-color .25s var(--ease-out);
 }
-.ckp-brands__tab.is-active { background: var(--ckp-cell-on); }
+/* the selected fill is ONE element that glides between cells (layoutId) */
+.ckp-brands__cell { position: absolute; inset: 0; background: var(--ckp-cell-on); }
 @media (hover: hover) and (pointer: fine) {
   .ckp-brands__tab:not(.is-active):hover { background: var(--gf-bg-soft); }
 }
 .ckp-brands__tab:focus-visible { outline-offset: -2px; }
-.ckp-brands__logo { position: relative; display: block; flex: none; }
+.ckp-brands__logo { position: relative; z-index: 1; display: block; flex: none; }
 .ckp-brands__logo img { display: block; width: 100%; height: 100%; }
 .ckp-brands__logo.is-cropped { overflow: hidden; }
 .ckp-brands__logo.is-cropped img { position: absolute; max-width: none; }
@@ -235,7 +250,7 @@
   margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 16px;
   font-size: 32px; line-height: 44px; letter-spacing: -0.5px; font-weight: var(--fw-regular); color: var(--gf-ink);
 }
-.ckp-brands__slash { font-size: 28px; line-height: 32px; }
+.ckp-brands__slash { display: inline-block; font-size: 28px; line-height: 32px; }
 .ckp-brands__offer { color: var(--gf-purple); line-height: 40px; }
 .ckp-brands__desc { margin: 0; max-width: 26em; font-size: var(--fs-body-md); line-height: 26px; color: var(--dpc-muted); text-wrap: pretty; }
 .ckp-brands__link {

@@ -52,6 +52,7 @@ This file is the full context. The session running here has no access to the own
 
 - Install base: `motion` v12. Import from `"motion/react"` in components.
 - All new animation: Motion. Springs over duration curves for interactive elements; scroll-driven work via Motion's scroll APIs rather than GSAP ScrollTrigger.
+- Card-page illustrations tell their benefit as a micro-story: `useStory` (`src/components/useStory.ts`) — one scoped Motion sequence, rest frame = the comp, played in view / replayed on hover. Contract and tripwires: `docs/hesap-karti-handoff.md` §5. Media-query hooks must be hydration-safe (`useMotionOff`, `useReducedMotionSafe`), not Motion's `useReducedMotion`.
 - Existing GSAP: section entrance reveals, rates, carousel. Replace opportunistically — when a component needs animation changes, port it to Motion in the same pass.
 - Mobile ≤767px had reduced motion in the vanilla build; keep the desktop/mobile motion split and re-evaluate on resize (a resize-aware mode fix already shipped once — don't regress it).
 - Agent skills pinned in `skills-lock.json`: `emil-design-eng`, `review-animations` (emilkowalski/skill), `ui-skills-root` (ibelick/ui-skills). Use `review-animations` after any motion work.

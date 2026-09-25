@@ -141,14 +141,12 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 .dpc-subnav__label { font-size: var(--fs-body-sm); line-height: 24px; color: var(--gf-ink); flex: none; }
 .dpc-subnav__list { display: flex; align-items: center; gap: 28px; list-style: none; }
 .dpc-subnav__link {
+  position: relative;
   font-size: var(--fs-body-sm); line-height: 24px; color: var(--gf-ink);
   text-decoration: none; white-space: nowrap;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-  transition: background-size .2s var(--ease-out);
 }
-@media (hover: hover) and (pointer: fine) {
-  .dpc-subnav__link:hover { background-size: 100% 1px; }
-}
+/* the one hover underline that slides between links (ProductSubnav) */
+.dpc-subnav__line { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; pointer-events: none; }
 
 
 /* ============ HERO ============
@@ -172,6 +170,14 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   font-size: var(--fs-body-sm); line-height: 26px; font-weight: var(--fw-semibold); color: var(--gf-purple);
 }
 .dpc-badge svg { width: 20px; height: 20px; flex: none; }
+/* one sheen across the text after the title's icons play (ProductHero
+   BadgeText). Position stays within 0–100% so the gradient always covers
+   the text; at both ends the highlight is parked just off it. */
+.dpc-badge__in { display: inline-block; }
+.dpc-badge__text {
+  background: linear-gradient(100deg, var(--gf-purple) 42%, #b9a8f5 50%, var(--gf-purple) 58%) 0% 0 / 250% 100% no-repeat;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 
 .dpc-hero__title {
   margin: 0; font-size: 64px; line-height: 86px; letter-spacing: -1.35px;
@@ -189,16 +195,21 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
      x-height midpoint — per-icon lift via --icon-y */
   translate: 0 var(--icon-y, -0.15em);
 }
-.dpc-hero__icon > img { display: block; height: 100%; width: auto; }
+.dpc-hero__icon > img,
+.dpc-hero__icon > svg { display: block; height: 100%; width: auto; overflow: visible; }
 /* credit's calendar carries its % as a second layer (Figma draws them apart) */
 .dpc-hero__icon-glyph { position: absolute; left: 35.1%; top: 38.3%; width: 34.2%; height: auto !important; }
 /* The card icon is drawn landscape and rotated in the comp. The box is the
    ROTATED footprint (60.6 × 71.3 at 64px); the image turns inside it. */
 .dpc-hero__icon--rot { width: 0.946em; height: 1.114em; }
-.dpc-hero__icon--rot > img {
+.dpc-hero__icon--rot > img,
+.dpc-hero__icon--rot > svg {
   position: absolute; left: 50%; top: 50%; width: 1.131em; height: auto;
   transform: translate(-50%, -50%) rotate(90deg);
 }
+/* animated icon layers (art/HeroIcons.tsx) turn and scale about themselves */
+.dpc-hero__icon svg :is(.hi-tab, .hi-dot, .hi-card, .hi-chip, .hi-cal) { transform-box: fill-box; transform-origin: 50% 50%; }
+.dpc-hero__icon svg .hi-bar { transform-box: fill-box; transform-origin: 50% 100%; }
 
 .dpc-hero__sub {
   margin: 0; font-size: 26px; line-height: 45px; color: var(--dpc-hero-sub); text-wrap: pretty;
@@ -225,11 +236,14 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 }
 
 .dpc-hero__media-wrap { width: 100%; display: flex; justify-content: center; }
+/* scroll-grown frame (ProductHero HeroGrow); the picture's own settle arrives
+   through --hero-zoom */
+.dpc-hero__grow { width: 100%; display: flex; justify-content: center; }
 .dpc-hero__media {
   width: min(1298px, 100%); aspect-ratio: 1298 / 607;
   border-radius: 40px; overflow: hidden; background: var(--gf-lilac);
 }
-.dpc-hero__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.dpc-hero__media img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(var(--hero-zoom, 1)); }
 
 
 /* ============ SECTION RHYTHM + HEAD ============
@@ -258,6 +272,13 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   margin: 0; font-size: 48px; line-height: 54px; font-weight: var(--fw-regular);
   color: var(--gf-ink); text-wrap: balance;
 }
+/* word-by-word rise (WordReveal). The mask is padded so descenders and
+   Turkish diacritics (İ, Ş, ğ) are never clipped at rest. */
+.dpc-word {
+  display: inline-block; vertical-align: top; overflow: hidden;
+  padding-block: .16em; margin-block: -.16em;
+}
+.dpc-word__in { display: inline-block; }
 .dpc-sub { margin: 0; font-size: 20px; line-height: 24px; color: var(--dpc-muted); text-wrap: pretty; }
 
 
@@ -316,6 +337,15 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 .dpc-photo { position: relative; border-radius: 16px; overflow: hidden; min-height: 0; }
 .dpc-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
+/* Scroll drift layer (Parallax.tsx): fills its clipping frame; the photo
+   inside keeps its own sizing rules. */
+.dpc-parallax { position: absolute; inset: 0; }
+
+/* Pointer tilt (TiltCard.tsx). The glare follows the pointer's opposite
+   corner; it never takes pointer events. */
+.dpc-tilt { position: relative; }
+.dpc-tilt__glare { position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; opacity: 0; }
+
 
 /* ============ CAROUSEL CONTROLS ============ */
 
@@ -346,6 +376,10 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
   transition: width .35s var(--ease-out), background-color .35s var(--ease-out);
 }
 .dpc-dot.is-active { width: 50px; background: var(--gf-purple); }
+/* clocked pill: the track is the pale dot, the fill runs with the rotation */
+.dpc-dots--clock .dpc-dot { position: relative; overflow: hidden; }
+.dpc-dots--clock .dpc-dot.is-active { background: rgb(93 62 188 / .2); }
+.dpc-dot__fill { position: absolute; inset: 0; border-radius: inherit; background: var(--gf-purple); transform-origin: 0 50%; }
 /* FAQ skin (Figma "Indicator"): outlined rings, a short filled pill */
 .dpc-dots--ring { gap: 7px; }
 .dpc-dots--ring .dpc-dot { width: 7.5px; height: 7.5px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--gf-purple); }
@@ -496,5 +530,5 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dpc-dot, .dpc-subnav__link, .dpc-arrow { transition: none; }
+  .dpc-dot, .dpc-arrow { transition: none; }
 }

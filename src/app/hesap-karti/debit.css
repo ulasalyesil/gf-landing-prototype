@@ -102,13 +102,20 @@
   position: absolute; left: 0; top: 0; height: calc(15.749 * var(--u)); border-radius: calc(12.106 * var(--u));
 }
 .dpc-gp__w-track { width: 99.65%; background: var(--dbc-yellow-100); }
-.dpc-gp__w-fill { background: var(--gf-yellow); }
+.dpc-gp__w-fill { background: var(--gf-yellow); transform-origin: 0 50%; }
 .dpc-gp__w-cap {
   position: absolute; right: 0; top: calc(19.68 * var(--u)); white-space: nowrap;
   font-size: calc(11.81 * var(--u)); line-height: calc(19.69 * var(--u)); font-variant-numeric: tabular-nums;
 }
 .dpc-gp__w-cap b { font-size: calc(13.78 * var(--u)); }
 .dpc-gp__w-cap b small { font-size: calc(11.81 * var(--u)); }
+/* the getirpara coin that drops into the wallet (story only; gone at rest) */
+.dpc-gp__coin {
+  position: absolute; left: calc(140 * var(--u)); top: calc(22 * var(--u));
+  width: calc(22 * var(--u)); height: calc(22 * var(--u)); border-radius: 50%; opacity: 0; pointer-events: none;
+  background: linear-gradient(212.6deg, #ffeb88 8.2%, var(--gf-yellow) 73.5%);
+  box-shadow: inset 0 0 0 calc(2 * var(--u)) rgb(255 255 255 / .45), 0 calc(2 * var(--u)) calc(4 * var(--u)) rgb(93 62 188 / .25);
+}
 .dpc-gp__w-total {
   display: flex; flex-direction: column; justify-content: center; gap: calc(1.97 * var(--u));
   font-size: calc(11.81 * var(--u)); line-height: calc(15.75 * var(--u)); color: var(--gf-ink-700);
@@ -158,10 +165,17 @@
   mask-image: linear-gradient(to bottom, #000 46%, transparent 93%);
 }
 .dpc-ab__island { position: absolute; left: calc(161.07 * var(--u)); top: calc(26.85 * var(--u)); width: calc(76.957 * var(--u)); height: auto; }
+/* Dynamic Island swell: a 200-wide pill centred on the island, clipped back
+   to the island's width at either end of the story; gone at rest */
+.dpc-ab__isl {
+  position: absolute; left: calc(99.55 * var(--u)); top: calc(26.85 * var(--u));
+  width: calc(200 * var(--u)); height: calc(26.85 * var(--u)); border-radius: calc(13.4 * var(--u));
+  background: #000; opacity: 0; pointer-events: none;
+}
 
 /* iOS notification — system font on purpose (the comp draws SF Pro) */
 .dpc-ab__note {
-  position: absolute; left: 50%; top: calc(50% - 115.06 * var(--u)); transform: translate(-50%, -50%);
+  position: absolute; left: 50%; top: calc(50% - 115.06 * var(--u)); translate: -50% -50%;
   width: calc(400 * var(--u)); min-height: calc(85.9 * var(--u));
   display: flex; align-items: center; gap: calc(12 * var(--u)); padding: calc(16 * var(--u));
   border-radius: calc(24 * var(--u)); background: #fff;
@@ -245,6 +259,14 @@
   mask: url("/assets/img/hesap-karti/delivery-map-mask.svg") no-repeat 0 0 / 100% 100%;
 }
 .dpc-dl__map img { position: absolute; left: 0; top: calc(-70 * var(--u)); width: calc(504.7 * var(--u)); height: calc(504.7 * var(--u)); max-width: none; }
+/* the courier's route, laid exactly over the map image (same box, same px) */
+.dpc-dl__route { position: absolute; left: 0; top: calc(-70 * var(--u)); width: calc(504.7 * var(--u)); height: calc(504.7 * var(--u)); max-width: none; overflow: visible; }
+.dpc-dl__route-bed { stroke: rgb(255 255 255 / .16); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1 10; }
+.dpc-dl__route-line { stroke: var(--gf-yellow); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.dpc-dl__route-pin { fill: var(--gf-purple); stroke: #fff; stroke-width: 3; }
+.dpc-dl__route-pin-pulse { fill: var(--gf-purple); transform-box: fill-box; transform-origin: 50% 50%; }
+.dpc-dl__route-head { fill: var(--gf-yellow); stroke: var(--gf-purple-900); stroke-width: 3; }
+
 .dpc-dl__island { position: absolute; left: calc(104.7 * var(--u)); top: calc(26.85 * var(--u)); width: calc(76.957 * var(--u)); height: auto; }
 .dpc-dl__frame {
   position: absolute; left: 0; top: 0; width: calc(286.353 * var(--u)); height: calc(357.942 * var(--u));
@@ -260,7 +282,12 @@
   color: var(--gf-ink); text-align: left;
 }
 .dpc-dl__card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: calc(8 * var(--u)); }
-.dpc-dl__status { font-size: calc(18.66 * var(--u)); line-height: calc(27.99 * var(--u)); font-weight: var(--fw-bold); }
+/* departure-board roll between stages (popLayout parks the leaver absolutely) */
+.dpc-dl__status {
+  position: relative; display: inline-flex; overflow: hidden;
+  font-size: calc(18.66 * var(--u)); line-height: calc(27.99 * var(--u)); font-weight: var(--fw-bold);
+}
+.dpc-dl__status-in { display: block; white-space: nowrap; }
 .dpc-dl__eta {
   display: inline-flex; align-items: center; gap: calc(4.665 * var(--u));
   padding: calc(4.665 * var(--u)) calc(9.329 * var(--u)); border-radius: calc(16 * var(--u));
@@ -275,11 +302,15 @@
 .dpc-dl__road { position: relative; display: flex; align-items: center; gap: calc(4.665 * var(--u)); }
 .dpc-dl__node { display: flex; align-items: center; gap: calc(4.665 * var(--u)); flex: 1 1 0; min-width: 0; }
 .dpc-dl__node:last-of-type { flex: none; }
-.dpc-dl__node img { flex: none; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
+.dpc-dl__dot { position: relative; flex: none; display: block; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
+.dpc-dl__node img { display: block; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
+/* "teslim edildi": one ring off the last node */
+.dpc-dl__burst { position: absolute; inset: 0; border-radius: 50%; border: calc(2 * var(--u)) solid var(--gf-purple); pointer-events: none; }
 .dpc-dl__seg { flex: 1 1 auto; height: calc(4.665 * var(--u)); border-radius: calc(2 * var(--u)); background: var(--gf-lilac-50); overflow: hidden; }
 .dpc-dl__seg-fill { display: block; height: 100%; background: var(--gf-purple); transform-origin: 0 50%; }
 /* rides the road: its wheels sit on the line (comp: bottom 27.99 of the stepper) */
-.dpc-dl__courier { position: absolute; left: 0; bottom: calc(-4.66 * var(--u)); z-index: 1; width: calc(37.318 * var(--u)); height: auto; }
+/* leans about its wheels (Delivery.tsx: velocity lean + bob) */
+.dpc-dl__courier { position: absolute; left: 0; bottom: calc(-4.66 * var(--u)); z-index: 1; width: calc(37.318 * var(--u)); height: auto; transform-origin: 50% 100%; }
 .dpc-dl__labels { display: flex; justify-content: space-between; margin-top: calc(3.5 * var(--u)); height: calc(27.99 * var(--u)); }
 .dpc-dl__label {
   flex: none; width: calc(18.66 * var(--u)); display: flex; justify-content: center; text-align: center;
@@ -373,22 +404,35 @@
 /* a zero-size anchor at the stage's centre-top; the art hangs off it in comp px */
 .dpc-sanal__art { --u: min(calc(100cqi / 1440), 1px); position: absolute; left: 50%; top: 0; width: 0; height: 0; z-index: 0; }
 .dpc-sanal__hand {
-  position: absolute; left: calc(171.5 * var(--u)); top: calc(24 * var(--u)); transform: translateX(-50%);
+  position: absolute; left: calc(171.5 * var(--u)); top: calc(24 * var(--u)); translate: -50% 0;
   width: calc(937 * var(--u)); height: calc(1564 * var(--u)); overflow: hidden;
 }
 .dpc-sanal__hand img { position: absolute; max-width: none; width: 247.8%; height: 124.54%; left: -72.36%; top: -24.54%; }
-.dpc-sanal__ring { position: absolute; border: 2px solid var(--gf-purple); transform: translate(-50%, -50%) rotate(-40.61deg); }
+/* individual translate/rotate, so the rings' Motion transform (fan, pulse,
+   tighten — Sanal.tsx) composes on top of the comp's placement */
+.dpc-sanal__ring { position: absolute; border: 2px solid var(--gf-purple); translate: -50% -50%; rotate: -40.61deg; }
 .dpc-sanal__ring--1 { left: calc(329.8 * var(--u)); top: calc(321.8 * var(--u)); width: calc(596.708 * var(--u)); height: calc(386.153 * var(--u)); border-radius: calc(50 * var(--u)); opacity: .5; }
 .dpc-sanal__ring--2 { left: calc(323.9 * var(--u)); top: calc(326.9 * var(--u)); width: calc(678.574 * var(--u)); height: calc(449.35 * var(--u)); border-radius: calc(70 * var(--u)); opacity: .25; }
 .dpc-sanal__ring--3 { left: calc(321.7 * var(--u)); top: calc(328.7 * var(--u)); width: calc(755.583 * var(--u)); height: calc(513.322 * var(--u)); border-radius: calc(110 * var(--u)); opacity: .1; }
 
 .dpc-sanal__col { position: relative; z-index: 2; width: min(660px, 100%); display: flex; flex-direction: column; align-items: flex-start; gap: 32px; }
 .dpc-sanal__list { width: 100%; list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.dpc-sanal__cards { width: 100%; }
 .dpc-sanal__card {
+  position: relative; overflow: hidden;
   height: 220px; padding: 32px; border-radius: 32px;
   display: flex; flex-direction: column; justify-content: space-between;
   background: rgb(0 0 0 / .05);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  transition: background-color .45s var(--ease-out), box-shadow .45s var(--ease-out);
+}
+/* the feature the rings are acting out: the glass lifts toward white */
+.dpc-sanal__card.is-active { background: rgb(255 255 255 / .55); box-shadow: 0 12px 32px rgb(93 62 188 / .08); }
+.dpc-sanal__hit { position: absolute; inset: 0; z-index: 1; }
+/* the cycle's clock, along the card's foot */
+.dpc-sanal__prog {
+  position: absolute; left: 32px; right: 32px; bottom: 0; height: 2px; border-radius: 1px;
+  background: var(--gf-purple); opacity: .35; transform-origin: 0 50%;
 }
 .dpc-sanal__glyph { display: grid; grid-template-columns: repeat(2, 24px); grid-template-rows: repeat(2, 24px); }
 .dpc-sanal__glyph i { display: block; }
@@ -414,11 +458,16 @@
   box-shadow: inset -1px 1px 2px rgb(255 255 255 / .5);
   color: var(--gf-purple); font-size: calc(16 * var(--u)); font-weight: var(--fw-semibold);
 }
+/* the coins ride this layer round the art's dotted orbit (centre 237.72, 107.35) */
+.dpc-cb__orbit { position: absolute; inset: 0; transform-origin: calc(237.72 * var(--u)) calc(107.35 * var(--u)); pointer-events: none; }
+.dpc-cb__art .cb-card, .dpc-cb__art .cb-orbit { transform-box: fill-box; transform-origin: 50% 50%; }
 .dpc-cb__coin--a { left: calc(137.85 * var(--u)); top: calc(8.62 * var(--u)); }
 .dpc-cb__coin--b { left: calc(279.56 * var(--u)); top: calc(152.08 * var(--u)); }
 
+/* the grid cell holds the perspective; the card inside tilts (TiltCard) */
+.dbc-abroad__cell { perspective: 1400px; }
 .dbc-abroad__card {
-  position: relative; overflow: hidden;
+  position: relative; overflow: hidden; height: 100%;
   border-radius: 6px; background: var(--gf-purple); border: 2.274px solid rgb(255 255 255 / .25);
   box-shadow: 0 4.55px 9.1px rgb(0 0 0 / .08);
 }
@@ -438,6 +487,14 @@
 }
 .dpc-fx__tag--eur { left: calc(5 * var(--u)); top: calc(62 * var(--u)); }
 .dpc-fx__tag--usd { left: calc(305.55 * var(--u)); top: calc(14 * var(--u)); }
+/* coins EUR/USD roll into the wallet (story only; gone at rest). Parked on
+   the wallet's centre (177, 48); the story starts them 116 out at each flag. */
+.dpc-fx__coin {
+  position: absolute; left: calc(170 * var(--u)); top: calc(41 * var(--u));
+  width: calc(14 * var(--u)); height: calc(14 * var(--u)); border-radius: 50%; opacity: 0; pointer-events: none;
+  background: linear-gradient(212.6deg, #ffeb88 8.2%, var(--gf-yellow) 73.5%);
+  box-shadow: inset 0 0 0 calc(1.5 * var(--u)) rgb(255 255 255 / .45);
+}
 
 /* TL wallet, from its layers (percentages of the 96 tile) */
 .dpc-wallet {
@@ -448,7 +505,7 @@
     drop-shadow(0 calc(15 * var(--u)) calc(16.5 * var(--u)) rgb(0 0 0 / .05));
 }
 .dpc-wallet > * { position: absolute; display: block; }
-.dpc-wallet__flap { left: calc(26.05 * var(--u)); top: calc(20.99 * var(--u)); width: calc(26.57 * var(--u)); height: auto; }
+.dpc-wallet__flap { left: calc(26.05 * var(--u)); top: calc(20.99 * var(--u)); width: calc(26.57 * var(--u)); height: auto; transform-origin: 8% 92%; }
 .dpc-wallet__body { left: 26.79%; top: 32.14%; right: 26.79%; bottom: 32.14%; border-radius: calc(6.857 * var(--u)); background: var(--gf-purple); }
 .dpc-wallet__face {
   left: 30.36%; top: 35.71%; right: 30.36%; bottom: 35.71%; border-radius: calc(5.143 * var(--u));
@@ -511,7 +568,7 @@
 
   .dbc-abroad { padding-bottom: 32px; }
   .dbc-tile-cb { flex: none; }
-  .dbc-abroad__card { aspect-ratio: 476 / 700; width: min(420px, 100%); margin-inline: auto; }
+  .dbc-abroad__card { aspect-ratio: 476 / 700; width: min(420px, 100%); height: auto; margin-inline: auto; }
   .dbc-abroad__bento .dpc-photo { aspect-ratio: 16 / 10; }
 }
 

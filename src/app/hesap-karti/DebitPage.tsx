@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import type { CSSProperties } from "react";
 import { MotionConfig } from "motion/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,7 +9,10 @@ import ProductHero, { renderHeroTitle } from "@/components/ProductHero";
 import SectionHead from "@/components/SectionHead";
 import BenefitTile from "@/components/BenefitTile";
 import FaqCarousel from "@/components/FaqCarousel";
+import Parallax from "@/components/Parallax";
+import TiltCard from "@/components/TiltCard";
 import Reveal, { RevealItem } from "@/components/Reveal";
+import { CalendarReturnIcon, CardIcon } from "@/components/art/HeroIcons";
 import Delivery from "./Delivery";
 import Sanal from "./Sanal";
 import { GetirparaVisual, AbonelikVisual, CashbackVisual, FxVisual } from "./visuals";
@@ -34,17 +36,10 @@ import "./debit.css";
 
 const I = "/assets/img/hesap-karti";
 
+/* inline + animated (src/components/art/HeroIcons.tsx); delays follow reading order */
 const TITLE_ICONS = {
-  calendar: (
-    <span className="dpc-hero__icon" style={{ "--icon-h": "0.9em", "--icon-y": "-0.16em" } as CSSProperties}>
-      <img src={`${I}/hero-icon-calendar.svg`} alt="" width={62.72} height={58.24} />
-    </span>
-  ),
-  card: (
-    <span className="dpc-hero__icon dpc-hero__icon--rot" style={{ "--icon-y": "-0.24em" } as CSSProperties}>
-      <img src={`${I}/hero-icon-card.svg`} alt="" width={72.4041} height={64.2542} />
-    </span>
-  ),
+  calendar: <CalendarReturnIcon delay={0.8} />,
+  card: <CardIcon delay={1.0} />,
 };
 
 export default function DebitPage() {
@@ -103,7 +98,11 @@ export default function DebitPage() {
               <BenefitTile className="dbc-tile-ab" visual={<AbonelikVisual />} title={B.abonelik.title} />
               <BenefitTile
                 photo
-                visual={<img className="dpc-tile__zoom" loading="lazy" src="/assets/img/kartlar/benefit-photo.jpg" alt="" width={1300} height={1625} />}
+                visual={
+                  <Parallax zoom={1.12}>
+                    <img className="dpc-tile__zoom" loading="lazy" src="/assets/img/kartlar/benefit-photo.jpg" alt="" width={1300} height={1625} />
+                  </Parallax>
+                }
                 title={B.iade.title}
               />
             </Reveal>
@@ -124,15 +123,22 @@ export default function DebitPage() {
               <div className="dpc-bento__stack">
                 <BenefitTile className="dbc-tile-cb" visual={<CashbackVisual />} title={X.cashback} />
                 <RevealItem className="dpc-photo">
-                  <img src={`${I}/abroad-bridge.jpg`} alt="" width={944} height={688} loading="lazy" />
+                  <Parallax y={6}>
+                    <img src={`${I}/abroad-bridge.jpg`} alt="" width={944} height={688} loading="lazy" />
+                  </Parallax>
                 </RevealItem>
               </div>
-              <RevealItem className="dbc-abroad__card">
-                <img src={`${I}/abroad-card.webp`} alt="" width={920} height={1407} loading="lazy" />
+              {/* the card you hold: tilts to the pointer, swings up on entry */}
+              <RevealItem className="dbc-abroad__cell">
+                <TiltCard className="dbc-abroad__card">
+                  <img src={`${I}/abroad-card.webp`} alt="" width={920} height={1407} loading="lazy" />
+                </TiltCard>
               </RevealItem>
               <div className="dpc-bento__stack">
                 <RevealItem className="dpc-photo">
-                  <img src={`${I}/abroad-berlin.jpg`} alt="" width={944} height={1259} loading="lazy" />
+                  <Parallax y={-6}>
+                    <img src={`${I}/abroad-berlin.jpg`} alt="" width={944} height={1259} loading="lazy" />
+                  </Parallax>
                 </RevealItem>
                 <BenefitTile className="dbc-tile-fx" visual={<FxVisual />} title={X.fx} />
               </div>

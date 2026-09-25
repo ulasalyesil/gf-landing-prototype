@@ -5,7 +5,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "motion/react";
-import Reveal, { RevealItem } from "@/components/Reveal";
+import Reveal, { RevealItem, useReducedMotionSafe } from "@/components/Reveal";
+import { usePreloadImages } from "@/components/usePreloadImages";
 import { CREDIT_BRANDS } from "@/data/content";
 
 /* "maximum taksit" — merchant tabs (Figma 22630:15864).
@@ -13,9 +14,15 @@ import { CREDIT_BRANDS } from "@/data/content";
    drives the detail row beneath (photo + brand / offer + copy + link).
    Click-only: the comp hides its pause control, so this one does not rotate.
    ARIA tabs with automatic activation (←/→, Home/End). Logo crops are the
-   comp's — two of the exported images carry padding around the mark. */
+   comp's — two of the exported images carry padding around the mark.
+
+   Motion pass (2026-09-25): the grey cell glides from brand to brand (one
+   shared-layout element, not six fills); the photo wipes in from the side
+   of the brand you moved toward; the copy rolls in with a short blur and
+   the offer's slash turns into place. */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+const WIPE = { duration: 0.7, ease: [0.65, 0, 0.35, 1] as const };
 
 export default function BrandTabs() {
   const { brands } = CREDIT_BRANDS;
@@ -24,6 +31,11 @@ export default function BrandTabs() {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const b = brands[index];
   const stripRef = useRef<HTMLDivElement>(null);
+  usePreloadImages(stripRef, brands.map((br) => br.photo));
+  const reduced = useReducedMotionSafe();
+  // which way the pick moved, for the photo wipe
+  const [seen, setSeen] = useState({ index, dir: 1 });
+  if (seen.index !== index) setSeen({ index, dir: index > seen.index ? 1 : -1 });
 
   /* ≤920 the strip scrolls sideways and the pre-selected brand (Beymen, 4th)
      starts off-screen; bring the active cell into the strip's view. Scrolls
@@ -91,6 +103,14 @@ export default function BrandTabs() {
                   className={clsx("ckp-brands__tab", on && "is-active")}
                   onClick={() => setIndex(i)}
                 >
+                  {on && (
+                    <motion.span
+                      layoutId={`${uid}-cell`}
+                      className="ckp-brands__cell"
+                      aria-hidden="true"
+                      transition={{ type: "spring", duration: 0.5, bounce: 0.12 }}
+                    />
+                  )}
                   <span
                     className={clsx("ckp-brands__logo", br.crop && "is-cropped")}
                     style={{ width: br.w, height: br.h }}
@@ -125,10 +145,11 @@ export default function BrandTabs() {
                   height={963}
                   loading="lazy"
                   className="ckp-brands__photo"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4, ease: EASE }}
+                  initial={reduced ? { opacity: 0 } : { clipPath: seen.dir > 0 ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)", scale: 1.06, zIndex: 1 }}
+                  animate={reduced ? { opacity: 1 } : { clipPath: "inset(0 0 0 0%)", scale: 1, zIndex: 1 }}
+                  /* pushes in under the incoming wipe (animated, so it stays until covered; scaling up never shows the frame) */
+                  exit={reduced ? { opacity: 0, transition: { duration: 0.4, ease: EASE } } : { zIndex: 0, scale: 1.1, transition: { duration: WIPE.duration, ease: EASE } }}
+                  transition={reduced ? { duration: 0.4, ease: EASE } : { clipPath: WIPE, scale: { duration: 1, ease: EASE } }}
                 />
               </AnimatePresence>
             </div>
@@ -137,17 +158,23 @@ export default function BrandTabs() {
                 <motion.div
                   key={b.id}
                   className="ckp-brands__copy-inner"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4, transition: { duration: 0.12 } }}
-                  transition={{ duration: 0.22, ease: EASE }}
+                  initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, y: -4, filter: "blur(2px)", transition: { duration: 0.12 } }}
+                  transition={{ duration: 0.3, ease: EASE }}
                 >
                   <h3 className="ckp-brands__name">
                     {/* spaces for the accessible name; flex drops them visually */}
                     <span>{b.name}</span>{" "}
-                    <span className="ckp-brands__slash" aria-hidden="true">
+                    <motion.span
+                      className="ckp-brands__slash"
+                      aria-hidden="true"
+                      initial={{ rotate: -60, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      transition={{ type: "spring", duration: 0.5, bounce: 0.3, delay: 0.08 }}
+                    >
                       /
-                    </span>{" "}
+                    </motion.span>{" "}
                     <span className="ckp-brands__offer">{b.offer}</span>
                   </h3>
                   <p className="ckp-brands__desc">{b.desc}</p>

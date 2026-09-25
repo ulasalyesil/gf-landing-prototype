@@ -4,6 +4,7 @@
 import React from "react";
 import clsx from "clsx";
 import Reveal, { RevealItem } from "@/components/Reveal";
+import WordReveal from "@/components/WordReveal";
 
 /* Product-page section head: eyebrow pill → title → sub (card pages v2).
    Every section on /kredi-karti and /hesap-karti opens with this, centred by
@@ -45,7 +46,7 @@ export default function SectionHead({
       <div className="dpc-head__text">
         <RevealItem>
           <h2 className="dpc-title" id={titleId}>
-            {title}
+            {typeof title === "string" ? <WordReveal text={title} /> : title}
           </h2>
         </RevealItem>
         {sub && (

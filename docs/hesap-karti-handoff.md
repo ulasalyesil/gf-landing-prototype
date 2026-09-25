@@ -126,8 +126,66 @@ on live resize.
 Not covered: Firefox (no `text-box` trim there — the delivery step gaps open slightly),
 Safari by hand, screen readers, 200% zoom.
 
-**Known and not from this work:** `Reveal` hydrates with an attribute mismatch under
-`prefers-reduced-motion` on every page; the landing's `.loan__snap` briefly overflows at
-load.
+**Known and not from this work:** the landing's `.loan__snap` briefly overflows at load.
+(The `Reveal` reduced-motion hydration mismatch is fixed on both card pages as of
+2026-09-25 — see §5; the landing still logs one from its own `useReducedMotion` calls.)
+
+---
+
+## 5. Motion (2026-09-25)
+
+The layout is the comp; motion adds time on top. **Every rest frame is the comp** — SSR,
+≤767 and `prefers-reduced-motion` render exactly the static page, and nothing loops.
+
+### The pieces
+
+| Piece | File | What it does |
+|---|---|---|
+| `useStory` | `components/useStory.ts` | One scoped Motion sequence per illustration: primed on mount, plays once in view (after the tile's Reveal), replays on a 150ms hover dwell with a 2.5s cooldown, ambient `loops` paused off-screen |
+| `Parallax` | `components/Parallax.tsx` | Scroll drift/settle for a photo inside a clipping frame, overscanned so no edge shows |
+| `TiltCard` | `components/TiltCard.tsx` | Pointer tilt + glare on springs, swings up from a lean on entry; fine pointers only |
+| `WordReveal` | `components/WordReveal.tsx` | Section titles rise word by word; rides `SectionHead`'s Reveal |
+| `usePreloadImages` | `components/usePreloadImages.ts` | Warms a tab set's photos so a wipe never reveals a blank |
+| inline art | `components/art/HeroIcons.tsx`, `kredi-karti/SealArt.tsx`, `hesap-karti/CashbackArt.tsx` | The Figma SVGs inlined with layer classes so parts can move; ids are `useId`-suffixed |
+
+Per-tile and per-section behaviour is described in the header comment of each file.
+
+### The `useStory` contract
+
+- Every animated property is an explicit `[from, …, to]` array. Index 0 is the primed
+  state, the last entry is the rest state — **the rest state must equal the CSS/comp**.
+  Tripwire 5 (explicit `initial`) is satisfied by construction.
+- A story-only element (the drop coins, the island pill, the ripple) is `opacity: 0` in
+  CSS and ends on `opacity: 0`.
+- Loops' first keyframe is their rest state too; they are stopped for a replay and
+  restarted after it.
+- Counters are `MotionValue`s initialised to the comp number (`₺45`, `₺8.501`), so the
+  server HTML shows the real figure.
+
+### New tripwires
+
+**9 · Motion's transform replaces a CSS `transform`.** Anything a story moves must not
+carry a positioning `transform` in CSS. Those rules now use the individual `translate` /
+`rotate` properties, which compose with Motion (`.dpc-ab__note`, `.dpc-sanal__ring`,
+`.dpc-sanal__hand`). Check before animating any other element.
+
+**10 · Tailwind preflight gives SVGs `max-width: 100%`.** An inline SVG sized in comp px
+larger than its box (the delivery route overlay) needs `max-width: none`, like the images.
+
+**11 · `AnimatePresence` exits need an animated value.** A bare `zIndex` exit finishes
+instantly and unmounts the outgoing photo before the wipe covers it. The photo swaps exit
+with `scale: 1.1` (a push-in that never shows the frame) and fall back to an opacity
+crossfade under reduced motion.
+
+**12 · Media-query hooks must be hydration-safe.** `useMotionOff` and
+`useReducedMotionSafe` (both in `Reveal.tsx`) return false until mounted. Motion's own
+`useReducedMotion` reads the query on the first client render — deriving markup or
+motion props from it breaks hydration under reduced motion.
+
+### Verification harness
+
+`scratchpad/motion-verify.mjs <width> [reduce]` (gitignored, uses `scratchpad/cdp.mjs`)
+walks both pages in real headless Chrome and prints the rest values of every story,
+overflow, and console errors.
 
 Project-wide conventions live in `AGENTS.md`; the live task list is `TODO.md`.

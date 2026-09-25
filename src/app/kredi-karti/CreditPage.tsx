@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import type { CSSProperties } from "react";
 import { MotionConfig } from "motion/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,7 +9,9 @@ import ProductHero, { renderHeroTitle } from "@/components/ProductHero";
 import SectionHead from "@/components/SectionHead";
 import BenefitTile from "@/components/BenefitTile";
 import FaqCarousel from "@/components/FaqCarousel";
+import Parallax from "@/components/Parallax";
 import Reveal from "@/components/Reveal";
+import { CalendarPercentIcon, ChartIcon, CardIcon } from "@/components/art/HeroIcons";
 import { MaximumVisual, TransactionVisual, AidatVisual } from "./visuals";
 import TaksitTabs from "./TaksitTabs";
 import CampaignSlider from "./CampaignSlider";
@@ -31,25 +32,11 @@ import "./credit.css";
    `.dpc` on <body> is what the shared chrome hangs off (footer background,
    hamburger colour) — same as /hesap-karti. */
 
-const I = "/assets/img/kredi-karti";
-
+/* inline + animated (src/components/art/HeroIcons.tsx); delays follow reading order */
 const TITLE_ICONS = {
-  calendar: (
-    <span className="dpc-hero__icon" style={{ "--icon-h": "0.891em", "--icon-y": "-0.14em" } as CSSProperties}>
-      <img src={`${I}/hero-icon-calendar.svg`} alt="" width={59.7996} height={57.0256} />
-      <img className="dpc-hero__icon-glyph" src={`${I}/hero-icon-calendar-glyph.svg`} alt="" width={20.4331} height={20.4538} />
-    </span>
-  ),
-  chart: (
-    <span className="dpc-hero__icon" style={{ "--icon-h": "0.844em", "--icon-y": "-0.15em" } as CSSProperties}>
-      <img src={`${I}/hero-icon-chart.svg`} alt="" width={64.0498} height={54.0276} />
-    </span>
-  ),
-  card: (
-    <span className="dpc-hero__icon dpc-hero__icon--rot" style={{ "--icon-y": "-0.24em" } as CSSProperties}>
-      <img src={`${I}/hero-icon-card.svg`} alt="" width={72.4004} height={64.251} />
-    </span>
-  ),
+  calendar: <CalendarPercentIcon delay={0.8} />,
+  chart: <ChartIcon delay={0.95} />,
+  card: <CardIcon delay={1.1} />,
 };
 
 export default function CreditPage() {
@@ -104,7 +91,11 @@ export default function CreditPage() {
               </div>
               <BenefitTile
                 photo
-                visual={<img className="dpc-tile__zoom" loading="lazy" src="/assets/img/kartlar/benefit-photo.jpg" alt="" width={1300} height={1625} />}
+                visual={
+                  <Parallax zoom={1.12}>
+                    <img className="dpc-tile__zoom" loading="lazy" src="/assets/img/kartlar/benefit-photo.jpg" alt="" width={1300} height={1625} />
+                  </Parallax>
+                }
                 title={B.kampanya.title}
                 desc={B.kampanya.desc}
               />

@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import clsx from "clsx";
 import {
+  AnimatePresence,
   animate,
   motion,
   useInView,
@@ -14,9 +15,10 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  useVelocity,
 } from "motion/react";
 import SectionHead from "@/components/SectionHead";
-import Reveal from "@/components/Reveal";
+import Reveal, { useMotionOff } from "@/components/Reveal";
 import { DEBIT_DELIVERY } from "@/data/content";
 
 /* "hızlı kart teslimatı" — the scroll-scrubbed delivery section (card pages
@@ -45,7 +47,19 @@ import { DEBIT_DELIVERY } from "@/data/content";
      rides the courier along the road as an x-transform only.
    In "off" mode `r` follows the open step instead, so the card still tells
    the story at phone widths. The comp's frozen state (step 01, courier just
-   past "yolda") is r = 1.28. */
+   past "yolda") is r = 1.28.
+
+   MOTION PASS (2026-09-25) — add-ons that only READ `r`, the engine is as
+   it was:
+   - the courier has weight: it leans into the road with r's velocity
+     (sprung, ±12°) and its wheels bob with distance travelled, settling
+     upright when the road stops;
+   - a route draws across the phone's map in step with the road, a dot
+     riding its head toward a pulsing destination pin (the path is traced
+     over delivery-map.png's streets — Zeytinoğlu Cd. into Nisbetiye Cd. —
+     inside the part of the map the card doesn't cover);
+   - the status rolls like a departure board; "teslim edildi" lands with a
+     ring off the last node. */
 
 const SCRUB_PX = 1400;
 /* driver p → road r. Holds at each stage so the list and the card change on
@@ -83,6 +97,9 @@ export function useStepsMode(): Mode {
 }
 
 const A = "/assets/img/hesap-karti";
+/* in delivery-map.png's own px (640²); visible window ≈ x 0–340, y 89–329 */
+const ROUTE = "M226 100 C230 160 237 225 240 280 C241 304 250 314 266 312 C280 310 292 300 300 290";
+const PIN = { x: 300, y: 290 };
 
 export default function Delivery() {
   const D = DEBIT_DELIVERY;
@@ -173,11 +190,36 @@ export default function Delivery() {
   }, [travel]);
   /* dot centres sit half a dot in from each end; the courier centre runs
      between them (a comp-px dot is 18.66 of a 336 road) */
+  const motionOff = useMotionOff();
+  const onScreen = useInView(trackRef, { margin: "100px 0px" });
+  const rVel = useVelocity(r);
+  const lean = useSpring(
+    useTransform(rVel, (v) => (reduced ? 0 : Math.max(-12, Math.min(12, v * 5)))),
+    { stiffness: 260, damping: 26 }
+  );
   const courierX = useTransform(() => {
     const w = travel.get();
     const dot = (w * 18.66) / 336;
-    return `translateX(${(dot / 2 + (r.get() / 3) * (w - dot)).toFixed(1)}px) translateX(-50%)`;
+    const v = r.get();
+    const speed = reduced ? 0 : Math.min(1, Math.abs(rVel.get()) / 1.5);
+    const bob = Math.sin(v * 42) * 1.4 * speed;
+    return `translateX(${(dot / 2 + (v / 3) * (w - dot)).toFixed(1)}px) translateX(-50%) translateY(${bob.toFixed(2)}px) rotate(${lean.get().toFixed(2)}deg)`;
   });
+
+  // map route: drawn to r/3, a dot at its head
+  const routeP = useTransform(r, (v) => clamp01(v / 3));
+  const routeRef = useRef<SVGPathElement>(null);
+  const headX = useMotionValue(PIN.x);
+  const headY = useMotionValue(PIN.y);
+  const placeHead = (v: number) => {
+    const path = routeRef.current;
+    if (!path) return;
+    const pt = path.getPointAtLength(path.getTotalLength() * clamp01(v / 3));
+    headX.set(pt.x);
+    headY.set(pt.y);
+  };
+  useMotionValueEvent(r, "change", placeHead);
+  useEffect(() => placeHead(r.get()));
 
   const onStep = (i: number) => {
     if (mode === "scrub") {
@@ -221,6 +263,23 @@ export default function Delivery() {
                   <span className="dpc-dl__glass" />
                   <span className="dpc-dl__map">
                     <img loading="lazy" src={`${A}/delivery-map.png`} alt="" width={640} height={640} />
+                    <svg className="dpc-dl__route" viewBox="0 0 640 640" width="640" height="640" fill="none">
+                      <path className="dpc-dl__route-bed" d={ROUTE} />
+                      <motion.path ref={routeRef} className="dpc-dl__route-line" d={ROUTE} style={{ pathLength: routeP }} />
+                      {!motionOff && onScreen && (
+                        <motion.circle
+                          className="dpc-dl__route-pin-pulse"
+                          cx={PIN.x}
+                          cy={PIN.y}
+                          r="9"
+                          initial={{ scale: 1, opacity: 0.5 }}
+                          animate={{ scale: 2.8, opacity: 0 }}
+                          transition={{ duration: 2.2, ease: "easeOut", repeat: Infinity }}
+                        />
+                      )}
+                      <circle className="dpc-dl__route-pin" cx={PIN.x} cy={PIN.y} r="6" />
+                      <motion.circle className="dpc-dl__route-head" cx={headX} cy={headY} r="7" />
+                    </svg>
                   </span>
                   <img loading="lazy" className="dpc-dl__island" src={`${A}/delivery-island.svg`} alt="" width={76.9575} height={26.8456} />
                   <span className="dpc-dl__frame" />
@@ -228,7 +287,20 @@ export default function Delivery() {
 
                 <div className="dpc-dl__card">
                   <div className="dpc-dl__card-top">
-                    <span className="dpc-dl__status">{t.stages[Math.min(3, Math.max(0, stage))]}</span>
+                    <span className="dpc-dl__status">
+                      <AnimatePresence mode="popLayout" initial={false}>
+                        <motion.span
+                          key={stage}
+                          className="dpc-dl__status-in"
+                          initial={{ y: "80%", opacity: 0 }}
+                          animate={{ y: "0%", opacity: 1 }}
+                          exit={{ y: "-80%", opacity: 0 }}
+                          transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+                        >
+                          {t.stages[Math.min(3, Math.max(0, stage))]}
+                        </motion.span>
+                      </AnimatePresence>
+                    </span>
                     <span className="dpc-dl__eta">
                       <img loading="lazy" src={`${A}/icon-clock.svg`} alt="" width={18.66} height={18.66} />
                       {t.eta}
@@ -241,12 +313,27 @@ export default function Delivery() {
                     <span className="dpc-dl__road" ref={roadRef}>
                       {[0, 1, 2, 3].map((i) => (
                         <span key={i} className="dpc-dl__node">
-                          <img loading="lazy"
-                            src={`${A}/${stage >= i ? "stepper-done" : "stepper-todo"}.svg`}
-                            alt=""
-                            width={18.6589}
-                            height={18.6589}
-                          />
+                          <span className="dpc-dl__dot">
+                            {/* re-keyed on completion, so a node pops as the road reaches it */}
+                            <motion.img loading="lazy"
+                              key={stage >= i ? "done" : "todo"}
+                              src={`${A}/${stage >= i ? "stepper-done" : "stepper-todo"}.svg`}
+                              alt=""
+                              width={18.6589}
+                              height={18.6589}
+                              initial={{ scale: 0.55 }}
+                              animate={{ scale: 1 }}
+                              transition={{ type: "spring", duration: 0.45, bounce: 0.45 }}
+                            />
+                            {i === 3 && stage === 3 && (
+                              <motion.span
+                                className="dpc-dl__burst"
+                                initial={{ scale: 0.6, opacity: 0.7 }}
+                                animate={{ scale: 2.6, opacity: 0 }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                              />
+                            )}
+                          </span>
                           {i < 3 && (
                             <span className="dpc-dl__seg">
                               <motion.span className="dpc-dl__seg-fill" style={{ scaleX: fill[i] }} />

@@ -1,7 +1,9 @@
 "use client";
 
-import React, { Fragment } from "react";
-import Reveal, { RevealItem } from "@/components/Reveal";
+import React, { Fragment, useEffect, useRef } from "react";
+import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
+import Reveal, { RevealItem, useMotionOff } from "@/components/Reveal";
+import { useStory } from "@/components/useStory";
 
 /* Hero title from content: one array per line; a "@key" segment is an inline
    icon from `icons`. Segments are joined with real spaces (they are also the
@@ -34,6 +36,41 @@ export function renderHeroTitle(lines: string[][], icons: Record<string, React.R
    `title` and `sub` are nodes: callers own the line breaks, the inline title
    icons (`.dpc-hero__icon`) and the sub's two-tone split (`<em>` = ink). The
    visual comes in through `media`; wrap a photo in `.dpc-hero__media`. */
+
+/* Motion pass (2026-09-25): the photo arrives as a window opening — the frame
+   grows 0.92 → 1 while the picture inside settles 1.12 → 1, over the scroll
+   that brings it up to the upper third. Frame scale is a transform on the
+   wrapper; the picture's zoom reaches the img through `--hero-zoom`, so the
+   page's own crop (object-position) is untouched. Motion off: both at rest. */
+function HeroGrow({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const off = useMotionOff();
+  const on = useMotionValue(0);
+  useEffect(() => {
+    on.set(off ? 0 : 1);
+  }, [off, on]);
+  const { scrollYProgress: p } = useScroll({ target: ref, offset: ["start end", "start 0.3"] });
+  const scale = useTransform(() => (on.get() ? 0.92 + 0.08 * p.get() : 1));
+  const zoom = useTransform(() => (on.get() ? 1.12 - 0.12 * p.get() : 1));
+  return (
+    <motion.div ref={ref} className="dpc-hero__grow" style={{ scale, "--hero-zoom": zoom } as never}>
+      {children}
+    </motion.div>
+  );
+}
+
+/* One sheen across the badge text once the title's icons have played. */
+function BadgeText({ children }: { children: React.ReactNode }) {
+  const scope = useStory<HTMLSpanElement>(
+    [[".dpc-badge__text", { backgroundPositionX: ["100%", "0%"] }, { duration: 1.1, ease: [0.45, 0, 0.2, 1] }]],
+    { delay: 1.5, amount: 1, hoverTarget: "self", rewind: 0 }
+  );
+  return (
+    <span ref={scope} className="dpc-badge__in">
+      <span className="dpc-badge__text">{children}</span>
+    </span>
+  );
+}
 
 export interface ProductHeroProps {
   /** Small pill above the title. Optional icon renders inside it, before the text. */
@@ -70,7 +107,7 @@ export default function ProductHero({
         <Reveal className="dpc-hero__text" stagger={0.08}>
           <RevealItem as="span" className="dpc-badge">
             {badgeIcon}
-            {badge}
+            <BadgeText>{badge}</BadgeText>
           </RevealItem>
           <div className="dpc-hero__copy">
             <RevealItem>
@@ -94,7 +131,7 @@ export default function ProductHero({
         </Reveal>
         {media && (
           <Reveal className="dpc-hero__media-wrap" delay={0.2}>
-            {media}
+            <HeroGrow>{media}</HeroGrow>
           </Reveal>
         )}
       </div>

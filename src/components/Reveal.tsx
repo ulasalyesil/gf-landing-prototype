@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import type { Variants, Transition } from "motion/react";
 
 /* Shared entrance system — replaces the per-component GSAP reveal blocks.
@@ -30,18 +30,35 @@ const hiddenFor = (direction: Direction) => {
   }
 };
 
-/** True when entrances should be skipped (mobile or reduced motion). */
-export function useMotionOff() {
-  const reduced = useReducedMotion();
-  const [mobile, setMobile] = useState(false);
+/* Both hooks below are HYDRATION-SAFE: they return false on the server and
+   on the first client render, and the real value from the first effect on.
+   Motion's useReducedMotion reads the media query during the first client
+   render, so any markup or motion prop derived from it differed from the
+   server HTML under reduced motion — the long-standing "Reveal hydrates with
+   an attribute mismatch" note, and a hard hydration failure once the card
+   pages' motion pass made classes and elements depend on it (2026-09-25). */
+function useMediaFlag(query: string) {
+  const [on, setOn] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const update = () => setMobile(mq.matches);
+    const mq = window.matchMedia(query);
+    const update = () => setOn(mq.matches);
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
-  }, []);
-  return Boolean(reduced) || mobile;
+  }, [query]);
+  return on;
+}
+
+/** prefers-reduced-motion, hydration-safe (see above). */
+export function useReducedMotionSafe() {
+  return useMediaFlag("(prefers-reduced-motion: reduce)");
+}
+
+/** True when entrances should be skipped (mobile or reduced motion). */
+export function useMotionOff() {
+  const reduced = useReducedMotionSafe();
+  const mobile = useMediaFlag("(max-width: 767px)");
+  return reduced || mobile;
 }
 
 const TAGS = {
