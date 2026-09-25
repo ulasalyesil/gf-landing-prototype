@@ -319,9 +319,9 @@ export const CREDIT_HERO = {
 };
 
 export const CREDIT_BENEFITS = {
-  eyebrow: "GETİR KREDİ KARTI",
+  eyebrow: "getirfinans kredi kartı",
   title: "kart avantajları",
-  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
   maximum: {
     title: "maximum taksit ayrıcalığı",
     /* ⚠ COMP: "size özel" sits close to the "kampanyalı, never sana özel" rule */
@@ -333,19 +333,18 @@ export const CREDIT_BENEFITS = {
     txn: { month: "mayıs", day: "24", merchant: "Ikea Bayrampaşa", amount: { cur: "₺", int: "379", dec: ",00" } },
     reward: "₺350",
   },
-  /* ⚠ COMP: Title Case */
-  aidat: { title: "Kart Aidatı Yok" },
+  aidat: { title: "kart aidatı yok" },
   /* ⚠ COMP: the photo's card is printed "debit" */
   kampanya: {
-    title: "yıl boyu değişen Getirpara kampanyaları",
-    desc: "GetirFinans ayrıcalığıyla yılın 365 günü devam eden Getirpara kampanyalarını keşfedin; her harcamanızda anında nakit kazanmanın keyfini yaşayın.",
+    title: "yıl boyu değişen getirpara kampanyaları",
+    desc: "getirfinans ayrıcalığıyla yılın 365 günü devam eden getirpara kampanyalarını keşfedin; her harcamanızda anında nakit kazanmanın keyfini yaşayın.",
   },
 };
 
 /* Taksit categories. The comp draws one category's large photo (eğitim);
    the others reuse their thumbnail's source photo at full size. */
 export const CREDIT_TAKSIT = {
-  eyebrow: "TAKSİT AVANTAJI",
+  eyebrow: "taksit avantajı",
   title: "ücretsiz 3 taksit",
   sub: "seçili sektörlerde harcamanı peşin yap, uygulamada sonradan taksitle",
   /* ⚠ COMP: every category carries the eğitim description */
@@ -362,9 +361,9 @@ export const CREDIT_TAKSIT = {
 };
 
 const CAMPAIGN_GETIR = {
-  title: ["Getir’de", "%1 getirpara"],
+  title: ["getir’de", "%1 getirpara"],
   /* ⚠ COMP: an IKEA/Maximum taksit text under a getirpara headline */
-  desc: "5 Ocak - 31 Aralık 2026 tarihleri arasında Maximum Kart ile IKEA  Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
+  desc: "5 ocak - 31 aralık 2026 tarihleri arasında Maximum Kart ile IKEA Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
   img: "/assets/img/kredi-karti/campaign-getir.jpg",
   href: CTA_TODO,
 };
@@ -378,7 +377,7 @@ export const CREDIT_CAMPAIGNS = {
 
 export const CREDIT_BRANDS = {
   title: "taksit",
-  sub: "Tüm kampanyalarla ilgili detaylı bilgi almak için;",
+  sub: "tüm kampanyalarla ilgili detaylı bilgi almak için;",
   cta: "Detaylı bilgi",
   href: "https://www.maximum.com.tr/kampanyalar",
   linkLabel: "kampanya detayı",
@@ -394,7 +393,7 @@ export const CREDIT_BRANDS = {
   ].map((b) => ({
     ...b,
     offer: "3 taksit",
-    desc: "5 Ocak - 31 Aralık 2026 tarihleri arasında Maximum Kart ile IKEA  Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
+    desc: "5 ocak - 31 aralık 2026 tarihleri arasında Maximum Kart ile IKEA Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
     photo: "/assets/img/kredi-karti/brand-beymen-photo.jpg",
     href: "https://www.maximum.com.tr/kampanyalar",
   })),

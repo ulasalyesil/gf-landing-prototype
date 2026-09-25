@@ -122,7 +122,7 @@ export default function CreditPage() {
         <BrandTabs />
 
         {/* ============ 6. SSS ============ */}
-        <FaqCarousel title={CREDIT_FAQ.title} items={CREDIT_FAQ.items} />
+        <FaqCarousel title={CREDIT_FAQ.title} items={CREDIT_FAQ.items} skin="wide" />
       </main>
       </MotionConfig>
       <Footer variant="inner" />
