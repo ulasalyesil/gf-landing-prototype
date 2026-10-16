@@ -173,26 +173,29 @@ export interface FaqEntry {
 /* ===== /hesap-karti (GFDES-2174) — v2 ===== */
 
 export const DEBIT_HERO = {
-  badge: "dakikalar içinde kapında",
-  /* one array per line; "@key" = an inline icon the page supplies */
-  title: [["geri dönüşü", "@calendar"], ["muhteşem kart", "@card"]],
+  badge: "getirfinans hesap kartı",
+  /* one array per line; "@key" = an inline icon the page supplies.
+     Web comp 283:20631 (2026-10-14) drops the title icons and the legal line. */
+  title: [["geri dönüşü"], ["muhteşem kart"]],
   /* ⚠ COMP: "Maximum" is the credit card's program — this sub is the credit
      hero's, copied. The owner-approved debit sub (2026-08-11) was
      "ücretsiz hesap kartınla harcarken %1 nakit iade kazan". */
   sub: { muted: "Maximum kart’ınızla alışveriş yapın, ", em: "getir’de geçerli ₺350 kazanın!" },
   cta: "karta başvur",
   href: CTA_TODO,
-  legal: CARD_DELIVERY_LEGAL,
   media: { src: "/assets/img/hesap-karti/hero.jpg", width: 2048, height: 1152 },
 };
 
+/* Bento caption: one entry per comp paragraph; `{ b }` is the ink, semibold
+   emphasis. Paragraphs render as blocks, so the comp's breaks hold. */
+export type CaptionLine = string | { b: string };
+
 export const DEBIT_BENEFITS = {
-  eyebrow: "getirfinans hesap kartı",
+  eyebrow: "getir hesap kartı",
   title: "kart avantajları",
-  /* ⚠ COMP: says "kredi kartı" on the debit page */
-  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  sub: "her harcamanızda kazandıran hesap kartı ayrıcalıkları ve fırsatlarıyla tanışın",
   getirpara: {
-    title: "getirmarket ve bitaksi’de yapacağın harcamalara %3 getirpara",
+    title: ["getirmarket ve bitaksi’de yapacağın harcamalara", { b: "%3 getirpara" }] as CaptionLine[],
     /* wallet widget inside the phone */
     wallet: {
       label: "güncel",
@@ -204,10 +207,11 @@ export const DEBIT_BENEFITS = {
       progress: 0.3444,
     },
   },
-  /* ⚠ COMP: Amazon and Spotify marks are drawn in this tile. Legal refused
-     third-party marks on the abonelik tile on 2026-08-10. */
+  /* Web comp 283:22783 (2026-10-14) names the services in text pills; the
+     Amazon/Spotify marks legal refused (2026-08-10) are gone from the art. */
   abonelik: {
-    title: "spotify, amazon ve dahası… seçili dijital aboneliklerde %20 nakit iade",
+    title: ["spotify, amazon ve dahası…", "seçili dijital aboneliklerde", { b: "%20 nakit iade" }] as CaptionLine[],
+    services: ["spotify", "amazon"],
     notification: {
       app: "getirfinans",
       time: "15:08",
@@ -215,24 +219,40 @@ export const DEBIT_BENEFITS = {
     },
   },
   /* ⚠ COMP: "₺1250" — the rest of the site writes "₺1.250" */
-  iade: { title: "fiziksel tüm harcamalarına aylık ₺1250’ye kadar anında nakit iade!" },
+  iade: { title: ["fiziksel tüm harcamalarına", { b: "aylık ₺1250’ye kadar" }, "anında nakit iade!"] as CaptionLine[] },
 };
 
 /* Delivery — the scroll-scrubbed section. Steps drive the list on the right
    and the tracking card's stepper on the left together. */
 export const DEBIT_DELIVERY = {
-  eyebrow: "getirfinans hesap kartı",
+  eyebrow: "getir hesap kartı",
   title: "hızlı kart teslimatı",
   sub: "kartın dakikalar içinde kapında",
+  /* Web comp 324:12596 (2026-10-14). ⚠ COMP: only 01 has a description;
+     02/03 carry a hidden copy of 01's in the file. */
   steps: [
-    {
-      title: "ücretsiz kurye teslim etsin",
-      desc: "Kuryemiz, yeni kartınızı dakikalar içinde doğrudan adresinize güvenle teslim etsin.",
-    },
-    /* ⚠ COMP: step 02 repeats step 01's title and has no description */
+    { title: "kartını iste", desc: "hesap kartını uygulamadan tek dokunuşla iste" },
     { title: "ücretsiz kurye teslim etsin", desc: "" },
     { title: "kazanmaya başla", desc: "" },
   ],
+  /* one card per step, front to back (324:12555 / 12546 / 12490) */
+  cards: [
+    {
+      title: "getir hesap kartı",
+      desc: ["harcadıkça getirpara ve nakit iade", "kazan. Akbank ve Fibabanka", "atm’lerinden ücretsiz para çek/yatır!"],
+    },
+    { title: "kurye takip", desc: [] as string[] },
+    { title: "harcarken kazan", desc: [] as string[] },
+  ],
+  /* the two wallets on card 3 */
+  wallets: {
+    iade: { label: "bu ayki", brand: "nakit iade", amount: "0", total: "₺3.293,00" },
+    getirpara: { label: "güncel", brand: "getirpara", amount: "45", total: "₺8.501,00" },
+    cap: "1.250",
+    unit: "/ aylık",
+    totalLabel: "toplam kazancın",
+  },
+  legal: `*${CARD_DELIVERY_LEGAL}`,
   cta: "detaylı bilgi",
   href: CTA_TODO,
   tracking: {
@@ -245,30 +265,45 @@ export const DEBIT_DELIVERY = {
   },
 };
 
+/* Web comp 294:40254 (2026-10-14): dark band, centred head + CTA, three
+   feature cards, the fanned virtual cards below. `em` is the yellow
+   semibold part; `br` starts it on its own line, as the comp breaks it. */
 export const DEBIT_SANAL = {
   id: "sanal-kart",
-  eyebrow: "getirfinans hesap kartı",
+  eyebrow: "sanal hesap kartı",
   title: "sanal hesap kartıyla güvenle harca",
-  /* ⚠ COMP: placeholder sub */
-  sub: "Buraya bir cümle description gelecek",
-  /* comp order (kartlar → internet → limit) */
+  /* ⚠ COMP: reads like a campaigns-page line, not a sanal kart sub */
+  sub: "tüm kampanyalarla ilgili detaylı bilgi almak için;",
   features: [
-    "harcamaların için ayrı kartlar oluştur, rahatça takip et",
-    "internet alışverişlerini güvenle yap",
-    "her kartın için limitini belirle, bütçeni kontrol et",
+    { icon: "cards", text: "harcamaların için ayrı kartlar oluştur,", em: "rahatça takip et", br: true },
+    { icon: "limit", text: "her kartın için limitini belirle,", em: "bütçeni kontrol et", br: false },
+    { icon: "secure", text: "internet alışverişlerini", em: "güvenle yap", br: true },
   ],
   cta: "sanal karta başvur",
   href: CTA_TODO,
 };
 
+/* Web comp 302:40451 (2026-10-14): no eyebrow; two tiles over a photo
+   row with the card in the middle. `em` is the purple semibold part. */
 export const DEBIT_ABROAD = {
-  eyebrow: "getirfinans hesap kartı",
-  /* ⚠ COMP: same title as DEBIT_BENEFITS, and the same "kredi kartı" sub */
-  title: "kart avantajları",
-  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
-  /* comp wording "harcarken de"; the CMO round (2026-08-05) had "da harcarken" */
-  cashback: "yurt dışında harcarken de %1 nakit iade kazan",
-  fx: "harcamalarını avantajlı kurlarla TL olarak rahatça öde",
+  title: ["hesap kartınla", "yurtdışında yapılacaklar listesi"],
+  /* ⚠ COMP: "kredi kartı" on the debit page, and the only capitalised,
+     full-stopped sub on the page */
+  sub: "Her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  cashback: { pre: "yurt dışında da harcarken ", em: "%1 nakit iade kazan", post: "" },
+  fx: { pre: "harcamalarını ", em: "avantajlı kurlarla", post: " TL olarak rahatça öde" },
+  /* city photos: left column top/bottom, right column top/bottom */
+  photos: ["abroad-rome", "abroad-zaanse", "abroad-tokyo", "abroad-paris"],
+};
+
+/* Web comp 319:45165 (2026-10-14): two stat tiles. ⚠ COMP: "535" needs
+   a source (and a date) before launch, like the other claims above. */
+export const DEBIT_EXTRAS = {
+  title: "hesap kartında daha neler var?",
+  items: [
+    { key: "transfer", stat: "7 / 24", label: "ücretsiz para transferi", desc: ["havale, EFT ve FAST"] },
+    { key: "atm", stat: "535", label: "anlaşmalı ATM", desc: ["Fibabanka ve", "Akbank ATM’lerinden", "ücretsiz para çek, yatır"] },
+  ],
 };
 
 /* ⚠ COMP: these answers are about a daily-interest ACCOUNT ("günlük faiz"),
@@ -306,95 +341,81 @@ export const NEWSLETTER = {
 
 /* ===== /kredi-karti (GFDES-2243) — v2 ===== */
 
+/* Web comp 266:4725 (2026-10-16): same hero as debit — badge, gradient title
+   without icons, no legal line, 1728 × 800 photo. */
 export const CREDIT_HERO = {
-  badge: "dakikalar içinde kapında",
-  /* one array per line; "@key" = an inline icon the page supplies */
-  title: [["taksit yapan", "@calendar", "kazandıran", "@chart"], ["aidatsız kredi kartı", "@card"]],
+  badge: "getir kredi kartı",
+  title: [["taksit yapan, kazandıran,"], ["aidatsız kredi kartı"]],
   sub: { muted: "Maximum kart’ınızla alışveriş yapın, ", em: "getir’de geçerli ₺350 kazanın!" },
   cta: "karta başvur",
   href: CTA_TODO,
-  legal: CARD_DELIVERY_LEGAL,
-  /* ⚠ COMP asset is 1024×480 for a 1298×607 slot (0.79× at 1x) */
-  media: { src: "/assets/img/kredi-karti/hero.webp", width: 1024, height: 480 },
+  media: { src: "/assets/img/kredi-karti/hero-skate.jpg", width: 1728, height: 800 },
 };
 
+/* Web comp 266:4834: three equal tiles (maximum · ₺0 · kampanyalar).
+   The ₺350 getirpara tile is gone (meeting 2026-09-28). */
 export const CREDIT_BENEFITS = {
-  eyebrow: "getirfinans kredi kartı",
+  eyebrow: "getir kredi kartı",
   title: "kart avantajları",
-  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın.",
+  sub: "her harcamanızda kazandıran kredi kartı ayrıcalıkları ve fırsatlarıyla tanışın",
   maximum: {
     title: "maximum taksit ayrıcalığı",
     /* ⚠ COMP: "size özel" sits close to the "kampanyalı, never sana özel" rule */
     desc: "Maximum üye iş yerlerindeki alışverişlerinizi, size özel esnek taksit seçenekleriyle bütçenizi yormadan ödeyin",
     rows: ["+1 taksit", "+2 taksit", "+3 taksit"],
   },
-  getirpara: {
-    title: "ilk harcamana ₺350 getirpara",
-    txn: { month: "mayıs", day: "24", merchant: "Ikea Bayrampaşa", amount: { cur: "₺", int: "379", dec: ",00" } },
-    reward: "₺350",
+  aidat: {
+    title: "kart aidatı yok",
+    /* ⚠ COMP: subject and verb disagree ("kredi kartıyla … ödemez") */
+    desc: "getirfinans kredi kartıyla hiçbir zaman kart aidatı ödemez, cebinizden ekstra bir masraf çıkmadan özgürce alışverişin tadını çıkarırsınız!",
   },
-  aidat: { title: "kart aidatı yok" },
   /* ⚠ COMP: the photo's card is printed "debit" */
   kampanya: {
-    title: "yıl boyu değişen getirpara kampanyaları",
+    title: "yıl boyu değişen kampanyalar",
     desc: "getirfinans ayrıcalığıyla yılın 365 günü devam eden getirpara kampanyalarını keşfedin; her harcamanızda anında nakit kazanmanın keyfini yaşayın.",
   },
 };
 
-/* Taksit categories. The comp draws one category's large photo (eğitim);
-   the others reuse their thumbnail's source photo at full size. */
+/* Web comp 266:6805: five photo tiles — two stacked, eczane tall in the
+   middle, two stacked. ⚠ COMP: the diş hekimi label reads "diş hekimde";
+   built as "diş hekiminde". */
 export const CREDIT_TAKSIT = {
   eyebrow: "taksit avantajı",
   title: "ücretsiz 3 taksit",
   sub: "seçili sektörlerde harcamanı peşin yap, uygulamada sonradan taksitle",
-  /* ⚠ COMP: every category carries the eğitim description */
-  categories: [
-    { id: "egitim", label: "eğitimde", img: "/assets/img/kredi-karti/taksit-egitim.webp", thumb: "/assets/img/kredi-karti/taksit-egitim-thumb.jpg" },
-    { id: "veteriner", label: "veterinerde", img: "/assets/img/kredi-karti/taksit-veteriner.jpg", thumb: "/assets/img/kredi-karti/taksit-veteriner-thumb.jpg" },
-    { id: "dis-hekimi", label: "diş hekiminde", img: "/assets/img/kredi-karti/taksit-dis-hekimi.jpg", thumb: "/assets/img/kredi-karti/taksit-dis-hekimi-thumb.jpg" },
-    { id: "eczane", label: "eczanede", img: "/assets/img/kredi-karti/taksit-eczane.jpg", thumb: "/assets/img/kredi-karti/taksit-eczane-thumb.jpg" },
-    { id: "hastane", label: "hastanede", img: "/assets/img/kredi-karti/taksit-hastane.jpg", thumb: "/assets/img/kredi-karti/taksit-hastane-thumb.jpg" },
-  ].map((c) => ({
-    ...c,
-    desc: "Maximum anlaşmalı üye iş yerlerinden yapacağınız taksitli alışverişlerde hem bütçenizi kolayca yönetin.",
-  })),
+  tiles: [
+    { id: "egitim", label: "eğitimde", img: "/assets/img/kredi-karti/taksit-egitim.webp" },
+    { id: "dis-hekimi", label: "diş hekiminde", img: "/assets/img/kredi-karti/taksit-dis-hekimi.jpg" },
+    { id: "eczane", label: "eczanede", img: "/assets/img/kredi-karti/taksit-eczane.jpg", tall: true },
+    { id: "hastane", label: "hastanede", img: "/assets/img/kredi-karti/taksit-hastane.jpg" },
+    { id: "veteriner", label: "veterinerde", img: "/assets/img/kredi-karti/taksit-veteriner.jpg" },
+  ],
 };
 
-const CAMPAIGN_GETIR = {
-  title: ["getir’de", "%1 getirpara"],
-  /* ⚠ COMP: an IKEA/Maximum taksit text under a getirpara headline */
-  desc: "5 ocak - 31 aralık 2026 tarihleri arasında Maximum Kart ile IKEA Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
-  img: "/assets/img/kredi-karti/campaign-getir.jpg",
-  href: CTA_TODO,
-};
-
-export const CREDIT_CAMPAIGNS = {
-  title: "kampanyalar",
-  sub: { em: "getirpara", rest: " kazan, getir, bitaksi ve n11’de harca" },
-  /* ⚠ PLACEHOLDER: the comp draws 1 of 4 slides; slides 2–4 repeat it */
-  slides: [0, 1, 2, 3].map((i) => ({ ...CAMPAIGN_GETIR, id: `getir-${i}` })),
-};
-
+/* "maximum taksit" coverflow — Web comp 292:30840. Lowercase names are the
+   comp's (card titles and logo labels).
+   ⚠ COMP: the active card shows Beymen's photo while the Decathlon logo is
+   the selected one; built in sync. Decathlon has no photo in the comp — its
+   card is a branded placeholder. Every brand carries the same offer and
+   period (placeholder). */
 export const CREDIT_BRANDS = {
   title: "taksit",
   sub: "tüm kampanyalarla ilgili detaylı bilgi almak için;",
-  cta: "Detaylı bilgi",
+  cta: "detaylı bilgi",
   href: "https://www.maximum.com.tr/kampanyalar",
   linkLabel: "kampanya detayı",
-  /* ⚠ COMP: only Beymen has detail copy, and it is the IKEA text; the other
-     brands repeat it with their own name. Logo boxes are the comp's. */
+  periodLabel: "kampanya süresi:",
   brands: [
-    { id: "ikea", name: "IKEA", logo: "/assets/img/kredi-karti/brand-ikea.svg", w: 80, h: 32 },
-    { id: "decathlon", name: "Decathlon", logo: "/assets/img/kredi-karti/brand-decathlon.svg", w: 138.115, h: 27 },
-    { id: "adl", name: "adL", logo: "/assets/img/kredi-karti/brand-adl.png", w: 52, h: 26 },
-    { id: "beymen", name: "Beymen", logo: "/assets/img/kredi-karti/brand-beymen.png", w: 105, h: 14, crop: { w: "110.62%", h: "820.47%", l: "-5.31%", t: "-360.63%" } },
-    { id: "etstur", name: "etstur", logo: "/assets/img/kredi-karti/brand-etstur.png", w: 93, h: 15 },
-    { id: "n11", name: "n11", logo: "/assets/img/kredi-karti/brand-n11.png", w: 67, h: 22, crop: { w: "121.44%", h: "207.95%", l: "-10.53%", t: "-53.98%" } },
+    { id: "ikea", name: "ikea", logo: "/assets/img/kredi-karti/brand-ikea.svg", w: 45, h: 18, photo: "/assets/img/kredi-karti/max-ikea.jpg" },
+    { id: "decathlon", name: "decathlon", logo: "/assets/img/kredi-karti/brand-decathlon.svg", w: 56, h: 11, photo: null },
+    { id: "adl", name: "adl", logo: "/assets/img/kredi-karti/brand-adl.png", w: 35, h: 18, photo: "/assets/img/kredi-karti/max-adl.jpg" },
+    { id: "beymen", name: "beymen", logo: "/assets/img/kredi-karti/brand-beymen.png", w: 59, h: 8, crop: { w: "110.62%", h: "820.47%", l: "-5.31%", t: "-360.63%" }, photo: "/assets/img/kredi-karti/max-beymen.jpg", cell: "#f6f6f6" },
+    { id: "etstur", name: "etstur", logo: "/assets/img/kredi-karti/brand-etstur.png", w: 51, h: 8, photo: "/assets/img/kredi-karti/max-etstur.jpg" },
+    { id: "n11", name: "n11", logo: "/assets/img/kredi-karti/brand-n11.png", w: 37, h: 12, crop: { w: "121.44%", h: "207.95%", l: "-10.53%", t: "-53.98%" }, photo: "/assets/img/kredi-karti/max-n11.jpg" },
   ].map((b) => ({
     ...b,
     offer: "3 taksit",
-    desc: "5 ocak - 31 aralık 2026 tarihleri arasında Maximum Kart ile IKEA Aile üyelerine 20.000 TL ve üzeri alışverişlerde peşin fiyatına 9 taksit fırsatı!",
-    photo: "/assets/img/kredi-karti/brand-beymen-photo.jpg",
+    period: "5 Ocak - 31 Aralık 2026",
     href: "https://www.maximum.com.tr/kampanyalar",
   })),
   initial: 3,

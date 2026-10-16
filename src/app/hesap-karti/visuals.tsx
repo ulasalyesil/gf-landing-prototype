@@ -1,14 +1,14 @@
 /* Created by Claude · INTERNAL */
 "use client";
 
+import { Fragment } from "react";
 import { stagger, useMotionValue, useTransform, motion } from "motion/react";
-import type { AnimationSequence } from "motion/react";
 import { useStory } from "@/components/useStory";
 import { DEBIT_BENEFITS } from "@/data/content";
-import CashbackArt from "./CashbackArt";
 
 /* Bento tile illustrations for /hesap-karti (card pages v2): the benefit
-   bento (Figma 22630:18396) and the abroad bento (22630:19413). Rebuilt from
+   bento (Figma 22630:18396; Web comp 283:22714). The abroad tiles' art moved
+   to Abroad.tsx with the 2026-10-14 comp. Rebuilt from
    the comp's layers — phone outlines, skeleton screens, the wallet widget,
    the iOS notification — so each piece can animate. Geometry is comp px
    through `--u` (see `.dpc-tile__visual`); all of it is decorative.
@@ -18,11 +18,7 @@ import CashbackArt from "./CashbackArt";
    - getirpara: the getir pills light up → a coin drops from getirmarket into
      the wallet → the meter fills and the amounts count up to the comp's.
    - abonelik: the Dynamic Island swells and the nakit iade notification
-     drops out of it, the way iOS does it; the subscriptions pop in beneath.
-   - cashback: a plane flies the dotted trail through the ₺ card; the %1
-     coins pop onto the orbit and then ride it round.
-   - fx: EUR and USD each roll a coin down the dots into the TL wallet,
-     whose flap lifts to take them. */
+     drops out of it, the way iOS does it; the subscription pills pop in beneath. */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const POP = { type: "spring", duration: 0.5, bounce: 0.4 } as const;
@@ -142,9 +138,9 @@ export function GetirparaVisual() {
   );
 }
 
-/** Phone with a nakit iade notification, over the subscription marks. */
+/** Phone with a nakit iade notification, over the subscription pills. */
 export function AbonelikVisual() {
-  const n = DEBIT_BENEFITS.abonelik.notification;
+  const { notification: n, services } = DEBIT_BENEFITS.abonelik;
   /* the island pill, clipped to the island's own width at either end */
   const ISL = "inset(0% 30.76% round 99px)";
   const WIDE = "inset(0% 0% round 99px)";
@@ -152,7 +148,7 @@ export function AbonelikVisual() {
     [".dpc-ab__isl", { opacity: [0, 1, 1, 0], clipPath: [ISL, WIDE, WIDE, ISL] }, { duration: 1.2, times: [0, 0.22, 0.72, 1], ease: "easeInOut" }],
     [".dpc-ab__note", { y: ["-88%", "0%"], scaleX: [0.2, 1], scaleY: [0.3, 1], opacity: [0, 1] }, { type: "spring", duration: 0.7, bounce: 0.22, at: "-0.95" }],
     [".dpc-ab__note > *", { opacity: [0, 1] }, { duration: 0.25, delay: stagger(0.05), at: "-0.45" }],
-    [".dpc-ab__mark", { scale: [0.4, 1], opacity: [0, 1] }, { ...POP, delay: stagger(0.12), at: "-0.1" }],
+    [".dpc-ab__pills .dpc-gp__pill", { y: [12, 0], opacity: [0, 1] }, { ...POP, delay: stagger(0.12), at: "-0.1" }],
     [".dpc-ab__dots", DRAW, { duration: 0.25, ease: "linear", at: "-0.35" }],
   ]);
   return (
@@ -190,94 +186,17 @@ export function AbonelikVisual() {
         <span className="dpc-ab__note-time">{n.time}</span>
       </div>
 
-      <div className="dpc-ab__marks">
-        <span className="dpc-ab__mark dpc-ab__mark--amazon">
-          <img loading="lazy" src={`${A}/logo-amazon.png`} alt="" width={160} height={160} />
-        </span>
-        <img loading="lazy" className="dpc-ab__dots" src={`${A}/connector-dots-2.svg`} alt="" width={13.6468} height={1.5479} />
-        <span className="dpc-ab__mark dpc-ab__mark--spotify">
-          <img loading="lazy" src={`${A}/logo-spotify.png`} alt="" width={160} height={160} />
-        </span>
-      </div>
-    </div>
-  );
-}
-
-/* the plane chase: inbound far → near, a beat on the card, outbound near → far */
-const PLANES: [string, number][] = [
-  [".cb-l1", 0.1], [".cb-l2", 0.1], [".cb-l3", 0.2], [".cb-l4", 0.5],
-  [".cb-r4", 0.5], [".cb-r3", 0.2], [".cb-r2", 0.1], [".cb-r1", 0.1],
-];
-const ORBIT_S = 40;
-
-/** Plane trail around the ₺ card, with two %1 coins riding the dotted orbit. */
-export function CashbackVisual() {
-  const seq: AnimationSequence = [
-    ...PLANES.map(([sel, base], i): AnimationSequence[number] => [
-      sel, { opacity: [base, 1, base] }, { duration: 0.5, ease: "easeInOut", at: i * 0.09 + (i > 3 ? 0.18 : 0) },
-    ]),
-    [".cb-card", { scale: [1, 1.06, 1] }, { duration: 0.45, ease: EASE, at: 0.34 }],
-    [".dpc-cb__coin", { scale: [0.3, 1], opacity: [0, 1] }, { ...POP, delay: stagger(0.16), at: 0.42 }],
-  ];
-  const scope = useStory(seq, {
-    loops: [
-      [".dpc-cb__orbit", { rotate: [0, 360] }, { duration: ORBIT_S, ease: "linear", repeat: Infinity }],
-      [".dpc-cb__coin", { rotate: [0, -360] }, { duration: ORBIT_S, ease: "linear", repeat: Infinity }],
-      [".cb-orbit", { rotate: [0, 360] }, { duration: ORBIT_S, ease: "linear", repeat: Infinity }],
-      ...PLANES.map(([sel, base], i): [string, Record<string, unknown[]>, Record<string, unknown>] => [
-        sel, { opacity: [base, 1, base] }, { duration: 0.5, ease: "easeInOut", delay: 3 + i * 0.09 + (i > 3 ? 0.18 : 0), repeat: Infinity, repeatDelay: 4 },
-      ]),
-    ],
-  });
-  return (
-    <div className="dpc-cb" ref={scope}>
-      <CashbackArt className="dpc-cb__art" />
-      {/* the coins sit on the art's dotted orbit; turning this layer rides them round it */}
-      <span className="dpc-cb__orbit">
-        <span className="dpc-cb__coin dpc-cb__coin--a">%1</span>
-        <span className="dpc-cb__coin dpc-cb__coin--b">%1</span>
-      </span>
-    </div>
-  );
-}
-
-/** EUR → wallet (TL) ← USD. */
-export function FxVisual() {
-  const scope = useStory([
-    [".dpc-fx__flag", { scale: [0.4, 1], opacity: [0, 1] }, { ...POP, delay: stagger(0.1) }],
-    [".dpc-fx__tag", { y: [8, 0], opacity: [0, 1] }, { duration: 0.4, ease: EASE, delay: stagger(0.1), at: "-0.3" }],
-    [".dpc-fx__dots", DRAW, { duration: 0.25, ease: "linear", at: "-0.25" }],
-    [".dpc-wallet__flap", { rotate: [0, -26, 0] }, { duration: 1, times: [0, 0.35, 1], ease: "easeInOut" }],
-    [".dpc-fx__coin--eur", { x: ["-830%", "0%"], scale: [0.8, 1, 0.3], opacity: [0, 1, 0] }, { duration: 0.65, ease: "easeInOut", at: "<" }],
-    [".dpc-fx__coin--usd", { x: ["830%", "0%"], scale: [0.8, 1, 0.3], opacity: [0, 1, 0] }, { duration: 0.65, ease: "easeInOut", at: "-0.55" }],
-    [".dpc-wallet", { scale: [1, 1.08, 1] }, { duration: 0.4, ease: EASE, at: "-0.05" }],
-    [".dpc-wallet__ring", { scale: [1, 1.3, 1] }, { duration: 0.45, ease: EASE, at: "<" }],
-  ]);
-  return (
-    <div className="dpc-fx" ref={scope}>
-      <i className="dpc-fx__coin dpc-fx__coin--eur" />
-      <i className="dpc-fx__coin dpc-fx__coin--usd" />
-      <div className="dpc-fx__row">
-        <img loading="lazy" className="dpc-fx__flag" src={`${A}/flag-eu.svg`} alt="" width={32} height={32} />
-        <img loading="lazy" className="dpc-fx__dots" src={`${A}/connector-dots.svg`} alt="" width={15.4378} height={1.75104} />
-        <span className="dpc-wallet">
-          <img loading="lazy" className="dpc-wallet__flap" src={`${A}/wallet-flap.svg`} alt="" width={26.5714} height={21.4327} />
-          <i className="dpc-wallet__body" />
-          <i className="dpc-wallet__face" />
-          <i className="dpc-wallet__shine" />
-          <span className="dpc-wallet__flag">
-            <img loading="lazy" className="dpc-wallet__ring" src={`${A}/wallet-flag-ring.svg`} alt="" width={41.1429} height={41.1429} />
-            <span className="dpc-wallet__tr">
-              <img loading="lazy" src={`${A}/flag-tr.png`} alt="" width={128} height={85} />
+      {/* same pill as the getirpara tile, with the service named in text */}
+      <div className="dpc-ab__pills">
+        {services.map((name, i) => (
+          <Fragment key={name}>
+            {i > 0 && <img loading="lazy" className="dpc-gp__dots dpc-ab__dots" src={`${A}/connector-dots.svg`} alt="" width={15.4378} height={1.75104} />}
+            <span className="dpc-gp__pill">
+              <span className="dpc-gp__pill-in dpc-ab__pill-in">{name}</span>
             </span>
-          </span>
-          <i className="dpc-wallet__tab" />
-        </span>
-        <img loading="lazy" className="dpc-fx__dots" src={`${A}/connector-dots.svg`} alt="" width={15.4378} height={1.75104} />
-        <img loading="lazy" className="dpc-fx__flag" src={`${A}/flag-us.svg`} alt="" width={32} height={32} />
+          </Fragment>
+        ))}
       </div>
-      <span className="dpc-fx__tag dpc-fx__tag--eur">EUR</span>
-      <span className="dpc-fx__tag dpc-fx__tag--usd">USD</span>
     </div>
   );
 }

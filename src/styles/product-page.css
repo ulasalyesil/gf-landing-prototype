@@ -283,8 +283,8 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 
 
 /* ============ BENTO + TILE ============
-   Three equal columns at 8px, 700 tall (Figma 22630:15619, 22630:18396,
-   22630:19413). A column is either one tile or a `__stack` of two. Tiles
+   Three equal columns at 8px, 700 tall (Figma 22630:15619, 22630:18396;
+   the abroad bento 22630:19413 widens its card column — debit.css). A column is either one tile or a `__stack` of two. Tiles
    centre a visual over a 20/28 caption; each page builds its visuals. */
 
 .dpc-bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
@@ -442,12 +442,14 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 }
 /* Fade on a clamped answer (the comp's "Overlay"), drawn in CSS rather than
    the exported gradient PNG so it follows the card's fill. */
-.dpc-faq__card.is-clamped:not(.is-open) .dpc-faq__a::after {
+.dpc-faq__card.is-clamped .dpc-faq__a::after {
   content: ""; position: absolute; inset: auto 0 0; height: 56px;
   background: linear-gradient(to bottom, rgb(250 250 250 / 0), var(--gf-bg-soft));
+  transition: opacity .3s var(--ease-out);
 }
-.dpc-faq__card.is-open { height: auto; }
-.dpc-faq__card.is-open .dpc-faq__a { overflow: visible; }
+/* open: the card's height is animated inline (FaqCarousel); the answer stays
+   clipped to the card so nothing spills past it mid-spring */
+.dpc-faq__card.is-open .dpc-faq__a::after { opacity: 0; }
 
 .dpc-faq__nav { display: flex; align-items: center; gap: 8px; }
 
@@ -532,3 +534,103 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 @media (prefers-reduced-motion: reduce) {
   .dpc-dot, .dpc-arrow { transition: none; }
 }
+
+
+/* ============ WEB COMP HERO + SECTION HEAD (2026-10-14) ============
+   Shared by /hesap-karti (283:20653) and /kredi-karti (266:4725), which
+   use the same hero and heads: `.dpc-hero--web` on the hero, `.dpc--web`
+   on <main>. Moved here from debit.css on 2026-10-16.
+
+   HERO:
+   badge →32→ title →24→ sub →64→ CTA →132→ photo. The photo bleeds past
+   the 1440 column to 1728 (96px margins at 1920). The lilac wash (an image
+   in the comp) stops at the photo's midline; the photo's lower half sits on
+   white. Its stop is computed from the photo's width, so it tracks resize. */
+.dpc-hero--web {
+  --dpc-photo-w: min(1728px, 100vw - 2 * var(--dpc-gutter));
+  --dpc-hero-pb: 128px;
+  padding-block: 128px var(--dpc-hero-pb);
+  background: #f1eff6;
+}
+@media (min-width: 768px) {
+  .dpc-hero--web {
+    --dpc-wash-tail: calc(var(--dpc-hero-pb) + var(--dpc-photo-w) * 404 / 1728);
+    background:
+      url("/assets/img/hesap-karti/hero-bg.webp") center bottom var(--dpc-wash-tail) / 100% auto no-repeat,
+      linear-gradient(#f1eff6, #f1eff6) top / 100% calc(100% - var(--dpc-wash-tail)) no-repeat,
+      #fff;
+  }
+  .dpc-hero--web .dpc-hero__inner { gap: 132px; }
+  .dpc-hero--web .dpc-hero__media-wrap { width: var(--dpc-photo-w); flex: none; }
+  .dpc-hero--web .dpc-hero__media { width: 100%; aspect-ratio: 1728 / 808; }
+}
+.dpc-hero--web .dpc-hero__text { gap: 32px; }
+.dpc-hero--web .dpc-hero__text > :last-child { margin-top: 32px; }  /* CTA: 64 below the sub */
+.dpc-hero--web .dpc-hero__copy { gap: 24px; }
+.dpc-hero--web .dpc-badge {
+  padding: 16px 48px; line-height: 20px;
+  background: transparent; border-color: rgba(93, 62, 188, 0.15);
+}
+/* one gradient across the whole two-line block (comp: 103°, ink → purple → black) */
+.dpc-hero--web .dpc-hero__title {
+  font-size: 60px; line-height: 72px; letter-spacing: 0;
+  background: linear-gradient(103deg, var(--gf-ink) 12.4%, var(--gf-purple) 55.2%, #000 124.2%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.dpc-hero--web .dpc-hero__sub { font-size: 24px; line-height: 32px; color: #8c96a4; }
+
+
+/* ============ HERO SCROLL STORY (storyboard 372:5175, 2026-10-16) ============
+   ProductHero `story`. The photo frame is full-bleed; at rest a clip-path
+   insets it back to the comp's 1728 / radius 64. --hs-a (0 → 1) opens it,
+   --hs-on (0 → 1) turns the copy white over it; both default to 0, so
+   without JS (SSR, ≤767, reduced motion) this IS the static comp. */
+.dpc-hero__text-wrap { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+.dpc-hero__frame { position: relative; width: 100%; }
+@media (min-width: 768px) {
+  .dpc-hero--story {
+    --hs-mix: calc(var(--hs-on, 0) * 100%);
+    --hs-badge: color-mix(in srgb, #fff var(--hs-mix), var(--gf-purple));
+  }
+  .dpc-hero--story .dpc-hero__media-wrap { width: 100vw; flex: none; }
+  .dpc-hero--story .dpc-hero__frame {
+    height: calc(var(--dpc-photo-w, 1312px) * 808 / 1728);
+    clip-path: inset(0 calc((1 - var(--hs-a, 0)) * (100vw - var(--dpc-photo-w, 1312px)) / 2) round calc((1 - var(--hs-a, 0)) * 64px));
+  }
+  .dpc-hero--story .dpc-hero__frame .dpc-hero__media { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; }
+  /* legibility under the white copy, only as it turns white */
+  .dpc-hero__scrim {
+    position: absolute; inset: 0; pointer-events: none; opacity: var(--hs-on, 0);
+    background: radial-gradient(60% 75% at 50% 45%, rgb(20 12 40 / .42), rgb(20 12 40 / .14) 70%, rgb(20 12 40 / 0));
+  }
+  .dpc-hero--story .dpc-hero__title {
+    background-image: linear-gradient(103deg,
+      color-mix(in srgb, #fff var(--hs-mix), var(--gf-ink)) 12.4%,
+      color-mix(in srgb, #fff var(--hs-mix), var(--gf-purple)) 55.2%,
+      color-mix(in srgb, #fff var(--hs-mix), #000) 124.2%);
+  }
+  .dpc-hero--story .dpc-hero__sub { color: color-mix(in srgb, #fff calc(var(--hs-on, 0) * 88%), #8c96a4); }
+  .dpc-hero--story .dpc-hero__sub em { color: color-mix(in srgb, #fff var(--hs-mix), var(--gf-ink)); }
+  .dpc-hero--story .dpc-badge { border-color: color-mix(in srgb, rgb(255 255 255 / .55) var(--hs-mix), rgba(93, 62, 188, 0.15)); }
+  .dpc-hero--story .dpc-badge__text { background-image: linear-gradient(100deg, var(--hs-badge) 42%, #b9a8f5 50%, var(--hs-badge) 58%); }
+  /* the CTA inverts: purple/white → white/purple */
+  .dpc-hero--story .dpc-hero__cta {
+    background: color-mix(in srgb, #fff var(--hs-mix), var(--gf-purple));
+    color: color-mix(in srgb, var(--gf-purple) var(--hs-mix), #fff);
+  }
+  .dpc-hero--story .dpc-hero__cta:hover { background: color-mix(in srgb, var(--gf-lilac) var(--hs-mix), var(--gf-purple-700)); }
+}
+
+
+/* ============ SECTION HEAD (Web comp, 2026-10-14) ============
+   White pill with a lilac line, 14/20 untracked; title 48/56; sub 24/32 in
+   the tertiary grey. Sections that differ restate it. */
+.dpc--web .dpc-eyebrow {
+  padding: 16px 48px; line-height: 20px; letter-spacing: 0;
+  background: #fff; border-color: var(--gf-lilac);
+}
+.dpc--web .dpc-title { line-height: 56px; }
+.dpc--web .dpc-sub { font-size: 24px; line-height: 32px; color: #8c96a4; }
+
+/* visually hidden, still read (counting stats, live carousel captions) */
+.dpc-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

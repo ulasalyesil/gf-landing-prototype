@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useEffect, useRef } from "react";
-import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
 import Reveal, { RevealItem, useMotionOff } from "@/components/Reveal";
 import { useStory } from "@/components/useStory";
 
@@ -59,6 +59,98 @@ function HeroGrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+/* Scroll story (Web comp storyboard 372:5175, 2026-10-16) — three states:
+     1. rest: the comp — copy above, the photo inset (1728, radius 64);
+     2. the photo opens to the full width (clip inset → 0, radius → 0) while
+        the copy slides down onto its centre and turns white (the CTA
+        inverts), a soft scrim rising behind it;
+     3. scrolling on, the photo zooms ~7% and the copy drifts down at about
+        half the scroll's pace, clipped by the photo's lower edge.
+   The frame is always full-bleed; its rest look is a clip-path, so every
+   CSS variable's default IS the comp (SSR, ≤767, reduced motion: still).
+   JS only writes --hs-a (phase 1→2, 0–1), --hs-on (white-ness, 0–1),
+   --hero-zoom, and the copy's y / bottom clip. Geometry is measured, not
+   assumed, so it holds at every width and on both card pages. */
+type Geom = { T: number; LA: number; textTop: number; textH: number; photoBottom: number };
+const smooth = (t: number) => t * t * (3 - 2 * t);
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+
+function useHeroStory(enabled: boolean) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const geom = useMotionValue<Geom>({ T: 0, LA: 1, textTop: 0, textH: 0, photoBottom: 0 });
+  const on = useMotionValue(0);
+
+  useEffect(() => {
+    on.set(enabled ? 1 : 0);
+    const sec = sectionRef.current;
+    const text = textRef.current;
+    const media = mediaRef.current;
+    if (!enabled || !sec || !text || !media) return;
+    // layout offset from the section (transforms — the Reveal entrance, the
+    // story itself — don't move offsetTop, so this is the rest geometry)
+    const topIn = (el: HTMLElement) => {
+      let y = 0;
+      for (let n: HTMLElement | null = el; n && n !== sec; n = n.offsetParent as HTMLElement | null) y += n.offsetTop;
+      return y;
+    };
+    const measure = () => {
+      const textTop = topIn(text);
+      const textH = text.offsetHeight;
+      const photoTop = topIn(media);
+      const photoH = media.offsetHeight;
+      const docTop = sec.getBoundingClientRect().top + window.scrollY;
+      geom.set({
+        T: photoTop + photoH / 2 - (textTop + textH / 2),
+        // phase 1 ends as the photo's top meets the fixed header (storyboard
+        // state 2: the opened photo sits right under the nav)
+        LA: Math.max(240, docTop + photoTop - (document.querySelector("header")?.offsetHeight ?? 72)),
+        textTop,
+        textH,
+        photoBottom: photoTop + photoH,
+      });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(sec);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [enabled, geom, on]);
+
+  const { scrollY } = useScroll();
+  // a light spring: wheel steps glide instead of stepping
+  const y = useSpring(scrollY, { stiffness: 420, damping: 48, mass: 0.6 });
+  // every source is read on every run (the function form tracks what it reads)
+  const a = useTransform(() => {
+    const v = y.get(), g = geom.get(), live = on.get();
+    return live ? smooth(clamp01(v / g.LA)) : 0;
+  });
+  const b = useTransform(() => {
+    const v = y.get(), g = geom.get(), live = on.get();
+    return live ? Math.max(0, v - g.LA) : 0;
+  });
+  const white = useTransform(a, (v) => clamp01((v - 0.3) / 0.5));
+  const zoom = useTransform(b, (v) => 1 + 0.07 * clamp01(v / 700));
+  const textY = useTransform(() => a.get() * geom.get().T + b.get() * 0.55);
+  // the copy never shows below the photo's lower edge
+  const clip = useTransform(() => {
+    const g = geom.get(), ty = textY.get(), live = on.get();
+    const over = g.textTop + ty + g.textH - g.photoBottom;
+    return live && over > 0 ? `inset(0 0 ${over}px 0)` : "none";
+  });
+  return {
+    sectionRef,
+    textRef,
+    mediaRef,
+    sectionStyle: { "--hs-a": a, "--hs-on": white, "--hero-zoom": zoom } as Record<string, unknown>,
+    textStyle: { y: textY, clipPath: clip },
+  };
+}
+
 /* One sheen across the badge text once the title's icons have played. */
 function BadgeText({ children }: { children: React.ReactNode }) {
   const scope = useStory<HTMLSpanElement>(
@@ -87,6 +179,8 @@ export interface ProductHeroProps {
   media?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  /** the Web-comp scroll story (photo opens full-bleed, copy lands on it) */
+  story?: boolean;
 }
 
 export default function ProductHero({
@@ -100,10 +194,15 @@ export default function ProductHero({
   media,
   className,
   style,
+  story = false,
 }: ProductHeroProps) {
+  const off = useMotionOff();
+  const { sectionRef, textRef, mediaRef, sectionStyle, textStyle } = useHeroStory(story && !off);
+  const cls = ["dpc-hero", story && "dpc-hero--story", className].filter(Boolean).join(" ");
   return (
-    <section className={className ? `dpc-hero ${className}` : "dpc-hero"} style={style}>
+    <motion.section ref={sectionRef} className={cls} style={(story ? { ...style, ...sectionStyle } : style) as never}>
       <div className="dpc-container dpc-hero__inner">
+        <motion.div ref={textRef} className="dpc-hero__text-wrap" style={story ? textStyle : undefined}>
         <Reveal className="dpc-hero__text" stagger={0.08}>
           <RevealItem as="span" className="dpc-badge">
             {badgeIcon}
@@ -129,12 +228,22 @@ export default function ProductHero({
             </RevealItem>
           )}
         </Reveal>
-        {media && (
-          <Reveal className="dpc-hero__media-wrap" delay={0.2}>
-            <HeroGrow>{media}</HeroGrow>
-          </Reveal>
-        )}
+        </motion.div>
+        {media &&
+          (story ? (
+            // the frame is full-bleed; its rest inset is a clip-path (CSS)
+            <Reveal className="dpc-hero__media-wrap" delay={0.2}>
+              <div ref={mediaRef} className="dpc-hero__frame">
+                {media}
+                <span className="dpc-hero__scrim" aria-hidden="true" />
+              </div>
+            </Reveal>
+          ) : (
+            <Reveal className="dpc-hero__media-wrap" delay={0.2}>
+              <HeroGrow>{media}</HeroGrow>
+            </Reveal>
+          ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

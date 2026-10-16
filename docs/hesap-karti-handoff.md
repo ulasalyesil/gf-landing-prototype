@@ -12,6 +12,21 @@ tile, carousel controls, FAQ carousel and footer variant. Read the comments in t
 they carry the measurements and the reasons. This file is for what comments cannot carry:
 the shape, what is deliberately unfinished, and the constraints that break from elsewhere.
 
+> **2026-10-16:** /kredi-karti was rebuilt to Web comp `266:4725` (same file)
+> and both pages got their motion pass: delivery is a pinned scroll
+> storyboard again (`Delivery.tsx` header), sanal draws `SanalShader`, the
+> abroad/extras art acts out its line (`useStory`), the coverflow and taksit
+> grid are `MaximumCarousel.tsx` / `TaksitGrid.tsx`. Hero + section-head
+> rules are shared in product-page.css (`.dpc-hero--web`, `.dpc--web`).
+> Read each file's header comment; TODO.md has the open comp issues.
+>
+> **2026-10-14:** /hesap-karti was rebuilt to the product-feedback Web comp
+> (Figma `5J9ucPVhyd7DCBjTlmLI4h` · `283:20631`). The debit column of the table
+> below is superseded: delivery is a static card stack + steps (`Delivery.tsx`,
+> scroll storyboard pending), sanal is a dark band (`Sanal.tsx`), the abroad
+> section is `Abroad.tsx`, and "daha neler var" (`Extras.tsx`) sits before the
+> FAQ. Read each file's header comment; /kredi-karti is unchanged.
+
 ---
 
 ## 1. Anatomy

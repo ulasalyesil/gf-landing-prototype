@@ -1,33 +1,33 @@
 /* ============================================================
-   credit.css — /kredi-karti only (GFDES-2243, card pages v2)
+   credit.css — /kredi-karti only (GFDES-2243)
    Created by Claude · INTERNAL
 
-   Figma `v2` credit frame 22630:12072. Shared chrome (sub-nav, hero, section
-   head, tile, controls, FAQ) is in product-page.css, which loads first.
+   Web comp 266:4725 (2026-10-16). Shared chrome (sub-nav, Web-comp hero and
+   section heads, tile, FAQ) is in product-page.css, which loads first.
    `ckp-` = credit card page. Tile visuals are comp px × `--u` (one comp px
    at the current tile width — see `.dpc-tile__visual`).
    ============================================================ */
 
 .ckp {
-  /* comp greys and fills with no token */
-  --ckp-line: #ebebeb;         /* statement row + taksit row borders */
-  --ckp-copy: #676767;         /* taksit category description */
-  --ckp-tab-off: #a8a8a8;      /* inactive taksit label */
-  --ckp-track: #d4d4d4;        /* taksit progress track */
-  --ckp-lilac-shape: #ede7ff;  /* kampanyalar shape */
-  --ckp-sub: #595959;          /* maximum taksit sub */
-  --ckp-rule: #e5e5e5;         /* brand strip hairlines */
-  --ckp-cell-on: #f6f6f6;      /* selected brand cell */
+  --ckp-line: #ebebeb;         /* taksit row borders */
 }
 
-/* hero photo is bottom-anchored in the comp */
-.ckp-hero__media img { object-position: 50% 100%; }
+/* hero photo: the comp fills its 1728 × 800 frame edge to edge */
+.ckp-hero__media img { object-position: 50% 50%; }
 
 
-/* ============ BENTO VISUALS (22630:15619) ============ */
+/* ============ KART AVANTAJLARI (266:4834) ============
+   Three equal 700-tall tiles 8 apart. Captions sit in a 32 inset: 24/32
+   semibold title, 16/24 tertiary description. */
+.ckp-benefits { padding-bottom: 196px; }
+.ckp-benefits__bento .dpc-tile { padding: 0; }
+.ckp-benefits__bento .dpc-tile__copy { padding: 32px; }
+.ckp-benefits__bento .dpc-tile__title { font-size: 24px; line-height: 32px; letter-spacing: 0; font-weight: var(--fw-semibold); }
+.ckp-benefits__bento .dpc-tile__desc { font-size: 16px; line-height: 24px; color: #8c96a4; }
+.ckp-benefits__bento .dpc-tile--photo { gap: 0; }
 
 /* — maximum taksit — */
-.ckp-tile-max { padding-top: 16px; }
+.ckp-tile-max .dpc-tile__visual { padding-top: calc(16 * var(--u)); }
 .ckp-tile-max .dpc-tile__visual { width: 100%; }
 .ckp-max { width: 100%; display: flex; flex-direction: column; align-items: center; gap: calc(16 * var(--u)); }
 .ckp-max__hand { position: relative; flex: none; width: calc(475 * var(--u)); height: calc(184 * var(--u)); }
@@ -57,65 +57,33 @@
 }
 .ckp-max__rows img { width: calc(7.8 * var(--u)); height: auto; }
 
-/* — ilk harcamana ₺350 — */
-.ckp-tile-txn { padding-top: 48px; }
-.ckp-txn { position: relative; width: calc(375 * var(--u)); height: calc(197 * var(--u)); }
-.ckp-txn__row {
-  position: absolute; left: calc(28.5 * var(--u)); top: 0;
-  width: calc(320 * var(--u)); height: calc(72 * var(--u));
-  display: flex; align-items: center; gap: calc(8 * var(--u)); padding-inline: calc(16 * var(--u));
-  background: #fff; border: 1px solid var(--ckp-line); border-radius: calc(20.98 * var(--u));
-}
-.ckp-txn__date {
-  flex: none; width: calc(48 * var(--u)); height: calc(48 * var(--u));
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: #fff; border: 1px solid var(--gf-lilac); border-radius: calc(8 * var(--u));
-}
-.ckp-txn__month { font-size: calc(10 * var(--u)); line-height: calc(12 * var(--u)); font-weight: var(--fw-semibold); color: var(--gf-purple); }
-.ckp-txn__day { font-size: calc(18 * var(--u)); line-height: calc(24 * var(--u)); color: var(--gf-ink); }
-.ckp-txn__merchant {
-  flex: 1 1 auto; min-width: 0; font-size: calc(15 * var(--u)); color: var(--gf-ink);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.ckp-txn__amount { flex: none; font-size: calc(16 * var(--u)); line-height: calc(24 * var(--u)); color: var(--gf-ink); font-variant-numeric: tabular-nums; }
-.ckp-txn__amount small { font-size: calc(14 * var(--u)); }
-.ckp-txn__coin {
-  position: absolute; left: calc(141 * var(--u)); top: calc(107 * var(--u));
-  width: calc(80 * var(--u)); height: calc(80 * var(--u)); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--gf-purple); color: #fff;
-  font-size: calc(20 * var(--u)); font-weight: var(--fw-semibold); text-shadow: 0 1px 2px rgb(0 0 0 / .25);
-  box-shadow: inset 0 0 20px rgb(0 0 0 / .2);
-  filter:
-    drop-shadow(0 calc(40 * var(--u)) calc(8 * var(--u)) rgb(93 62 188 / .04))
-    drop-shadow(0 calc(22 * var(--u)) calc(6.5 * var(--u)) rgb(93 62 188 / .15))
-    drop-shadow(0 calc(10 * var(--u)) calc(5 * var(--u)) rgb(93 62 188 / .26))
-    drop-shadow(0 calc(2 * var(--u)) calc(2.5 * var(--u)) rgb(93 62 188 / .29));
-}
-.ckp-txn__bracket { position: absolute; top: calc(36.5 * var(--u)); width: calc(120.5 * var(--u)); height: calc(109 * var(--u)); overflow: visible; }
-.ckp-txn__bracket--l { left: calc(0.5 * var(--u)); }
-.ckp-txn__bracket--r { left: calc(254 * var(--u)); transform: scaleX(-1); }
-.ckp-txn__spark { position: absolute; height: auto; }
-.ckp-txn__spark--a { left: calc(212.5 * var(--u)); top: calc(99.5 * var(--u)); width: calc(13 * var(--u)); }
-.ckp-txn__spark--b { left: calc(121.5 * var(--u)); top: calc(116.5 * var(--u)); width: calc(17 * var(--u)); }
-.ckp-txn__spark--c { left: calc(212.6 * var(--u)); top: calc(173.6 * var(--u)); width: calc(28.8 * var(--u)); }
 
-/* — kart aidatı yok: app tile left, ₺0 seal right, caption bottom-left — */
-.ckp-tile-aidat { padding: 48px; flex: 0 0 310px; --tile-w: 376.67; }
-.ckp-tile-aidat .dpc-tile__visual { width: 100%; flex: 1 1 0; min-height: 0; justify-content: stretch; }
-.ckp-tile-aidat .dpc-tile__copy { padding: 0; text-align: left; }
-.ckp-aidat { width: 100%; display: flex; align-items: flex-start; justify-content: space-between; }
-.ckp-aidat__app {
-  position: relative; flex: none; width: calc(96 * var(--u)); height: calc(96 * var(--u));
-  background: #fff; border: 1px solid rgb(255 255 255 / .2); border-radius: calc(34.29 * var(--u));
+/* — kart aidatı yok: ₺0 seal on a field of white cards, fading out
+     toward the bottom-right (comp mask: 134.6°, solid to 42%, gone by 67%) — */
+.ckp-tile-aidat { justify-content: flex-end; }
+.ckp-tile-aidat .dpc-tile__visual { position: absolute; left: 0; top: 0; width: 100%; height: calc(514 * var(--u)); }
+.ckp-tile-aidat .dpc-tile__copy { position: relative; z-index: 1; }
+.ckp-aidat { position: absolute; inset: 0; }
+.ckp-aidat__field {
+  position: absolute; inset: 0;
+  -webkit-mask-image: linear-gradient(134.6deg, #000 42.2%, transparent 67.2%);
+  mask-image: linear-gradient(134.6deg, #000 42.2%, transparent 67.2%);
 }
-.ckp-aidat__icon { position: absolute; left: calc(29.86 * var(--u)); top: calc(11 * var(--u)); width: calc(51.25 * var(--u)); height: calc(60.32 * var(--u)); }
-.ckp-aidat__icon img {
-  position: absolute; left: 50%; top: 50%; width: calc(61.25 * var(--u)); height: auto;
-  transform: translate(-50%, -50%) rotate(90deg);
+/* the comp's rotated group, centred where its box centres (233.17, 253.2) */
+.ckp-aidat__rot {
+  position: absolute; left: calc(233.17 * var(--u)); top: calc(253.2 * var(--u));
+  transform: translate(-50%, -50%) rotate(45.79deg) skewX(1.58deg);
 }
+/* --dy 0 → 1 drifts the runs one card pitch (197.3 + 32) along themselves */
+.ckp-aidat__drift {
+  display: flex; align-items: center; gap: calc(32 * var(--u));
+  translate: 0 calc(var(--dy, 0) * 229.3 * var(--u));
+}
+.ckp-aidat__run { display: flex; flex-direction: column; gap: calc(32 * var(--u)); width: calc(130 * var(--u)); }
+.ckp-aidat__run--tight { gap: calc(16 * var(--u)); }
+.ckp-aidat__run img { display: block; width: 100%; height: auto; aspect-ratio: 541 / 821; object-fit: cover; max-width: none; }
 /* the seal is inline SVG (SealArt) so its star can turn apart from the ₺0 */
-.ckp-aidat__stamp { position: relative; flex: none; display: block; width: calc(200 * var(--u)); }
+.ckp-aidat__stamp { position: absolute; left: calc(146.33 * var(--u)); top: calc(162 * var(--u)); width: calc(180 * var(--u)); }
 .ckp-aidat__seal { display: block; width: 100%; height: auto; }
 .ckp-aidat__seal .seal-star { transform-box: fill-box; transform-origin: 50% 50%; }
 /* the stamp's landing ripple — at rest it is gone */
@@ -125,232 +93,167 @@
 }
 
 
-/* ============ ÜCRETSİZ 3 TAKSİT (22630:15718) ============ */
+/* ============ MAXIMUM TAKSİT (292:30840) ============
+   Dark band, 128 above and below: head (logo + "taksit" 48/56, sub 24/32
+   white 70%, CTA) →96→ the coverflow →48→ prev · logos · next. The band's
+   gradient is sampled off the comp's exported background (navy to ~30%,
+   violet rising from the bottom-left). */
+.ckp-mx {
+  position: relative; overflow: hidden; padding-block: 128px; color: #fff;
+  background:
+    radial-gradient(70% 60% at 0% 100%, rgb(133 67 193 / .85), rgb(133 67 193 / 0) 100%),
+    linear-gradient(to bottom, #0d0b21 0%, #0f0b26 28%, #3a1d5e 45%, #51257e 60%, #5d2b8e 75%, #673299 100%);
+}
+.ckp-mx__head { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ckp-mx__title { margin: 0; font-size: 48px; line-height: 56px; font-weight: var(--fw-regular); }
+.ckp-mx__title-in { display: inline-flex; align-items: center; gap: 14px; }
+.ckp-mx__title img { width: 170px; height: auto; translate: 0 2px; }
+.ckp-mx__sub { margin: 24px 0 32px; font-size: 24px; line-height: 32px; color: rgb(255 255 255 / .7); }
 
-.ckp-taksit { --dpc-head-gap: 100px; }
-.ckp-taksit__eyebrow { border-color: rgb(93 62 188 / .1); }
-/* 620 | 100 | 720 of the 1440 column, kept as a ratio below it */
-.ckp-taksit__stage { display: grid; grid-template-columns: minmax(0, 620fr) minmax(0, 720fr); column-gap: 6.944%; }
-.ckp-taksit__copy { display: flex; flex-direction: column; justify-content: flex-end; gap: 64px; min-width: 0; }
-.ckp-taksit__panel { display: flex; flex-direction: column; gap: 16px; min-height: 135px; }
-.ckp-taksit__title { margin: 0; font-size: 48px; line-height: 54px; font-weight: var(--fw-regular); color: var(--gf-ink); }
-.ckp-taksit__desc { margin: 0; max-width: 440px; font-size: var(--fs-body-md); line-height: 24px; color: var(--ckp-copy); text-wrap: pretty; }
-
-.ckp-taksit__tabs { display: flex; gap: 16px; }
-.ckp-taksit__tab {
-  flex: 1 1 0; min-width: 0; padding: 0; border: 0; background: none; cursor: pointer; font: inherit;
-  display: flex; flex-direction: column; align-items: stretch; gap: 8px;
-  border-radius: 16px;
+.ckp-mx__body { margin-top: 96px; }
+.ckp-mx__stage { position: relative; width: 100%; touch-action: pan-y; cursor: grab; user-select: none; }
+.ckp-mx__stage:active { cursor: grabbing; }
+.ckp-mx__card {
+  position: absolute; left: 0; bottom: 0; overflow: hidden; border-radius: 32px;
+  background: #2b174a; cursor: pointer;
 }
-.ckp-taksit__thumb {
-  display: block; width: 100%; max-width: 110px; aspect-ratio: 110 / 80;
-  border-radius: 16px; overflow: hidden; opacity: .4;
-  transition: opacity .3s var(--ease-out);
+.ckp-mx__card.is-on { cursor: inherit; }
+.ckp-mx__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.ckp-mx__placeholder { position: absolute; inset: 0; display: grid; place-items: center; background: linear-gradient(160deg, #3a1d5e, #6a34a0); }
+.ckp-mx__placeholder img { width: 38%; max-width: 260px; height: auto; filter: brightness(0) invert(1); opacity: .9; }
+.ckp-mx__shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(0 0 0 / 0) 45.6%, rgb(0 0 0 / .5)); pointer-events: none; }
+.ckp-mx__copy { position: absolute; left: 56px; right: 48px; bottom: 48px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.ckp-mx__text { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.ckp-mx__name { margin: 0; font-size: 34px; line-height: 40px; white-space: nowrap; }
+.ckp-mx__name em { font-style: normal; color: var(--gf-yellow); }
+.ckp-mx__period { margin: 0; font-size: 14px; line-height: 20px; color: rgb(255 255 255 / .7); }
+.ckp-mx__period b { font-weight: var(--fw-regular); color: #fff; }
+.ckp-mx__link {
+  flex: none; display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none;
+  font-size: 14px; line-height: 20px; font-weight: var(--fw-semibold);
 }
-.ckp-taksit__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.ckp-taksit__label {
-  font-size: var(--fs-body-sm); line-height: 22px; color: var(--ckp-tab-off); text-align: center;
-  transition: color .3s var(--ease-out);
+.ckp-mx__link img { width: 32px; height: 32px; transition: translate .3s var(--ease-out); }
+.ckp-mx__link:hover img { translate: 4px 0; }
+.ckp-mx__link:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
+.ckp-mx__peek {
+  position: absolute; right: 48px; bottom: 48px; width: 56px; height: 56px;
+  display: grid; place-items: center; border: 2px solid #f3f0fe; border-radius: 100px;
+  transition: background-color .25s var(--ease-out), scale .25s var(--ease-out);
 }
-.ckp-taksit__line {
-  display: block; height: 1.5px; margin-top: 8px; border-radius: 1px; overflow: hidden;
-  background: var(--ckp-track); visibility: hidden;
-}
-.ckp-taksit__fill { display: block; height: 100%; background: var(--gf-ink); transform-origin: 0 50%; }
-.ckp-taksit__tab.is-active .ckp-taksit__thumb { opacity: 1; }
-.ckp-taksit__tab.is-active .ckp-taksit__label { color: var(--gf-ink); }
-.ckp-taksit__tab.is-active .ckp-taksit__line { visibility: visible; }
+.ckp-mx__peek img { width: 24px; height: 24px; }
 @media (hover: hover) and (pointer: fine) {
-  .ckp-taksit__tab:not(.is-active):hover .ckp-taksit__thumb { opacity: .7; }
+  .ckp-mx__card:not(.is-on):hover .ckp-mx__peek { background: rgb(255 255 255 / .15); scale: 1.06; }
 }
 
-/* draggable sideways (TaksitTabs); vertical page scroll stays native on touch */
-.ckp-taksit__media {
-  position: relative; aspect-ratio: 1; border-radius: 64px; overflow: hidden; background: var(--gf-lilac-50);
-  touch-action: pan-y; cursor: grab;
+.ckp-mx__nav { display: flex; align-items: flex-start; justify-content: center; gap: 96px; margin-top: 48px; }
+.ckp-mx__arrow {
+  flex: none; display: grid; place-items: center; width: 64px; height: 64px; margin-top: 10px;
+  border: 0; border-radius: 32px; cursor: pointer;
+  transition: scale .16s var(--ease-out-strong), background-color .2s var(--ease-out);
 }
-.ckp-taksit__media:active { cursor: grabbing; }
-.ckp-taksit__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.ckp-taksit__arrows { position: absolute; right: 48px; bottom: 48px; z-index: 1; display: flex; gap: 24px; }
-
-
-/* ============ KAMPANYALAR (22630:15194) ============
-   The row is 2:1 (1440 × 720). The photo is 4:3 of that height and runs
-   160 under the side column; the side splits 400 / 320 between the card
-   and the 3×2 shape grid, so every piece scales together below 1440. */
-
-.ckp-camp { --dpc-head-gap: 100px; }
-.ckp-camp__em { color: var(--gf-purple); }
-.ckp-camp__row { position: relative; display: flex; aspect-ratio: 2 / 1; }
-.ckp-camp__media {
-  position: relative; flex: none; height: 100%; aspect-ratio: 4 / 3;
-  margin-right: -11.111%; border-radius: 64px; overflow: hidden; background: var(--gf-lilac-50);
+.ckp-mx__arrow--prev { background: rgb(255 255 255 / .1); }
+.ckp-mx__arrow--next { background: #fff; }
+.ckp-mx__arrow:hover { background: rgb(255 255 255 / .2); }
+.ckp-mx__arrow--next:hover { background: var(--gf-lilac); }
+.ckp-mx__arrow:active { scale: .94; }
+.ckp-mx__arrow:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.ckp-mx__arrow img { width: 24px; height: 24px; }
+/* both arrows export pointing left (the comp flips one by transform) */
+.ckp-mx__arrow--next img { scale: -1 1; }
+.ckp-mx__brands { position: relative; display: flex; gap: 16px; }
+.ckp-mx__brand {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 16px; width: 84px;
 }
-.ckp-camp__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-/* minmax(0, …): the shape grid's aspect-ratio would otherwise set a min-content
-   height and push the card row off its 400 share */
-.ckp-camp__side { position: relative; z-index: 1; flex: 1 1 0; min-width: 0; display: grid; grid-template-rows: minmax(0, 400fr) minmax(0, 320fr); }
-.ckp-camp__card {
-  position: relative; min-height: 0; padding: 48px;
-  background: #fff; border: 1px solid var(--dpc-tile-line); border-radius: 64px;
+.ckp-mx__brand:focus-visible .ckp-mx__logo { outline: 2px solid #fff; outline-offset: 4px; }
+/* every slot is the active size (84), so the row never reflows as the ring moves */
+.ckp-mx__logo {
+  position: relative; display: grid; place-items: center; width: 84px; height: 84px; padding: 6px;
+  border-radius: 50%; background: #fff; background-clip: content-box;
 }
-.ckp-camp__card-inner { height: 100%; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
-.ckp-camp__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-.ckp-camp__top img { flex: none; width: 24px; height: 24px; }
-.ckp-camp__title { margin: 0; font-size: 32px; line-height: 44px; letter-spacing: -0.5px; font-weight: var(--fw-regular); color: var(--gf-ink); }
-.ckp-camp__link { color: inherit; text-decoration: none; }
-/* the whole card is the link's hit area */
-.ckp-camp__link::after { content: ""; position: absolute; inset: 0; border-radius: 64px; }
-.ckp-camp__link:focus-visible { outline: none; }
-.ckp-camp__card:has(.ckp-camp__link:focus-visible) { outline: 2px solid var(--gf-purple); outline-offset: 2px; }
-/* 26em ≈ the comp's hand-broken measure (~410px at 16) */
-.ckp-camp__desc { margin: 0; max-width: 26em; font-size: var(--fs-body-md); line-height: 26px; color: var(--dpc-muted); text-wrap: pretty; }
-
-.ckp-camp__grid { height: 100%; width: auto; aspect-ratio: 3 / 2; justify-self: start; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); }
-.ckp-camp__shape--purple { grid-area: 1 / 2; background: var(--gf-purple); border-top-left-radius: 62.5%; }
-.ckp-camp__shape--lilac  { grid-area: 1 / 3; background: var(--ckp-lilac-shape); border-top-left-radius: 62.5%; }
-/* sits on the photo's bottom-right corner, echoing its 64 radius */
-.ckp-camp__shape--yellow { grid-area: 2 / 1; background: var(--gf-yellow); border-top-left-radius: 62.5%; border-bottom-right-radius: 40%; }
-.ckp-camp__dots { grid-area: 2 / 2; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 25%; }
-.ckp-camp__arrows { grid-area: 2 / 3; display: flex; align-items: flex-end; justify-content: center; gap: 15%; padding-bottom: 7.5%; }
-.ckp-camp__arrows .dpc-arrow { width: min(64px, 40%); height: auto; aspect-ratio: 1; }
+.ckp-mx__ring { position: absolute; inset: 0; border: 2px solid var(--gf-yellow); border-radius: 50%; }
+.ckp-mx__mark { position: relative; display: block; overflow: hidden; }
+.ckp-mx__mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ckp-mx__label { font-size: 14px; line-height: 20px; color: rgb(255 255 255 / .3); transition: color .25s var(--ease-out); }
+.ckp-mx__brand.is-on .ckp-mx__label, .ckp-mx__brand:hover .ckp-mx__label { color: #fff; }
+.ckp-mx__brand:not(.is-on) .ckp-mx__logo { transition: scale .25s var(--ease-out); }
+.ckp-mx__brand:not(.is-on):hover .ckp-mx__logo { scale: 1.05; }
 
 
-/* ============ MAXIMUM TAKSİT (22630:15864) ============ */
-
-.ckp-brands { --dpc-head-gap: 100px; }
-.ckp-brands__title { display: inline-flex; align-items: center; justify-content: center; gap: 12px; }
-.ckp-brands__title img { height: 43.81px; width: auto; translate: 0 4px; }
-.ckp-brands__sub { color: var(--ckp-sub); }
-
-.ckp-brands__tabs { display: flex; border-block: 1px solid var(--ckp-rule); }
-.ckp-brands__tab {
-  position: relative;
-  flex: 1 1 0; min-width: 0; height: 240px; padding: 0; border: 0; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  background: transparent; transition: background-color .25s var(--ease-out);
+/* ============ ÜCRETSİZ 3 TAKSİT (266:6805) ============
+   Five photo tiles 8 apart in a 700-tall row: two stacked · eczane full
+   height · two stacked. Label 34/40 white, 56 in from the left (48 + 8),
+   48 up, over a shade that starts halfway down. */
+.ckp-tk { padding-block: 196px; }
+.ckp-tk__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; height: 700px; }
+.ckp-tk__col { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.ckp-tk__col > * { flex: 1 1 0; }
+.ckp-tk__tile { position: relative; margin: 0; min-height: 0; overflow: hidden; border-radius: 32px; background: #ece9f3; }
+.ckp-tk__zoom { position: absolute; inset: 0; }
+.ckp-tk__zoom img { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale 1s var(--ease-out); }
+.ckp-tk__tile--tall .ckp-tk__zoom img { object-position: 43% 50%; }
+.ckp-tk__shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(0 0 0 / 0) 45.6%, rgb(0 0 0 / .5)); pointer-events: none; }
+.ckp-tk__label {
+  position: absolute; left: 56px; bottom: 48px; display: flex; align-items: center; gap: 12px;
+  font-size: 34px; line-height: 40px; color: #fff;
 }
-/* the selected fill is ONE element that glides between cells (layoutId) */
-.ckp-brands__cell { position: absolute; inset: 0; background: var(--ckp-cell-on); }
+/* hover: the photo eases in, the offer rises beside the label */
+.ckp-tk__chip {
+  padding: 6px 14px; border-radius: 100px; background: var(--gf-yellow); color: var(--gf-ink);
+  font-size: 14px; line-height: 20px; font-weight: var(--fw-semibold); white-space: nowrap;
+  opacity: 0; translate: 0 8px; transition: opacity .3s var(--ease-out), translate .4s var(--ease-out);
+}
 @media (hover: hover) and (pointer: fine) {
-  .ckp-brands__tab:not(.is-active):hover { background: var(--gf-bg-soft); }
-}
-.ckp-brands__tab:focus-visible { outline-offset: -2px; }
-.ckp-brands__logo { position: relative; z-index: 1; display: block; flex: none; }
-.ckp-brands__logo img { display: block; width: 100%; height: 100%; }
-.ckp-brands__logo.is-cropped { overflow: hidden; }
-.ckp-brands__logo.is-cropped img { position: absolute; max-width: none; }
-
-.ckp-brands__detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.ckp-brands__media { position: relative; height: 480px; border-bottom-left-radius: 64px; overflow: hidden; background: var(--gf-lilac-50); }
-.ckp-brands__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.ckp-brands__copy { display: flex; flex-direction: column; justify-content: center; padding-inline: 64px; min-width: 0; }
-.ckp-brands__copy-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
-.ckp-brands__name {
-  margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 16px;
-  font-size: 32px; line-height: 44px; letter-spacing: -0.5px; font-weight: var(--fw-regular); color: var(--gf-ink);
-}
-.ckp-brands__slash { display: inline-block; font-size: 28px; line-height: 32px; }
-.ckp-brands__offer { color: var(--gf-purple); line-height: 40px; }
-.ckp-brands__desc { margin: 0; max-width: 26em; font-size: var(--fs-body-md); line-height: 26px; color: var(--dpc-muted); text-wrap: pretty; }
-.ckp-brands__link {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: var(--fs-body-sm); line-height: 16px; font-weight: var(--fw-semibold); color: var(--gf-purple);
-  text-decoration: underline; text-underline-position: from-font; text-decoration-skip-ink: none;
-}
-.ckp-brands__link img { width: 24px; height: 24px; transition: translate .2s var(--ease-out-strong); }
-@media (hover: hover) and (pointer: fine) {
-  .ckp-brands__link:hover img { translate: 2px -2px; }
+  .ckp-tk__tile:hover .ckp-tk__zoom img { scale: 1.06; }
+  .ckp-tk__tile:hover .ckp-tk__chip { opacity: 1; translate: 0 0; }
 }
 
 
-/* ============ ≤1180 ============
-   The brand strip's six 240px cells and the campaign row's 64-radius card
-   are desktop measures; below here they would crowd. */
+/* ============ ≤1180 ============ */
 @media (max-width: 1180px) {
-  .ckp-brands__tab { height: 180px; }
-  .ckp-brands__copy { padding-inline: 40px; }
-  .ckp-camp__card { padding: 32px; border-radius: 40px; }
-  .ckp-camp__link::after { border-radius: 40px; }
-  .ckp-camp__title { font-size: 26px; line-height: 36px; }
-  .ckp-camp__media { border-radius: 40px; }
+  .ckp-mx__nav { gap: 32px; }
+  .ckp-mx__name { font-size: 28px; line-height: 36px; }
+  .ckp-tk__label { left: 40px; bottom: 32px; font-size: 28px; line-height: 36px; }
 }
 
 /* ============ ≤920 ============ */
 @media (max-width: 920px) {
-  .ckp-taksit, .ckp-camp, .ckp-brands { --dpc-head-gap: 56px; }
-
-  /* bento: the fixed 310 was the desktop stack's share */
-  .ckp-tile-aidat { flex: none; min-height: 0; gap: 32px; }
-  .ckp-tile-aidat .dpc-tile__visual { flex: none; }
-
-  /* taksit: photo on top, copy and tabs under it */
-  .ckp-taksit__stage { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
-  .ckp-taksit__media { order: -1; aspect-ratio: 4 / 3; border-radius: 40px; }
-  .ckp-taksit__arrows { right: 24px; bottom: 24px; gap: 12px; }
-  .ckp-taksit__copy { gap: 32px; }
-  .ckp-taksit__panel { min-height: 0; }
-  .ckp-taksit__title { font-size: 36px; line-height: 44px; }
-
-  /* campaigns: photo, then the card overlapping its foot; shapes are desktop
-     decoration — only the dots and arrows survive, as a row */
-  .ckp-camp__row { aspect-ratio: auto; flex-direction: column; }
-  .ckp-camp__media { height: auto; width: 100%; aspect-ratio: 4 / 3; margin: 0; }
-  .ckp-camp__side { display: flex; flex-direction: column; margin: -64px 16px 0; gap: 24px; }
-  .ckp-camp__card { min-height: 280px; }
-  .ckp-camp__grid { height: auto; aspect-ratio: auto; display: flex; align-items: center; justify-content: space-between; }
-  .ckp-camp__shape { display: none; }
-  .ckp-camp__dots, .ckp-camp__arrows { padding: 0; }
-  .ckp-camp__arrows { gap: 12px; }
-  .ckp-camp__arrows .dpc-arrow { width: 56px; }
-
-  /* brands: the strip scrolls sideways, the detail stacks */
-  .ckp-brands__tabs {
-    overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
-    margin-inline: calc(-1 * var(--dpc-gutter)); padding-inline: var(--dpc-gutter);
-  }
-  .ckp-brands__tabs::-webkit-scrollbar { display: none; }
-  .ckp-brands__tab { flex: 0 0 160px; height: 120px; scroll-snap-align: start; }
-  .ckp-brands__detail { grid-template-columns: minmax(0, 1fr); }
-  .ckp-brands__media { height: auto; aspect-ratio: 3 / 2; border-radius: 0 0 0 40px; }
-  .ckp-brands__copy { padding: 32px 0 0; }
+  .ckp-benefits { padding-bottom: 96px; }
+  .ckp-mx { padding-block: 96px; }
+  .ckp-mx__body { margin-top: 56px; }
+  .ckp-tk { padding-block: 96px; }
+  /* the grid folds to two columns; eczane runs the full width between */
+  .ckp-tk__grid { grid-template-columns: 1fr 1fr; height: auto; }
+  .ckp-tk__col { display: contents; }
+  .ckp-tk__tile { aspect-ratio: 1; }
+  .ckp-tk__tile--tall { grid-column: span 2; grid-row: 2; aspect-ratio: 16 / 9; }
 }
 
 /* ============ ≤767 ============ */
 @media (max-width: 767px) {
-  .ckp-taksit, .ckp-camp, .ckp-brands { --dpc-head-gap-m: 32px; }
+  .ckp-benefits { padding-bottom: 64px; }
+  .ckp-benefits__bento .dpc-tile__copy { padding: 24px; }
+  .ckp-benefits__bento .dpc-tile__title { font-size: 20px; line-height: 28px; }
 
-  .ckp-tile-max { padding-top: 12px; }
-  .ckp-tile-aidat { padding: 32px 24px; --tile-w: 424.67; }
+  .ckp-mx { padding-block: 64px; }
+  .ckp-mx__title { font-size: 32px; line-height: 40px; }
+  .ckp-mx__title img { width: 116px; }
+  .ckp-mx__sub { font-size: 18px; line-height: 26px; margin: 16px 0 24px; }
+  .ckp-mx__body { margin-top: 40px; }
+  .ckp-mx__card { border-radius: 24px; }
+  .ckp-mx__copy { left: 20px; right: 20px; bottom: 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .ckp-mx__name { font-size: 22px; line-height: 28px; }
+  .ckp-mx__peek { right: 16px; bottom: 16px; width: 44px; height: 44px; }
+  .ckp-mx__nav { gap: 8px; margin-top: 32px; padding-inline: var(--dpc-gutter); }
+  .ckp-mx__arrow { width: 44px; height: 44px; margin-top: 10px; }
+  .ckp-mx__brands { gap: 4px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .ckp-mx__brands::-webkit-scrollbar { display: none; }
+  .ckp-mx__brand { width: 64px; flex: none; gap: 8px; scroll-snap-align: center; }
+  .ckp-mx__logo { width: 64px; height: 64px; padding: 5px; }
+  .ckp-mx__mark { scale: .8; }
+  .ckp-mx__label { font-size: 12px; line-height: 16px; }
 
-  .ckp-taksit__media { aspect-ratio: 1; border-radius: 24px; }
-  .ckp-taksit__arrows { right: 16px; bottom: 16px; }
-  .ckp-taksit__arrows .dpc-arrow { width: 44px; height: 44px; }
-  .ckp-taksit__title { font-size: 28px; line-height: 36px; }
-  /* five thumbs don't fit at 320; they scroll, the active one stays in reach */
-  .ckp-taksit__tabs {
-    overflow-x: auto; scrollbar-width: none; gap: 12px;
-    margin-inline: calc(-1 * var(--dpc-gutter)); padding-inline: var(--dpc-gutter);
-    scroll-padding-inline: var(--dpc-gutter); scroll-snap-type: x proximity;
-  }
-  .ckp-taksit__tabs::-webkit-scrollbar { display: none; }
-  .ckp-taksit__tab { flex: 0 0 92px; scroll-snap-align: start; }
-  /* the auto-advance is off here, so every thumb shows at full strength */
-  .ckp-taksit__thumb { opacity: .55; }
-
-  .ckp-camp__media { border-radius: 24px; }
-  .ckp-camp__side { margin: -40px 12px 0; }
-  .ckp-camp__card { min-height: 0; padding: 24px; border-radius: 24px; }
-  .ckp-camp__link::after { border-radius: 24px; }
-  .ckp-camp__title { font-size: 22px; line-height: 30px; }
-  .ckp-camp__desc { font-size: var(--fs-body-sm); line-height: 22px; }
-  .ckp-camp__arrows .dpc-arrow { width: 48px; }
-
-  .ckp-brands__title img { height: 32px; translate: 0 3px; }
-  .ckp-brands__title { gap: 8px; }
-  .ckp-brands__tab { flex-basis: 128px; height: 96px; }
-  .ckp-brands__media { border-radius: 0 0 0 24px; }
-  .ckp-brands__copy { padding-top: 24px; }
-  .ckp-brands__name { font-size: 26px; line-height: 34px; gap: 10px; }
-  .ckp-brands__slash { font-size: 22px; }
+  .ckp-tk { padding-block: 64px; }
+  .ckp-tk__tile { border-radius: 24px; }
+  .ckp-tk__label { left: 20px; bottom: 20px; font-size: 22px; line-height: 28px; }
 }

@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import clsx from "clsx";
+import { animate } from "motion/react";
 import Reveal, { RevealItem } from "@/components/Reveal";
 import { ArrowButton, PageDots } from "@/components/CarouselControls";
 
@@ -16,7 +17,12 @@ import { ArrowButton, PageDots } from "@/components/CarouselControls";
    a card whose answer overflows becomes a disclosure: the question is a
    button (aria-expanded) whose hit area is stretched over the whole card.
    Cards that fit get no button — a control that does nothing is worse than
-   none. */
+   none.
+
+   With a mouse the disclosure also opens on hover (owner, 2026-10-16:
+   "smooth reveal on hover"): the card springs to its full answer as the
+   fade dissolves, and folds back when the pointer leaves. A click pins it
+   open; touch and keyboard use the button alone. */
 
 export interface FaqItem {
   q: string;
@@ -126,10 +132,21 @@ export default function FaqCarousel({
   );
 }
 
+/* hover intent: a pointer resting on a card this long opens it; leaving
+   closes it after LEAVE_MS (unless it was clicked open, which pins it) */
+const INTENT_MS = 120;
+const LEAVE_MS = 180;
+
 function FaqCard({ item, id }: { item: FaqItem; id: string }) {
+  const liRef = useRef<HTMLLIElement>(null);
   const aRef = useRef<HTMLParagraphElement>(null);
   const [clamped, setClamped] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const [hover, setHover] = useState(false);
+  const open = clamped && (pinned || hover);
+  // how much taller the answer is than its clamp, measured while closed
+  const extra = useRef(0);
+  const timer = useRef(0);
 
   // measure against the clamp, not the open state, so closing works too
   useEffect(() => {
@@ -137,7 +154,8 @@ function FaqCard({ item, id }: { item: FaqItem; id: string }) {
     if (!a) return;
     const measure = () => {
       if (open) return;
-      setClamped(a.scrollHeight > a.clientHeight + 1);
+      extra.current = Math.max(0, a.scrollHeight - a.clientHeight);
+      setClamped(extra.current > 1);
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -145,11 +163,61 @@ function FaqCard({ item, id }: { item: FaqItem; id: string }) {
     return () => ro.disconnect();
   }, [open]);
 
+  // the card's height springs between its clamp and its full answer; the
+  // inline height is dropped once closed so the stylesheet owns it again
+  const first = useRef(true);
+  useEffect(() => {
+    const li = liRef.current;
+    if (!li) return;
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const from = li.offsetHeight;
+    li.style.height = "";
+    const base = li.offsetHeight;
+    const to = open ? base + extra.current : base;
+    const ctl = animate(li, { height: [from, to] }, reduce ? { duration: 0 } : { type: "spring", duration: 0.5, bounce: 0.12 });
+    // open rests at auto so a resize re-flows the answer; closed hands back to CSS
+    ctl.finished.then(() => {
+      li.style.height = open ? "auto" : "";
+    });
+    return () => ctl.stop();
+  }, [open]);
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  const onEnter = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setHover(true), INTENT_MS);
+  };
+  const onLeave = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setHover(false), LEAVE_MS);
+  };
+
   return (
-    <li className={clsx("dpc-faq__card", clamped && "is-clamped", open && "is-open")}>
+    <li
+      ref={liRef}
+      className={clsx("dpc-faq__card", clamped && "is-clamped", open && "is-open")}
+      onPointerEnter={onEnter}
+      onPointerLeave={onLeave}
+    >
       <h3 className="dpc-faq__q">
-        {clamped || open ? (
-          <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen((o) => !o)}>
+        {clamped ? (
+          // a click pins the card open (or closes it, hover or not)
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={id}
+            onClick={() => {
+              setPinned(!open);
+              if (open) setHover(false);
+            }}
+          >
             {item.q}
           </button>
         ) : (

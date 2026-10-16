@@ -1,175 +1,141 @@
 /* Created by Claude · INTERNAL */
 "use client";
 
-import { useEffect, useId, useRef } from "react";
-import clsx from "clsx";
-import { motion, useInView, useMotionValue, useScroll, useTransform } from "motion/react";
-import type { TargetAndTransition, Variants } from "motion/react";
+import { useId } from "react";
 import SectionHead from "@/components/SectionHead";
-import Reveal, { RevealItem, useMotionOff } from "@/components/Reveal";
-import { useAutoAdvance } from "@/components/useAutoAdvance";
+import Reveal, { RevealItem } from "@/components/Reveal";
+import { useStory } from "@/components/useStory";
+import SanalShader from "./SanalShader";
 import { DEBIT_SANAL } from "@/data/content";
 
-/* "sanal hesap kartıyla güvenle harca" (card pages v2, Figma 22630:16495).
-   Pale-yellow field, three frosted feature cards on the left, the hand-held
-   virtual card with three rotated outline rings on the right, all fading to
-   white at the foot. The art is positioned from the stage's centre in comp px
-   (`--u`), so it tracks the column rather than the viewport edge.
+/* "sanal hesap kartıyla güvenle harca" — Web comp 294:40254 (2026-10-14).
 
-   Feature glyphs: each is a 2×2 of 24px quarter-shapes (Figma draws them as
-   flipped/rotated rounded squares); the cell list below is the resolved
-   corner set for each, so no transforms are needed.
+   A dark violet band: centred head with its CTA, three outlined feature
+   cards, and the fanned virtual cards rising out of the foot (one photo,
+   turned −15° as in the comp, clipped by the section). The fan is placed
+   from the section's centre and foot in comp px × `--u`, so it holds its
+   relation to the feature row as the page narrows.
 
-   Motion pass (2026-09-25) — the rings are card outlines, so they act out
-   whichever feature is active:
-     0 "ayrı kartlar oluştur"      → they fan apart: several cards
-     1 "internet alışverişlerini…" → they pulse outward: a shield
-     2 "limitini belirle"          → they draw in tight: a limit
-   The active feature cycles while the section is in view (useAutoAdvance:
-   pauses on hover/focus, stops for good on a pick); pointing at or focusing
-   a card picks it. Its glyph quarters assemble from flat squares as the
-   cards enter, and the art drifts up a little against the scroll.
-   ≤767 / reduced motion: no cycle, rings at rest, art still. */
+   Background: a light WebGL shader (`SanalShader`) in place of the
+   comp's exported gradient (owner, 2026-10-16).
 
-type Cell = { c: string; r: string };
-/* order: top-left, top-right, bottom-left, bottom-right */
-const GLYPHS: Cell[][] = [
-  [
-    { c: "var(--gf-yellow)", r: "15px 0 0 0" },
-    { c: "var(--gf-purple)", r: "15px 0 0 0" },
-    { c: "var(--dpc-sanal-lilac)", r: "15px" },
-    { c: "var(--dpc-sanal-mauve)", r: "0 15px 0 0" },
+   Each feature glyph acts out its line (useStory: once in view, again on
+   a hover over its card; ≤767 / reduced motion = the comp, still):
+   - cards  — two ghost cards fan out of the card and fold back in
+   - limit  — the cog drops onto the cards and turns into place
+   - secure — the card slides in, its dots type out, the check stamps on
+
+   Replaces the pale-yellow version (frosted cards over the hand-held card,
+   2026-09); that file is in git history at 65e11be. */
+
+const A = "/assets/img/hesap-karti";
+const POP = { type: "spring", duration: 0.55, bounce: 0.45 } as const;
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+function CardsGlyph() {
+  return (
+    <span className="dbc-sn__glyph dbc-sn__glyph--cards">
+      <span className="dbc-sn__g-rot">
+        <img className="dbc-sn__ghost dbc-sn__ghost--a" src={`${A}/sanal-ico-cards.svg`} alt="" loading="lazy" />
+        <img className="dbc-sn__ghost dbc-sn__ghost--b" src={`${A}/sanal-ico-cards.svg`} alt="" loading="lazy" />
+        <img className="dbc-sn__main" src={`${A}/sanal-ico-cards.svg`} alt="" loading="lazy" />
+      </span>
+    </span>
+  );
+}
+
+function LimitGlyph() {
+  return (
+    <span className="dbc-sn__glyph dbc-sn__glyph--limit">
+      <span className="dbc-sn__g-rot">
+        <img className="dbc-sn__main" src={`${A}/sanal-ico-limit-base.svg`} alt="" loading="lazy" />
+        {/* same viewBox as the base, so it overlays exactly; turns on its own hub */}
+        <img className="dbc-sn__gear" src={`${A}/sanal-ico-limit-gear.svg`} alt="" loading="lazy" />
+      </span>
+    </span>
+  );
+}
+
+function SecureGlyph() {
+  return (
+    <span className="dbc-sn__glyph dbc-sn__glyph--secure">
+      <span className="dbc-sn__g-back" />
+      <span className="dbc-sn__g-front" />
+      <span className="dbc-sn__g-sheen" />
+      <img className="dbc-sn__g-dots" src={`${A}/sanal-ico-dots.svg`} alt="" width={20.7867} height={6.92912} loading="lazy" />
+      <img className="dbc-sn__g-check" src={`${A}/sanal-ico-check.svg`} alt="" width={55.4314} height={55.4314} loading="lazy" />
+    </span>
+  );
+}
+
+/* stories: every property is [from, …, rest]; rest = the comp */
+const STORIES = {
+  cards: [
+    [".dbc-sn__main", { scale: [0.82, 1] }, { ...POP }],
+    [".dbc-sn__ghost--a", { opacity: [0, 0.6, 0.6, 0], rotate: [0, -16, -16, 0], x: [0, -4, -4, 0] }, { duration: 1.3, times: [0, 0.3, 0.65, 1], ease: EASE, at: 0.1 }],
+    [".dbc-sn__ghost--b", { opacity: [0, 0.6, 0.6, 0], rotate: [0, 16, 16, 0], x: [0, 4, 4, 0] }, { duration: 1.3, times: [0, 0.3, 0.65, 1], ease: EASE, at: 0.18 }],
   ],
-  [
-    { c: "var(--gf-yellow)", r: "0 0 15px 0" },
-    { c: "var(--gf-purple)", r: "0 15px 0 0" },
-    { c: "var(--dpc-sanal-mauve)", r: "0 15px 15px 0" },
-    { c: "var(--dpc-sanal-lilac)", r: "15px" },
+  limit: [
+    [".dbc-sn__main", { scale: [0.88, 1], opacity: [0, 1] }, { ...POP }],
+    [".dbc-sn__gear", { scale: [0, 1.12, 1], rotate: [-200, 0] }, { scale: { duration: 0.5, times: [0, 0.7, 1], ease: "easeOut" }, rotate: { duration: 1.1, ease: EASE }, at: 0.15 }],
   ],
-  [
-    { c: "var(--dpc-sanal-lilac)", r: "15px" },
-    { c: "var(--gf-purple)", r: "15px 15px 0 0" },
-    { c: "var(--gf-yellow)", r: "0 15px 0 0" },
-    { c: "var(--dpc-sanal-mauve)", r: "15px 0 0 0" },
+  secure: [
+    [".dbc-sn__g-back", { x: [-14, 0], opacity: [0, 1] }, { duration: 0.5, ease: EASE }],
+    [".dbc-sn__g-front, .dbc-sn__g-sheen", { x: [-10, 0], opacity: [0, 1] }, { duration: 0.5, ease: EASE, at: 0.08 }],
+    [".dbc-sn__g-dots", { clipPath: ["inset(0 100% 0 0)", "inset(0 0% 0 0)"] }, { duration: 0.45, ease: "linear", at: 0.35 }],
+    [".dbc-sn__g-check", { scale: [0, 1], rotate: [-35, 0] }, { ...POP, at: 0.7 }],
   ],
-];
+} as const;
 
-/* glyph quarters: flat squares → their corner shapes, one after another */
-const cellVariants: Variants = {
-  hidden: { scale: 0.4, opacity: 0, borderRadius: "0px" },
-  visible: (c: { r: string; j: number }) => ({
-    scale: 1,
-    opacity: 1,
-    borderRadius: c.r,
-    transition: { type: "spring", duration: 0.55, bounce: 0.3, delay: 0.18 + c.j * 0.06 },
-  }),
+const GLYPHS: Record<string, () => React.ReactNode> = {
+  cards: CardsGlyph,
+  limit: LimitGlyph,
+  secure: SecureGlyph,
 };
 
-/* ring i = 0 innermost … 2 outermost; each returns its pose for a feature */
-const SETTLE = { type: "spring", duration: 0.9, bounce: 0.15 } as const;
-function ringPose(mode: number | null, i: number): TargetAndTransition {
-  switch (mode) {
-    case 0:
-      return { rotate: i * 10, scale: 1 + i * 0.02, transition: SETTLE };
-    case 1:
-      return {
-        rotate: 0,
-        scale: [1, 1.07 + i * 0.02, 1],
-        transition: { rotate: SETTLE, scale: { duration: 1.6, ease: "easeInOut", repeat: Infinity, delay: i * 0.22 } },
-      };
-    case 2:
-      return { rotate: 0, scale: 1 - (i + 1) * 0.05, transition: SETTLE };
-    default:
-      return { rotate: 0, scale: 1, transition: SETTLE };
-  }
+function Feature({ icon, text, br, em, index }: { icon: string; text: string; br?: boolean; em: string; index: number }) {
+  const Glyph = GLYPHS[icon];
+  const story = STORIES[icon as keyof typeof STORIES];
+  // the three cards play left to right as the row enters
+  const scope = useStory<HTMLLIElement>(story as never, { delay: 0.35 + index * 0.18, amount: 0.6, hoverTarget: "self" });
+  return (
+    <RevealItem as="li" className="dbc-sanal__feature" ref={scope as React.Ref<HTMLElement>}>
+      <span className="dbc-sn__icon" aria-hidden="true">
+        <Glyph />
+      </span>
+      <p className="dbc-sanal__text">
+        {/* the space survives where the break is hidden (≤767) */}
+        {text}{" "}
+        {br && <br />}
+        <b>{em}</b>
+      </p>
+    </RevealItem>
+  );
 }
 
 export default function Sanal() {
   const S = DEBIT_SANAL;
   const uid = useId();
-  const off = useMotionOff();
-  const colRef = useRef<HTMLDivElement>(null);
-  const { index, select, progress, auto, bind } = useAutoAdvance(S.features.length, colRef, 3600);
-  // rings rest while the section is off-screen (the shield pulse is a loop)
-  const stageRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(stageRef, { margin: "80px 0px" });
-  const mode = off || !inView ? null : index;
-
-  // the art drifts up against the scroll (gated by a motion value, not by
-  // swapping style, so SSR and client agree)
-  const on = useMotionValue(0);
-  useEffect(() => {
-    on.set(off ? 0 : 1);
-  }, [off, on]);
-  const { scrollYProgress } = useScroll({ target: stageRef, offset: ["start end", "end start"] });
-  const artY = useTransform(() => (on.get() ? (0.5 - scrollYProgress.get()) * 120 : 0));
-
   return (
-    <section className="dpc-section dpc-sanal" id={S.id} aria-labelledby={`${uid}-h`}>
-      <div className="dpc-container">
-        <SectionHead
-          eyebrow={S.eyebrow}
-          eyebrowClassName="dpc-sanal__eyebrow"
-          title={S.title}
-          sub={S.sub}
-          titleId={`${uid}-h`}
-          className="dpc-sanal__head"
-        />
-
-        <div className="dpc-sanal__stage" ref={stageRef}>
-          <motion.div className="dpc-sanal__art" aria-hidden="true" style={{ y: artY }}>
-            {/* comp layer order: the rings sit over the hand */}
-            <span className="dpc-sanal__hand">
-              <img loading="lazy" src="/assets/img/hesap-karti/sanal-hand.webp" alt="" width={2250} height={1888} />
-            </span>
-            {[3, 2, 1].map((n) => (
-              <motion.span
-                key={n}
-                className={`dpc-sanal__ring dpc-sanal__ring--${n}`}
-                initial={false}
-                animate={ringPose(mode, n - 1)}
-              />
-            ))}
-          </motion.div>
-
-          <Reveal className="dpc-sanal__col" stagger={0.08}>
-            <div className="dpc-sanal__cards" ref={colRef} {...bind}>
-              <ul className="dpc-sanal__list">
-                {S.features.map((f, i) => {
-                  const active = !off && index === i;
-                  return (
-                    <RevealItem as="li" key={f} className={clsx("dpc-sanal__card", active && "is-active")}>
-                      {/* the whole card picks its feature; the list stays a plain list for AT */}
-                      <span className="dpc-sanal__hit" onPointerEnter={(e) => e.pointerType === "mouse" && select(i)} />
-                      <span className="dpc-sanal__glyph" aria-hidden="true">
-                        {GLYPHS[i % GLYPHS.length].map((cell, j) => (
-                          <motion.i key={j} custom={{ r: cell.r, j }} variants={cellVariants} style={{ background: cell.c }} />
-                        ))}
-                      </span>
-                      <p className="dpc-sanal__text">
-                        {/* the comp breaks each benefit after its comma */}
-                        {f.includes(", ") ? (
-                          <>
-                            {f.slice(0, f.indexOf(", ") + 1)}
-                            <br /> {f.slice(f.indexOf(", ") + 2)}
-                          </>
-                        ) : (
-                          f
-                        )}
-                      </p>
-                      {active && auto && <motion.i className="dpc-sanal__prog" aria-hidden="true" style={{ scaleX: progress }} />}
-                    </RevealItem>
-                  );
-                })}
-              </ul>
-            </div>
-            <RevealItem>
-              <a className="dpc-cta" href={S.href}>
-                {S.cta}
-              </a>
-            </RevealItem>
-          </Reveal>
-        </div>
+    <section className="dbc-sanal" id={S.id} aria-labelledby={`${uid}-h`}>
+      <SanalShader />
+      <div className="dpc-container dbc-sanal__inner">
+        <SectionHead eyebrow={S.eyebrow} title={S.title} sub={S.sub} titleId={`${uid}-h`} className="dbc-sanal__head" />
+        <Reveal className="dbc-sanal__cta" delay={0.15}>
+          <RevealItem>
+            <a className="dpc-cta" href={S.href}>
+              {S.cta}
+            </a>
+          </RevealItem>
+        </Reveal>
+        <Reveal as="ul" className="dbc-sanal__features" stagger={0.08}>
+          {S.features.map((f, i) => (
+            <Feature key={f.icon} icon={f.icon} text={f.text} br={f.br} em={f.em} index={i} />
+          ))}
+        </Reveal>
+      </div>
+      <div className="dbc-sanal__fan" aria-hidden="true">
+        <img src={`${A}/sanal-cards.webp`} alt="" width={1208} height={673} loading="lazy" />
       </div>
     </section>
   );

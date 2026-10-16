@@ -156,12 +156,14 @@ interface RevealItemProps {
   className?: string;
   children?: React.ReactNode;
   style?: React.CSSProperties;
+  /** React 19 ref-as-prop, e.g. a useStory scope on the item itself */
+  ref?: React.Ref<HTMLElement>;
 }
 
-export function RevealItem({ as = "div", className, children, style }: RevealItemProps) {
+export function RevealItem({ as = "div", className, children, style, ref }: RevealItemProps) {
   const M = TAGS[as];
   return (
-    <M className={className} style={style} variants={itemVariants}>
+    <M className={className} style={style} variants={itemVariants} ref={ref as never}>
       {children}
     </M>
   );

@@ -7,7 +7,8 @@ import { useStory } from "@/components/useStory";
 import { CREDIT_BENEFITS } from "@/data/content";
 import SealArt from "./SealArt";
 
-/* Bento tile illustrations for /kredi-karti (Figma 22630:15619). Rebuilt from
+/* Bento tile illustrations for /kredi-karti (Figma 22630:15619; the ₺0
+   tile is Web comp 266:4725, 2026-10-16 — the ₺350 tile is gone). Rebuilt from
    the comp's layers rather than flattened, so each piece can animate.
    Geometry is comp px through `--u` (see `.dpc-tile__visual`, product-page.css);
    every visual is decorative — BenefitTile hides it from assistive tech.
@@ -16,10 +17,9 @@ import SealArt from "./SealArt";
    into view and again on hover (useStory). The rest frame is the comp.
    - maximum: the card taps down → the chain draws → the pill lands → +1, +2,
      +3 taksit stack up, each + turning as it lands.
-   - ₺350: a statement row arrives → the brackets draw down from it → the
-     reward coin pops out between them → sparkles; then they twinkle.
-   - ₺0: the seal stamps onto the tile (the app icon flinches, a ring ripples
-     out); then its scalloped star turns, slowly, forever-ish. */
+   - ₺0 (Web comp, 2026-10-16): the field of white cards slides in run by
+     run, the seal stamps onto it (the field flinches, a ring ripples out);
+     then the star turns and the field drifts down its runs, slowly. */
 
 const A = "/assets/img/kredi-karti";
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -64,75 +64,44 @@ export function MaximumVisual() {
   );
 }
 
-/* statement bracket — inlined so it can draw (was bracket-left/right.svg;
-   the right one is the same stroke with a 1px shorter top, mirrored in CSS) */
-function Bracket({ side }: { side: "l" | "r" }) {
-  return (
-    <svg className={`ckp-txn__bracket ckp-txn__bracket--${side}`} viewBox="0 0 120.5 109" width="120.5" height="109" fill="none">
-      <path
-        className="ckp-txn__stroke"
-        d={`M${side === "l" ? "17.64" : "16.5"} 0.5H8.5C4.08 0.5 0.5 4.08 0.5 8.5V100.5C0.5 104.92 4.08 108.5 8.5 108.5H120.5`}
-        stroke="#EBEBEB"
-      />
-    </svg>
-  );
-}
+/* the card field behind the ₺0 seal: five diagonal runs of white cards
+   (comp column counts; the middle run is tighter and skips its third card) */
+const FIELD = [5, 6, 5, 6, 5];
 
-/** Statement row → ₺350 coin, bracketed, with sparkles. */
-export function TransactionVisual() {
-  const { txn, reward } = CREDIT_BENEFITS.getirpara;
-  const seq: AnimationSequence = [
-    [".ckp-txn__row", { x: [-36, 0], opacity: [0, 1] }, { type: "spring", duration: 0.6, bounce: 0.15 }],
-    [".ckp-txn__stroke", { pathLength: [0, 1], opacity: [0, 1] }, { duration: 0.55, ease: EASE, at: "-0.2" }],
-    [".ckp-txn__coin", { scale: [0.3, 1], rotate: [-30, 0], opacity: [0, 1] }, { type: "spring", duration: 0.6, bounce: 0.3, at: "-0.2" }],
-    [".ckp-txn__spark", { scale: [0.2, 1], rotate: [-90, 0], opacity: [0, 1] }, { ...POP, delay: stagger(0.08), at: "-0.3" }],
-  ];
-  const scope = useStory(seq, {
-    loops: [[".ckp-txn__spark", { scale: [1, 0.55, 1], opacity: [1, 0.45, 1] }, { duration: 2.6, ease: "easeInOut", repeat: Infinity, delay: stagger(0.7) }]],
-  });
-  return (
-    <div className="ckp-txn" ref={scope}>
-      <Bracket side="l" />
-      <Bracket side="r" />
-      <div className="ckp-txn__row">
-        <span className="ckp-txn__date">
-          <span className="ckp-txn__month">{txn.month}</span>
-          <span className="ckp-txn__day">{txn.day}</span>
-        </span>
-        <span className="ckp-txn__merchant">{txn.merchant}</span>
-        <span className="ckp-txn__amount">
-          <small>{txn.amount.cur}</small>
-          {txn.amount.int}
-          <small>{txn.amount.dec}</small>
-        </span>
-      </div>
-      <span className="ckp-txn__coin">{reward}</span>
-      <img loading="lazy" className="ckp-txn__spark ckp-txn__spark--a" src={`${A}/sparkle-a.svg`} alt="" width={13} height={13} />
-      <img loading="lazy" className="ckp-txn__spark ckp-txn__spark--b" src={`${A}/sparkle-b.svg`} alt="" width={17} height={17} />
-      <img loading="lazy" className="ckp-txn__spark ckp-txn__spark--c" src={`${A}/sparkle-c.svg`} alt="" width={28.8} height={28.8} />
-    </div>
-  );
-}
-
-/** App-icon tile + ₺0 seal. */
+/** ₺0 seal stamped onto a field of white cards (Web comp 267:14480). */
 export function AidatVisual() {
   const seq: AnimationSequence = [
-    [".ckp-aidat__app", { y: [14, 0], opacity: [0, 1] }, { type: "spring", duration: 0.5, bounce: 0.2 }],
+    // the field slides in along its diagonal, run by run
+    [".ckp-aidat__run", { y: [60, 0], opacity: [0, 1] }, { duration: 0.9, ease: EASE, delay: stagger(0.06) }],
     // the stamp: comes down big and tilted, lands hard
-    [".ckp-aidat__seal", { scale: [1.6, 1], rotate: [-24, 0], opacity: [0, 1] }, { type: "spring", duration: 0.42, bounce: 0.28, at: "-0.1" }],
-    [".ckp-aidat__ripple", { scale: [0.7, 1.55], opacity: [0, 0.55, 0] }, { duration: 0.7, ease: "easeOut", at: "-0.18" }],
-    [".ckp-aidat__app", { scale: [1, 0.9, 1] }, { duration: 0.36, ease: EASE, at: "<" }],
+    [".ckp-aidat__seal", { scale: [1.6, 1], rotate: [-24, 0], opacity: [0, 1] }, { type: "spring", duration: 0.42, bounce: 0.28, at: 0.45 }],
+    [".ckp-aidat__ripple", { scale: [0.7, 1.55], opacity: [0, 0.55, 0] }, { duration: 0.7, ease: "easeOut", at: 0.55 }],
+    // the cards under it flinch from the impact
+    [".ckp-aidat__field", { scale: [1, 0.97, 1] }, { duration: 0.4, ease: EASE, at: 0.55 }],
   ];
   const scope = useStory(seq, {
-    loops: [[".seal-star", { rotate: [0, 360] }, { duration: 48, ease: "linear", repeat: Infinity }]],
+    loops: [
+      [".seal-star", { rotate: [0, 360] }, { duration: 48, ease: "linear", repeat: Infinity }],
+      // the field keeps drifting down its runs, one card pitch a minute-ish
+      [".ckp-aidat__drift", { "--dy": [0, 1] }, { duration: 40, ease: "linear", repeat: Infinity }],
+    ],
   });
   return (
     <div className="ckp-aidat" ref={scope}>
-      <span className="ckp-aidat__app">
-        <span className="ckp-aidat__icon">
-          <img loading="lazy" src={`${A}/icon-card-phone.svg`} alt="" width={61.2549} height={54.3606} />
-        </span>
-      </span>
+      <div className="ckp-aidat__field">
+        <div className="ckp-aidat__rot">
+          <div className="ckp-aidat__drift">
+            {FIELD.map((n, c) => (
+              <div key={c} className={c === 2 ? "ckp-aidat__run ckp-aidat__run--tight" : "ckp-aidat__run"}>
+                {/* one extra card above and below so the drift never shows an end */}
+                {Array.from({ length: n + 2 }, (_, i) => (
+                  <img key={i} loading="lazy" src={`${A}/card-white-tilt.png`} alt="" width={270} height={416} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       <span className="ckp-aidat__stamp">
         <i className="ckp-aidat__ripple" />
         <SealArt className="ckp-aidat__seal" />

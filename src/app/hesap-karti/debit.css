@@ -9,17 +9,25 @@
    ============================================================ */
 
 .dbc {
-  --dpc-sanal-lilac: #d6c8ff;    /* sanal glyph */
-  --dpc-sanal-mauve: #b6a6e6;    /* sanal glyph */
   --dbc-yellow-100: #fff1b0;     /* wallet meter track (`color/yellow/100`) */
   --dbc-note-muted: #7e7e7e;     /* iOS notification body */
 }
 
+/* hero + section heads: shared Web-comp rules, product-page.css (.dpc-hero--web, .dpc--web) */
 /* hero photo: the comp crops it 70.7% down (Figma: h120.3%, top −14.34%) */
 .dbc-hero__media img { object-position: 50% 70.7%; }
 
-/* the benefit bento's eyebrow is the regular-weight, 1px-tracked one */
-.dbc-eyebrow--regular { font-weight: var(--fw-regular); letter-spacing: 1px; }
+/* ============ BENTO 1 — kart avantajları (283:22714) ============
+   Three equal tiles 32 apart (458.67 wide), so the art runs at comp size:
+   --tile-w is the tile's content width. Captions are 24/32 secondary with
+   the figure in semibold ink, one block per comp paragraph. */
+.dbc-benefits { padding-bottom: 196px; }
+.dbc-benefits__bento { gap: 32px; }
+.dbc-benefits__bento .dpc-tile { --tile-w: 456.67; }
+.dbc-benefits__bento .dpc-tile__title { font-size: 24px; line-height: 32px; letter-spacing: 0; color: #3e3e3e; }
+.dbc-benefits__bento .dpc-tile__title b { font-weight: var(--fw-semibold); color: var(--gf-ink); }
+.dbc-tile-ab .dpc-tile__copy { padding-inline: 32px; }
+.dbc-cap__line { display: block; }
 
 
 /* ============ SKELETON SCREEN (inside the bento phones) ============ */
@@ -190,18 +198,15 @@
 .dpc-ab__note-text span { font-size: calc(15.53 * var(--u)); line-height: calc(18.63 * var(--u)); color: var(--dbc-note-muted); }
 .dpc-ab__note-time { align-self: flex-start; flex: none; font-size: calc(15 * var(--u)); line-height: calc(17.6 * var(--u)); color: rgb(0 0 0 / .5); }
 
-.dpc-ab__marks {
-  position: absolute; left: calc(50% + 0.32 * var(--u)); top: calc(353.34 * var(--u)); transform: translateX(-50%);
-  display: flex; align-items: center; gap: calc(14.144 * var(--u));
+/* Web comp 283:22939: the getirpara tile's pill, the service named in 16/24 bold */
+.dpc-ab__pills {
+  position: absolute; left: calc(50% + 0.32 * var(--u)); top: calc(361.34 * var(--u)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: calc(10 * var(--u));
 }
-.dpc-ab__mark {
-  flex: none; display: flex; width: calc(86 * var(--u)); height: calc(86 * var(--u)); padding: calc(5.831 * var(--u));
-  border-radius: 50%; border: .729px solid; background: var(--dpc-tile-bg);
+.dpc-ab__pill-in {
+  font-size: calc(16 * var(--u)); line-height: calc(24 * var(--u)); font-weight: var(--fw-bold);
+  color: #fff; white-space: nowrap;
 }
-.dpc-ab__mark img { width: 100%; height: 100%; object-fit: cover; }
-.dpc-ab__mark--amazon { border-color: #ec912d; }
-.dpc-ab__mark--spotify { border-color: #1ed760; }
-.dpc-ab__dots { flex: none; width: calc(13.647 * var(--u)); height: auto; margin-right: calc(4.03 * var(--u)); }
 
 /* getirfinans app icon (notification), from its layers */
 .dpc-appicon {
@@ -223,71 +228,94 @@
 .dpc-appicon__finans img { position: absolute; left: calc(-70.26 * var(--u)); top: calc(-70.9 * var(--u)); width: calc(166.65 * var(--u)); height: auto; max-width: none; }
 
 
-/* ============ HIZLI KART TESLİMATI (22630:16440) ============ */
+/* ============ HIZLI KART TESLİMATI (Web comp 324:12076) ============
+   #fafafa band, 128 top and bottom; head →64→ stage. The stage is two equal
+   halves: the card stack ends 128 left of the centre line, the steps start
+   on it and run 832 wide. Below 1180 the inner margins shrink; below 920
+   the stack sits over the steps. Static for now (see Delivery.tsx). */
 
-.dpc-dl {
-  position: relative; padding-block: 64px 128px; color: #fff;
-  /* heavy-brand → elevated-brand, over the page white */
-  background: linear-gradient(123.24deg, var(--gf-purple-900) 0.47%, rgb(37 26 73 / .9) 100%);
-  /* ⚠ no overflow here: an overflow ancestor breaks the sticky pin */
+.dpc-dl { padding-block: 128px; background: #fafafa; }
+
+.dpc-dl__stage { display: grid; grid-template-columns: 1fr 1fr; align-items: center; --dpc-dl-in: 128px; }
+.dpc-dl__visual {
+  container-type: inline-size; min-width: 0;
+  display: flex; justify-content: flex-end; padding: 0 var(--dpc-dl-in) 0 var(--dpc-gutter);
 }
-.dpc-dl__head .dpc-title { color: #fff; }
-.dpc-dl__eyebrow { border-color: rgb(239 239 239 / .1); }
-.dpc-dl__eyebrow-text {
-  background: linear-gradient(to right, var(--gf-yellow), #997f00);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+/* cqi is the visual's content box, its padding already taken off */
+.dpc-dl__stack {
+  --u: min(calc(100cqi / 591.84), 1px);
+  position: relative; width: calc(591.84 * var(--u)); height: calc(778.89 * var(--u));
 }
 
-.dpc-dl__stage { display: flex; align-items: center; gap: 64px; max-width: calc(1294px + 2 * var(--dpc-gutter)); }
-.dpc-dl__visual { flex: 1 1 0; min-width: 0; container-type: inline-size; }
-.dpc-dl__art { --u: min(calc(100cqi / 615), 1px); position: relative; height: calc(539.644 * var(--u)); }
+/* — a card in the stack — */
+.dpc-dl__sheet {
+  position: absolute; left: 0; top: 0; width: calc(474.67 * var(--u)); height: calc(700 * var(--u));
+  display: flex; flex-direction: column; justify-content: space-between; padding-bottom: calc(48 * var(--u));
+  background: #fff; border: 1px solid var(--dpc-tile-line); border-radius: calc(32 * var(--u)); overflow: hidden;
+  box-shadow:
+    calc(16 * var(--u)) calc(23 * var(--u)) calc(11 * var(--u)) rgb(0 0 0 / .01),
+    calc(9 * var(--u)) calc(13 * var(--u)) calc(9 * var(--u)) rgb(0 0 0 / .02),
+    calc(4 * var(--u)) calc(6 * var(--u)) calc(7 * var(--u)) rgb(0 0 0 / .03),
+    calc(1 * var(--u)) calc(1 * var(--u)) calc(4 * var(--u)) rgb(0 0 0 / .04);
+}
+/* centre-to-centre offsets from the comp's rotated bounding boxes */
+/* the stack is driven (Delivery.tsx → --tx/--ty/--r, comp px); the defaults
+   are the comp's rest: centre-to-centre offsets from its rotated boxes */
+.dpc-dl__sheet { translate: calc(var(--tx, 0) * var(--u)) calc(var(--ty, 0) * var(--u)); rotate: calc(var(--r, 0) * 1deg); }
+.dpc-dl__sheet--2 { --tx: 33; --ty: 20; --r: 5; }
+.dpc-dl__sheet--3 { --tx: 60; --ty: 43; --r: 10; }
+.dpc-dl__sheet-copy {
+  flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: calc(16 * var(--u));
+  padding-inline: calc(48 * var(--u)); text-align: center;
+}
+.dpc-dl__sheet--1 .dpc-dl__sheet-copy { flex: none; }
+.dpc-dl__sheet-title { margin: 0; font-size: calc(24 * var(--u)); line-height: calc(32 * var(--u)); font-weight: var(--fw-semibold); color: var(--gf-ink); }
+.dpc-dl__sheet-desc { margin: 0; font-size: calc(16 * var(--u)); line-height: calc(24 * var(--u)); color: #8c96a4; }
+.dpc-dl__sheet-desc span { display: block; }
 
-.dpc-dl__phone { position: absolute; left: calc(137.5 * var(--u)); top: 0; width: calc(286.353 * var(--u)); height: calc(358.837 * var(--u)); }
-/* ⚠ -webkit- first: the minifier drops the standard property when the
-   prefixed one follows it (caught once on the old page) */
-.dpc-dl__glass {
-  position: absolute; left: calc(3.65 * var(--u)); top: calc(8.95 * var(--u));
-  width: calc(273.758 * var(--u)); height: calc(313.887 * var(--u));
-  border-radius: calc(48 * var(--u)) calc(48 * var(--u)) 0 0;
-  background: linear-gradient(to bottom, rgb(30 19 58 / .3), rgb(83 52 160 / 0));
-  -webkit-backdrop-filter: blur(50px); backdrop-filter: blur(50px);
-}
-.dpc-dl__map {
-  position: absolute; left: 3.14%; top: calc(8.79 * var(--u));
-  width: calc(268.422 * var(--u)); height: calc(314.045 * var(--u)); overflow: hidden;
-  -webkit-mask: url("/assets/img/hesap-karti/delivery-map-mask.svg") no-repeat 0 0 / 100% 100%;
-  mask: url("/assets/img/hesap-karti/delivery-map-mask.svg") no-repeat 0 0 / 100% 100%;
-}
-.dpc-dl__map img { position: absolute; left: 0; top: calc(-70 * var(--u)); width: calc(504.7 * var(--u)); height: calc(504.7 * var(--u)); max-width: none; }
-/* the courier's route, laid exactly over the map image (same box, same px) */
-.dpc-dl__route { position: absolute; left: 0; top: calc(-70 * var(--u)); width: calc(504.7 * var(--u)); height: calc(504.7 * var(--u)); max-width: none; overflow: visible; }
-.dpc-dl__route-bed { stroke: rgb(255 255 255 / .16); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1 10; }
-.dpc-dl__route-line { stroke: var(--gf-yellow); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
-.dpc-dl__route-pin { fill: var(--gf-purple); stroke: #fff; stroke-width: 3; }
-.dpc-dl__route-pin-pulse { fill: var(--gf-purple); transform-box: fill-box; transform-origin: 50% 50%; }
-.dpc-dl__route-head { fill: var(--gf-yellow); stroke: var(--gf-purple-900); stroke-width: 3; }
+.dpc-dl__art { position: relative; flex: none; width: calc(474 * var(--u)); height: calc(500 * var(--u)); overflow: hidden; }
+.dpc-dl__art img { max-width: none; }
 
-.dpc-dl__island { position: absolute; left: calc(104.7 * var(--u)); top: calc(26.85 * var(--u)); width: calc(76.957 * var(--u)); height: auto; }
-.dpc-dl__frame {
-  position: absolute; left: 0; top: 0; width: calc(286.353 * var(--u)); height: calc(357.942 * var(--u));
-  border: calc(8.949 * var(--u)) solid #000; border-bottom: 0;
-  border-radius: calc(57.271 * var(--u)) calc(57.271 * var(--u)) 0 0;
+/* card 1: diagonal runs of cards behind a white halo holding the card */
+.dpc-dl__pattern {
+  position: absolute; left: calc(-513.14 * var(--u)); top: calc(-500 * var(--u));
+  width: calc(1500.27 * var(--u)); height: calc(1500.27 * var(--u));
+  display: flex; align-items: center; justify-content: center;
 }
+.dpc-dl__pattern-rot {
+  display: flex; align-items: center; gap: calc(32 * var(--u)); rotate: 45deg;
+  /* drift runs down the turned columns: (0, 1) turned 45° = (−.707, .707) */
+  translate: calc(var(--drift, 0) * -.707 * var(--u)) calc(var(--drift, 0) * .707 * var(--u));
+}
+.dpc-dl__pattern-col { display: flex; flex-direction: column; gap: calc(32 * var(--u)); width: calc(130 * var(--u)); }
+.dpc-dl__pattern-col--tight { gap: calc(16 * var(--u)); }
+.dpc-dl__pattern-col img { display: block; width: 100%; height: auto; aspect-ratio: 541 / 821; }
+.dpc-dl__halo {
+  position: absolute; left: calc(58 * var(--u)); top: calc(84 * var(--u)); width: calc(360 * var(--u)); height: calc(360 * var(--u));
+  display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #fff;
+}
+.dpc-dl__face {
+  position: relative; overflow: hidden; width: calc(130 * var(--u)); height: calc(200 * var(--u));
+  border-radius: calc(6 * var(--u)); border: calc(.625 * var(--u)) solid rgb(255 255 255 / .25); background: var(--gf-purple);
+  box-shadow: 0 calc(1.25 * var(--u)) calc(2.5 * var(--u)) rgb(0 0 0 / .08);
+}
+.dpc-dl__face img { position: absolute; }
+.dpc-dl__face > img:first-child { inset: calc(-.625 * var(--u)); width: calc(100% + 1.25 * var(--u)); height: calc(100% + 1.25 * var(--u)); object-fit: cover; }
+.dpc-dl__face-debit { left: calc(15.78 * var(--u)); top: calc(33.04 * var(--u)); width: calc(32.5 * var(--u)); height: auto; }
+.dpc-dl__face-mc { left: calc(8.62 * var(--u)); top: calc(168.33 * var(--u)); width: calc(41.67 * var(--u)); height: auto; }
+
+/* card 2: the light street map under the tracking card */
+.dpc-dl__map { position: absolute; left: calc(-276 * var(--u)); top: 0; width: calc(749.8 * var(--u)); height: 100%; object-fit: cover; }
 
 .dpc-dl__card {
-  position: absolute; left: calc(77 * var(--u)); top: calc(198.57 * var(--u)); width: calc(400 * var(--u));
+  position: absolute; left: calc(37 * var(--u)); top: calc(79 * var(--u)); width: calc(400 * var(--u));
   display: flex; flex-direction: column; padding: calc(32 * var(--u));
   background: #fff; border: calc(1.166 * var(--u)) solid #f5f5f5; border-radius: calc(24 * var(--u));
   box-shadow: 0 calc(9.33 * var(--u)) calc(14 * var(--u)) rgb(0 0 0 / .12);
   color: var(--gf-ink); text-align: left;
 }
 .dpc-dl__card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: calc(8 * var(--u)); }
-/* departure-board roll between stages (popLayout parks the leaver absolutely) */
-.dpc-dl__status {
-  position: relative; display: inline-flex; overflow: hidden;
-  font-size: calc(18.66 * var(--u)); line-height: calc(27.99 * var(--u)); font-weight: var(--fw-bold);
-}
-.dpc-dl__status-in { display: block; white-space: nowrap; }
+.dpc-dl__status { font-size: calc(18.66 * var(--u)); line-height: calc(27.99 * var(--u)); font-weight: var(--fw-bold); white-space: nowrap; }
 .dpc-dl__eta {
   display: inline-flex; align-items: center; gap: calc(4.665 * var(--u));
   padding: calc(4.665 * var(--u)) calc(9.329 * var(--u)); border-radius: calc(16 * var(--u));
@@ -297,25 +325,27 @@
 .dpc-dl__eta img { width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
 .dpc-dl__addr { margin: calc(18.66 * var(--u)) 0 0; font-size: calc(14 * var(--u)); line-height: calc(20 * var(--u)); }
 .dpc-dl__addr b { color: var(--gf-purple); }
-
 .dpc-dl__stepper { position: relative; margin-top: calc(37.32 * var(--u)); }
 .dpc-dl__road { position: relative; display: flex; align-items: center; gap: calc(4.665 * var(--u)); }
 .dpc-dl__node { display: flex; align-items: center; gap: calc(4.665 * var(--u)); flex: 1 1 0; min-width: 0; }
 .dpc-dl__node:last-of-type { flex: none; }
-.dpc-dl__dot { position: relative; flex: none; display: block; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
-.dpc-dl__node img { display: block; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
-/* "teslim edildi": one ring off the last node */
-.dpc-dl__burst { position: absolute; inset: 0; border-radius: 50%; border: calc(2 * var(--u)) solid var(--gf-purple); pointer-events: none; }
-.dpc-dl__seg { flex: 1 1 auto; height: calc(4.665 * var(--u)); border-radius: calc(2 * var(--u)); background: var(--gf-lilac-50); overflow: hidden; }
-.dpc-dl__seg-fill { display: block; height: 100%; background: var(--gf-purple); transform-origin: 0 50%; }
-/* rides the road: its wheels sit on the line (comp: bottom 27.99 of the stepper) */
-/* leans about its wheels (Delivery.tsx: velocity lean + bob) */
-.dpc-dl__courier { position: absolute; left: 0; bottom: calc(-4.66 * var(--u)); z-index: 1; width: calc(37.318 * var(--u)); height: auto; transform-origin: 50% 100%; }
+.dpc-dl__dot { display: block; flex: none; width: calc(18.66 * var(--u)); height: calc(18.66 * var(--u)); }
+/* a segment fills to --f (0–1) as the courier crosses it */
+.dpc-dl__seg {
+  flex: 1 1 auto; height: calc(4.665 * var(--u)); border-radius: calc(2 * var(--u));
+  background: linear-gradient(to right, var(--gf-purple) calc(var(--f, 0) * 100%), var(--gf-lilac-50) 0);
+}
+/* comp: courier centre at r = 1.28 of 3 along the dot-to-dot run, wheels on the line */
+.dpc-dl__courier {
+  position: absolute; bottom: calc(-4.66 * var(--u)); z-index: 1; width: calc(37.318 * var(--u)); height: auto;
+  /* --cr = r / 3 along the road (comp: r 1.28, just past "yolda") */
+  left: calc(9.33 * var(--u) + var(--cr, .42667) * (100% - 18.66 * var(--u))); translate: -50% 0;
+}
 .dpc-dl__labels { display: flex; justify-content: space-between; margin-top: calc(3.5 * var(--u)); height: calc(27.99 * var(--u)); }
 .dpc-dl__label {
   flex: none; width: calc(18.66 * var(--u)); display: flex; justify-content: center; text-align: center;
   font-size: calc(13.99 * var(--u)); line-height: calc(18.66 * var(--u)); font-weight: var(--fw-semibold);
-  color: var(--gf-lilac-300); white-space: nowrap; transition: color .3s var(--ease-out);
+  color: var(--gf-lilac-300); white-space: nowrap;
 }
 .dpc-dl__label:first-child { justify-content: flex-start; text-align: left; }
 .dpc-dl__label:last-child { white-space: normal; }
@@ -328,216 +358,334 @@
 }
 .dpc-dl__faq img { flex: none; width: calc(27.99 * var(--u)); height: calc(27.99 * var(--u)); }
 
-/* — the step list — */
-.dpc-dl__steps { flex: 1 1 0; min-width: 0; list-style: none; }
-.dpc-dl__step { padding-block: 32px; border-top: 1px solid rgb(255 255 255 / .07); }
-.dpc-dl__step:last-child { border-bottom: 1px solid rgb(255 255 255 / .07); }
-.dpc-dl__step-head { margin: 0; font: inherit; }
-.dpc-dl__step-head button {
-  all: unset; box-sizing: border-box; cursor: pointer;
-  display: flex; align-items: center; gap: 24px; width: 100%;
-  font-size: var(--fs-body-sm); line-height: 24px; letter-spacing: 1px; color: #fff;
+/* card 3: two wallets — this month's nakit iade behind, getirpara in front.
+   Each wallet's layers are placed from its own top-left corner. */
+.dpc-dl__wallet { position: absolute; overflow: hidden; color: var(--gf-ink); }
+.dpc-dl__wallet > * { position: absolute; }
+.dpc-dl__wallet--iade {
+  --w: 15.085; left: calc(29.67 * var(--u)); top: calc(31.84 * var(--u)); width: calc(211.19 * var(--u)); height: calc(296.67 * var(--u));
+  border-radius: calc(15.085 * var(--u)); background: #f7f5fc;
 }
-.dpc-dl__step-head button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
-.dpc-dl__step-head img { flex: none; width: 4px; height: 4px; }
-.dpc-dl__num { font-weight: var(--fw-semibold); opacity: .3; transition: opacity .3s var(--ease-out); }
-.dpc-dl__step.is-active .dpc-dl__num { opacity: 1; }
-/* the active row shows its title large below; the small label stays in the
-   button for its accessible name, visually hidden */
-.dpc-dl__step.is-active .dpc-dl__label-sm {
-  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+.dpc-dl__wallet--gp {
+  --w: 19.594; left: calc(169.94 * var(--u)); top: calc(117.16 * var(--u)); width: calc(274.32 * var(--u)); height: calc(385.35 * var(--u));
+  border-radius: calc(19.594 * var(--u)); background: #fffdf0;
 }
-.dpc-dl__panel-in { display: flex; flex-direction: column; align-items: flex-start; padding-top: 64px; }
-.dpc-dl__title {
-  margin: 0; font-size: 36px; line-height: 48px; letter-spacing: -0.36px; color: #fff;
-  text-box: trim-both cap alphabetic;
+/* --w is the wallet's base type size (15.085 / 19.594); everything else is
+   its ratio in the comp, so the two wallets share one set of rules */
+.dpc-dl__wallet-head { display: flex; flex-direction: column; gap: calc(var(--w) * .5717 * var(--u)); }
+.dpc-dl__wallet-label {
+  display: flex; flex-direction: column; gap: calc(var(--w) * .2374 * var(--u)); color: var(--gf-purple);
+  font-size: calc(var(--w) * 1.1667 * var(--u)); line-height: calc(var(--w) * 1.3333 * var(--u));
 }
-.dpc-dl__desc {
-  margin: 24px 0 0; font-size: var(--fs-body-sm); line-height: 16px; color: rgb(255 255 255 / .4);
-  text-box: trim-both cap alphabetic; text-wrap: pretty;
+/* the comp sets the brand line in Cocon, which the site doesn't load —
+   semibold Open Sans stands in, as on the bento wallet */
+.dpc-dl__wallet-brand { font-weight: var(--fw-semibold); }
+.dpc-dl__wallet-amount { font-size: calc(var(--w) * 1.5 * var(--u)); line-height: calc(var(--w) * 2 * var(--u)); font-weight: var(--fw-bold); }
+.dpc-dl__wallet-amount small { font-size: calc(var(--w) * 1.3333 * var(--u)); }
+.dpc-dl__wallet-track { height: calc(var(--w) * 1.3333 * var(--u)); border-radius: calc(var(--w) * var(--u)); overflow: hidden; }
+.dpc-dl__wallet-fill { display: block; height: 100%; }
+.dpc-dl__wallet-cap {
+  text-align: right; white-space: nowrap;
+  font-size: calc(var(--w) * var(--u)); line-height: calc(var(--w) * 1.3333 * var(--u));
 }
-.dpc-dl__cta {
-  margin-top: 37px; display: inline-flex; align-items: center; padding: 20px 32px; border-radius: 100px;
-  background: #fff; color: var(--gf-purple); text-decoration: none;
-  font-size: var(--fs-body-sm); line-height: 16px; font-weight: var(--fw-semibold);
-  transition: transform .16s var(--ease-out-strong), background-color .2s var(--ease-out);
+.dpc-dl__wallet-cap b { font-size: calc(var(--w) * 1.1667 * var(--u)); }
+.dpc-dl__wallet-cap b small { font-size: calc(var(--w) * var(--u)); }
+.dpc-dl__wallet-total {
+  display: flex; flex-direction: column; gap: calc(var(--w) * .1667 * var(--u)); color: var(--gf-ink-700);
+  font-size: calc(var(--w) * var(--u)); line-height: calc(var(--w) * 1.3333 * var(--u));
 }
-.dpc-dl__cta:hover { background: var(--gf-lilac); }
-.dpc-dl__cta:active { transform: scale(.96); }
-.dpc-dl__cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.dpc-dl__wallet-total b { font-weight: var(--fw-bold); }
+.dpc-dl__wallet-mark { height: auto; }
+.dpc-dl__wallet-fill { display: block; height: 100%; transform-origin: 0 50%; scale: var(--wf, 1) 1; }
+.dpc-dl__halo { scale: var(--lift, 1); }
+/* the status rolls: one line tall, the outgoing word leaves upward */
+.dpc-dl__status { display: inline-grid; overflow: hidden; }
+.dpc-dl__status-in { grid-area: 1 / 1; display: block; }
 
-/* — scrub mode: the stage pins, the scroll drives it — */
+/* — scrub mode (≥921): the stage pins, the scroll drives the story — */
 @media (min-width: 921px) {
   .dpc-dl[data-mode="scrub"] .dpc-dl__track {
-    /* centre the pinned stage in the viewport; a stage taller than the
-       viewport falls back to top:0 rather than sticking above the fold */
-    --dpc-pin-top: max(0px, calc((100vh - var(--dpc-pin-h, 100vh)) / 2));
+    /* centre the pin under the fixed header (72); a pin taller than the
+       viewport sticks just under the header instead */
+    --dpc-pin-top: max(72px, calc((100vh - var(--dpc-pin-h, 100vh)) / 2 + 36px));
     /* the --dpc-pin-top term is load-bearing: the pin engages that many px
        BEFORE progress 0, so without it the pin would release early */
-    height: calc(var(--dpc-pin-top) + var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 1400px));
+    height: calc(var(--dpc-pin-top) + var(--dpc-pin-h, 100vh) + var(--dpc-scrub, 2100px));
   }
   .dpc-dl[data-mode="scrub"] .dpc-dl__pin { position: sticky; top: var(--dpc-pin-top); }
 }
 
+.dpc-dl__wallet--iade .dpc-dl__wallet-head { left: calc(20.11 * var(--u)); top: calc(30.17 * var(--u)); width: calc(170.97 * var(--u)); }
+.dpc-dl__wallet--iade .dpc-dl__wallet-track { left: calc(20.1 * var(--u)); top: calc(143.31 * var(--u)); width: calc(170.97 * var(--u)); background: #e6e1f5; }
+.dpc-dl__wallet--iade .dpc-dl__wallet-fill { width: calc(5.03 * var(--u)); background: var(--gf-purple); }
+.dpc-dl__wallet--iade .dpc-dl__wallet-cap { right: calc(20.12 * var(--u)); top: calc(168.45 * var(--u)); }
+.dpc-dl__wallet--iade .dpc-dl__wallet-total { left: calc(20.11 * var(--u)); top: calc(223.77 * var(--u)); }
+.dpc-dl__wallet--iade .dpc-dl__wallet-mark { left: calc(126.99 * var(--u)); top: calc(194.37 * var(--u)); width: calc(129.48 * var(--u)); }
 
-/* ============ SANAL KART (22630:16495) ============ */
+.dpc-dl__wallet--gp .dpc-dl__wallet-head { left: calc(26.18 * var(--u)); top: calc(39.19 * var(--u)); width: calc(195.94 * var(--u)); }
+.dpc-dl__wallet--gp .dpc-dl__wallet-track { left: calc(26.18 * var(--u)); top: calc(186.15 * var(--u)); width: calc(222.07 * var(--u)); background: var(--dbc-yellow-100); }
+.dpc-dl__wallet--gp .dpc-dl__wallet-fill { width: calc(76.74 * var(--u)); background: var(--gf-yellow); }
+.dpc-dl__wallet--gp .dpc-dl__wallet-cap { right: calc(22.52 * var(--u)); top: calc(218.8 * var(--u)); }
+.dpc-dl__wallet--gp .dpc-dl__wallet-total { left: calc(26.18 * var(--u)); top: calc(290.65 * var(--u)); }
+.dpc-dl__wallet--gp .dpc-dl__wallet-mark { left: calc(164.94 * var(--u)); top: calc(251.04 * var(--u)); width: calc(168.21 * var(--u)); }
 
-.dpc-sanal {
-  position: relative; overflow: hidden; padding-bottom: 320px;
-  /* sampled off the comp render: ~22% yellow in the corner, gone by ~40%
-     along 140° (the exported stops are out of order and would hard-edge) */
-  background: linear-gradient(140deg, rgb(255 211 0 / .23) 0%, rgb(255 211 0 / .08) 25%, rgb(255 211 0 / 0) 40%);
-  --dpc-head-gap: 100px;
+/* — the step list (324:12596): 48 between every rule and row — */
+.dpc-dl__steps-col { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; padding: 0 var(--dpc-dl-in) 48px 0; }
+.dpc-dl__steps-col > * { width: min(832px, 100%); }
+.dpc-dl__top-rule { display: block; height: 1px; background: rgb(0 0 0 / .07); }
+.dpc-dl__steps { list-style: none; margin: 48px 0 0; padding: 0; display: flex; flex-direction: column; gap: 48px; }
+.dpc-dl__step { display: flex; flex-direction: column; gap: 48px; }
+.dpc-dl__step-head { margin: 0; font: inherit; }
+.dpc-dl__step-head button {
+  all: unset; box-sizing: border-box; cursor: pointer;
+  display: flex; align-items: center; gap: 16px; color: #8c96a4;
 }
-/* foot fade to white, over the art and under the copy (comp layer order) */
-.dpc-sanal::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 572px; z-index: 1; pointer-events: none;
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0), #fff);
+.dpc-dl__step.is-active .dpc-dl__step-head button { align-items: flex-start; color: #000; cursor: default; }
+.dpc-dl__step-head button:focus-visible { outline: 2px solid var(--gf-purple); outline-offset: 6px; border-radius: 4px; }
+.dpc-dl__num { flex: none; width: 46px; font-size: 18px; line-height: 24px; font-weight: var(--fw-semibold); }
+.dpc-dl__step.is-active .dpc-dl__num { padding-top: 8px; }
+.dpc-dl__step-text { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.dpc-dl__title { font-size: 34px; line-height: 40px; }
+.dpc-dl__desc { font-size: 24px; line-height: 32px; color: #8c96a4; }
+.dpc-dl__step-head button:hover .dpc-dl__title { color: var(--gf-ink); }
+.dpc-dl__step-rule { display: block; height: 1px; background: #e8e8e8; }
+/* the open step's rule is its progress: --rp 0–1 (comp: 60%) */
+.dpc-dl__step.is-active .dpc-dl__step-rule { background: linear-gradient(to right, #000 calc(var(--rp, .6) * 100%), #e8e8e8 0); }
+.dpc-dl__legal { margin: 24px 0 0; font-size: var(--fs-body-sm); line-height: 20px; color: #8c96a4; }
+.dpc-dl__steps-col > :last-child { width: auto; margin-top: 48px; }
+
+
+/* ============ SANAL KART (Web comp 294:40254) ============
+   1273 tall at 1920: 128 top, the head (eyebrow →16→ title →24→ sub) →32→
+   CTA →96→ the three feature cards, then 617 of fan to the foot. The fan is
+   one photo turned −15°, placed from the centre line and the foot. */
+
+.dbc-sanal {
+  --u: min(1px, 100vw / 1920);
+  position: relative; overflow: hidden; isolation: isolate;
+  padding: 128px 0 calc(617 * var(--u));
+  /* the comp's light, sampled off its render: SanalShader draws it live on
+     top; this is what shows before WebGL is up, or without it */
+  background:
+    radial-gradient(60% 75% at 0% 30%, #6630a0, rgb(102 48 160 / 0) 100%),
+    radial-gradient(28% 22% at 4% 0%, rgb(70 34 114 / .7), rgb(70 34 114 / 0) 100%),
+    radial-gradient(22% 18% at 100% 100%, #3e2065, rgb(62 32 101 / 0) 100%),
+    #150d32;
+  color: #fff;
 }
-.dpc-sanal__head { position: relative; z-index: 2; }
-.dpc-sanal__eyebrow {
-  background: rgb(0 0 0 / .05); border-color: transparent; color: var(--gf-ink); letter-spacing: 0;
+.dbc-sanal__shader {
+  position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%;
+  opacity: 0; transition: opacity .8s ease;
 }
-.dpc-sanal .dpc-sub { color: rgb(0 0 0 / .5); }
+.dbc-sanal__shader[data-ready] { opacity: 1; }
+.dbc-sanal__inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+.dbc-sanal__head { gap: 16px; margin-bottom: 32px; }
+/* this pill has no stroke at all, so no border box either (52, not 54) */
+.dbc-sanal .dpc-eyebrow { background: none; border: 0; font-weight: var(--fw-regular); color: var(--gf-yellow); }
+.dbc-sanal .dpc-title { color: #fff; }
+.dbc-sanal .dpc-sub { color: rgb(255 255 255 / .7); }
 
-.dpc-sanal__stage { position: relative; container-type: inline-size; }
-/* a zero-size anchor at the stage's centre-top; the art hangs off it in comp px */
-.dpc-sanal__art { --u: min(calc(100cqi / 1440), 1px); position: absolute; left: 50%; top: 0; width: 0; height: 0; z-index: 0; }
-.dpc-sanal__hand {
-  position: absolute; left: calc(171.5 * var(--u)); top: calc(24 * var(--u)); translate: -50% 0;
-  width: calc(937 * var(--u)); height: calc(1564 * var(--u)); overflow: hidden;
+.dbc-sanal__features {
+  width: 100%; margin: 96px 0 0; padding: 0; list-style: none;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px;
 }
-.dpc-sanal__hand img { position: absolute; max-width: none; width: 247.8%; height: 124.54%; left: -72.36%; top: -24.54%; }
-/* individual translate/rotate, so the rings' Motion transform (fan, pulse,
-   tighten — Sanal.tsx) composes on top of the comp's placement */
-.dpc-sanal__ring { position: absolute; border: 2px solid var(--gf-purple); translate: -50% -50%; rotate: -40.61deg; }
-.dpc-sanal__ring--1 { left: calc(329.8 * var(--u)); top: calc(321.8 * var(--u)); width: calc(596.708 * var(--u)); height: calc(386.153 * var(--u)); border-radius: calc(50 * var(--u)); opacity: .5; }
-.dpc-sanal__ring--2 { left: calc(323.9 * var(--u)); top: calc(326.9 * var(--u)); width: calc(678.574 * var(--u)); height: calc(449.35 * var(--u)); border-radius: calc(70 * var(--u)); opacity: .25; }
-.dpc-sanal__ring--3 { left: calc(321.7 * var(--u)); top: calc(328.7 * var(--u)); width: calc(755.583 * var(--u)); height: calc(513.322 * var(--u)); border-radius: calc(110 * var(--u)); opacity: .1; }
-
-.dpc-sanal__col { position: relative; z-index: 2; width: min(660px, 100%); display: flex; flex-direction: column; align-items: flex-start; gap: 32px; }
-.dpc-sanal__list { width: 100%; list-style: none; display: flex; flex-direction: column; gap: 16px; }
-.dpc-sanal__cards { width: 100%; }
-.dpc-sanal__card {
-  position: relative; overflow: hidden;
-  height: 220px; padding: 32px; border-radius: 32px;
-  display: flex; flex-direction: column; justify-content: space-between;
-  background: rgb(0 0 0 / .05);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-  transition: background-color .45s var(--ease-out), box-shadow .45s var(--ease-out);
+/* the comp's stroke sits inside its 164 height: 31 + 1 keeps it there */
+.dbc-sanal__feature {
+  display: flex; align-items: center; gap: 24px; padding: 31px;
+  border: 1px solid rgb(255 255 255 / .15); border-radius: 32px;
 }
-/* the feature the rings are acting out: the glass lifts toward white */
-.dpc-sanal__card.is-active { background: rgb(255 255 255 / .55); box-shadow: 0 12px 32px rgb(93 62 188 / .08); }
-.dpc-sanal__hit { position: absolute; inset: 0; z-index: 1; }
-/* the cycle's clock, along the card's foot */
-.dpc-sanal__prog {
-  position: absolute; left: 32px; right: 32px; bottom: 0; height: 2px; border-radius: 1px;
-  background: var(--gf-purple); opacity: .35; transform-origin: 0 50%;
+.dbc-sanal__text { margin: 0; font-size: 24px; line-height: 32px; text-wrap: pretty; }
+.dbc-sanal__text b { font-weight: var(--fw-semibold); color: var(--gf-yellow); }
+
+.dbc-sanal__fan {
+  position: absolute; z-index: 0; left: calc(50% - 32.5 * var(--u)); bottom: calc(-596.7 * var(--u));
+  width: calc(1769.2 * var(--u)); height: calc(1279.18 * var(--u)); translate: -50% 0;
+  display: flex; align-items: center; justify-content: center; pointer-events: none;
 }
-.dpc-sanal__glyph { display: grid; grid-template-columns: repeat(2, 24px); grid-template-rows: repeat(2, 24px); }
-.dpc-sanal__glyph i { display: block; }
-.dpc-sanal__text { margin: 0; font-size: 24px; line-height: 32px; color: var(--gf-ink); }
+.dbc-sanal__fan img { flex: none; width: calc(1591 * var(--u)); height: calc(898 * var(--u)); max-width: none; rotate: -15deg; }
 
-
-/* ============ KART AVANTAJLARI — yurt dışı (22630:19403) ============
-   The comp gives this bento no padding of its own: the sanal section's
-   320px foot is the space above it, the FAQ's 40 the space below. */
-
-.dbc-abroad { padding-block: 0; }
-
-.dbc-tile-cb { flex: 0 0 402px; padding: 48px 0 32px; }
-.dbc-tile-cb .dpc-tile__visual { width: 100%; }
-.dbc-tile-cb .dpc-tile__copy { padding-inline: 32px; }
-/* coin b and the dotted orbit hang ~60 below the box; reserved as for .dpc-gp */
-.dpc-cb { position: relative; width: calc(472 * var(--u)); height: calc(148 * var(--u)); margin: 0 auto calc(60 * var(--u)); }
-.dpc-cb__art { position: absolute; left: calc(-17.28 * var(--u)); top: 0; width: calc(506.558 * var(--u)); height: auto; max-width: none; }
-.dpc-cb__coin {
-  position: absolute; width: calc(54 * var(--u)); height: calc(54 * var(--u)); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(212.6deg, #ffeb88 8.2%, var(--gf-yellow) 73.5%);
-  box-shadow: inset -1px 1px 2px rgb(255 255 255 / .5);
-  color: var(--gf-purple); font-size: calc(16 * var(--u)); font-weight: var(--fw-semibold);
+/* feature glyphs: a 100 box, layers in comp px */
+.dbc-sn__icon { position: relative; flex: none; width: 100px; height: 100px; }
+.dbc-sn__glyph { position: absolute; display: block; }
+.dbc-sn__glyph img { display: block; max-width: none; }
+/* drawn on their side: the box is the turned footprint, the art turns inside */
+.dbc-sn__g-rot { position: absolute; left: 50%; top: 50%; translate: -50% -50%; rotate: 90deg; }
+.dbc-sn__glyph--cards { left: 29.14px; top: 16.5px; width: 53.38px; height: 62.83px; }
+.dbc-sn__glyph--cards .dbc-sn__g-rot { width: 62.834px; height: 53.38px; }
+.dbc-sn__glyph--cards img { width: 63.807px; height: 56.626px; }
+.dbc-sn__glyph--limit { left: 20.14px; top: 12.5px; width: 65.385px; height: 73.466px; }
+.dbc-sn__glyph--limit .dbc-sn__g-rot { width: 73.466px; height: 65.385px; }
+.dbc-sn__glyph--limit img { width: 91.827px; height: 74.505px; }
+/* the cog is its own layer on the base's viewBox: turns on its hub (59.61, 51.52) */
+.dbc-sn__glyph--limit .dbc-sn__gear { position: absolute; left: 0; top: 0; transform-origin: 64.91% 69.16%; }
+/* ghost cards sit exactly on the card and fan out from it */
+.dbc-sn__glyph--cards .dbc-sn__ghost { position: absolute; left: 0; top: 0; opacity: 0; }
+.dbc-sn__glyph--secure { left: 22.14px; top: 25.78px; width: 64.67px; height: 55.43px; }
+.dbc-sn__glyph--secure > * { position: absolute; }
+.dbc-sn__g-back { left: 9.24px; top: 0; width: 55.43px; height: 46.19px; border-radius: 8.99px; background: var(--gf-purple); }
+.dbc-sn__g-front {
+  left: 13.86px; top: 4.62px; width: 46.19px; height: 36.95px; border-radius: 6.742px;
+  background: linear-gradient(232.26deg, rgb(200 190 231) 34.44%, var(--gf-purple) 71.6%);
+  box-shadow: 0 2.247px 4.495px rgb(0 0 0 / .25), inset -.674px .674px 1.124px rgb(255 255 255 / .25);
 }
-/* the coins ride this layer round the art's dotted orbit (centre 237.72, 107.35) */
-.dpc-cb__orbit { position: absolute; inset: 0; transform-origin: calc(237.72 * var(--u)) calc(107.35 * var(--u)); pointer-events: none; }
-.dpc-cb__art .cb-card, .dpc-cb__art .cb-orbit { transform-box: fill-box; transform-origin: 50% 50%; }
-.dpc-cb__coin--a { left: calc(137.85 * var(--u)); top: calc(8.62 * var(--u)); }
-.dpc-cb__coin--b { left: calc(279.56 * var(--u)); top: calc(152.08 * var(--u)); }
+.dbc-sn__g-sheen {
+  left: 18.52px; top: 9.32px; width: 37px; height: 13px; border-radius: 4.495px 4.495px 0 0;
+  background: linear-gradient(to left, rgb(255 255 255 / 0) 19.44%, rgb(255 255 255 / .2));
+}
+.dbc-sn__g-dots { left: 34.13px; top: 13.18px; width: 20.787px; height: 6.929px; }
+.dbc-sn__g-check { left: -9.24px; top: 9.24px; width: 55.43px; height: 55.43px; }
 
-/* the grid cell holds the perspective; the card inside tilts (TiltCard) */
+
+/* ============ YURT DIŞI (Web comp 302:40451) ============
+   196 above (the comp's gap after every band from here down). No eyebrow;
+   title 48/54 in black, sub 20/24. Two tiles 32 apart, then a 500-tall row:
+   photo pairs either side of the 343.33 card, all 32 apart. */
+
+.dbc-abroad { padding-top: 196px; }
+.dbc-abroad__head .dpc-title { line-height: 54px; color: #000; }
+.dbc-abroad__head .dpc-sub { font-size: 20px; line-height: 24px; color: var(--dpc-muted); }
+
+.dbc-abroad__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-bottom: 32px; }
+.dbc-abroad__tile {
+  min-width: 0; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; gap: 48px; padding: 48px;
+  background: #fafafa; border: 1px solid #e8e8e8; border-radius: 32px;
+  -webkit-backdrop-filter: blur(30px); backdrop-filter: blur(30px);
+}
+.dbc-abroad__tile-title {
+  margin: 0; max-width: 614px; text-align: center; text-wrap: pretty;
+  font-size: 24px; line-height: 32px; font-weight: var(--fw-regular); color: var(--gf-ink-700);
+}
+.dbc-abroad__tile-title b { font-weight: var(--fw-semibold); color: var(--gf-purple); }
+.dbc-abroad__tile-art { width: 100%; display: flex; justify-content: center; }
+/* the comp sets this caption in a fixed 614 box from the tile's left edge,
+   so it sits 3px right of centre; held where the tile is that wide */
+@media (min-width: 1440px) {
+  .dbc-abroad__tile--cb .dbc-abroad__tile-title { width: 614px; max-width: none; align-self: flex-start; }
+}
+
+.dbc-ab-art { position: relative; height: 200px; display: flex; align-items: center; justify-content: center; }
+.dbc-ab-art img { display: block; flex: none; max-width: none; }
+.dbc-ab-art--cb { gap: 26px; }
+.dbc-ab-art--fx { gap: 44px; }
+.dbc-ab-art__orbit { position: absolute; left: 50%; top: 50%; width: 203px; height: 203px; translate: -50% -50%; }
+.dbc-ab-art__orbit--fx { left: calc(50% - 2px); }
+.dbc-ab-art__planes { width: 281.395px; height: 26.853px; }
+.dbc-ab-art__planes--r { scale: -1 1; }
+/* the ₺ card's svg carries its long shadow, so it overhangs its 100 box */
+.dbc-ab-art__tl { position: relative; flex: none; width: 100px; height: 74.553px; }
+.dbc-ab-art__tl img { position: absolute; left: -66.17px; top: -13.05px; width: 232.331px; height: 319.646px; }
+.dbc-ab-art__cur { display: flex; align-items: center; gap: 24px; }
+.dbc-ab-art__cur img { width: 64px; height: 64px; }
+.dbc-ab-art__tag {
+  width: 64px; padding-block: 8px; border-radius: 60px; background: #fff; text-align: center;
+  font-size: var(--fs-body-md); line-height: 24px; font-weight: var(--fw-semibold); color: #000;
+  filter: drop-shadow(0 5px 4px rgb(0 0 0 / .04));
+}
+.dbc-ab-art__dash { width: 32px; height: 3px; }
+.dbc-ab-art__dash--l { transform-origin: 0 50%; }
+.dbc-ab-art__dash--r { transform-origin: 100% 50%; }
+/* each flag carries a ghost coin that rolls into the wallet */
+.dbc-ab-art__coin { position: relative; display: block; flex: none; }
+.dbc-ab-art .dbc-ab-art__ghost { position: absolute; left: 0; top: 0; opacity: 0; }
+.dbc-ab-art__cur { position: relative; z-index: 1; }
+
+/* TL wallet (305:41034), layer positions from its grid. Its layout box ends
+   at the body (74.58); the tab overhangs it, as Figma measures it. */
+.dbc-wl { position: relative; flex: none; width: 74.58px; height: 74.57px; }
+.dbc-wl > * { position: absolute; display: block; }
+.dbc-wl__flap { left: 8.22px; top: -1.93px; width: 39.857px; height: 32.149px; }
+.dbc-wl__body { left: 7.72px; top: 12.86px; width: 66.857px; height: 51.429px; border-radius: 10.286px; background: var(--gf-purple); }
+.dbc-wl__card {
+  left: 12.86px; top: 18px; width: 56.571px; height: 41.143px; border-radius: 7.714px;
+  background: linear-gradient(229.59deg, #c8bee7 34.44%, var(--gf-purple) 71.6%);
+  box-shadow: 0 3.165px 6.33px rgb(0 0 0 / .25), inset -.949px .949px 1.582px rgb(255 255 255 / .25);
+}
+.dbc-wl__sheen {
+  left: 18px; top: 23.14px; width: 46.286px; height: 18px; border-radius: 5.143px 5.143px 0 0;
+  background: linear-gradient(to left, rgb(255 255 255 / 0) 19.44%, rgb(255 255 255 / .2));
+}
+/* the ring svg draws its circle off-centre to leave room for its shadow */
+.dbc-wl__ring { left: -10.29px; top: 23.14px; width: 61.714px; height: 61.714px; }
+.dbc-wl__flag { left: 0; top: 43.71px; width: 30.857px; height: 30.857px; border-radius: 50%; overflow: hidden; }
+.dbc-wl__flag img { position: absolute; left: -1.93px; top: 0; width: 46.286px; height: 30.857px; max-width: none; }
+.dbc-wl__tab {
+  left: 64.29px; top: 36.53px; width: 5.143px; height: 5.143px; box-sizing: content-box;
+  background: var(--gf-purple); border: 5.143px solid var(--gf-lilac-50); border-radius: 7.714px 0 0 7.714px;
+  box-shadow: 0 1.286px 1.286px rgb(0 0 0 / .15);
+}
+
+.dbc-abroad__row { display: grid; grid-template-columns: minmax(0, 1fr) 343.33px minmax(0, 1fr); gap: 32px; height: 500px; }
+.dbc-abroad__col { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
+.dbc-abroad__photo { flex: 1 1 0; }
+/* the grid cell holds the perspective; the card inside tilts (TiltCard).
+   "Physical Card" at ×2.6: radius 22.74, border 1.895, shadow 3.79 / 7.58. */
 .dbc-abroad__cell { perspective: 1400px; }
 .dbc-abroad__card {
   position: relative; overflow: hidden; height: 100%;
-  border-radius: 6px; background: var(--gf-purple); border: 2.274px solid rgb(255 255 255 / .25);
-  box-shadow: 0 4.55px 9.1px rgb(0 0 0 / .08);
+  border-radius: 22.74px; background: var(--gf-purple); border: 1.895px solid rgb(255 255 255 / .25);
+  box-shadow: 0 3.79px 7.58px rgb(0 0 0 / .08);
 }
-.dbc-abroad__card img { position: absolute; inset: -2.27px; width: calc(100% + 4.54px); height: calc(100% + 4.54px); max-width: none; object-fit: cover; }
+.dbc-abroad__card img { position: absolute; inset: -1.9px; width: calc(100% + 3.8px); height: calc(100% + 3.8px); max-width: none; object-fit: cover; }
 
-.dbc-tile-fx { padding: 48px 48px 32px; --tile-w: 376.67; }
-.dbc-tile-fx .dpc-tile__visual { width: 100%; justify-content: flex-start; }
-.dbc-tile-fx .dpc-tile__copy { padding: 0; }
-.dpc-fx { position: relative; width: 100%; height: calc(96 * var(--u)); }
-.dpc-fx__row { position: absolute; left: calc(45 * var(--u)); top: 0; display: flex; align-items: center; gap: calc(16 * var(--u)); }
-.dpc-fx__row > img:not(.dpc-fx__dots) { flex: none; width: calc(32 * var(--u)); height: calc(32 * var(--u)); }
-.dpc-fx__dots { flex: none; width: calc(15.44 * var(--u)); height: auto; margin-right: calc(4.56 * var(--u)); }
-.dpc-fx__tag {
-  position: absolute; padding: calc(4 * var(--u)) calc(12 * var(--u)); border-radius: calc(60 * var(--u));
-  background: #fff; filter: drop-shadow(0 calc(5 * var(--u)) calc(4 * var(--u)) rgb(0 0 0 / .04));
-  font-size: calc(10 * var(--u)); line-height: calc(14 * var(--u)); color: #000;
-}
-.dpc-fx__tag--eur { left: calc(5 * var(--u)); top: calc(62 * var(--u)); }
-.dpc-fx__tag--usd { left: calc(305.55 * var(--u)); top: calc(14 * var(--u)); }
-/* coins EUR/USD roll into the wallet (story only; gone at rest). Parked on
-   the wallet's centre (177, 48); the story starts them 116 out at each flag. */
-.dpc-fx__coin {
-  position: absolute; left: calc(170 * var(--u)); top: calc(41 * var(--u));
-  width: calc(14 * var(--u)); height: calc(14 * var(--u)); border-radius: 50%; opacity: 0; pointer-events: none;
-  background: linear-gradient(212.6deg, #ffeb88 8.2%, var(--gf-yellow) 73.5%);
-  box-shadow: inset 0 0 0 calc(1.5 * var(--u)) rgb(255 255 255 / .45);
-}
 
-/* TL wallet, from its layers (percentages of the 96 tile) */
-.dpc-wallet {
-  position: relative; flex: none; width: calc(96 * var(--u)); height: calc(96 * var(--u));
-  border-radius: calc(34.286 * var(--u)); background: #fff;
-  filter:
-    drop-shadow(0 calc(60 * var(--u)) calc(30 * var(--u)) rgb(0 0 0 / .04))
-    drop-shadow(0 calc(15 * var(--u)) calc(16.5 * var(--u)) rgb(0 0 0 / .05));
+/* ============ DAHA NELER VAR (Web comp 319:45165) ============
+   Title →64→ two tiles 16 apart, 290 tall. Each picture is placed from the
+   tile's padding edge in comp px and clipped by the tile. */
+
+.dbc-extras { padding-top: 196px; }
+.dbc-extras__wrap { width: min(1440px, 100%); margin-inline: auto; display: flex; flex-direction: column; align-items: center; gap: 64px; }
+.dbc-extras__title { margin: 0; font-size: 48px; line-height: 54px; font-weight: var(--fw-regular); color: #000; text-align: center; text-wrap: balance; }
+.dbc-extras__row { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dbc-extras__tile {
+  position: relative; overflow: hidden; min-height: 290px;
+  display: flex; align-items: center; padding: 32px 48px;
+  background: #fafafa; border: 1px solid #e8e8e8; border-radius: 32px;
 }
-.dpc-wallet > * { position: absolute; display: block; }
-.dpc-wallet__flap { left: calc(26.05 * var(--u)); top: calc(20.99 * var(--u)); width: calc(26.57 * var(--u)); height: auto; transform-origin: 8% 92%; }
-.dpc-wallet__body { left: 26.79%; top: 32.14%; right: 26.79%; bottom: 32.14%; border-radius: calc(6.857 * var(--u)); background: var(--gf-purple); }
-.dpc-wallet__face {
-  left: 30.36%; top: 35.71%; right: 30.36%; bottom: 35.71%; border-radius: calc(5.143 * var(--u));
-  background: linear-gradient(229.6deg, #c8bee7 34.4%, var(--gf-purple) 71.6%);
-  box-shadow: 0 calc(2.11 * var(--u)) calc(4.22 * var(--u)) rgb(0 0 0 / .25), inset -0.63px 0.63px 1.06px rgb(255 255 255 / .25);
-}
-.dpc-wallet__shine {
-  left: 33.93%; top: 39.29%; right: 33.93%; bottom: 48.21%;
-  border-radius: calc(3.429 * var(--u)) calc(3.429 * var(--u)) 0 0;
-  background: linear-gradient(to left, rgb(255 255 255 / 0) 19.4%, rgb(255 255 255 / .2));
-}
-.dpc-wallet__flag { left: calc(20.57 * var(--u)); top: calc(51.43 * var(--u)); width: calc(20.571 * var(--u)); height: calc(20.571 * var(--u)); }
-.dpc-wallet__ring { position: absolute; left: calc(-6.86 * var(--u)); top: calc(-6.86 * var(--u)); width: calc(41.143 * var(--u)); height: auto; max-width: none; }
-.dpc-wallet__tr {
-  position: absolute; left: calc(-1.29 * var(--u)); top: 0; width: calc(30.857 * var(--u)); height: calc(20.571 * var(--u));
-  -webkit-mask: url("/assets/img/hesap-karti/wallet-flag-mask.svg") no-repeat calc(1.285 * var(--u)) 0 / calc(20.571 * var(--u)) calc(20.571 * var(--u));
-  mask: url("/assets/img/hesap-karti/wallet-flag-mask.svg") no-repeat calc(1.285 * var(--u)) 0 / calc(20.571 * var(--u)) calc(20.571 * var(--u));
-}
-.dpc-wallet__tr img { width: 100%; height: 100%; object-fit: cover; }
-.dpc-wallet__tab {
-  left: 66.07%; top: 48.58%; right: 30.36%; bottom: 47.85%;
-  background: var(--gf-purple); border: calc(3.429 * var(--u)) solid var(--gf-lilac-50);
-  border-radius: calc(5.143 * var(--u)) 0 0 calc(5.143 * var(--u));
-  box-shadow: 0 .86px .86px rgb(0 0 0 / .15); box-sizing: content-box;
-}
+.dbc-extras__art { position: absolute; inset: 0; pointer-events: none; }
+.dbc-extras__art img { position: absolute; display: block; max-width: none; }
+/* the plane's trail runs off the tile's right edge. Anchored from the tile's
+   RIGHT (comp: left 438 in a 712 tile = right −208) so the plane keeps its
+   place by the edge as the tile narrows; from the left it fell out of the
+   tile below ~1200. */
+.dbc-extras__plane { position: absolute; right: -208px; top: 68.36px; width: 482px; height: 158.28px; }
+.dbc-extras__plane img { left: 35.12px; top: -40.65px; width: 400px; height: 191.641px; rotate: -22.49deg; scale: -1 1; }
+.dbc-extras__map { position: absolute; display: block; left: 236px; top: -.9px; width: 600px; height: 440px; }
+/* plane layers: both wrappers fill the clip box; the imgs keep the comp's turn */
+.dbc-extras__pt, .dbc-extras__pb { position: absolute; inset: 0; }
+/* map layers turn/scale on their own boxes */
+.dbc-atm__pin { transform-box: fill-box; transform-origin: 50% 100%; }
+.dbc-atm__you, .dbc-atm__wave, .dbc-atm__halo { transform-box: fill-box; transform-origin: 50% 50%; }
+.dbc-atm__wave { opacity: 0; }
+.dbc-extras__copy { position: relative; display: flex; flex-direction: column; gap: 16px; white-space: nowrap; }
+.dbc-extras__head { margin: 0; display: flex; flex-direction: column; font: inherit; }
+.dbc-extras__stat { font-size: 60px; line-height: 72px; color: var(--gf-purple); }
+.dbc-extras__label { font-size: 34px; line-height: 40px; font-weight: var(--fw-semibold); color: var(--gf-ink); }
+.dbc-extras__desc { margin: 0; font-size: 24px; line-height: 32px; color: #8c96a4; }
+.dbc-extras__line { display: block; }
+
+/* ============ SSS (Web comp 319:44903) ============
+   196 above and below; title 48/54 black, no accent bar; four 348-wide
+   cards (pt32 px32 pb24, 24 gap) across the 1440 column. */
+
+.dbc .dpc-faq { padding-block: 196px; }
+.dbc .dpc-faq__wrap { width: min(1440px, 100%); padding: 0; }
+.dbc .dpc-faq__title { color: #000; }
+.dbc .dpc-faq__accent { display: none; }
+.dbc .dpc-faq__viewport::after { display: none; }
+.dbc .dpc-faq__card { flex-basis: calc((100% - 48px) / 4); gap: 24px; padding: 32px 32px 24px; background: #fafafa; }
+.dbc .dpc-faq__q { font-size: 18px; line-height: 24px; font-weight: var(--fw-semibold); text-wrap: wrap; }
+.dbc .dpc-faq__card.is-clamped .dpc-faq__a::after { background: linear-gradient(to bottom, rgb(250 250 250 / 0), #fafafa); }
 
 
 /* ============ ≤1180 ============ */
 @media (max-width: 1180px) {
-  .dpc-dl__stage { gap: 40px; }
-  .dpc-dl__title { font-size: 30px; line-height: 40px; }
-  .dpc-sanal__col { width: min(560px, 100%); }
+  .dpc-dl__stage { --dpc-dl-in: 48px; }
+  .dpc-dl__title { font-size: 30px; line-height: 36px; }
+  .dpc-dl__desc { font-size: 20px; line-height: 28px; }
+  .dbc-sanal__features { gap: 16px; }
+  .dbc-sanal__feature { padding: 24px; gap: 16px; }
+  .dbc-sanal__text { font-size: 20px; line-height: 28px; }
 }
 
 /* ============ ≤920 ============
@@ -545,52 +693,69 @@
    steps under it. Sanal's art moves below the cards; the abroad bento
    collapses to one column with the card at its own aspect. */
 @media (max-width: 920px) {
-  .dpc-dl { padding-block: 48px 72px; }
-  .dpc-dl__stage { flex-direction: column; align-items: stretch; gap: 32px; }
-  .dpc-dl__visual { width: min(615px, 100%); margin-inline: auto; flex: none; }
-  .dpc-dl__title { font-size: 28px; line-height: 36px; white-space: normal; }
-  .dpc-dl__panel-in { padding-top: 32px; }
-  .dpc-dl__cta { margin-top: 28px; }
+  .dpc-dl { padding-block: 72px; }
+  .dpc-dl__stage { grid-template-columns: 1fr; gap: 56px; --dpc-dl-in: 0px; }
+  .dpc-dl__visual { justify-content: center; padding-inline: var(--dpc-gutter); }
+  /* the rotated back cards overhang the stack box by ~34 comp px on the right */
+  .dpc-dl__stack { --u: min(calc(100cqi / 640), 1px); margin-right: calc(48 * var(--u)); }
+  .dpc-dl__steps-col { padding-inline: var(--dpc-gutter); }
+  .dpc-dl__steps-col > * { width: 100%; }
+  .dpc-dl__title { font-size: 28px; line-height: 36px; }
 
-  .dpc-sanal { padding-bottom: 0; --dpc-head-gap: 48px; }
-  .dpc-sanal::after { height: 240px; }
-  .dpc-sanal__stage { display: flex; flex-direction: column; }
-  .dpc-sanal__col { width: 100%; }
-  .dpc-sanal__art {
-    --u: min(calc(100cqi / 937), 1px);
-    order: 2; position: relative; left: 50%; width: 0; height: calc(900 * var(--u)); margin-top: 16px;
-  }
-  .dpc-sanal__hand { left: 0; top: 0; }
-  .dpc-sanal__ring--1 { left: calc(158.3 * var(--u)); top: calc(297.8 * var(--u)); }
-  .dpc-sanal__ring--2 { left: calc(152.4 * var(--u)); top: calc(302.9 * var(--u)); }
-  .dpc-sanal__ring--3 { left: calc(150.2 * var(--u)); top: calc(304.7 * var(--u)); }
-  .dpc-sanal__card { height: auto; min-height: 180px; gap: 40px; }
+  .dbc-sanal { --u: min(1px, 100vw / 1100); padding-top: 72px; }
+  .dbc-sanal__features { grid-template-columns: 1fr; width: min(560px, 100%); margin-top: 56px; }
 
-  .dbc-abroad { padding-bottom: 32px; }
-  .dbc-tile-cb { flex: none; }
-  .dbc-abroad__card { aspect-ratio: 476 / 700; width: min(420px, 100%); height: auto; margin-inline: auto; }
-  .dbc-abroad__bento .dpc-photo { aspect-ratio: 16 / 10; }
+  .dbc-abroad, .dbc-extras { padding-top: 96px; }
+  .dbc .dpc-faq { padding-block: 96px; }
+  .dbc .dpc-faq__card { flex-basis: min(320px, 80%); }
+  .dbc-extras__row { grid-template-columns: 1fr; }
+  .dbc-abroad__tiles { grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px; }
+  .dbc-abroad__row { grid-template-columns: 1fr; height: auto; gap: 16px; }
+  .dbc-abroad__col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dbc-abroad__photo { aspect-ratio: 16 / 10; }
+  .dbc-abroad__card { aspect-ratio: 343.33 / 500; width: min(343px, 100%); height: auto; margin-inline: auto; }
 }
 
 /* ============ ≤767 ============ */
 @media (max-width: 767px) {
-  .dpc-dl { padding-block: 40px 56px; }
-  .dpc-dl__step { padding-block: 24px; }
-  .dpc-dl__panel-in { padding-top: 24px; }
-  .dpc-dl__title { font-size: 24px; line-height: 32px; }
-  .dpc-dl__cta { padding: 16px 24px; }
+  .dpc-dl { padding-block: 48px 64px; }
+  .dpc-dl__steps, .dpc-dl__step { gap: 28px; }
+  .dpc-dl__steps { margin-top: 28px; }
+  .dpc-dl__num { width: 32px; font-size: 16px; }
+  .dpc-dl__title { font-size: 22px; line-height: 30px; }
+  .dpc-dl__desc { font-size: 16px; line-height: 24px; }
+  .dpc-dl__steps-col > :last-child { width: 100%; margin-top: 32px; }
+  .dpc-dl__cta { width: 100%; }
 
-  .dpc-sanal { --dpc-head-gap-m: 32px; }
-  .dpc-sanal__card { min-height: 0; padding: 24px; border-radius: 24px; gap: 28px; }
-  .dpc-sanal__text { font-size: 18px; line-height: 26px; }
-  .dpc-sanal__text br { display: none; }
-  .dpc-sanal__col .dpc-cta { width: 100%; }
+  .dbc-sanal { padding-top: 48px; }
+  .dbc-sanal__head { margin-bottom: 24px; }
+  .dbc-sanal__cta, .dbc-sanal__cta .dpc-cta { width: 100%; }
+  .dbc-sanal__features { margin-top: 40px; }
+  .dbc-sanal__feature { border-radius: 24px; }
+  .dbc-sanal__text { font-size: 18px; line-height: 26px; }
+  .dbc-sanal__text br { display: none; }
+  .dbc-sn__icon { zoom: .72; }
 
-  .dbc-tile-cb { padding: 32px 0 24px; }
-  .dbc-tile-cb .dpc-tile__copy { padding-inline: 24px; }
-  .dbc-tile-fx { padding: 32px 24px 24px; --tile-w: 424.67; }
+  .dbc-abroad, .dbc-extras { padding-top: 64px; }
+  .dbc .dpc-faq { padding-block: 64px; }
+  .dbc-extras__wrap { gap: 32px; }
+  .dbc-extras__title { font-size: 28px; line-height: 36px; }
+  .dbc-extras__tile { min-height: 220px; padding: 24px; border-radius: 24px; }
+  .dbc-extras__stat { font-size: 44px; line-height: 52px; }
+  .dbc-extras__label { font-size: 24px; line-height: 32px; }
+  .dbc-extras__desc { font-size: 18px; line-height: 26px; }
+  /* phones: the art shrinks into the tile's free corner, behind the copy */
+  .dbc-extras__tile { min-height: 260px; align-items: flex-start; }
+  .dbc-extras__copy { z-index: 1; }
+  .dbc-extras__plane { top: auto; right: -70px; bottom: -6px; scale: .5; transform-origin: 100% 100%; }
+  .dbc-extras__map { left: auto; right: -110px; top: -30px; scale: .62; transform-origin: 100% 0; opacity: .8; }
+  .dbc-abroad__head .dpc-title br { display: none; }
+  .dbc-abroad__tile { padding: 32px 24px; gap: 24px; border-radius: 24px; }
+  .dbc-abroad__tile-title { font-size: 18px; line-height: 26px; }
+  .dbc-ab-art { height: 160px; zoom: .8; }
+  /* the currency row is wider than a phone tile: tighter, flags only */
+  .dbc-ab-art--fx { gap: 20px; }
+  .dbc-ab-art__tag { display: none; }
+  .dbc-abroad__col { grid-template-columns: 1fr; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .dpc-dl__label, .dpc-dl__num, .dpc-dl__cta { transition: none; }
-}

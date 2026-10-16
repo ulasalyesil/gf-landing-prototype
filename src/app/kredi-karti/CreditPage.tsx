@@ -11,33 +11,27 @@ import BenefitTile from "@/components/BenefitTile";
 import FaqCarousel from "@/components/FaqCarousel";
 import Parallax from "@/components/Parallax";
 import Reveal from "@/components/Reveal";
-import { CalendarPercentIcon, ChartIcon, CardIcon } from "@/components/art/HeroIcons";
-import { MaximumVisual, TransactionVisual, AidatVisual } from "./visuals";
-import TaksitTabs from "./TaksitTabs";
-import CampaignSlider from "./CampaignSlider";
-import BrandTabs from "./BrandTabs";
+import { MaximumVisual, AidatVisual } from "./visuals";
+import MaximumCarousel from "./MaximumCarousel";
+import TaksitGrid from "./TaksitGrid";
 import { CREDIT_HERO, CREDIT_BENEFITS, CREDIT_FAQ } from "@/data/content";
 import "@/styles/product-page.css";
 import "./credit.css";
 
-/* GFDES-2243 — /kredi-karti, card pages v2 (Figma 22630:12072, 2026-09-23).
-   Replaces the 2026-08-19 first draft (hero → avantajlar → taksit → sss).
+/* GFDES-2243 — /kredi-karti. Rebuilt 2026-10-16 to the Web comp (Figma
+   5J9ucPVhyd7DCBjTlmLI4h, frame 266:4725 "Desktop - 11", 1920 wide; 1440
+   column), the credit sibling of /hesap-karti's 283:20631. The card pages
+   v2 version is in git history before this change.
 
-   Spine: sub-nav → hero → kart avantajları (bento) → ücretsiz 3 taksit
-   (category tabs) → kampanyalar (slider) → maximum taksit (merchant tabs)
-   → sss → footer. Shared pieces (hero, section head, tile, FAQ, sub-nav)
-   live in src/components and product-page.css; the page-specific parts are
-   in this folder and credit.css.
+   Spine: sub-nav → hero → kart avantajları (3 equal tiles) → maximum taksit
+   (dark coverflow) → ücretsiz 3 taksit (photo grid) → sss → footer.
+   Per the 2026-09-28 meeting: hero icons, the ₺350 getirpara tile and the
+   kampanyalar section are gone; taksit is simpler, maximum more compact.
+   ⚠ The meeting also asked for the delivery section here; the comp has
+   none, so neither does the page.
 
    `.dpc` on <body> is what the shared chrome hangs off (footer background,
    hamburger colour) — same as /hesap-karti. */
-
-/* inline + animated (src/components/art/HeroIcons.tsx); delays follow reading order */
-const TITLE_ICONS = {
-  calendar: <CalendarPercentIcon delay={0.8} />,
-  chart: <ChartIcon delay={0.95} />,
-  card: <CardIcon delay={1.1} />,
-};
 
 export default function CreditPage() {
   useEffect(() => {
@@ -56,13 +50,15 @@ export default function CreditPage() {
           fades stay — gentler, not zero. Reveal and the scrub handle their own.
           Scoped to <main> so the shared header behaves exactly as on the landing. */}
       <MotionConfig reducedMotion="user">
-      <main className="dpc ckp">
+      <main className="dpc ckp dpc--web">
         <ProductSubnav current="kartlar" />
 
         {/* ============ 1. HERO ============ */}
         <ProductHero
+          story
+          className="ckp-hero dpc-hero--web"
           badge={CREDIT_HERO.badge}
-          title={renderHeroTitle(CREDIT_HERO.title, TITLE_ICONS)}
+          title={renderHeroTitle(CREDIT_HERO.title, {})}
           sub={
             <>
               {CREDIT_HERO.sub.muted}
@@ -71,7 +67,6 @@ export default function CreditPage() {
           }
           cta={CREDIT_HERO.cta}
           ctaHref={CREDIT_HERO.href}
-          legal={CREDIT_HERO.legal}
           media={
             <div className="dpc-hero__media ckp-hero__media">
               <img src={CREDIT_HERO.media.src} fetchPriority="high" alt="" width={CREDIT_HERO.media.width} height={CREDIT_HERO.media.height} />
@@ -83,12 +78,9 @@ export default function CreditPage() {
         <section className="dpc-section ckp-benefits" aria-labelledby="ckp-benefits-h">
           <div className="dpc-container">
             <SectionHead eyebrow={B.eyebrow} title={B.title} sub={B.sub} titleId="ckp-benefits-h" />
-            <Reveal className="dpc-bento" stagger={0.08}>
+            <Reveal className="dpc-bento ckp-benefits__bento" stagger={0.08}>
               <BenefitTile className="ckp-tile-max" visual={<MaximumVisual />} title={B.maximum.title} desc={B.maximum.desc} />
-              <div className="dpc-bento__stack">
-                <BenefitTile className="ckp-tile-txn" visual={<TransactionVisual />} title={B.getirpara.title} />
-                <BenefitTile className="ckp-tile-aidat" visual={<AidatVisual />} title={B.aidat.title} />
-              </div>
+              <BenefitTile className="ckp-tile-aidat" visual={<AidatVisual />} title={B.aidat.title} desc={B.aidat.desc} />
               <BenefitTile
                 photo
                 visual={
@@ -103,16 +95,13 @@ export default function CreditPage() {
           </div>
         </section>
 
-        {/* ============ 3. ÜCRETSİZ 3 TAKSİT ============ */}
-        <TaksitTabs />
+        {/* ============ 3. MAXIMUM TAKSİT ============ */}
+        <MaximumCarousel />
 
-        {/* ============ 4. KAMPANYALAR ============ */}
-        <CampaignSlider />
+        {/* ============ 4. ÜCRETSİZ 3 TAKSİT ============ */}
+        <TaksitGrid />
 
-        {/* ============ 5. MAXIMUM TAKSİT ============ */}
-        <BrandTabs />
-
-        {/* ============ 6. SSS ============ */}
+        {/* ============ 5. SSS ============ */}
         <FaqCarousel title={CREDIT_FAQ.title} items={CREDIT_FAQ.items} skin="wide" />
       </main>
       </MotionConfig>
