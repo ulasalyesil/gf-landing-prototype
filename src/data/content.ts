@@ -344,7 +344,8 @@ export const NEWSLETTER = {
 /* Web comp 266:4725 (2026-10-16): same hero as debit — badge, gradient title
    without icons, no legal line, 1728 × 800 photo. */
 export const CREDIT_HERO = {
-  badge: "getir kredi kartı",
+  /* owner 2026-10-16: "getirfinans", not the comp's "getir" */
+  badge: "getirfinans kredi kartı",
   title: [["taksit yapan, kazandıran,"], ["aidatsız kredi kartı"]],
   sub: { muted: "Maximum kart’ınızla alışveriş yapın, ", em: "getir’de geçerli ₺350 kazanın!" },
   cta: "karta başvur",

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Fragment, useEffect, useRef } from "react";
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
 import Reveal, { RevealItem, useMotionOff } from "@/components/Reveal";
 import { useStory } from "@/components/useStory";
 
@@ -72,7 +72,6 @@ function HeroGrow({ children }: { children: React.ReactNode }) {
    --hero-zoom, and the copy's y / bottom clip. Geometry is measured, not
    assumed, so it holds at every width and on both card pages. */
 type Geom = { T: number; LA: number; textTop: number; textH: number; photoBottom: number };
-const smooth = (t: number) => t * t * (3 - 2 * t);
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 function useHeroStory(enabled: boolean) {
@@ -121,13 +120,13 @@ function useHeroStory(enabled: boolean) {
     };
   }, [enabled, geom, on]);
 
-  const { scrollY } = useScroll();
-  // a light spring: wheel steps glide instead of stepping
-  const y = useSpring(scrollY, { stiffness: 420, damping: 48, mass: 0.6 });
+  // raw scroll, 1:1 — no spring, no easing (owner, 2026-10-16: "the scroll
+  // should follow linearly")
+  const { scrollY: y } = useScroll();
   // every source is read on every run (the function form tracks what it reads)
   const a = useTransform(() => {
     const v = y.get(), g = geom.get(), live = on.get();
-    return live ? smooth(clamp01(v / g.LA)) : 0;
+    return live ? clamp01(v / g.LA) : 0;
   });
   const b = useTransform(() => {
     const v = y.get(), g = geom.get(), live = on.get();

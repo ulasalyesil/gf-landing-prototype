@@ -555,9 +555,11 @@ body.dpc .is-mega .nav-toggle { color: var(--gf-purple); }
 @media (min-width: 768px) {
   .dpc-hero--web {
     --dpc-wash-tail: calc(var(--dpc-hero-pb) + var(--dpc-photo-w) * 404 / 1728);
+    /* the wash is stretched to fill exactly the area above the photo's
+       midline: at its natural ratio it fit only at 1920, and narrower the
+       solid lilac under it showed as a band at the top (feedback 10-16) */
     background:
-      url("/assets/img/hesap-karti/hero-bg.webp") center bottom var(--dpc-wash-tail) / 100% auto no-repeat,
-      linear-gradient(#f1eff6, #f1eff6) top / 100% calc(100% - var(--dpc-wash-tail)) no-repeat,
+      url("/assets/img/hesap-karti/hero-bg.webp") top / 100% calc(100% - var(--dpc-wash-tail)) no-repeat,
       #fff;
   }
   .dpc-hero--web .dpc-hero__inner { gap: 132px; }
